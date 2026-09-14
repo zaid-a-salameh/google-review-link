@@ -1,0 +1,1661 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Review Link Generator</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" id="metaDescription" content="Convert any Google Maps link into an instant 5-star review link. Generate QR codes and write to NFC cards effortlessly.">
+    <meta name="keywords" content="Google Maps, Review Link, Google Review Generator, NFC Review, QR Code Review, Google Reviews">
+    <meta name="theme-color" content="#ea580c">
+    
+    <!-- Open Graph / Social Sharing -->
+    <meta property="og:title" content="Google Maps Review Link Generator">
+    <meta property="og:description" content="Instant 5-star Google Maps review link generator with QR code and NFC tag support.">
+    <meta property="og:type" content="website">
+
+    <!-- Tab Favicon (Modern SVG Star Icon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ea580c'/%3E%3Cstop offset='100%25' stop-color='%23fb923c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath d='M16 6.5l2.7 5.5 6.1.9-4.4 4.3 1 6.1-5.4-2.8-5.4 2.8 1-6.1-4.4-4.3 6.1-.9z' fill='%23ffffff'/%3E%3C/svg%3E">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+    <!-- QR Code Engine (Local for APK + CDN fallback for Web) -->
+    <script src="qrcode.min.js"></script>
+    <script>
+        if (typeof QRCode === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\\/script>');
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg: #0c0a09;
+            --card: rgba(28, 25, 23, 0.75);
+            --card-elevated: rgba(41, 37, 36, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(249, 115, 22, 0.45);
+            
+            --primary: #f97316;
+            --primary-light: #fb923c;
+            --primary-gradient: linear-gradient(135deg, #ea580c, #f97316, #fb923c);
+            --success: #10b981;
+            --danger: #ef4444;
+            
+            --text: #fafaf9;
+            --text-sub: #a8a29e;
+            --text-muted: #78716c;
+            
+            --radius-app: 28px;
+            --radius-btn: 16px;
+            --radius-input: 16px;
+            
+            --shadow-glass: 0 16px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 16px;
+            padding-top: max(56px, env(safe-area-inset-top, 56px));
+            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            position: relative;
+            overflow-x: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        html[lang="ar"] body {
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Ambient Lighting */
+        .ambient-glow {
+            position: fixed;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .glow-top {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, transparent 70%);
+            top: -70px;
+            right: -70px;
+        }
+        .glow-bottom {
+            background: radial-gradient(circle, rgba(234, 88, 12, 0.35) 0%, transparent 70%);
+            bottom: -90px;
+            left: -80px;
+        }
+
+        /* Mobile Screen Container */
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            z-index: 10;
+            margin: 0 auto;
+        }
+
+        /* Top Bar with Language Switcher & APK Download */
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            width: 100%;
+            direction: ltr !important;
+        }
+
+        /* Download APK Button (Visible on Web only, hidden in native app) */
+        .btn-download-apk {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(249, 115, 22, 0.12);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 50px;
+            color: #fdba74;
+            font-family: 'Inter', 'Cairo', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .btn-download-apk:hover {
+            background: rgba(249, 115, 22, 0.22);
+            border-color: rgba(249, 115, 22, 0.6);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-download-apk:active {
+            transform: scale(0.96);
+        }
+        .btn-download-apk svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+        }
+        body.is-native-app .btn-download-apk {
+            display: none !important;
+        }
+
+        /* Language Toggle Pill */
+        .lang-pill-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(28, 25, 23, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 3px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            direction: ltr !important;
+            unicode-bidi: isolate;
+        }
+        .lang-btn {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-family: 'Inter', 'Cairo', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            width: 48px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: color 0.25s ease;
+            user-select: none;
+        }
+        .lang-btn.active {
+            color: #ffffff;
+        }
+        .lang-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 48px;
+            height: 26px;
+            background: var(--primary-gradient);
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.5);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Smooth Text Transition */
+        .content-trans {
+            transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .content-trans.fading {
+            opacity: 0;
+            transform: translateY(4px);
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-top: 4px;
+            margin-bottom: 22px;
+        }
+        .app-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 12px;
+            border-radius: 18px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .app-icon svg {
+            width: 28px;
+            height: 28px;
+            fill: #ffffff;
+        }
+        header h1 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        header p {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            background: var(--card);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-app);
+            padding: 20px;
+            box-shadow: var(--shadow-glass);
+            margin-bottom: 16px;
+        }
+
+        /* Input Controls Row */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+            width: 100%;
+        }
+
+        .input-box-wrapper {
+            flex: 1;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-input);
+            display: flex;
+            align-items: center;
+            transition: all 0.25s ease;
+            overflow: hidden;
+        }
+        .input-box-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+            background: rgba(18, 16, 15, 0.98);
+        }
+        .url-input {
+            width: 100%;
+            height: 100%;
+            padding: 0 14px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            direction: ltr;
+            text-align: left;
+        }
+        .url-input::placeholder {
+            font-family: inherit;
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        html[lang="ar"] .url-input::placeholder {
+            direction: rtl;
+            text-align: right;
+        }
+        html[lang="en"] .url-input::placeholder {
+            direction: ltr;
+            text-align: left;
+        }
+
+        /* Tool Buttons (Trash & Paste) */
+        .tool-btn {
+            height: 52px;
+            border-radius: var(--radius-input);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        .tool-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* Trash/Clear Button */
+        .btn-trash {
+            width: 52px;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+        .btn-trash:active {
+            background: rgba(239, 68, 68, 0.25);
+        }
+        .btn-trash svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Paste Button (Exclusive to Android Native APK) */
+        .btn-paste {
+            display: none;
+            padding: 0 16px;
+            background: rgba(249, 115, 22, 0.14);
+            border-color: rgba(249, 115, 22, 0.35);
+            color: #fdba74;
+        }
+        body.is-native-app .btn-paste {
+            display: flex;
+        }
+        .btn-paste:active {
+            background: rgba(249, 115, 22, 0.28);
+        }
+        .btn-paste svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+        }
+
+        /* Convert Button */
+        .btn-convert {
+            width: 100%;
+            height: 52px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.45);
+            transition: all 0.2s ease;
+        }
+        .btn-convert:active {
+            transform: scale(0.98);
+            filter: brightness(0.92);
+        }
+        .btn-convert:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+        .btn-convert svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Result Section */
+        .result-section {
+            display: none;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .result-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .result-label svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--primary-light);
+        }
+
+        .result-link-box {
+            background: rgba(18, 16, 15, 0.9);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* The 3 Action Buttons */
+        .actions-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-action {
+            width: 100%;
+            height: 48px;
+            border-radius: var(--radius-btn);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+        .btn-action svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Button 1: Copy */
+        .btn-copy {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            color: #fdba74;
+        }
+        .btn-copy.copied {
+            background: rgba(16, 185, 129, 0.2) !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        /* Button 2: Open */
+        .btn-open {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #ffffff;
+        }
+
+        /* Button 3: Share */
+        .btn-share {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+        }
+
+        /* Button 4: QR Code */
+        .btn-qr {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: #ffffff;
+        }
+
+        /* Button 5: Write to NFC (Exclusive to Android Native APK) */
+        .btn-nfc {
+            display: none;
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.25) 0%, rgba(194, 65, 12, 0.35) 100%);
+            border: 1.5px solid rgba(249, 115, 22, 0.6);
+            color: #ffedd5;
+            box-shadow: 0 4px 18px rgba(234, 88, 12, 0.25);
+            margin-top: 4px;
+        }
+        body.is-native-app .btn-nfc {
+            display: flex;
+        }
+        .btn-nfc:active {
+            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.4);
+        }
+
+        /* NFC Modal / Overlay */
+        .nfc-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .nfc-modal {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(28, 25, 23, 0.95);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            border-radius: 28px;
+            padding: 32px 24px 28px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(234, 88, 12, 0.2);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-overlay.active .nfc-modal {
+            transform: scale(1) translateY(0);
+        }
+        .nfc-wave-container {
+            position: relative;
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nfc-wave-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid rgba(249, 115, 22, 0.5);
+            animation: nfcPulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        }
+        .nfc-wave-ring:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+        @keyframes nfcPulse {
+            0% { transform: scale(0.7); opacity: 0.9; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        .nfc-icon-circle {
+            position: relative;
+            z-index: 2;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(234, 88, 12, 0.5);
+            transition: all 0.3s ease;
+        }
+        .nfc-icon-circle svg {
+            width: 36px;
+            height: 36px;
+            fill: #ffffff;
+            transition: transform 0.3s ease;
+        }
+        .nfc-modal.success .nfc-wave-ring {
+            display: none;
+        }
+        .nfc-modal.success .nfc-icon-circle {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+            transform: scale(1.08);
+        }
+        .nfc-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .nfc-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .btn-nfc-cancel {
+            width: 100%;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-btn);
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-nfc-cancel:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* QR Code Modal / Overlay */
+        .qr-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+            visibility: hidden;
+        }
+        .qr-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        .qr-modal {
+            width: 100%;
+            max-width: 320px;
+            background: rgba(28, 25, 23, 0.95);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            border-radius: 28px;
+            padding: 28px 24px 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(234, 88, 12, 0.2);
+            transform: scale(0.82) translateY(24px);
+            opacity: 0;
+            transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+        }
+        .qr-overlay.active .qr-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .qr-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .qr-desc {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+        .qr-box-wrapper {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+        .qr-box-wrapper canvas,
+        .qr-box-wrapper img {
+            display: block;
+            border-radius: 8px;
+        }
+        .qr-actions-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-qr-download {
+            width: 100%;
+            height: 48px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(234, 88, 12, 0.4);
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-qr-download:active {
+            transform: scale(0.97);
+        }
+        .btn-qr-download svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+        .btn-qr-close {
+            width: 100%;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-btn);
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-qr-close:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(28, 25, 23, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Lights (Warm Orange) -->
+    <div class="ambient-glow glow-top"></div>
+    <div class="ambient-glow glow-bottom"></div>
+
+    <div class="app-container content-trans" id="appContainer">
+        
+        <!-- Top Bar with APK Download & Language Toggle -->
+        <div class="top-bar">
+            <a href="ReviewLinkGenerator.apk" download="ReviewLinkGenerator.apk" class="btn-download-apk" id="apkDownloadBtn">
+                <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                <span id="apkDownloadLabel">Get Android App</span>
+            </a>
+            <div class="lang-pill-container">
+                <button type="button" class="lang-btn active" id="btnEn">EN</button>
+                <button type="button" class="lang-btn" id="btnAr">عربي</button>
+                <div class="lang-slider" id="langSlider"></div>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <header>
+            <div class="app-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <h1 id="appTitle">Review Link Generator</h1>
+            <p id="appSubtitle">Convert Google Maps links to instant review links</p>
+        </header>
+
+        <!-- Main Input Card -->
+        <div class="glass-card">
+            
+            <!-- Input Row: Trash, Input Box, Paste -->
+            <div class="input-row">
+                <button type="button" class="tool-btn btn-trash" id="clearBtn" title="Clear text">
+                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
+
+                <div class="input-box-wrapper">
+                    <input 
+                        type="url" 
+                        id="urlInput" 
+                        class="url-input" 
+                        placeholder="Paste Google Maps link here..." 
+                        autocomplete="off" 
+                        spellcheck="false"
+                    >
+                </div>
+
+                <button type="button" class="tool-btn btn-paste" id="pasteBtn" title="Paste from clipboard">
+                    <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+                    <span id="pasteBtnLabel">Paste</span>
+                </button>
+            </div>
+
+            <!-- Convert Button -->
+            <button type="button" class="btn-convert" id="convertBtn">
+                <div class="spinner" id="btnSpinner"></div>
+                <svg id="btnIcon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                <span id="btnText">Convert Link</span>
+            </button>
+        </div>
+
+        <!-- Result Card (3 Buttons only) -->
+        <div class="glass-card result-section" id="resultCard">
+            <div class="result-label">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                <span id="resultLabelText">Direct Review Link:</span>
+            </div>
+
+            <div class="result-link-box" id="resultLinkText"></div>
+
+            <!-- The 3 Action Buttons -->
+            <div class="actions-stack">
+                <!-- 1. Copy Button -->
+                <button type="button" class="btn-action btn-copy" id="copyBtn">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    <span id="copyBtnLabel">Copy Link</span>
+                </button>
+
+                <!-- 2. Open Button -->
+                <button type="button" class="btn-action btn-open" id="openBtn">
+                    <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+                    <span id="openBtnLabel">Open Link</span>
+                </button>
+
+                <!-- 3. Share Button -->
+                <button type="button" class="btn-action btn-share" id="shareBtn">
+                    <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+                    <span id="shareBtnLabel">Share Link</span>
+                </button>
+
+                <!-- 4. QR Code Button -->
+                <button type="button" class="btn-action btn-qr" id="qrBtn">
+                    <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-5 0h2v3h-2v-3zm2 3h3v2h-3v-2zm3 3h3v3h-3v-3zm-3 0h2v3h-2v-3zm-2-3h2v3h-2v-3z"/></svg>
+                    <span id="qrBtnLabel">Generate QR Code</span>
+                </button>
+
+                <!-- 5. NFC Write Button -->
+                <button type="button" class="btn-action btn-nfc" id="nfcBtn">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.15c-.47-.09-.97-.15-1.5-.15-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5c3.03 0 5.5-2.47 5.5-5.5V10h3V6zm-8.5 13c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+                    <span id="nfcBtnLabel">Write to NFC Tag</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- QR Code Modal Dialog -->
+    <div class="qr-overlay" id="qrOverlay">
+        <div class="qr-modal" id="qrModalBox">
+            <div class="qr-title" id="qrModalTitle">Google Review QR Code</div>
+            <div class="qr-desc" id="qrModalDesc">Scan with any smartphone camera to leave a review directly</div>
+            <div class="qr-box-wrapper">
+                <div id="qrCodeContainer"></div>
+            </div>
+            <div class="qr-actions-row">
+                <button type="button" class="btn-qr-download" id="qrDownloadBtn">
+                    <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    <span id="qrDownloadBtnLabel">Download QR Image</span>
+                </button>
+                <button type="button" class="btn-qr-close" id="qrCloseBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NFC Writing Overlay Modal -->
+    <div class="nfc-overlay" id="nfcOverlay">
+        <div class="nfc-modal" id="nfcModalBox">
+            <div class="nfc-wave-container">
+                <div class="nfc-wave-ring"></div>
+                <div class="nfc-wave-ring"></div>
+                <div class="nfc-icon-circle" id="nfcStatusIcon">
+                    <!-- NFC contact-less wave icon -->
+                    <svg id="nfcSvgIcon" viewBox="0 0 24 24">
+                        <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
+                    </svg>
+                </div>
+            </div>
+            <div class="nfc-title" id="nfcTitle">Ready to Write</div>
+            <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near the NFC card or sticker. Existing data will be wiped automatically.</div>
+            <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Application Script -->
+    <script>
+    (function() {
+        'use strict';
+
+        const $ = id => document.getElementById(id);
+        const appContainer = $('appContainer');
+        const urlInput = $('urlInput');
+        const clearBtn = $('clearBtn');
+        const pasteBtn = $('pasteBtn');
+        const pasteBtnLabel = $('pasteBtnLabel');
+        const convertBtn = $('convertBtn');
+        const btnSpinner = $('btnSpinner');
+        const btnIcon = $('btnIcon');
+        const btnText = $('btnText');
+        const resultCard = $('resultCard');
+        const resultLinkText = $('resultLinkText');
+        const resultLabelText = $('resultLabelText');
+        const copyBtn = $('copyBtn');
+        const copyBtnLabel = $('copyBtnLabel');
+        const openBtn = $('openBtn');
+        const openBtnLabel = $('openBtnLabel');
+        const shareBtn = $('shareBtn');
+        const shareBtnLabel = $('shareBtnLabel');
+        const qrBtn = $('qrBtn');
+        const qrBtnLabel = $('qrBtnLabel');
+        const qrOverlay = $('qrOverlay');
+        const qrModalBox = $('qrModalBox');
+        const qrModalTitle = $('qrModalTitle');
+        const qrModalDesc = $('qrModalDesc');
+        const qrCodeContainer = $('qrCodeContainer');
+        const qrDownloadBtn = $('qrDownloadBtn');
+        const qrDownloadBtnLabel = $('qrDownloadBtnLabel');
+        const qrCloseBtn = $('qrCloseBtn');
+        const nfcBtn = $('nfcBtn');
+        const nfcBtnLabel = $('nfcBtnLabel');
+        const nfcOverlay = $('nfcOverlay');
+        const nfcModalBox = $('nfcModalBox');
+        const nfcTitle = $('nfcTitle');
+        const nfcDesc = $('nfcDesc');
+        const nfcCancelBtn = $('nfcCancelBtn');
+        const nfcStatusIcon = $('nfcStatusIcon');
+        const nfcSvgIcon = $('nfcSvgIcon');
+        const toast = $('toast');
+        const appTitle = $('appTitle');
+        const appSubtitle = $('appSubtitle');
+        const btnEn = $('btnEn');
+        const btnAr = $('btnAr');
+        const langSlider = $('langSlider');
+
+        const apkDownloadLabel = $('apkDownloadLabel');
+        const metaDescription = $('metaDescription');
+
+        let generatedReviewUrl = '';
+        let qrInstance = null;
+
+        // ═══════════════════════════════════════════════════════════════
+        //  DICTIONARY & LOCALIZATION (English as default)
+        // ═══════════════════════════════════════════════════════════════
+        const I18N = {
+            en: {
+                apkDownload: "Get Android App",
+                docTitle: "Review Link Generator",
+                metaDesc: "Convert any Google Maps link into an instant 5-star review link. Generate QR codes and write to NFC cards effortlessly.",
+                appTitle: "Review Link Generator",
+                appSubtitle: "Convert Google Maps links to instant review links",
+                placeholder: "Paste Google Maps link here...",
+                trashTitle: "Clear text",
+                pasteBtn: "Paste",
+                convertBtn: "Convert Link",
+                resolvingBtn: "Resolving link...",
+                resultLabel: "Direct Review Link:",
+                copyBtn: "Copy Link",
+                copySuccess: "Copied!",
+                openBtn: "Open Link",
+                shareBtn: "Share Link",
+                qrBtn: "Generate QR Code",
+                qrModalTitle: "Google Review QR Code",
+                qrModalDesc: "Scan with any smartphone camera to leave a review directly",
+                qrDownloadBtn: "Download QR Image",
+                qrCloseBtn: "Close",
+                qrDownloaded: "✅ QR Code downloaded",
+                nfcBtn: "Write to NFC Tag",
+                nfcTitleReady: "Ready to Write",
+                nfcDescReady: "Hold your phone near the NFC card or sticker. Any previous data will be overwritten automatically.",
+                nfcTitleSuccess: "Write Successful! 🎉",
+                nfcDescSuccess: "Review link successfully written to the NFC tag.",
+                nfcTitleError: "Write Failed",
+                nfcCancel: "Cancel",
+                nfcNoHardware: "⚠️ NFC is not supported on this device",
+                nfcDisabled: "⚠️ Please enable NFC in your phone settings",
+                nfcLocked: "❌ NFC card is locked or read-only",
+                nfcCapacity: "❌ NFC card has insufficient memory",
+                nfcUnsupported: "❌ Unsupported NFC tag type",
+                nfcWriteFailed: "❌ Error writing to NFC tag. Try again.",
+                toastPasteFirst: "⚠️ Please paste a link first",
+                toastInvalid: "❌ Could not extract Place ID",
+                toastNoInternet: "⚠️ No network connection",
+                toastSuccess: "✅ Link converted successfully",
+                toastNfcWritten: "✅ Successfully written to NFC card",
+                toastCleared: "🗑️ Text cleared",
+                toastPasted: "📋 Pasted from clipboard",
+                toastEmptyClip: "Clipboard is empty",
+                toastClipDenied: "📋 Press Ctrl+V to paste",
+                toastCopied: "✅ Review link copied",
+                toastShareCopied: "Link copied for sharing",
+                shareTitle: "Google Review",
+                shareText: "Leave us a review on Google Maps ⭐"
+            },
+            ar: {
+                apkDownload: "تحميل تطبيق الأندرويد",
+                docTitle: "محوّل روابط التقييم",
+                metaDesc: "حوّل أي رابط خرائط جوجل إلى رابط تقييم 5 نجوم مباشر مع إنشاء رمز QR والبرمجة على بطاقات NFC.",
+                appTitle: "محوّل روابط التقييم",
+                appSubtitle: "تحويل رابط خرائط جوجل إلى رابط تقييم فوري",
+                placeholder: "الصق رابط Google Maps هنا...",
+                trashTitle: "مسح النص",
+                pasteBtn: "لصق",
+                convertBtn: "تحويل الرابط",
+                resolvingBtn: "جاري فك اختصار الرابط...",
+                resultLabel: "رابط التقييم المباشر:",
+                copyBtn: "نسخ الرابط",
+                copySuccess: "تم النسخ!",
+                openBtn: "فتح الرابط",
+                shareBtn: "مشاركة الرابط",
+                qrBtn: "إنشاء رمز QR",
+                qrModalTitle: "رمز QR لتقييم جوجل",
+                qrModalDesc: "امسح الرمز بكاميرا أي هاتف ليفتح صفحة التقييم فوراً",
+                qrDownloadBtn: "تنزيل صورة الـ QR",
+                qrCloseBtn: "إغلاق",
+                qrDownloaded: "✅ تم تنزيل رمز الـ QR",
+                nfcBtn: "كتابة على بطاقة NFC",
+                nfcTitleReady: "جاهز للكتابة على البطاقة",
+                nfcDescReady: "قرّب بطاقة أو ملصق الـ NFC من ظهر الهاتف. سيتم مسح أي بيانات سابقة وكتابة الرابط فوراً.",
+                nfcTitleSuccess: "تمت الكتابة بنجاح! 🎉",
+                nfcDescSuccess: "تمت برمجة رابط التقييم على البطاقة بنجاح.",
+                nfcTitleError: "فشلت الكتابة",
+                nfcCancel: "إلغاء",
+                nfcNoHardware: "⚠️ جهازك لا يدعم خاصية الـ NFC",
+                nfcDisabled: "⚠️ يرجى تفعيل الـ NFC من إعدادات الهاتف أولاً",
+                nfcLocked: "❌ البطاقة محمية ضد الكتابة أو للقراءة فقط",
+                nfcCapacity: "❌ سعة البطاقة غير كافية للرابط",
+                nfcUnsupported: "❌ نوع بطاقة الـ NFC غير مدعوم",
+                nfcWriteFailed: "❌ حدث خطأ أثناء الكتابة. يرجى المحاولة مجدداً.",
+                toastPasteFirst: "⚠️ الرجاء لصق الرابط أولاً",
+                toastInvalid: "❌ تعذر استخراج معرّف المكان",
+                toastNoInternet: "⚠️ لا يوجد اتصال بالشبكة",
+                toastSuccess: "✅ تم تحويل الرابط بنجاح",
+                toastNfcWritten: "✅ تم الكتابة على البطاقة بنجاح",
+                toastCleared: "🗑️ تم مسح النص",
+                toastPasted: "📋 تم اللصق",
+                toastEmptyClip: "الحافظة فارغة",
+                toastClipDenied: "📋 اضغط Ctrl+V للصق الرابط",
+                toastCopied: "✅ تم نسخ رابط التقييم",
+                toastShareCopied: "تم نسخ الرابط للمشاركة",
+                shareTitle: "تقييم على Google",
+                shareText: "شاركنا تقييمك على خرائط Google ⭐"
+            }
+        };
+
+        // Default language is English
+        let currentLang = localStorage.getItem('app_lang') || 'en';
+
+        function applyLanguage(lang, animate = true) {
+            currentLang = lang;
+            localStorage.setItem('app_lang', lang);
+
+            const dict = I18N[lang];
+
+            if (animate) {
+                appContainer.classList.add('fading');
+            }
+
+            setTimeout(() => {
+                // Update HTML attributes
+                document.documentElement.lang = lang;
+                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+                document.title = dict.docTitle;
+                if (metaDescription) metaDescription.setAttribute('content', dict.metaDesc);
+
+                // Update text content
+                if (apkDownloadLabel) apkDownloadLabel.textContent = dict.apkDownload;
+                appTitle.textContent = dict.appTitle;
+                appSubtitle.textContent = dict.appSubtitle;
+                urlInput.placeholder = dict.placeholder;
+                clearBtn.title = dict.trashTitle;
+                pasteBtnLabel.textContent = dict.pasteBtn;
+                pasteBtn.title = dict.pasteBtn;
+                
+                if (!convertBtn.disabled) {
+                    btnText.textContent = dict.convertBtn;
+                }
+                
+                resultLabelText.textContent = dict.resultLabel;
+                if (!copyBtn.classList.contains('copied')) {
+                    copyBtnLabel.textContent = dict.copyBtn;
+                }
+                openBtnLabel.textContent = dict.openBtn;
+                shareBtnLabel.textContent = dict.shareBtn;
+                if (qrBtnLabel) qrBtnLabel.textContent = dict.qrBtn;
+                if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle;
+                if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc;
+                if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn;
+                if (qrCloseBtn) qrCloseBtn.textContent = dict.qrCloseBtn;
+                if (nfcBtnLabel) nfcBtnLabel.textContent = dict.nfcBtn;
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+
+                // Update Toggle Slider Position
+                if (lang === 'ar') {
+                    btnEn.classList.remove('active');
+                    btnAr.classList.add('active');
+                    langSlider.style.transform = 'translateX(48px)';
+                } else {
+                    btnAr.classList.remove('active');
+                    btnEn.classList.add('active');
+                    langSlider.style.transform = 'translateX(0px)';
+                }
+
+                if (animate) {
+                    appContainer.classList.remove('fading');
+                }
+            }, animate ? 120 : 0);
+        }
+
+        // Toggle Listeners
+        btnEn.addEventListener('click', () => {
+            if (currentLang !== 'en') applyLanguage('en', true);
+        });
+        btnAr.addEventListener('click', () => {
+            if (currentLang !== 'ar') applyLanguage('ar', true);
+        });
+
+        function showToast(msg) {
+            toast.textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 2500);
+        }
+
+        function setLoading(isLoading) {
+            const dict = I18N[currentLang];
+            if (isLoading) {
+                convertBtn.disabled = true;
+                btnSpinner.style.display = 'block';
+                btnIcon.style.display = 'none';
+                btnText.textContent = dict.resolvingBtn;
+            } else {
+                convertBtn.disabled = false;
+                btnSpinner.style.display = 'none';
+                btnIcon.style.display = 'block';
+                btnText.textContent = dict.convertBtn;
+            }
+        }
+
+        // ── Protobuf Hex Decoder (0x...:0x... -> ChIJ...) ──
+        function hexToPlaceId(featureId) {
+            try {
+                const parts = featureId.split(':');
+                if (parts.length !== 2) return null;
+
+                const hexA = parts[0].replace(/^0x/i, '').padStart(16, '0');
+                const hexB = parts[1].replace(/^0x/i, '').padStart(16, '0');
+
+                function toLittleEndian(hex) {
+                    const bytes = [];
+                    for (let i = hex.length - 2; i >= 0; i -= 2) {
+                        bytes.push(parseInt(hex.substring(i, i + 2), 16));
+                    }
+                    return bytes;
+                }
+
+                const msg = [
+                    0x0A, 0x12,
+                    0x09,
+                    ...toLittleEndian(hexA),
+                    0x11,
+                    ...toLittleEndian(hexB)
+                ];
+
+                const b64 = btoa(String.fromCharCode.apply(null, msg));
+                return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            } catch (e) {
+                return null;
+            }
+        }
+
+        // ── Direct Place ID Parser ──
+        function parsePlaceIdFromText(text) {
+            if (!text) return null;
+
+            let decoded;
+            try { decoded = decodeURIComponent(text); } catch(e) { decoded = text; }
+
+            let match = decoded.match(/place_?id[=:]\s*([A-Za-z0-9_-]{15,})/i);
+            if (match) return match[1];
+
+            match = decoded.match(/(ChIJ[A-Za-z0-9_-]{20,})/);
+            if (match) return match[1];
+
+            match = decoded.match(/(?:!1s|ftid=)(0x[0-9a-fA-F]+:0x[0-9a-fA-F]+)/);
+            if (match) {
+                const pid = hexToPlaceId(match[1]);
+                if (pid) return pid;
+            }
+
+            match = decoded.match(/(0x[0-9a-fA-F]{10,}:0x[0-9a-fA-F]{10,})/);
+            if (match) {
+                const pid = hexToPlaceId(match[1]);
+                if (pid) return pid;
+            }
+
+            return null;
+        }
+
+        // ── Device Connectivity Check ──
+        function isDeviceOnline() {
+            if (window.AndroidNative && typeof window.AndroidNative.isNetworkConnected === 'function') {
+                try {
+                    return window.AndroidNative.isNetworkConnected();
+                } catch (e) {
+                    console.warn('isNetworkConnected error:', e);
+                }
+            }
+            return navigator.onLine !== false;
+        }
+
+        // ── Unshorten maps.app.goo.gl / goo.gl shortlinks ──
+        async function resolveShortenedUrl(shortUrl) {
+            if (!isDeviceOnline()) {
+                return { url: null, error: 'NO_INTERNET' };
+            }
+
+            let networkError = false;
+
+            try {
+                const endpoint = `https://unshorten.me/json/${shortUrl.trim()}`;
+                const res = await fetch(endpoint, { method: 'GET' });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.resolved_url) {
+                        return { url: data.resolved_url, error: null };
+                    }
+                }
+            } catch (e) {
+                console.warn('unshorten.me error:', e);
+                networkError = true;
+            }
+
+            try {
+                const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(shortUrl.trim())}`;
+                const res = await fetch(proxy);
+                if (res.ok) {
+                    const html = await res.text();
+                    const match = html.match(/(0x[0-9a-fA-F]{10,}(?::|%3A)0x[0-9a-fA-F]{10,})/i);
+                    if (match) {
+                        return { url: decodeURIComponent(match[1]), error: null };
+                    }
+                }
+            } catch (e) {
+                console.warn('allorigins proxy error:', e);
+                networkError = true;
+            }
+
+            if (!isDeviceOnline() || networkError) {
+                return { url: null, error: 'NO_INTERNET' };
+            }
+
+            return { url: null, error: null };
+        }
+
+        // ── Execute Convert ──
+        async function handleConvert() {
+            const dict = I18N[currentLang];
+            const raw = urlInput.value.trim();
+            if (!raw) {
+                showToast(dict.toastPasteFirst);
+                urlInput.focus();
+                return;
+            }
+
+            let placeId = parsePlaceIdFromText(raw);
+
+            if (!placeId && /maps\.app\.goo\.gl|goo\.gl\/maps/i.test(raw)) {
+                if (!isDeviceOnline()) {
+                    showToast(dict.toastNoInternet);
+                    return;
+                }
+
+                setLoading(true);
+                const result = await resolveShortenedUrl(raw);
+                setLoading(false);
+
+                if (result && result.error === 'NO_INTERNET') {
+                    showToast(dict.toastNoInternet);
+                    return;
+                }
+
+                if (result && result.url) {
+                    placeId = parsePlaceIdFromText(result.url);
+                }
+            }
+
+            if (!placeId) {
+                if (!isDeviceOnline()) {
+                    showToast(dict.toastNoInternet);
+                } else {
+                    showToast(dict.toastInvalid);
+                }
+                return;
+            }
+
+            generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+            resultLinkText.textContent = generatedReviewUrl;
+            
+            resultCard.classList.add('active');
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            showToast(dict.toastSuccess);
+        }
+
+        // ── Clear / Trash Action ──
+        clearBtn.addEventListener('click', () => {
+            const dict = I18N[currentLang];
+            urlInput.value = '';
+            resultCard.classList.remove('active');
+            urlInput.focus();
+            showToast(dict.toastCleared);
+        });
+
+        // ── Native Paste Callback ──
+        window.onNativePaste = function(text) {
+            const dict = I18N[currentLang];
+            if (text) {
+                urlInput.value = text;
+                showToast(dict.toastPasted);
+                // Deliberately DO NOT auto-convert: require pressing convertBtn
+            }
+        };
+
+        // ── Paste Action ──
+        pasteBtn.addEventListener('click', async () => {
+            const dict = I18N[currentLang];
+
+            // 1. Android Native Bridge (100% reliable inside APK)
+            if (window.AndroidNative && window.AndroidNative.pasteFromClipboard) {
+                window.AndroidNative.pasteFromClipboard();
+                return;
+            }
+
+            // 2. Modern Clipboard API for Web
+            if (navigator.clipboard && navigator.clipboard.readText) {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (text && text.trim()) {
+                        urlInput.value = text.trim();
+                        urlInput.focus();
+                        showToast(dict.toastPasted);
+                        return;
+                    } else {
+                        showToast(dict.toastEmptyClip);
+                        urlInput.focus();
+                        return;
+                    }
+                } catch (err) {
+                    console.warn('Clipboard readText failed or was blocked by browser:', err);
+                }
+            }
+
+            // 3. Fallback: focus input, select all, and guide user
+            urlInput.focus();
+            urlInput.select();
+            showToast(dict.toastClipDenied);
+        });
+
+        // ── 1. Copy Action ──
+        copyBtn.addEventListener('click', async () => {
+            if (!generatedReviewUrl) return;
+            const dict = I18N[currentLang];
+
+            if (window.AndroidNative && window.AndroidNative.copyToClipboard) {
+                window.AndroidNative.copyToClipboard(generatedReviewUrl);
+                copyBtn.classList.add('copied');
+                copyBtnLabel.textContent = dict.copySuccess;
+                showToast(dict.toastCopied);
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtnLabel.textContent = dict.copyBtn;
+                }, 2000);
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(generatedReviewUrl);
+                copyBtn.classList.add('copied');
+                copyBtnLabel.textContent = dict.copySuccess;
+                showToast(dict.toastCopied);
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    copyBtnLabel.textContent = dict.copyBtn;
+                }, 2000);
+            } catch (e) {
+                showToast(dict.toastCopied);
+            }
+        });
+
+        // ── 2. Open Action ──
+        openBtn.addEventListener('click', () => {
+            if (generatedReviewUrl) {
+                window.open(generatedReviewUrl, '_blank');
+            }
+        });
+
+        // ── 3. Share Action ──
+        shareBtn.addEventListener('click', async () => {
+            if (!generatedReviewUrl) return;
+            const dict = I18N[currentLang];
+
+            if (window.AndroidNative && window.AndroidNative.shareText) {
+                window.AndroidNative.shareText(generatedReviewUrl, dict.shareText);
+                return;
+            }
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: dict.shareTitle,
+                        text: dict.shareText,
+                        url: generatedReviewUrl
+                    });
+                } catch (err) {}
+            } else {
+                navigator.clipboard.writeText(generatedReviewUrl);
+                showToast(dict.toastShareCopied);
+            }
+        });
+
+        // ── 4. QR Code Action ──
+        function generateQrCode(url) {
+            qrCodeContainer.innerHTML = '';
+            if (typeof QRCode !== 'undefined') {
+                qrInstance = new QRCode(qrCodeContainer, {
+                    text: url,
+                    width: 200,
+                    height: 200,
+                    colorDark: "#1c1917",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            } else {
+                // Fallback using high-res QR image service
+                const img = document.createElement('img');
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=1&data=${encodeURIComponent(url)}`;
+                img.alt = 'Google Review QR Code';
+                img.width = 200;
+                img.height = 200;
+                qrCodeContainer.appendChild(img);
+            }
+        }
+
+        function openQrModal() {
+            if (!generatedReviewUrl) return;
+            // Open modal with smooth spring animation immediately
+            qrOverlay.classList.add('active');
+            // Generate QR code cleanly on next animation frame
+            requestAnimationFrame(() => {
+                generateQrCode(generatedReviewUrl);
+            });
+        }
+
+        function closeQrModal() {
+            qrOverlay.classList.remove('active');
+        }
+
+        qrBtn.addEventListener('click', openQrModal);
+        qrCloseBtn.addEventListener('click', closeQrModal);
+        qrOverlay.addEventListener('click', e => {
+            if (e.target === qrOverlay) closeQrModal();
+        });
+
+        // Download QR Image
+        qrDownloadBtn.addEventListener('click', () => {
+            const dict = I18N[currentLang];
+            let dataUrl = null;
+
+            const canvas = qrCodeContainer.querySelector('canvas');
+            if (canvas) {
+                // Create a beautiful framed image with padding
+                const framed = document.createElement('canvas');
+                framed.width = canvas.width + 40;
+                framed.height = canvas.height + 40;
+                const ctx = framed.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, framed.width, framed.height);
+                ctx.drawImage(canvas, 20, 20);
+                dataUrl = framed.toDataURL('image/png');
+            } else {
+                const img = qrCodeContainer.querySelector('img');
+                if (img && img.src) {
+                    dataUrl = img.src;
+                }
+            }
+
+            if (!dataUrl) return;
+
+            // Check if running inside Android APK
+            if (window.AndroidNative && window.AndroidNative.saveQrImage) {
+                window.AndroidNative.saveQrImage(dataUrl, "google_review_qr.png");
+                showToast(dict.qrDownloaded);
+                return;
+            }
+
+            // Web download via anchor
+            const link = document.createElement('a');
+            link.download = 'google_review_qr.png';
+            link.href = dataUrl;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast(dict.qrDownloaded);
+        });
+
+        // ── 5. NFC Write Action ──
+        function openNfcModal() {
+            const dict = I18N[currentLang];
+            nfcModalBox.classList.remove('success');
+            nfcTitle.textContent = dict.nfcTitleReady;
+            nfcDesc.textContent = dict.nfcDescReady;
+            nfcCancelBtn.style.display = 'block';
+            nfcSvgIcon.innerHTML = `
+                <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
+            `;
+            nfcOverlay.classList.add('active');
+        }
+
+        function closeNfcModal() {
+            nfcOverlay.classList.remove('active');
+            if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
+                window.AndroidNative.cancelNfcWrite();
+            }
+        }
+
+        nfcBtn.addEventListener('click', () => {
+            if (!generatedReviewUrl) return;
+            const dict = I18N[currentLang];
+
+            if (window.AndroidNative && window.AndroidNative.startNfcWrite) {
+                openNfcModal();
+                window.AndroidNative.startNfcWrite(generatedReviewUrl);
+            } else if ('NDEFReader' in window) {
+                // Web NFC API fallback (supported in Chrome for Android)
+                openNfcModal();
+                const ndef = new NDEFReader();
+                ndef.write({
+                    records: [{ recordType: "url", data: generatedReviewUrl }]
+                }, { overwrite: true }).then(() => {
+                    window.onNfcSuccess();
+                }).catch(err => {
+                    window.onNfcError('WRITE_FAILED');
+                });
+            } else {
+                showToast(dict.nfcNoHardware);
+            }
+        });
+
+        nfcCancelBtn.addEventListener('click', closeNfcModal);
+
+        // Bridge Callbacks from Android Native
+        window.onNfcSuccess = function() {
+            const dict = I18N[currentLang];
+            nfcModalBox.classList.add('success');
+            nfcTitle.textContent = dict.nfcTitleSuccess;
+            nfcDesc.textContent = dict.nfcDescSuccess;
+            nfcCancelBtn.style.display = 'none';
+            nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
+            setTimeout(() => {
+                closeNfcModal();
+                showToast(dict.toastNfcWritten);
+            }, 1800);
+        };
+
+        window.onNfcError = function(code) {
+            const dict = I18N[currentLang];
+            closeNfcModal();
+            if (code === 'NO_HARDWARE') showToast(dict.nfcNoHardware);
+            else if (code === 'DISABLED') showToast(dict.nfcDisabled);
+            else if (code === 'LOCKED') showToast(dict.nfcLocked);
+            else if (code === 'CAPACITY') showToast(dict.nfcCapacity);
+            else if (code === 'UNSUPPORTED') showToast(dict.nfcUnsupported);
+            else showToast(dict.nfcWriteFailed);
+        };
+
+        window.onNfcCancelled = function() {
+            closeNfcModal();
+        };
+
+        // Convert Trigger
+        convertBtn.addEventListener('click', handleConvert);
+        urlInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') handleConvert();
+        });
+
+        // Detect if running inside Android APK to show NFC button
+        if (window.AndroidNative) {
+            document.body.classList.add('is-native-app');
+        }
+
+        // Initialize language
+        applyLanguage(currentLang, false);
+
+    })();
+    </script>
+</body>
+</html>
