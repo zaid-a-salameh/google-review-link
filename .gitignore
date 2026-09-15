@@ -1,0 +1,18 @@
+﻿# Gradle build & cache
+.gradle/
+build/
+android-app/.gradle/
+android-app/build/
+android-app/app/build/
+
+# Android local configuration
+local.properties
+android-app/local.properties
+.idea/
+*.iml
+android-app/*.iml
+android-app/app/*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
