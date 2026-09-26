@@ -108,7 +108,7 @@
         /* Mobile Screen Container */
         .app-container {
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             position: relative;
             z-index: 10;
             margin: 0 auto;
@@ -262,7 +262,7 @@
             -webkit-backdrop-filter: blur(24px) saturate(180%);
             border: 1px solid var(--border);
             border-radius: var(--radius-app);
-            padding: 20px;
+            padding: 20px 16px;
             box-shadow: var(--shadow-glass);
             margin-bottom: 16px;
         }
@@ -271,13 +271,14 @@
         .input-row {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             margin-bottom: 14px;
             width: 100%;
         }
 
         .input-box-wrapper {
             flex: 1;
+            min-width: 0;
             height: 52px;
             background: rgba(18, 16, 15, 0.85);
             border: 2px solid var(--border);
@@ -294,8 +295,9 @@
         }
         .url-input {
             width: 100%;
+            min-width: 0;
             height: 100%;
-            padding: 0 14px;
+            padding: 0 12px;
             background: transparent;
             border: none;
             outline: none;
@@ -307,17 +309,25 @@
             text-align: left;
         }
         .url-input::placeholder {
-            font-family: inherit;
+            font-family: 'Inter', 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             color: var(--text-muted);
-            font-size: 12px;
+            font-size: 11.5px;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: 0.85;
         }
         html[lang="ar"] .url-input::placeholder {
             direction: rtl;
             text-align: right;
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         }
         html[lang="en"] .url-input::placeholder {
             direction: ltr;
             text-align: left;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         /* Tool Buttons (Trash & Paste) */
@@ -325,13 +335,13 @@
             height: 52px;
             border-radius: var(--radius-input);
             font-family: inherit;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 5px;
             flex-shrink: 0;
             transition: all 0.2s ease;
             border: 1px solid var(--border);
@@ -342,7 +352,8 @@
 
         /* Trash/Clear Button */
         .btn-trash {
-            width: 52px;
+            width: 44px;
+            min-width: 44px;
             background: rgba(239, 68, 68, 0.1);
             border-color: rgba(239, 68, 68, 0.25);
             color: #f87171;
@@ -351,15 +362,15 @@
             background: rgba(239, 68, 68, 0.25);
         }
         .btn-trash svg {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             fill: currentColor;
         }
 
         /* Paste Button (Exclusive to Android Native APK) */
         .btn-paste {
             display: none;
-            padding: 0 16px;
+            padding: 0 12px;
             background: rgba(249, 115, 22, 0.14);
             border-color: rgba(249, 115, 22, 0.35);
             color: #fdba74;
@@ -371,8 +382,8 @@
             background: rgba(249, 115, 22, 0.28);
         }
         .btn-paste svg {
-            width: 17px;
-            height: 17px;
+            width: 15px;
+            height: 15px;
             fill: currentColor;
         }
 
@@ -793,6 +804,33 @@
         .toast.show {
             transform: translateX(-50%) translateY(0);
             opacity: 1;
+        }
+
+        /* Responsive adjustments for compact screens */
+        @media (max-width: 380px) {
+            body {
+                padding: 12px 10px;
+            }
+            .glass-card {
+                padding: 16px 12px;
+            }
+            .input-row {
+                gap: 5px;
+            }
+            .btn-trash {
+                width: 40px;
+                min-width: 40px;
+            }
+            .btn-paste {
+                padding: 0 9px;
+                font-size: 11px;
+            }
+            .url-input {
+                padding: 0 8px;
+            }
+            .url-input::placeholder {
+                font-size: 10.5px;
+            }
         }
     </style>
 </head>
