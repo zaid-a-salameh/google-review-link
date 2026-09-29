@@ -4,17 +4,42 @@
     <meta name="google-site-verification" content="ryprvQNlRxElwXUHjvS2rnjBGJUtOKJ2hgI6EVrGU4E" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Review Link Generator</title>
+    <title>Google Review Link Generator | 5-Star Direct Link, QR & NFC</title>
     
     <!-- SEO & Metadata -->
     <meta name="description" id="metaDescription" content="Convert any Google Maps link into an instant 5-star review link. Generate QR codes and write to NFC cards effortlessly.">
-    <meta name="keywords" content="Google Maps, Review Link, Google Review Generator, NFC Review, QR Code Review, Google Reviews">
+    <meta name="keywords" content="Google Maps, Review Link, Google Review Generator, NFC Review, QR Code Review, Google Reviews, Place ID finder, 5 star review link">
     <meta name="theme-color" content="#ea580c">
+    <link rel="canonical" href="https://zaid-a-salameh.github.io/google-review-link/">
     
     <!-- Open Graph / Social Sharing -->
-    <meta property="og:title" content="Google Maps Review Link Generator">
+    <meta property="og:title" content="Google Review Link Generator | 5-Star QR & NFC">
     <meta property="og:description" content="Instant 5-star Google Maps review link generator with QR code and NFC tag support.">
+    <meta property="og:url" content="https://zaid-a-salameh.github.io/google-review-link/">
     <meta property="og:type" content="website">
+
+    <!-- Schema.org JSON-LD Structured Data for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Google Review Link Generator",
+      "url": "https://zaid-a-salameh.github.io/google-review-link/",
+      "description": "Convert Google Maps links into direct 5-star review URLs, QR codes, and NFC cards.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Zaid Salameh",
+        "url": "https://github.com/zaid-a-salameh"
+      }
+    }
+    </script>
 
     <!-- Tab Favicon (Unique Vector Pin with Star & NFC waves) -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' stop-color='%23ea580c'/%3E%3Cstop offset='100%25' stop-color='%23fb923c'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cg transform='translate(1.5, 3.5) scale(1.1)'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M10.5 2C6.91 2 4 4.91 4 8.5c0 4.89 6.5 12.5 6.5 12.5s6.5-7.61 6.5-12.5C17 4.91 14.09 2 10.5 2zm0 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z' fill='%23ffffff'/%3E%3Cpath d='M10.5 5.8l.68 1.38 1.53.22-1.11 1.08.26 1.52-1.36-.72-1.36.72.26-1.52-1.11-1.08 1.53-.22z' fill='%23ffffff'/%3E%3Cpath d='M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round'/%3E%3Cpath d='M20 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5' fill='none' stroke='%23ffffff' stroke-width='1.8' stroke-linecap='round'/%3E%3C/g%3E%3C/svg%3E">
@@ -70,18 +95,146 @@
             min-height: 100vh;
             min-height: -webkit-fill-available;
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding: 16px;
-            padding-top: max(56px, env(safe-area-inset-top, 56px));
-            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            margin: 0;
             position: relative;
             overflow-x: hidden;
             transition: opacity 0.2s ease;
         }
 
+        body.is-native-app {
+            padding: 16px;
+            padding-top: max(56px, env(safe-area-inset-top, 56px));
+            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+        }
+
         html[lang="ar"] body {
             font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Desktop Sticky Navbar */
+        .desktop-navbar {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 10, 9, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        body.is-native-app .desktop-navbar {
+            display: none !important;
+        }
+        .navbar-inner {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            user-select: none;
+        }
+        .brand-logo-mini {
+            width: 34px;
+            height: 34px;
+            border-radius: 11px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+        .brand-logo-mini svg {
+            width: 20px;
+            height: 20px;
+        }
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+        }
+        .brand-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 50px;
+            background: rgba(249, 115, 22, 0.15);
+            color: #fdba74;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .btn-nav-github {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            color: #d6d3d1;
+        }
+        .btn-nav-github:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-nav-github svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+        .btn-nav-apk {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+        }
+        .btn-nav-apk:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+        }
+        .btn-nav-apk svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+        @media (max-width: 600px) {
+            .brand-name, .brand-badge {
+                display: none;
+            }
+            .nav-link-btn span {
+                display: none;
+            }
+            .nav-link-btn {
+                padding: 6px 10px;
+            }
         }
 
         /* Ambient Lighting */
@@ -106,7 +259,21 @@
             left: -80px;
         }
 
-        /* Mobile Screen Container */
+        /* Main Page Wrapper */
+        .main-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 16px 60px;
+            position: relative;
+            z-index: 10;
+        }
+        body.is-native-app .main-wrapper {
+            padding: 0;
+        }
+
+        /* Screen Container */
         .app-container {
             width: 100%;
             max-width: 450px;
@@ -114,15 +281,26 @@
             z-index: 10;
             margin: 0 auto;
         }
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 660px;
+            }
+        }
+        body.is-native-app .app-container {
+            max-width: 450px !important;
+        }
 
-        /* Top Bar with Language Switcher & APK Download */
+        /* Top Bar with Language Switcher & APK Download (Mobile/Native) */
         .top-bar {
-            display: flex;
+            display: none;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 14px;
             width: 100%;
             direction: ltr !important;
+        }
+        body.is-native-app .top-bar {
+            display: flex;
         }
 
         /* Download APK Button (Visible on Web only, hidden in native app) */
@@ -807,6 +985,474 @@
             opacity: 1;
         }
 
+        /* Mode Switcher Tabs */
+        .mode-switcher-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .mode-tabs {
+            display: inline-flex;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+            gap: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .mode-tab {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .mode-tab:hover {
+            color: #ffffff;
+        }
+        .mode-tab.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+        }
+        .mode-tab svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        .mode-content {
+            display: none;
+            animation: fadeInMode 0.22s ease forwards;
+        }
+        .mode-content.active {
+            display: block;
+        }
+        @keyframes fadeInMode {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mode 2: Search Business Field & Helper */
+        .search-field-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 0 14px;
+            transition: all 0.25s ease;
+            margin-bottom: 14px;
+        }
+        .search-field-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+            background: rgba(18, 16, 15, 0.98);
+        }
+        .search-field-icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-muted);
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        html[lang="ar"] .search-field-icon {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .search-input::placeholder {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .search-clear-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .search-clear-btn:hover {
+            color: #ffffff;
+        }
+        .search-clear-btn.visible {
+            display: flex;
+        }
+        .search-clear-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Search Guide Card */
+        .search-helper-card {
+            background: rgba(41, 37, 36, 0.4);
+            border: 1px dashed rgba(249, 115, 22, 0.35);
+            border-radius: var(--radius-btn);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .search-steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            font-size: 12.5px;
+            color: var(--text-sub);
+        }
+        .search-step-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .step-num-pill {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.2);
+            color: #fb923c;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .search-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 480px) {
+            .search-actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .btn-maps-search {
+            height: 48px;
+            border-radius: var(--radius-btn);
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+        .btn-maps-search:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-maps-search svg {
+            width: 17px;
+            height: 17px;
+            fill: #38bdf8;
+        }
+        .btn-autopaste-convert {
+            height: 48px;
+            border-radius: var(--radius-btn);
+            background: var(--primary-gradient);
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            transition: all 0.2s;
+        }
+        .btn-autopaste-convert:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+        .btn-autopaste-convert svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+        }
+
+        /* Marketing Sections (Desktop Web) */
+        .desktop-marketing {
+            width: 100%;
+            max-width: 1060px;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+        }
+        body.is-native-app .desktop-marketing {
+            display: none !important;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(249, 115, 22, 0.12);
+            color: #fb923c;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+            margin-bottom: 8px;
+        }
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-sub);
+            max-width: 580px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Steps Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .step-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-app);
+            padding: 28px 22px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .step-card:hover {
+            border-color: rgba(249, 115, 22, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        .step-card-num {
+            position: absolute;
+            top: 20px;
+            right: 22px;
+            font-size: 20px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.12);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        html[lang="ar"] .step-card-num {
+            right: auto;
+            left: 22px;
+        }
+        .step-illustration-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .step-illustration-box svg {
+            width: 32px;
+            height: 32px;
+        }
+        .step-card-heading {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .step-card-text {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 520px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .feat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px 18px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.25s;
+        }
+        .feat-card:hover {
+            border-color: rgba(249, 115, 22, 0.35);
+            transform: translateY(-2px);
+        }
+        .feat-icon-badge {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 14px;
+        }
+        .feat-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .feat-card-text {
+            font-size: 12.5px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .app-footer {
+            width: 100%;
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-brand-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .footer-brand-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .footer-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .footer-nav-links a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .footer-nav-links a:hover {
+            color: #fb923c;
+        }
+        .footer-bottom {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.06);
+        }
+        .footer-bottom a {
+            color: var(--text-sub);
+            text-decoration: none;
+        }
+        .footer-bottom a:hover {
+            color: #fb923c;
+        }
+
+        /* Desktop Layout Overrides */
+        @media (min-width: 768px) {
+            header h1 {
+                font-size: 28px;
+            }
+            header p {
+                font-size: 14.5px;
+            }
+            .glass-card {
+                padding: 26px 22px;
+            }
+            .search-field-wrapper {
+                height: 56px;
+            }
+            .input-box-wrapper {
+                height: 56px;
+            }
+            .tool-btn {
+                height: 56px;
+            }
+            .btn-convert {
+                height: 56px;
+                font-size: 16px;
+            }
+        }
+
         /* Responsive adjustments for compact screens */
         @media (max-width: 380px) {
             body {
@@ -841,7 +1487,48 @@
     <div class="ambient-glow glow-top"></div>
     <div class="ambient-glow glow-bottom"></div>
 
-    <div class="app-container content-trans" id="appContainer">
+    <!-- Desktop Sticky Navigation Bar -->
+    <nav class="desktop-navbar" id="desktopNavbar">
+        <div class="navbar-inner">
+            <a href="#" class="navbar-brand">
+                <div class="brand-logo-mini">
+                    <svg viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 2C6.91 2 4 4.91 4 8.5c0 4.89 6.5 12.5 6.5 12.5s6.5-7.61 6.5-12.5C17 4.91 14.09 2 10.5 2zm0 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="#ffffff"/>
+                        <path d="M10.5 5.8l.68 1.38 1.53.22-1.11 1.08.26 1.52-1.36-.72-1.36.72.26-1.52-1.11-1.08 1.53-.22z" fill="#ffffff"/>
+                        <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                        <path d="M20 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <span class="brand-name">ReviewLink</span>
+                <span class="brand-badge">v1.0.0</span>
+            </a>
+            
+            <div class="navbar-actions">
+                <!-- GitHub Repository Link -->
+                <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer" class="nav-link-btn btn-nav-github" title="View Source on GitHub">
+                    <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span id="navGithubLabel">GitHub</span>
+                </a>
+
+                <!-- Download Android APK -->
+                <a href="ReviewLinkGenerator.apk" download="ReviewLinkGenerator.apk" class="nav-link-btn btn-nav-apk" id="navApkBtn">
+                    <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    <span id="navApkLabel">Get APK</span>
+                </a>
+
+                <!-- Language Toggle Pill -->
+                <div class="lang-pill-container" id="navLangPill">
+                    <button type="button" class="lang-btn active" id="navBtnEn">EN</button>
+                    <button type="button" class="lang-btn" id="navBtnAr">عربي</button>
+                    <div class="lang-slider" id="navLangSlider"></div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <main class="main-wrapper">
+        <div class="app-container content-trans" id="appContainer">
         
         <!-- Top Bar with APK Download & Language Toggle -->
         <div class="top-bar">
@@ -873,35 +1560,98 @@
         <!-- Main Input Card -->
         <div class="glass-card">
             
-            <!-- Input Row: Trash, Input Box, Paste -->
-            <div class="input-row">
-                <button type="button" class="tool-btn btn-trash" id="clearBtn" title="Clear text">
-                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                </button>
+            <!-- Mode Switcher Tabs -->
+            <div class="mode-switcher-container">
+                <div class="mode-tabs">
+                    <button type="button" class="mode-tab active" id="tabLinkMode" data-mode="link">
+                        <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                        <span id="tabLinkLabel">Direct Link</span>
+                    </button>
+                    <button type="button" class="mode-tab" id="tabSearchMode" data-mode="search">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <span id="tabSearchLabel">Find Business</span>
+                    </button>
+                </div>
+            </div>
 
-                <div class="input-box-wrapper">
-                    <input 
-                        type="url" 
-                        id="urlInput" 
-                        class="url-input" 
-                        placeholder="Paste Google Maps link here..." 
-                        autocomplete="off" 
-                        spellcheck="false"
-                    >
+            <!-- MODE 1: Direct Link Mode Content -->
+            <div class="mode-content active" id="modeLinkContent">
+                <div class="input-row">
+                    <button type="button" class="tool-btn btn-trash" id="clearBtn" title="Clear text">
+                        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    </button>
+
+                    <div class="input-box-wrapper">
+                        <input 
+                            type="url" 
+                            id="urlInput" 
+                            class="url-input" 
+                            placeholder="Paste Google Maps link here..." 
+                            autocomplete="off" 
+                            spellcheck="false"
+                        >
+                    </div>
+
+                    <button type="button" class="tool-btn btn-paste" id="pasteBtn" title="Paste from clipboard">
+                        <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+                        <span id="pasteBtnLabel">Paste</span>
+                    </button>
                 </div>
 
-                <button type="button" class="tool-btn btn-paste" id="pasteBtn" title="Paste from clipboard">
-                    <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
-                    <span id="pasteBtnLabel">Paste</span>
+                <!-- Convert Button -->
+                <button type="button" class="btn-convert" id="convertBtn">
+                    <div class="spinner" id="btnSpinner"></div>
+                    <svg id="btnIcon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span id="btnText">Convert Link</span>
                 </button>
             </div>
 
-            <!-- Convert Button -->
-            <button type="button" class="btn-convert" id="convertBtn">
-                <div class="spinner" id="btnSpinner"></div>
-                <svg id="btnIcon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                <span id="btnText">Convert Link</span>
-            </button>
+            <!-- MODE 2: Search Business Mode Content -->
+            <div class="mode-content" id="modeSearchContent">
+                <div class="search-field-wrapper">
+                    <svg class="search-field-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                    <input 
+                        type="text" 
+                        id="businessSearchInput" 
+                        class="search-input" 
+                        placeholder="Enter business name & city (e.g. Al-Quds Restaurant Amman)..." 
+                        autocomplete="off"
+                    >
+                    <button type="button" class="search-clear-btn" id="searchClearBtn" title="Clear">
+                        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Search Helper Card -->
+                <div class="search-helper-card">
+                    <div class="search-steps-list">
+                        <div class="search-step-item">
+                            <span class="step-num-pill">1</span>
+                            <span id="searchStep1Text">Type your business name & click Search</span>
+                        </div>
+                        <div class="search-step-item">
+                            <span class="step-num-pill">2</span>
+                            <span id="searchStep2Text">Click Share & Copy link on Google Maps</span>
+                        </div>
+                        <div class="search-step-item">
+                            <span class="step-num-pill">3</span>
+                            <span id="searchStep3Text">Click Auto-Paste & Convert below!</span>
+                        </div>
+                    </div>
+
+                    <div class="search-actions-grid">
+                        <button type="button" class="btn-maps-search" id="btnLaunchMaps">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                            <span id="btnLaunchMapsText">Search on Google Maps ↗</span>
+                        </button>
+                        <button type="button" class="btn-autopaste-convert" id="btnAutoPasteConvert">
+                            <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
+                            <span id="btnAutoPasteConvertText">Auto-Paste & Convert</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Result Card (3 Buttons only) -->
@@ -947,7 +1697,125 @@
             </div>
         </div>
 
-    </div>
+    </div> <!-- /appContainer -->
+
+    <!-- Desktop Marketing & Informational Sections (Web only) -->
+    <div class="desktop-marketing" id="desktopMarketing">
+        
+        <!-- How It Works Section -->
+        <section class="marketing-section" id="howItWorksSection">
+            <div class="section-header">
+                <span class="section-badge" id="tagHowItWorks">Workflow</span>
+                <h2 class="section-title" id="titleHowItWorks">How It Works in 3 Simple Steps</h2>
+                <p class="section-subtitle" id="subHowItWorks">Generate frictionless review links that skyrocket your 5-star customer feedback</p>
+            </div>
+
+            <div class="steps-grid">
+                <!-- Step 1 -->
+                <div class="step-card">
+                    <span class="step-card-num">01</span>
+                    <div class="step-illustration-box">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="16" fill="rgba(249, 115, 22, 0.15)"/>
+                            <path d="M20 9C15.58 9 12 12.58 12 17c0 5.25 8 14 8 14s8-8.75 8-14c0-4.42-3.58-8-8-8zm0 11c-1.66 0-3-1.34-3-3s1.34-3 3-3 3 1.34 3 3-1.34 3-3 3z" fill="#f97316"/>
+                            <circle cx="27" cy="27" r="4.5" fill="#181412" stroke="#fb923c" stroke-width="1.8"/>
+                            <path d="M30 30l3 3" stroke="#fb923c" stroke-width="1.8" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-card-heading" id="step1Title">Copy or Find Link</h3>
+                    <p class="step-card-text" id="step1Desc">Search your place or copy your business share link directly from Google Maps app or browser.</p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="step-card">
+                    <span class="step-card-num">02</span>
+                    <div class="step-illustration-box">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="16" fill="rgba(249, 115, 22, 0.15)"/>
+                            <path d="M20 11l2.47 5.01 5.53.8-4 3.9 0.94 5.5-4.94-2.6-4.94 2.6 0.94-5.5-4-3.9 5.53-.8L20 11z" fill="#f59e0b"/>
+                            <path d="M10 14l1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3 1-2z" fill="#fbbf24" opacity="0.85"/>
+                            <path d="M30 14l1 2 2.2.3-1.6 1.6.4 2.2-2-1-2 1 .4-2.2-1.6-1.6 2.2-.3 1-2z" fill="#fbbf24" opacity="0.85"/>
+                            <circle cx="29" cy="28" r="1.5" fill="#ffffff"/>
+                            <circle cx="11" cy="28" r="1.2" fill="#ffffff"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-card-heading" id="step2Title">Instant 5-Star Conversion</h3>
+                    <p class="step-card-text" id="step2Desc">Our engine extracts the Place ID and constructs a direct URL that pops open the 5-star rating window automatically.</p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="step-card">
+                    <span class="step-card-num">03</span>
+                    <div class="step-illustration-box">
+                        <svg viewBox="0 0 40 40" fill="none">
+                            <circle cx="20" cy="20" r="16" fill="rgba(249, 115, 22, 0.15)"/>
+                            <rect x="10" y="12" width="12" height="12" rx="2" fill="#1c1917" stroke="#fb923c" stroke-width="1.5"/>
+                            <rect x="12" y="14" width="3" height="3" fill="#fb923c"/>
+                            <rect x="17" y="14" width="3" height="3" fill="#fb923c"/>
+                            <rect x="12" y="19" width="3" height="3" fill="#fb923c"/>
+                            <rect x="17" y="19" width="1.5" height="1.5" fill="#fb923c"/>
+                            <path d="M25 15c2.2 1.5 3.5 3.8 3.5 6.5s-1.3 5-3.5 6.5" stroke="#f97316" stroke-width="1.8" stroke-linecap="round"/>
+                            <path d="M28 12c3.5 2.2 5.5 5.8 5.5 9.5s-2 7.3-5.5 9.5" stroke="#fb923c" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+                        </svg>
+                    </div>
+                    <h3 class="step-card-heading" id="step3Title">Print QR or Tap NFC</h3>
+                    <p class="step-card-text" id="step3Desc">Download crisp QR codes for table tents and counter stands, or tap your phone to write to NFC cards with our Android app.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Highlights Grid -->
+        <section class="marketing-section" id="featuresSection">
+            <div class="section-header">
+                <span class="section-badge" id="tagFeatures">Advantages</span>
+                <h2 class="section-title" id="titleFeatures">Why Businesses Choose Our Tool</h2>
+                <p class="section-subtitle" id="subFeatures">Designed for speed, customer conversion, and modern contactless technology</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feat-card">
+                    <div class="feat-icon-badge">⭐</div>
+                    <h4 class="feat-card-title" id="feat1Title">Direct 5-Star Pre-Selection</h4>
+                    <p class="feat-card-text" id="feat1Desc">Customers don't have to search for the review button. The 5-star popup opens immediately upon opening the link.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-badge">📶</div>
+                    <h4 class="feat-card-title" id="feat2Title">Free NFC Tag Writer</h4>
+                    <p class="feat-card-text" id="feat2Desc">Program NFC review cards, stands, and stickers directly from our native Android app without subscription fees.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-badge">📷</div>
+                    <h4 class="feat-card-title" id="feat3Title">High-Res Vector QR Codes</h4>
+                    <p class="feat-card-text" id="feat3Desc">Download instant, clean QR codes formatted perfectly for print menus, flyers, and point-of-sale displays.</p>
+                </div>
+                <div class="feat-card">
+                    <div class="feat-icon-badge">🔒</div>
+                    <h4 class="feat-card-title" id="feat4Title">Zero Tracking & 100% Free</h4>
+                    <p class="feat-card-text" id="feat4Desc">No account required, no link redirection, no rate limits, and 100% open-source software you can trust.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-inner">
+                <div class="footer-brand-info">
+                    <div class="footer-brand-title">ReviewLinkGenerator</div>
+                    <p class="footer-brand-desc" id="footerTagline">Free open-source 5-star Google review link creator & NFC tool.</p>
+                </div>
+                <div class="footer-nav-links">
+                    <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer">GitHub Repository</a>
+                    <a href="ReviewLinkGenerator.apk" download="ReviewLinkGenerator.apk" id="footerApkLink">Android APK</a>
+                    <a href="#appContainer" id="footerBackToTop">↑ Back to Top</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p id="footerCopyright">© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.</p>
+            </div>
+        </footer>
+    </div> <!-- /desktopMarketing -->
+
+</main> <!-- /main-wrapper -->
 
     <!-- QR Code Modal Dialog -->
     <div class="qr-overlay" id="qrOverlay">
@@ -1043,8 +1911,61 @@
         const apkDownloadLabel = $('apkDownloadLabel');
         const metaDescription = $('metaDescription');
 
+        // Mode Switcher Elements
+        const tabLinkMode = $('tabLinkMode');
+        const tabSearchMode = $('tabSearchMode');
+        const modeLinkContent = $('modeLinkContent');
+        const modeSearchContent = $('modeSearchContent');
+        const tabLinkLabel = $('tabLinkLabel');
+        const tabSearchLabel = $('tabSearchLabel');
+
+        // Search Mode Elements
+        const businessSearchInput = $('businessSearchInput');
+        const searchClearBtn = $('searchClearBtn');
+        const searchStep1Text = $('searchStep1Text');
+        const searchStep2Text = $('searchStep2Text');
+        const searchStep3Text = $('searchStep3Text');
+        const btnLaunchMaps = $('btnLaunchMaps');
+        const btnLaunchMapsText = $('btnLaunchMapsText');
+        const btnAutoPasteConvert = $('btnAutoPasteConvert');
+        const btnAutoPasteConvertText = $('btnAutoPasteConvertText');
+
+        // Desktop Navbar Elements
+        const navBtnEn = $('navBtnEn');
+        const navBtnAr = $('navBtnAr');
+        const navLangSlider = $('navLangSlider');
+        const navApkLabel = $('navApkLabel');
+        const navGithubLabel = $('navGithubLabel');
+
+        // Desktop Marketing & Footer Elements
+        const tagHowItWorks = $('tagHowItWorks');
+        const titleHowItWorks = $('titleHowItWorks');
+        const subHowItWorks = $('subHowItWorks');
+        const step1Title = $('step1Title');
+        const step1Desc = $('step1Desc');
+        const step2Title = $('step2Title');
+        const step2Desc = $('step2Desc');
+        const step3Title = $('step3Title');
+        const step3Desc = $('step3Desc');
+        const tagFeatures = $('tagFeatures');
+        const titleFeatures = $('titleFeatures');
+        const subFeatures = $('subFeatures');
+        const feat1Title = $('feat1Title');
+        const feat1Desc = $('feat1Desc');
+        const feat2Title = $('feat2Title');
+        const feat2Desc = $('feat2Desc');
+        const feat3Title = $('feat3Title');
+        const feat3Desc = $('feat3Desc');
+        const feat4Title = $('feat4Title');
+        const feat4Desc = $('feat4Desc');
+        const footerTagline = $('footerTagline');
+        const footerApkLink = $('footerApkLink');
+        const footerBackToTop = $('footerBackToTop');
+        const footerCopyright = $('footerCopyright');
+
         let generatedReviewUrl = '';
         let qrInstance = null;
+        let pendingAutoConvert = false;
 
         // ═══════════════════════════════════════════════════════════════
         //  DICTIONARY & LOCALIZATION (English as default)
@@ -1056,11 +1977,46 @@
                 metaDesc: "Convert any Google Maps link into an instant 5-star review link. Generate QR codes and write to NFC cards effortlessly.",
                 appTitle: "Review Link Generator",
                 appSubtitle: "Convert Google Maps links to instant review links",
+                tabLink: "Direct Link",
+                tabSearch: "Find Business",
                 placeholder: "Paste Google Maps link here...",
                 trashTitle: "Clear text",
                 pasteBtn: "Paste",
                 convertBtn: "Convert Link",
                 resolvingBtn: "Resolving link...",
+                searchPlaceholder: "Enter business name & city (e.g. Al-Quds Restaurant Amman)...",
+                searchStep1: "Type business name & click Search Maps",
+                searchStep2: "Click 'Share' & copy link on Google Maps",
+                searchStep3: "Click 'Auto-Paste & Convert' below!",
+                btnLaunchMaps: "Search on Google Maps ↗",
+                btnAutoPasteConvert: "Auto-Paste & Convert",
+                toastEnterQuery: "⚠️ Please enter a business name first",
+                navApk: "Get APK",
+                navGithub: "GitHub",
+                tagHowItWorks: "Workflow",
+                titleHowItWorks: "How It Works in 3 Simple Steps",
+                subHowItWorks: "Generate frictionless review links that skyrocket your 5-star customer feedback",
+                step1Title: "Copy or Find Link",
+                step1Desc: "Search your place or copy your business share link directly from Google Maps app or browser.",
+                step2Title: "Instant 5-Star Conversion",
+                step2Desc: "Our engine extracts the Place ID and constructs a direct URL that pops open the 5-star rating window automatically.",
+                step3Title: "Print QR or Tap NFC",
+                step3Desc: "Download crisp QR codes for table tents and counter stands, or tap your phone to write to NFC cards with our Android app.",
+                tagFeatures: "Advantages",
+                titleFeatures: "Why Businesses Choose Our Tool",
+                subFeatures: "Designed for speed, customer conversion, and modern contactless technology",
+                feat1Title: "Direct 5-Star Pre-Selection",
+                feat1Desc: "Customers don't have to search for the review button. The 5-star popup opens immediately upon opening the link.",
+                feat2Title: "Free NFC Tag Writer",
+                feat2Desc: "Program NFC review cards, stands, and stickers directly from our native Android app without subscription fees.",
+                feat3Title: "High-Res Vector QR Codes",
+                feat3Desc: "Download instant, clean QR codes formatted perfectly for print menus, flyers, and point-of-sale displays.",
+                feat4Title: "Zero Tracking & 100% Free",
+                feat4Desc: "No account required, no link redirection, no rate limits, and 100% open-source software you can trust.",
+                footerTagline: "Free open-source 5-star Google review link creator & NFC tool.",
+                footerApk: "Android APK",
+                footerBackToTop: "↑ Back to Top",
+                footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
                 resultLabel: "Direct Review Link:",
                 copyBtn: "Copy Link",
                 copySuccess: "Copied!",
@@ -1105,11 +2061,46 @@
                 metaDesc: "حوّل أي رابط خرائط جوجل إلى رابط تقييم 5 نجوم مباشر مع إنشاء رمز QR والبرمجة على بطاقات NFC.",
                 appTitle: "محوّل روابط التقييم",
                 appSubtitle: "تحويل رابط خرائط جوجل إلى رابط تقييم فوري",
+                tabLink: "وضع الرابط",
+                tabSearch: "بحث عن مكان",
                 placeholder: "الصق رابط Google Maps هنا...",
                 trashTitle: "مسح النص",
                 pasteBtn: "لصق",
                 convertBtn: "تحويل الرابط",
                 resolvingBtn: "جاري فك اختصار الرابط...",
+                searchPlaceholder: "اكتب اسم المكان والمدينة (مثال: مطعم القدس عمان)...",
+                searchStep1: "اكتب اسم نشاطك واضغط بحث في الخرائط",
+                searchStep2: "اضغط مشاركة ثم نسخ الرابط من خرائط جوجل",
+                searchStep3: "اضغط لصق ذكي وتحويل بالأسفل!",
+                btnLaunchMaps: "بحث في خرائط جوجل ↗",
+                btnAutoPasteConvert: "لصق ذكي وتحويل فوري",
+                toastEnterQuery: "⚠️ يرجى كتابة اسم المكان أولاً",
+                navApk: "تحميل التطبيق",
+                navGithub: "المستودع",
+                tagHowItWorks: "طريقة العمل",
+                titleHowItWorks: "كيف يعمل في 3 خطوات بسيطة؟",
+                subHowItWorks: "أنشئ روابط تقييم مباشرة تضاعف تقييمات الـ 5 نجوم لعملائك دون أي تعقيد",
+                step1Title: "ابحث أو انسخ الرابط",
+                step1Desc: "ابحث عن نشاطك أو انسخ رابط المشاركة مباشرة من تطبيق خرائط جوجل أو المتصفح.",
+                step2Title: "تحويل فوري إلى 5 نجوم",
+                step2Desc: "محركنا الذكي يستخرج معرّف المكان (Place ID) ويولد رابطاً يفتح نافذة الـ 5 نجوم تلقائياً.",
+                step3Title: "طباعة QR أو برمجة NFC",
+                step3Desc: "نزّل كود QR عالي الدقة لطاولات ومكاتب الاستقبال، أو برمج بطاقات NFC بلمسة واحدة عبر تطبيق الأندرويد.",
+                tagFeatures: "المميزات",
+                titleFeatures: "لماذا تختار منصتنا لنشاطك التجاري؟",
+                subFeatures: "صُممت خصيصاً لتحقيق أعلى معدل استجابة من العملاء باستخدام أحدث تقنيات اللمس",
+                feat1Title: "فتح نافذة 5 نجوم مباشرة",
+                feat1Desc: "لا حاجة للبحث عن زر التقييم داخل الخريطة؛ تنبثق شاشة تقييم الـ 5 نجوم فور فتح الرابط.",
+                feat2Title: "برمجة بطاقات NFC مجاناً",
+                feat2Desc: "برمج بطاقات واستندات وميداليات NFC الخاصة بتقييمك مباشرة من تطبيقنا دون رسوم أو اشتراكات.",
+                feat3Title: "رموز QR فائقة الدقة",
+                feat3Desc: "حمّل رموز استجابة سريعة فورية مهيأة للطباعة على القوائم، المنشورات، وشاشات نقاط البيع.",
+                feat4Title: "مجاني 100% وبلا تتبع",
+                feat4Desc: "بدون تسجيل دخول، بدون روابط وسيطة أو إعلانات، ومفتوح المصدر بالكامل مع خصوصية تامة.",
+                footerTagline: "أداة مفتوحة المصدر ومجانية لإنشاء روابط تقييم جوجل 5 نجوم وبرمجة بطاقات NFC.",
+                footerApk: "تطبيق أندرويد",
+                footerBackToTop: "↑ العودة للأعلى",
+                footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
                 resultLabel: "رابط التقييم المباشر:",
                 copyBtn: "نسخ الرابط",
                 copySuccess: "تم النسخ!",
@@ -1174,10 +2165,21 @@
                 if (apkDownloadLabel) apkDownloadLabel.textContent = dict.apkDownload;
                 appTitle.textContent = dict.appTitle;
                 appSubtitle.textContent = dict.appSubtitle;
+                
+                // Mode Switcher & Inputs
+                if (tabLinkLabel) tabLinkLabel.textContent = dict.tabLink;
+                if (tabSearchLabel) tabSearchLabel.textContent = dict.tabSearch;
                 urlInput.placeholder = dict.placeholder;
                 clearBtn.title = dict.trashTitle;
                 pasteBtnLabel.textContent = dict.pasteBtn;
                 pasteBtn.title = dict.pasteBtn;
+
+                if (businessSearchInput) businessSearchInput.placeholder = dict.searchPlaceholder;
+                if (searchStep1Text) searchStep1Text.textContent = dict.searchStep1;
+                if (searchStep2Text) searchStep2Text.textContent = dict.searchStep2;
+                if (searchStep3Text) searchStep3Text.textContent = dict.searchStep3;
+                if (btnLaunchMapsText) btnLaunchMapsText.textContent = dict.btnLaunchMaps;
+                if (btnAutoPasteConvertText) btnAutoPasteConvertText.textContent = dict.btnAutoPasteConvert;
                 
                 if (!convertBtn.disabled) {
                     btnText.textContent = dict.convertBtn;
@@ -1197,15 +2199,55 @@
                 if (nfcBtnLabel) nfcBtnLabel.textContent = dict.nfcBtn;
                 if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
 
-                // Update Toggle Slider Position
+                // Desktop Navbar
+                if (navApkLabel) navApkLabel.textContent = dict.navApk;
+                if (navGithubLabel) navGithubLabel.textContent = dict.navGithub;
+
+                // Desktop Marketing & Footer
+                if (tagHowItWorks) tagHowItWorks.textContent = dict.tagHowItWorks;
+                if (titleHowItWorks) titleHowItWorks.textContent = dict.titleHowItWorks;
+                if (subHowItWorks) subHowItWorks.textContent = dict.subHowItWorks;
+                if (step1Title) step1Title.textContent = dict.step1Title;
+                if (step1Desc) step1Desc.textContent = dict.step1Desc;
+                if (step2Title) step2Title.textContent = dict.step2Title;
+                if (step2Desc) step2Desc.textContent = dict.step2Desc;
+                if (step3Title) step3Title.textContent = dict.step3Title;
+                if (step3Desc) step3Desc.textContent = dict.step3Desc;
+                if (tagFeatures) tagFeatures.textContent = dict.tagFeatures;
+                if (titleFeatures) titleFeatures.textContent = dict.titleFeatures;
+                if (subFeatures) subFeatures.textContent = dict.subFeatures;
+                if (feat1Title) feat1Title.textContent = dict.feat1Title;
+                if (feat1Desc) feat1Desc.textContent = dict.feat1Desc;
+                if (feat2Title) feat2Title.textContent = dict.feat2Title;
+                if (feat2Desc) feat2Desc.textContent = dict.feat2Desc;
+                if (feat3Title) feat3Title.textContent = dict.feat3Title;
+                if (feat3Desc) feat3Desc.textContent = dict.feat3Desc;
+                if (feat4Title) feat4Title.textContent = dict.feat4Title;
+                if (feat4Desc) feat4Desc.textContent = dict.feat4Desc;
+                if (footerTagline) footerTagline.textContent = dict.footerTagline;
+                if (footerApkLink) footerApkLink.textContent = dict.footerApk;
+                if (footerBackToTop) footerBackToTop.textContent = dict.footerBackToTop;
+                if (footerCopyright) footerCopyright.innerHTML = dict.footerCopyright;
+
+                // Update Toggle Slider Position for Mobile and Desktop Navbar
                 if (lang === 'ar') {
                     btnEn.classList.remove('active');
                     btnAr.classList.add('active');
                     langSlider.style.transform = 'translateX(48px)';
+                    if (navBtnEn && navBtnAr && navLangSlider) {
+                        navBtnEn.classList.remove('active');
+                        navBtnAr.classList.add('active');
+                        navLangSlider.style.transform = 'translateX(48px)';
+                    }
                 } else {
                     btnAr.classList.remove('active');
                     btnEn.classList.add('active');
                     langSlider.style.transform = 'translateX(0px)';
+                    if (navBtnEn && navBtnAr && navLangSlider) {
+                        navBtnAr.classList.remove('active');
+                        navBtnEn.classList.add('active');
+                        navLangSlider.style.transform = 'translateX(0px)';
+                    }
                 }
 
                 if (animate) {
@@ -1214,13 +2256,25 @@
             }, animate ? 120 : 0);
         }
 
-        // Toggle Listeners
+        // Toggle Listeners (Mobile Header)
         btnEn.addEventListener('click', () => {
             if (currentLang !== 'en') applyLanguage('en', true);
         });
         btnAr.addEventListener('click', () => {
             if (currentLang !== 'ar') applyLanguage('ar', true);
         });
+
+        // Toggle Listeners (Desktop Navbar)
+        if (navBtnEn) {
+            navBtnEn.addEventListener('click', () => {
+                if (currentLang !== 'en') applyLanguage('en', true);
+            });
+        }
+        if (navBtnAr) {
+            navBtnAr.addEventListener('click', () => {
+                if (currentLang !== 'ar') applyLanguage('ar', true);
+            });
+        }
 
         function showToast(msg) {
             toast.textContent = msg;
@@ -1421,9 +2475,13 @@
         window.onNativePaste = function(text) {
             const dict = I18N[currentLang];
             if (text) {
+                switchMode('link');
                 urlInput.value = text;
                 showToast(dict.toastPasted);
-                // Deliberately DO NOT auto-convert: require pressing convertBtn
+                if (pendingAutoConvert) {
+                    pendingAutoConvert = false;
+                    handleConvert();
+                }
             }
         };
 
@@ -1689,6 +2747,107 @@
         urlInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') handleConvert();
         });
+
+        // ── Mode Switcher & Business Search Logic ──
+        function switchMode(mode) {
+            if (mode === 'link') {
+                tabLinkMode.classList.add('active');
+                tabSearchMode.classList.remove('active');
+                modeLinkContent.classList.add('active');
+                modeSearchContent.classList.remove('active');
+                urlInput.focus();
+            } else {
+                tabSearchMode.classList.add('active');
+                tabLinkMode.classList.remove('active');
+                modeSearchContent.classList.add('active');
+                modeLinkContent.classList.remove('active');
+                businessSearchInput.focus();
+            }
+        }
+
+        tabLinkMode.addEventListener('click', () => switchMode('link'));
+        tabSearchMode.addEventListener('click', () => switchMode('search'));
+
+        // Clear search input
+        if (searchClearBtn) {
+            searchClearBtn.addEventListener('click', () => {
+                businessSearchInput.value = '';
+                businessSearchInput.focus();
+            });
+        }
+
+        // Launch Google Maps universal search
+        if (btnLaunchMaps) {
+            btnLaunchMaps.addEventListener('click', () => {
+                const query = businessSearchInput.value.trim();
+                if (!query) {
+                    showToast(I18N[currentLang].toastEnterQuery);
+                    businessSearchInput.focus();
+                    return;
+                }
+                const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+                window.open(mapsSearchUrl, '_blank');
+            });
+        }
+
+        if (businessSearchInput) {
+            businessSearchInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    btnLaunchMaps.click();
+                }
+            });
+
+            // Smart Auto-detection: If a Maps link is pasted/typed directly into the search field, auto-switch to Link Mode
+            businessSearchInput.addEventListener('input', () => {
+                const val = businessSearchInput.value.trim();
+                if (/https?:\/\//i.test(val) || /maps\.app\.goo\.gl/i.test(val) || /goo\.gl\/maps/i.test(val) || /placeid/i.test(val) || /ChIJ/i.test(val)) {
+                    switchMode('link');
+                    urlInput.value = val;
+                    businessSearchInput.value = '';
+                    showToast(I18N[currentLang].toastPasted);
+                    handleConvert();
+                }
+            });
+        }
+
+        // Auto-Paste & Convert Button
+        if (btnAutoPasteConvert) {
+            btnAutoPasteConvert.addEventListener('click', async () => {
+                const dict = I18N[currentLang];
+                
+                // 1. Android APK Native Bridge
+                if (window.AndroidNative && window.AndroidNative.pasteFromClipboard) {
+                    pendingAutoConvert = true;
+                    switchMode('link');
+                    window.AndroidNative.pasteFromClipboard();
+                    return;
+                }
+
+                // 2. Modern Web Clipboard API
+                if (navigator.clipboard && navigator.clipboard.readText) {
+                    try {
+                        const text = await navigator.clipboard.readText();
+                        if (text && text.trim()) {
+                            switchMode('link');
+                            urlInput.value = text.trim();
+                            showToast(dict.toastPasted);
+                            handleConvert();
+                            return;
+                        } else {
+                            showToast(dict.toastEmptyClip);
+                            return;
+                        }
+                    } catch (err) {
+                        console.warn('Clipboard read error:', err);
+                    }
+                }
+
+                // 3. Fallback: switch to link mode and prompt
+                switchMode('link');
+                urlInput.focus();
+                showToast(dict.toastClipDenied);
+            });
+        }
 
         // Detect if running inside Android APK to show NFC button
         if (window.AndroidNative) {
