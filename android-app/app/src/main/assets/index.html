@@ -125,7 +125,7 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
         body.is-native-app .desktop-navbar {
             display: none !important;
@@ -370,11 +370,16 @@
             justify-content: center;
             border-radius: 50px;
             cursor: pointer;
-            transition: color 0.25s ease;
+            transition: color 0.22s ease, transform 0.12s ease;
             user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .lang-btn:active {
+            transform: scale(0.92);
         }
         .lang-btn.active {
             color: #ffffff;
+            font-weight: 800;
         }
         .lang-slider {
             position: absolute;
@@ -384,19 +389,30 @@
             height: 26px;
             background: var(--primary-gradient);
             border-radius: 50px;
-            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.5);
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.45);
+            transition: transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
             z-index: 1;
             pointer-events: none;
+            will-change: transform;
         }
 
-        /* Smooth Text Transition */
-        .content-trans {
-            transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1), transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Seamless Morphing Language Transition */
+        .lang-fade-node {
+            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform, filter;
+            backface-visibility: hidden;
+            transform: translateZ(0);
         }
-        .content-trans.fading {
+        body.is-lang-switching .lang-fade-node {
             opacity: 0;
-            transform: translateY(4px);
+            transform: translateY(4px) scale(0.996);
+            filter: blur(2.5px);
+            pointer-events: none;
+            transition: opacity 0.14s cubic-bezier(0.4, 0, 1, 1), 
+                        transform 0.14s cubic-bezier(0.4, 0, 1, 1), 
+                        filter 0.14s cubic-bezier(0.4, 0, 1, 1);
         }
 
         /* Header */
@@ -1527,7 +1543,7 @@
 
     <!-- Desktop Sticky Navigation Bar -->
     <nav class="desktop-navbar" id="desktopNavbar">
-        <div class="navbar-inner">
+        <div class="navbar-inner lang-fade-node">
             <a href="#" class="navbar-brand">
                 <div class="brand-logo-mini">
                     <svg viewBox="0 0 24 24">
@@ -1565,8 +1581,8 @@
     </nav>
 
     <!-- Main Content Wrapper -->
-    <main class="main-wrapper">
-        <div class="app-container content-trans" id="appContainer">
+    <main class="main-wrapper lang-fade-node" id="mainWrapper">
+        <div class="app-container" id="appContainer">
         
         <!-- Top Bar with APK Download & Language Toggle -->
         <div class="top-bar">
@@ -2195,116 +2211,146 @@
         // Default language is English
         let currentLang = localStorage.getItem('app_lang') || 'en';
 
-        function applyLanguage(lang, animate = true) {
-            currentLang = lang;
-            localStorage.setItem('app_lang', lang);
+        let isLangSwitching = false;
 
-            const dict = I18N[lang];
+        function updateSliderPill(lang) {
+            const isAr = lang === 'ar';
+            const offset = isAr ? '48px' : '0px';
 
-            if (animate) {
-                appContainer.classList.add('fading');
-            }
-
-            setTimeout(() => {
-                // Update HTML attributes
-                document.documentElement.lang = lang;
-                document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-                document.title = dict.docTitle;
-                if (metaDescription) metaDescription.setAttribute('content', dict.metaDesc);
-
-                // Update text content
-                if (apkDownloadLabel) apkDownloadLabel.textContent = dict.apkDownload;
-                appTitle.textContent = dict.appTitle;
-                appSubtitle.textContent = dict.appSubtitle;
-                
-                // Mode Switcher & Inputs
-                if (tabLinkLabel) tabLinkLabel.textContent = dict.tabLink;
-                if (tabSearchLabel) tabSearchLabel.textContent = dict.tabSearch;
-                urlInput.placeholder = dict.placeholder;
-                clearBtn.title = dict.trashTitle;
-                pasteBtnLabel.textContent = dict.pasteBtn;
-                pasteBtn.title = dict.pasteBtn;
-
-                if (businessSearchInput) businessSearchInput.placeholder = dict.searchPlaceholder;
-                if (searchStep1Text) searchStep1Text.textContent = dict.searchStep1;
-                if (searchStep2Text) searchStep2Text.textContent = dict.searchStep2;
-                if (searchStep3Text) searchStep3Text.textContent = dict.searchStep3;
-                if (btnLaunchMapsText) btnLaunchMapsText.textContent = dict.btnLaunchMaps;
-                if (btnAutoPasteConvertText) btnAutoPasteConvertText.textContent = dict.btnAutoPasteConvert;
-                
-                if (!convertBtn.disabled) {
-                    btnText.textContent = dict.convertBtn;
-                }
-                
-                resultLabelText.textContent = dict.resultLabel;
-                if (!copyBtn.classList.contains('copied')) {
-                    copyBtnLabel.textContent = dict.copyBtn;
-                }
-                openBtnLabel.textContent = dict.openBtn;
-                shareBtnLabel.textContent = dict.shareBtn;
-                if (qrBtnLabel) qrBtnLabel.textContent = dict.qrBtn;
-                if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle;
-                if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc;
-                if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn;
-                if (qrCloseBtn) qrCloseBtn.textContent = dict.qrCloseBtn;
-                if (nfcBtnLabel) nfcBtnLabel.textContent = dict.nfcBtn;
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
-
-                // Desktop Navbar
-                if (navApkLabel) navApkLabel.textContent = dict.navApk;
-                if (navGithubLabel) navGithubLabel.textContent = dict.navGithub;
-
-                // Desktop Marketing & Footer
-                if (tagHowItWorks) tagHowItWorks.textContent = dict.tagHowItWorks;
-                if (titleHowItWorks) titleHowItWorks.textContent = dict.titleHowItWorks;
-                if (subHowItWorks) subHowItWorks.textContent = dict.subHowItWorks;
-                if (step1Title) step1Title.textContent = dict.step1Title;
-                if (step1Desc) step1Desc.textContent = dict.step1Desc;
-                if (step2Title) step2Title.textContent = dict.step2Title;
-                if (step2Desc) step2Desc.textContent = dict.step2Desc;
-                if (step3Title) step3Title.textContent = dict.step3Title;
-                if (step3Desc) step3Desc.textContent = dict.step3Desc;
-                if (tagFeatures) tagFeatures.textContent = dict.tagFeatures;
-                if (titleFeatures) titleFeatures.textContent = dict.titleFeatures;
-                if (subFeatures) subFeatures.textContent = dict.subFeatures;
-                if (feat1Title) feat1Title.textContent = dict.feat1Title;
-                if (feat1Desc) feat1Desc.textContent = dict.feat1Desc;
-                if (feat2Title) feat2Title.textContent = dict.feat2Title;
-                if (feat2Desc) feat2Desc.textContent = dict.feat2Desc;
-                if (feat3Title) feat3Title.textContent = dict.feat3Title;
-                if (feat3Desc) feat3Desc.textContent = dict.feat3Desc;
-                if (feat4Title) feat4Title.textContent = dict.feat4Title;
-                if (feat4Desc) feat4Desc.textContent = dict.feat4Desc;
-                if (footerTagline) footerTagline.textContent = dict.footerTagline;
-                if (footerApkLink) footerApkLink.textContent = dict.footerApk;
-                if (footerBackToTop) footerBackToTop.textContent = dict.footerBackToTop;
-                if (footerCopyright) footerCopyright.innerHTML = dict.footerCopyright;
-
-                // Update Toggle Slider Position for Mobile and Desktop Navbar
-                if (lang === 'ar') {
+            if (btnEn && btnAr && langSlider) {
+                if (isAr) {
                     btnEn.classList.remove('active');
                     btnAr.classList.add('active');
-                    langSlider.style.transform = 'translateX(48px)';
-                    if (navBtnEn && navBtnAr && navLangSlider) {
-                        navBtnEn.classList.remove('active');
-                        navBtnAr.classList.add('active');
-                        navLangSlider.style.transform = 'translateX(48px)';
-                    }
                 } else {
                     btnAr.classList.remove('active');
                     btnEn.classList.add('active');
-                    langSlider.style.transform = 'translateX(0px)';
-                    if (navBtnEn && navBtnAr && navLangSlider) {
-                        navBtnAr.classList.remove('active');
-                        navBtnEn.classList.add('active');
-                        navLangSlider.style.transform = 'translateX(0px)';
-                    }
                 }
+                langSlider.style.transform = `translateX(${offset})`;
+            }
 
-                if (animate) {
-                    appContainer.classList.remove('fading');
+            if (navBtnEn && navBtnAr && navLangSlider) {
+                if (isAr) {
+                    navBtnEn.classList.remove('active');
+                    navBtnAr.classList.add('active');
+                } else {
+                    navBtnAr.classList.remove('active');
+                    navBtnEn.classList.add('active');
                 }
-            }, animate ? 120 : 0);
+                navLangSlider.style.transform = `translateX(${offset})`;
+            }
+        }
+
+        function updateDomLanguageStrings(lang, dict) {
+            // Update HTML attributes
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+            document.title = dict.docTitle;
+            if (metaDescription) metaDescription.setAttribute('content', dict.metaDesc);
+
+            // Update text content
+            if (apkDownloadLabel) apkDownloadLabel.textContent = dict.apkDownload;
+            appTitle.textContent = dict.appTitle;
+            appSubtitle.textContent = dict.appSubtitle;
+            
+            // Mode Switcher & Inputs
+            if (tabLinkLabel) tabLinkLabel.textContent = dict.tabLink;
+            if (tabSearchLabel) tabSearchLabel.textContent = dict.tabSearch;
+            urlInput.placeholder = dict.placeholder;
+            clearBtn.title = dict.trashTitle;
+            pasteBtnLabel.textContent = dict.pasteBtn;
+            pasteBtn.title = dict.pasteBtn;
+
+            if (businessSearchInput) businessSearchInput.placeholder = dict.searchPlaceholder;
+            if (searchStep1Text) searchStep1Text.textContent = dict.searchStep1;
+            if (searchStep2Text) searchStep2Text.textContent = dict.searchStep2;
+            if (searchStep3Text) searchStep3Text.textContent = dict.searchStep3;
+            if (btnLaunchMapsText) btnLaunchMapsText.textContent = dict.btnLaunchMaps;
+            if (btnAutoPasteConvertText) btnAutoPasteConvertText.textContent = dict.btnAutoPasteConvert;
+            
+            if (!convertBtn.disabled) {
+                btnText.textContent = dict.convertBtn;
+            }
+            
+            resultLabelText.textContent = dict.resultLabel;
+            if (!copyBtn.classList.contains('copied')) {
+                copyBtnLabel.textContent = dict.copyBtn;
+            }
+            openBtnLabel.textContent = dict.openBtn;
+            shareBtnLabel.textContent = dict.shareBtn;
+            if (qrBtnLabel) qrBtnLabel.textContent = dict.qrBtn;
+            if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle;
+            if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc;
+            if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn;
+            if (qrCloseBtn) qrCloseBtn.textContent = dict.qrCloseBtn;
+            if (nfcBtnLabel) nfcBtnLabel.textContent = dict.nfcBtn;
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+
+            // Desktop Navbar
+            if (navApkLabel) navApkLabel.textContent = dict.navApk;
+            if (navGithubLabel) navGithubLabel.textContent = dict.navGithub;
+
+            // Desktop Marketing & Footer
+            if (tagHowItWorks) tagHowItWorks.textContent = dict.tagHowItWorks;
+            if (titleHowItWorks) titleHowItWorks.textContent = dict.titleHowItWorks;
+            if (subHowItWorks) subHowItWorks.textContent = dict.subHowItWorks;
+            if (step1Title) step1Title.textContent = dict.step1Title;
+            if (step1Desc) step1Desc.textContent = dict.step1Desc;
+            if (step2Title) step2Title.textContent = dict.step2Title;
+            if (step2Desc) step2Desc.textContent = dict.step2Desc;
+            if (step3Title) step3Title.textContent = dict.step3Title;
+            if (step3Desc) step3Desc.textContent = dict.step3Desc;
+            if (tagFeatures) tagFeatures.textContent = dict.tagFeatures;
+            if (titleFeatures) titleFeatures.textContent = dict.titleFeatures;
+            if (subFeatures) subFeatures.textContent = dict.subFeatures;
+            if (feat1Title) feat1Title.textContent = dict.feat1Title;
+            if (feat1Desc) feat1Desc.textContent = dict.feat1Desc;
+            if (feat2Title) feat2Title.textContent = dict.feat2Title;
+            if (feat2Desc) feat2Desc.textContent = dict.feat2Desc;
+            if (feat3Title) feat3Title.textContent = dict.feat3Title;
+            if (feat3Desc) feat3Desc.textContent = dict.feat3Desc;
+            if (feat4Title) feat4Title.textContent = dict.feat4Title;
+            if (feat4Desc) feat4Desc.textContent = dict.feat4Desc;
+            if (footerTagline) footerTagline.textContent = dict.footerTagline;
+            if (footerApkLink) footerApkLink.textContent = dict.footerApk;
+            if (footerBackToTop) footerBackToTop.textContent = dict.footerBackToTop;
+            if (footerCopyright) footerCopyright.innerHTML = dict.footerCopyright;
+        }
+
+        function applyLanguage(lang, animate = true) {
+            if (animate && (lang === currentLang || isLangSwitching)) return;
+
+            currentLang = lang;
+            localStorage.setItem('app_lang', lang);
+            const dict = I18N[lang];
+
+            // 1. Instant feedback: glide slider pill immediately with spring physics
+            updateSliderPill(lang);
+
+            if (!animate) {
+                updateDomLanguageStrings(lang, dict);
+                return;
+            }
+
+            // 2. Coordinated cross-dissolve with layout lock
+            isLangSwitching = true;
+            document.body.classList.add('is-lang-switching');
+
+            // Phase 1: Wait for fade-out and subtle blur to reach apex (~140ms)
+            setTimeout(() => {
+                // Update DOM text & layout direction while completely invisible
+                updateDomLanguageStrings(lang, dict);
+
+                // Force layout reflow so the browser computes new RTL/LTR geometry and typography
+                void document.documentElement.offsetHeight;
+
+                // Phase 2: Smoothly bloom into focus
+                requestAnimationFrame(() => {
+                    document.body.classList.remove('is-lang-switching');
+                    setTimeout(() => {
+                        isLangSwitching = false;
+                    }, 240);
+                });
+            }, 140);
         }
 
         // Toggle Listeners (Mobile Header)
