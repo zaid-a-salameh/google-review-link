@@ -1,6 +1,6 @@
 import os
 import subprocess
-from PIL import Image
+from PIL import Image, ImageDraw
 
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 EDGE_PATH = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
@@ -15,24 +15,22 @@ ICON_HTML = """<!DOCTYPE html>
   body {
     width: 512px;
     height: 512px;
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: transparent;
   }
   .icon-box {
     width: 512px;
     height: 512px;
-    border-radius: 120px;
     background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 20px 60px rgba(234, 88, 12, 0.5);
   }
   svg {
-    width: 320px;
-    height: 320px;
+    width: 420px;
+    height: 420px;
   }
 </style>
 </head>
@@ -41,8 +39,8 @@ ICON_HTML = """<!DOCTYPE html>
     <svg viewBox="0 0 24 24">
       <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 2C6.91 2 4 4.91 4 8.5c0 4.89 6.5 12.5 6.5 12.5s6.5-7.61 6.5-12.5C17 4.91 14.09 2 10.5 2zm0 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="#ffffff"/>
       <path d="M10.5 5.8l.68 1.38 1.53.22-1.11 1.08.26 1.52-1.36-.72-1.36.72.26-1.52-1.11-1.08 1.53-.22z" fill="#ffffff"/>
-      <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-      <path d="M20 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+      <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <path d="M20.2 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
     </svg>
   </div>
 </body>
@@ -189,8 +187,8 @@ OG_HTML = """<!DOCTYPE html>
         <svg viewBox="0 0 24 24">
           <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 2C6.91 2 4 4.91 4 8.5c0 4.89 6.5 12.5 6.5 12.5s6.5-7.61 6.5-12.5C17 4.91 14.09 2 10.5 2zm0 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="#ffffff"/>
           <path d="M10.5 5.8l.68 1.38 1.53.22-1.11 1.08.26 1.52-1.36-.72-1.36.72.26-1.52-1.11-1.08 1.53-.22z" fill="#ffffff"/>
-          <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
-          <path d="M20 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          <path d="M20.2 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
         </svg>
       </div>
       <div class="stars-row">
@@ -218,6 +216,23 @@ OG_HTML = """<!DOCTYPE html>
 </body>
 </html>
 """
+
+def apply_rounded_corners_with_transparency(img, radius_ratio=0.22):
+    """Applies a smooth antialiased alpha mask so pixels outside the squircle are 100% transparent."""
+    w, h = img.size
+    # Super-sampling for smooth antialiasing
+    scale = 4
+    sw, sh = w * scale, h * scale
+    mask = Image.new("L", (sw, sh), 0)
+    draw = ImageDraw.Draw(mask)
+    radius = int(sw * radius_ratio)
+    draw.rounded_rectangle([(0, 0), (sw, sh)], radius=radius, fill=255)
+    mask = mask.resize((w, h), Image.Resampling.LANCZOS)
+    
+    # Ensure image is RGBA
+    res = img.convert("RGBA")
+    res.putalpha(mask)
+    return res
 
 def main():
     scripts_dir = os.path.dirname(__file__)
@@ -257,38 +272,52 @@ def main():
     if os.path.exists(icon_html_path): os.remove(icon_html_path)
     if os.path.exists(og_html_path): os.remove(og_html_path)
 
-    # Process Icon sizes using PIL
-    print("Generating Favicon and App Icons...")
-    base_icon = Image.open(icon_raw_png).convert("RGBA")
+    # Load rendered 512x512 icon
+    base_raw = Image.open(icon_raw_png).convert("RGBA")
     
-    # 48x48 (Google Search Preferred Favicon Spec)
-    icon_48 = base_icon.resize((48, 48), Image.Resampling.LANCZOS)
-    icon_48.save(os.path.join(PROJECT_ROOT, "favicon-48x48.png"), "PNG")
+    # Crop to exact 512x512 if needed
+    base_raw = base_raw.crop((0, 0, 512, 512))
+    
+    # Apply true anti-aliased transparency to the squircle corners
+    print("Applying true alpha transparency to squircle corners...")
+    base_icon = apply_rounded_corners_with_transparency(base_raw, radius_ratio=0.22)
 
-    # 96x96
-    icon_96 = base_icon.resize((96, 96), Image.Resampling.LANCZOS)
-    icon_96.save(os.path.join(PROJECT_ROOT, "favicon-96x96.png"), "PNG")
+    # Verify corner transparency: pixel (0,0) must have alpha 0
+    c_alpha = base_icon.getpixel((0, 0))[3]
+    center_alpha = base_icon.getpixel((256, 256))[3]
+    print(f"Alpha check -> Corner (0,0) alpha: {c_alpha} (must be 0), Center alpha: {center_alpha} (must be 255)")
+    assert c_alpha == 0, "Corner must be transparent!"
 
-    # 192x192
-    icon_192 = base_icon.resize((192, 192), Image.Resampling.LANCZOS)
-    icon_192.save(os.path.join(PROJECT_ROOT, "favicon-192x192.png"), "PNG")
-
-    # 512x512
+    # Save 512x512
     base_icon.save(os.path.join(PROJECT_ROOT, "favicon-512x512.png"), "PNG")
 
-    # Apple touch icon 180x180
-    apple_icon = base_icon.resize((180, 180), Image.Resampling.LANCZOS)
-    apple_icon.save(os.path.join(PROJECT_ROOT, "apple-touch-icon.png"), "PNG")
+    # Generate multi-resolution icons with transparent corners
+    sizes = [
+        ("favicon-48x48.png", 48, 48),
+        ("favicon-96x96.png", 96, 96),
+        ("favicon-192x192.png", 192, 192),
+        ("apple-touch-icon.png", 180, 180)
+    ]
+    for filename, w, h in sizes:
+        resized = base_icon.resize((w, h), Image.Resampling.LANCZOS)
+        resized.save(os.path.join(PROJECT_ROOT, filename), "PNG")
+        print(f"Saved {filename} with alpha={resized.getpixel((0, 0))[3]}")
 
-    # Multi-res favicon.ico (16, 32, 48)
-    icon_16 = base_icon.resize((16, 16), Image.Resampling.LANCZOS)
-    icon_32 = base_icon.resize((32, 32), Image.Resampling.LANCZOS)
-    icon_48.save(os.path.join(PROJECT_ROOT, "favicon.ico"), format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+    # Generate favicon.ico with 16, 32, 48 sizes (all transparent)
+    ico_16 = base_icon.resize((16, 16), Image.Resampling.LANCZOS)
+    ico_32 = base_icon.resize((32, 32), Image.Resampling.LANCZOS)
+    ico_48 = base_icon.resize((48, 48), Image.Resampling.LANCZOS)
+    ico_48.save(
+        os.path.join(PROJECT_ROOT, "favicon.ico"),
+        format="ICO",
+        sizes=[(16, 16), (32, 32), (48, 48)]
+    )
+    print("Saved multi-size favicon.ico with true transparency!")
 
     # Clean up raw icon
     if os.path.exists(icon_raw_png): os.remove(icon_raw_png)
 
-    print("Successfully generated all icons and Open Graph banner!")
+    print("All icons successfully generated with perfect alpha transparency!")
 
 if __name__ == "__main__":
     main()
