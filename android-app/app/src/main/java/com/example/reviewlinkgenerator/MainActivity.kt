@@ -44,6 +44,8 @@ class MainActivity : ComponentActivity() {
     private var nfcAdapter: NfcAdapter? = null
     private var pendingNfcUrl: String? = null
     private var isNfcModeActive: Boolean = false
+    private var lastWriteTimestamp: Long = 0
+    private var writtenTagsCount: Int = 0
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,6 +128,8 @@ class MainActivity : ComponentActivity() {
 
         pendingNfcUrl = url
         isNfcModeActive = true
+        lastWriteTimestamp = 0
+        writtenTagsCount = 0
 
         val flags = NfcAdapter.FLAG_READER_NFC_A or
                 NfcAdapter.FLAG_READER_NFC_B or
@@ -141,6 +145,7 @@ class MainActivity : ComponentActivity() {
     fun stopNfcSession() {
         isNfcModeActive = false
         pendingNfcUrl = null
+        lastWriteTimestamp = 0
         try {
             nfcAdapter?.disableReaderMode(this)
         } catch (e: Exception) {
@@ -150,7 +155,13 @@ class MainActivity : ComponentActivity() {
 
     private fun handleTagDiscovered(tag: Tag) {
         val targetUrl = pendingNfcUrl
-        if (targetUrl.isNullOrEmpty()) return
+        if (targetUrl.isNullOrEmpty() || !isNfcModeActive) return
+
+        val now = System.currentTimeMillis()
+        if (now - lastWriteTimestamp < 2200) {
+            // Debounce cooldown to prevent re-triggering the same card in field
+            return
+        }
 
         try {
             val uriRecord = NdefRecord.createUri(Uri.parse(targetUrl))
@@ -172,9 +183,11 @@ class MainActivity : ComponentActivity() {
                 // Write will overwrite whatever records were previously stored
                 ndef.writeNdefMessage(message)
                 ndef.close()
+                lastWriteTimestamp = System.currentTimeMillis()
+                writtenTagsCount++
                 triggerSuccessVibration()
-                notifyNfcSuccess()
-                stopNfcSession()
+                notifyNfcSuccess(writtenTagsCount)
+                // Reader mode stays active so the user can tap the next card!
             } else {
                 // Try formatable tag
                 val formatable = NdefFormatable.get(tag)
@@ -182,9 +195,11 @@ class MainActivity : ComponentActivity() {
                     formatable.connect()
                     formatable.format(message)
                     formatable.close()
+                    lastWriteTimestamp = System.currentTimeMillis()
+                    writtenTagsCount++
                     triggerSuccessVibration()
-                    notifyNfcSuccess()
-                    stopNfcSession()
+                    notifyNfcSuccess(writtenTagsCount)
+                    // Reader mode stays active so the user can tap the next card!
                 } else {
                     notifyNfcError("UNSUPPORTED")
                 }
@@ -218,9 +233,9 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun notifyNfcSuccess() {
+    private fun notifyNfcSuccess(count: Int) {
         runOnUiThread {
-            webView.evaluateJavascript("window.onNfcSuccess && window.onNfcSuccess();", null)
+            webView.evaluateJavascript("window.onNfcSuccess && window.onNfcSuccess($count);", null)
         }
     }
 
