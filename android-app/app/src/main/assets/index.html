@@ -1356,6 +1356,399 @@
             fill: currentColor;
         }
 
+        /* Mode 2: Real-time Autocomplete Dropdown & Key Settings */
+        .search-loading-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(249, 115, 22, 0.25);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        html[lang="ar"] .search-loading-spinner {
+            margin-right: 0;
+            margin-left: 8px;
+        }
+        .search-loading-spinner.active {
+            display: block;
+        }
+        .places-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 99;
+            background: rgba(24, 20, 18, 0.98);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: var(--radius-btn);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(249, 115, 22, 0.12);
+            max-height: 290px;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            overscroll-behavior: contain;
+        }
+        .places-dropdown.show {
+            display: flex;
+        }
+        .place-suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.15s ease;
+            text-align: left;
+        }
+        html[lang="ar"] .place-suggestion-item {
+            text-align: right;
+        }
+        .place-suggestion-item:last-of-type {
+            border-bottom: none;
+        }
+        .place-suggestion-item:hover,
+        .place-suggestion-item.selected {
+            background: rgba(249, 115, 22, 0.16);
+        }
+        .place-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: rgba(249, 115, 22, 0.14);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .place-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: #fb923c;
+        }
+        .place-text {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .place-main {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .place-secondary {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .places-attribution {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 8px 14px;
+            background: rgba(0, 0, 0, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 10px;
+            color: var(--text-muted);
+            gap: 6px;
+        }
+        html[lang="ar"] .places-attribution {
+            justify-content: flex-start;
+        }
+        .places-attribution svg {
+            height: 14px;
+            width: auto;
+        }
+
+        /* API Key Status Bar */
+        .api-key-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 12px;
+            background: rgba(41, 37, 36, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-size: 11.5px;
+        }
+        .api-key-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+        .status-dot.connected {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        .status-dot.demo {
+            background: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+        }
+        .status-dot.warning {
+            background: #f59e0b;
+        }
+        .btn-key-settings {
+            background: transparent;
+            border: none;
+            color: #fb923c;
+            font-family: inherit;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-key-settings:hover {
+            background: rgba(249, 115, 22, 0.15);
+        }
+        .btn-key-settings svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        /* Google Maps API Key Modal */
+        .gmp-key-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .gmp-key-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        .gmp-key-modal {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(28, 25, 23, 0.98);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(234, 88, 12, 0.2);
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .gmp-key-overlay.active .gmp-key-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .gmp-key-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .gmp-key-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .gmp-key-header-icon {
+            width: 22px;
+            height: 22px;
+            fill: #fb923c;
+        }
+        .gmp-key-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .btn-gmp-key-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 2px 6px;
+            transition: color 0.2s;
+        }
+        .btn-gmp-key-close:hover {
+            color: #ffffff;
+        }
+        .gmp-key-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .gmp-key-desc {
+            font-size: 12.5px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+        .gmp-demo-box {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .gmp-demo-icon {
+            width: 20px;
+            height: 20px;
+            fill: #38bdf8;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .gmp-demo-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+        .gmp-demo-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 11.5px;
+        }
+        .gmp-demo-headline {
+            font-weight: 700;
+            color: #e0f2fe;
+        }
+        .gmp-demo-sub {
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .gmp-demo-link {
+            color: #38bdf8;
+            font-weight: 700;
+            text-decoration: underline;
+            margin-top: 3px;
+            align-self: flex-start;
+        }
+        .gmp-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .gmp-input-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+        .gmp-input-field {
+            height: 46px;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 0 14px;
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .gmp-input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+        .gmp-safety-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 11px;
+            color: #d1fae5;
+        }
+        .gmp-safety-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .safety-check {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .gmp-key-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .btn-gmp-key-clear {
+            flex: 1;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-gmp-key-clear:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .btn-gmp-key-save {
+            flex: 2;
+            height: 44px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            transition: all 0.2s;
+        }
+        .btn-gmp-key-save:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
         /* Marketing Sections (Desktop Web) */
         .desktop-marketing {
             width: 100%;
@@ -1964,7 +2357,7 @@
 
             <!-- MODE 2: Search Business Mode Content -->
             <div class="mode-content" id="modeSearchContent">
-                <div class="search-field-wrapper">
+                <div class="search-field-wrapper" id="searchFieldWrapper">
                     <svg class="search-field-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     <input 
                         type="text" 
@@ -1972,14 +2365,30 @@
                         class="search-input" 
                         placeholder="Enter business name & city (e.g. Al-Quds Restaurant Amman)..." 
                         autocomplete="off"
+                        spellcheck="false"
                     >
+                    <div class="search-loading-spinner" id="searchSpinner"></div>
                     <button type="button" class="search-clear-btn" id="searchClearBtn" title="Clear">
                         <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                    <!-- Floating Places Autocomplete Dropdown -->
+                    <div class="places-dropdown" id="placesDropdown" role="listbox"></div>
+                </div>
+
+                <!-- API Key / Autocomplete Status Bar -->
+                <div class="api-key-bar" id="apiKeyBar">
+                    <div class="api-key-status" id="apiKeyStatus">
+                        <span class="status-dot" id="apiKeyStatusDot"></span>
+                        <span id="apiKeyStatusText">Google Maps Search Ready</span>
+                    </div>
+                    <button type="button" class="btn-key-settings" id="btnKeySettings">
+                        <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                        <span id="btnKeySettingsText">API Key</span>
                     </button>
                 </div>
 
                 <!-- Search Helper Card -->
-                <div class="search-helper-card">
+                <div class="search-helper-card" id="searchHelperCard">
                     <div class="search-steps-list">
                         <div class="search-step-item">
                             <span class="step-num-pill">1</span>
@@ -2248,6 +2657,53 @@
             <div class="nfc-title" id="nfcTitle">Ready to Write</div>
             <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near the NFC card or sticker. Existing data will be wiped automatically.</div>
             <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
+    <!-- Google Maps API Key Modal Dialog -->
+    <div class="gmp-key-overlay" id="gmpKeyOverlay">
+        <div class="gmp-key-modal" id="gmpKeyModalBox">
+            <div class="gmp-key-header">
+                <div class="gmp-key-title-row">
+                    <svg class="gmp-key-header-icon" viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                    <span class="gmp-key-title" id="gmpKeyTitle">Google Maps Search Key</span>
+                </div>
+                <button type="button" class="btn-gmp-key-close" id="gmpKeyCloseBtn" title="Close">&times;</button>
+            </div>
+            <div class="gmp-key-body">
+                <p class="gmp-key-desc" id="gmpKeyDesc">
+                    Connect a Google Maps API Key or free Maps Demo Key to enable real-time business search predictions as you type.
+                </p>
+                <div class="gmp-demo-box">
+                    <div class="gmp-demo-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    </div>
+                    <div class="gmp-demo-content">
+                        <span class="gmp-demo-headline" id="gmpDemoHeadline">Free Maps Demo Key (No Card Required):</span>
+                        <span class="gmp-demo-sub" id="gmpDemoSub">Get an official demo key for prototyping in 1 click without any Google Cloud billing account.</span>
+                        <a href="https://mapsplatform.google.com/maps-demo-key?utm_campaign=gmp_git_agentskills_v1" target="_blank" rel="noopener noreferrer" class="gmp-demo-link" id="gmpDemoLink">Get Free Demo Key ↗</a>
+                    </div>
+                </div>
+                <div class="gmp-input-group">
+                    <label for="gmpApiKeyInput" id="gmpApiKeyLabel">Enter API Key:</label>
+                    <input type="text" id="gmpApiKeyInput" class="gmp-input-field" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
+                </div>
+                <div class="gmp-safety-box">
+                    <div class="gmp-safety-item">
+                        <span class="safety-check">✓</span>
+                        <span id="gmpSafetySession">Session Tokens: Keystrokes bundled into 1 single session</span>
+                    </div>
+                    <div class="gmp-safety-item">
+                        <span class="safety-check">✓</span>
+                        <span id="gmpSafetyFields">Field Masking: Only basic ID & Name queried (no paid tiers)</span>
+                    </div>
+                    <div class="gmp-safety-item">
+                        <span class="safety-check">✓</span>
+                        <span id="gmpSafetyDebounce">Debounce: 350ms delay & 3-character threshold</span>
+                    </div>
+                </div>
+            </div>
+            <div class="gmp-key-actions">
+                <button type="button" class="btn-gmp-key-clear" id="gmpKeyClearBtn">Remove Key</button>
+                <button type="button" class="btn-gmp-key-save" id="gmpKeySaveBtn">Save & Connect</button>
+            </div>
         </div>
     </div>
 
@@ -2332,6 +2788,29 @@
         const btnLaunchMapsText = $('btnLaunchMapsText');
         const btnAutoPasteConvert = $('btnAutoPasteConvert');
         const btnAutoPasteConvertText = $('btnAutoPasteConvertText');
+        const searchFieldWrapper = $('searchFieldWrapper');
+        const searchSpinner = $('searchSpinner');
+        const placesDropdown = $('placesDropdown');
+        const apiKeyBar = $('apiKeyBar');
+        const apiKeyStatusDot = $('apiKeyStatusDot');
+        const apiKeyStatusText = $('apiKeyStatusText');
+        const btnKeySettings = $('btnKeySettings');
+        const btnKeySettingsText = $('btnKeySettingsText');
+        const gmpKeyOverlay = $('gmpKeyOverlay');
+        const gmpKeyModalBox = $('gmpKeyModalBox');
+        const gmpKeyTitle = $('gmpKeyTitle');
+        const gmpKeyCloseBtn = $('gmpKeyCloseBtn');
+        const gmpKeyDesc = $('gmpKeyDesc');
+        const gmpDemoHeadline = $('gmpDemoHeadline');
+        const gmpDemoSub = $('gmpDemoSub');
+        const gmpDemoLink = $('gmpDemoLink');
+        const gmpApiKeyLabel = $('gmpApiKeyLabel');
+        const gmpApiKeyInput = $('gmpApiKeyInput');
+        const gmpSafetySession = $('gmpSafetySession');
+        const gmpSafetyFields = $('gmpSafetyFields');
+        const gmpSafetyDebounce = $('gmpSafetyDebounce');
+        const gmpKeyClearBtn = $('gmpKeyClearBtn');
+        const gmpKeySaveBtn = $('gmpKeySaveBtn');
 
         // Desktop Navbar Elements
         const navBtnEn = $('navBtnEn');
@@ -2483,7 +2962,26 @@
                 toastCopied: "Review link copied",
                 toastShareCopied: "Link copied for sharing",
                 shareTitle: "Google Review",
-                shareText: "Leave us a review on Google Maps"
+                shareText: "Leave us a review on Google Maps",
+                apiKeyConnected: "Google Maps Autocomplete Active",
+                apiKeyAuthError: "API Key Authentication Error",
+                apiKeyNotSet: "Configure Maps API / Demo Key",
+                btnKeyConfigure: "API Key",
+                gmpKeyTitle: "Google Maps Search Key",
+                gmpKeyDesc: "Connect a Google Maps API Key or free Maps Demo Key to enable real-time business search predictions as you type.",
+                gmpDemoHeadline: "Free Maps Demo Key (No Card Required):",
+                gmpDemoSub: "Get an official demo key for prototyping in 1 click without any Google Cloud billing account.",
+                gmpDemoLink: "Get Free Demo Key ↗",
+                gmpApiKeyLabel: "Enter API Key:",
+                gmpSafetySession: "Session Tokens: Keystrokes bundled into 1 single session",
+                gmpSafetyFields: "Field Masking: Only basic ID & Name queried (no paid tiers)",
+                gmpSafetyDebounce: "Debounce: 350ms delay & 3-character threshold",
+                btnKeySave: "Save & Connect",
+                btnKeyRemove: "Remove Key",
+                toastKeySaved: "API Key saved. Connecting...",
+                toastKeyRemoved: "API Key removed",
+                toastHourlyLimit: "Hourly search limit reached to protect your quota",
+                toastSelectSuccess: "Business selected and review link generated"
             },
             ar: {
                 apkDownload: "تحميل تطبيق الأندرويد",
@@ -2583,7 +3081,26 @@
                 toastCopied: "تم نسخ رابط التقييم",
                 toastShareCopied: "تم نسخ الرابط للمشاركة",
                 shareTitle: "تقييم على Google",
-                shareText: "شاركنا تقييمك على خرائط Google"
+                shareText: "شاركنا تقييمك على خرائط Google",
+                apiKeyConnected: "البحث الحي عبر خرائط Google مفعّل",
+                apiKeyAuthError: "خطأ في التحقق من مفتاح الـ API",
+                apiKeyNotSet: "ربط مفتاح خرائط Google / المفتاح التجريبي",
+                btnKeyConfigure: "مفتاح الـ API",
+                gmpKeyTitle: "مفتاح بحث خرائط Google",
+                gmpKeyDesc: "اربط مفتاح Google Maps API أو المفتاح التجريبي المجاني لتفعيل اقتراحات الأماكن الحية أثناء الكتابة.",
+                gmpDemoHeadline: "مفتاح تجريبي مجاني (بدون أي بطاقة بنكية):",
+                gmpDemoSub: "استخرج مفتاح تجريبي رسمي للتطوير بنقرة زر واحدة دون الحاجة لحساب فوترة في Google Cloud.",
+                gmpDemoLink: "استخراج المفتاح التجريبي مجاناً ↗",
+                gmpApiKeyLabel: "أدخل مفتاح الـ API:",
+                gmpSafetySession: "رموز الجلسة (Sessions): دمج كل الحروف في طلب فوترة واحد",
+                gmpSafetyFields: "حصر الحقول (Field Mask): طلب الاسم والمعرف فقط لحماية الرصيد",
+                gmpSafetyDebounce: "مؤقت الأمان: تأخير 350ms وحد أدنى 3 أحرف لمنع استهلاك الطلبات",
+                btnKeySave: "حفظ وتفعيل",
+                btnKeyRemove: "إزالة المفتاح",
+                toastKeySaved: "تم حفظ المفتاح، جاري الاتصال...",
+                toastKeyRemoved: "تمت إزالة المفتاح",
+                toastHourlyLimit: "تم الوصول للحد الأقصى للبحث في هذه الساعة لحماية الرصيد",
+                toastSelectSuccess: "تم اختيار النشاط التجاري وتوليد رابط التقييم"
             }
         };
 
@@ -2645,6 +3162,21 @@
             if (searchStep3Text) searchStep3Text.textContent = dict.searchStep3;
             if (btnLaunchMapsText) btnLaunchMapsText.textContent = dict.btnLaunchMaps;
             if (btnAutoPasteConvertText) btnAutoPasteConvertText.textContent = dict.btnAutoPasteConvert;
+            if (btnKeySettingsText) btnKeySettingsText.textContent = dict.btnKeyConfigure;
+            if (gmpKeyTitle) gmpKeyTitle.textContent = dict.gmpKeyTitle;
+            if (gmpKeyDesc) gmpKeyDesc.textContent = dict.gmpKeyDesc;
+            if (gmpDemoHeadline) gmpDemoHeadline.textContent = dict.gmpDemoHeadline;
+            if (gmpDemoSub) gmpDemoSub.textContent = dict.gmpDemoSub;
+            if (gmpDemoLink) gmpDemoLink.textContent = dict.gmpDemoLink;
+            if (gmpApiKeyLabel) gmpApiKeyLabel.textContent = dict.gmpApiKeyLabel;
+            if (gmpSafetySession) gmpSafetySession.textContent = dict.gmpSafetySession;
+            if (gmpSafetyFields) gmpSafetyFields.textContent = dict.gmpSafetyFields;
+            if (gmpSafetyDebounce) gmpSafetyDebounce.textContent = dict.gmpSafetyDebounce;
+            if (gmpKeyClearBtn) gmpKeyClearBtn.textContent = dict.btnKeyRemove;
+            if (gmpKeySaveBtn) gmpKeySaveBtn.textContent = dict.btnKeySave;
+            if (typeof updateApiKeyStatusDisplay === 'function') {
+                updateApiKeyStatusDisplay();
+            }
             
             if (!convertBtn.disabled) {
                 btnText.textContent = dict.convertBtn;
@@ -3316,12 +3848,332 @@
         });
 
         // ── Mode Switcher & Business Search Logic ──
+        // Source: Google Maps Platform Code Assist
+        const CONFIG_MAPS_API_KEY = '';
+
+        let gmpPlacesLoaded = false;
+        let gmpScriptLoadingPromise = null;
+        let currentSessionToken = null;
+        let autocompleteDebounceTimer = null;
+        let highlightedSuggestionIndex = -1;
+        let currentSuggestions = [];
+        const autocompleteCache = new Map();
+
+        // Hourly safety rate limiter to protect against quota runaway
+        let autocompleteHourlyCount = 0;
+        let autocompleteHourlyResetTime = Date.now() + 3600000;
+
+        function checkHourlyRateLimit() {
+            const now = Date.now();
+            if (now > autocompleteHourlyResetTime) {
+                autocompleteHourlyCount = 0;
+                autocompleteHourlyResetTime = now + 3600000;
+            }
+            if (autocompleteHourlyCount >= 60) {
+                return false;
+            }
+            autocompleteHourlyCount++;
+            return true;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/[&<>'"]/g, tag => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                "'": '&#39;',
+                '"': '&quot;'
+            }[tag] || tag));
+        }
+
+        function getActiveMapsApiKey() {
+            return localStorage.getItem('gmp_api_key') || CONFIG_MAPS_API_KEY || '';
+        }
+
+        function updateApiKeyStatusDisplay(isConnected, state) {
+            const dict = I18N[currentLang];
+            const hasKey = !!getActiveMapsApiKey();
+
+            if (isConnected || (hasKey && gmpPlacesLoaded)) {
+                apiKeyStatusDot.className = 'status-dot connected';
+                apiKeyStatusText.textContent = dict.apiKeyConnected || 'Google Maps Autocomplete Active';
+            } else if (state === 'auth_error') {
+                apiKeyStatusDot.className = 'status-dot warning';
+                apiKeyStatusText.textContent = dict.apiKeyAuthError || 'API Key Invalid';
+            } else if (hasKey) {
+                apiKeyStatusDot.className = 'status-dot demo';
+                apiKeyStatusText.textContent = dict.apiKeyConnected || 'Connecting to Google Maps...';
+            } else {
+                apiKeyStatusDot.className = 'status-dot';
+                apiKeyStatusText.textContent = dict.apiKeyNotSet || 'Configure Maps API / Demo Key';
+            }
+        }
+
+        function getAutocompleteSessionToken() {
+            if (!currentSessionToken && window.google && window.google.maps && window.google.maps.places && window.google.maps.places.AutocompleteSessionToken) {
+                currentSessionToken = new google.maps.places.AutocompleteSessionToken();
+            }
+            return currentSessionToken;
+        }
+
+        function resetAutocompleteSessionToken() {
+            if (window.google && window.google.maps && window.google.maps.places && window.google.maps.places.AutocompleteSessionToken) {
+                currentSessionToken = new google.maps.places.AutocompleteSessionToken();
+            } else {
+                currentSessionToken = null;
+            }
+        }
+
+        function initGoogleMapsPlaces() {
+            const key = getActiveMapsApiKey();
+            if (!key) {
+                updateApiKeyStatusDisplay(false);
+                return Promise.resolve(false);
+            }
+
+            if (gmpPlacesLoaded && window.google && window.google.maps && window.google.maps.importLibrary) {
+                updateApiKeyStatusDisplay(true);
+                return Promise.resolve(true);
+            }
+
+            if (gmpScriptLoadingPromise) {
+                return gmpScriptLoadingPromise;
+            }
+
+            gmpScriptLoadingPromise = new Promise((resolve) => {
+                window.gm_authFailure = () => {
+                    console.error('Google Maps API authentication failed.');
+                    gmpPlacesLoaded = false;
+                    updateApiKeyStatusDisplay(false, 'auth_error');
+                    showToast(currentLang === 'ar' ? 'فشل التحقق من مفتاح خرائط Google' : 'Google Maps API key authentication error', 'warn');
+                    gmpScriptLoadingPromise = null;
+                    resolve(false);
+                };
+
+                const existingScript = document.getElementById('gmpScript');
+                if (existingScript) existingScript.remove();
+
+                const script = document.createElement('script');
+                script.id = 'gmpScript';
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=places&loading=async`;
+                script.async = true;
+                script.defer = true;
+                script.onload = async () => {
+                    try {
+                        if (window.google && window.google.maps && window.google.maps.importLibrary) {
+                            await google.maps.importLibrary("places");
+                            gmpPlacesLoaded = true;
+                            updateApiKeyStatusDisplay(true);
+                            resolve(true);
+                        } else {
+                            updateApiKeyStatusDisplay(false);
+                            resolve(false);
+                        }
+                    } catch (err) {
+                        console.error('Error importing places library:', err);
+                        updateApiKeyStatusDisplay(false);
+                        resolve(false);
+                    }
+                };
+                script.onerror = () => {
+                    console.error('Failed to load Google Maps script.');
+                    updateApiKeyStatusDisplay(false);
+                    gmpScriptLoadingPromise = null;
+                    resolve(false);
+                };
+                document.head.appendChild(script);
+            });
+
+            return gmpScriptLoadingPromise;
+        }
+
+        function hideDropdown() {
+            if (placesDropdown) {
+                placesDropdown.classList.remove('show');
+                placesDropdown.innerHTML = '';
+            }
+            highlightedSuggestionIndex = -1;
+            currentSuggestions = [];
+        }
+
+        function highlightSuggestion(index) {
+            const items = placesDropdown.querySelectorAll('.place-suggestion-item');
+            items.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('selected');
+                    item.scrollIntoView({ block: 'nearest' });
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+        }
+
+        async function fetchPlaceSuggestions(query) {
+            const trimmed = query.trim();
+            if (!trimmed || trimmed.length < 3) {
+                hideDropdown();
+                return;
+            }
+
+            if (!gmpPlacesLoaded || !window.google || !window.google.maps || !window.google.maps.places || !window.google.maps.places.AutocompleteSuggestion) {
+                return;
+            }
+
+            const cacheKey = `${currentLang}:${trimmed.toLowerCase()}`;
+            if (autocompleteCache.has(cacheKey)) {
+                renderSuggestions(autocompleteCache.get(cacheKey));
+                return;
+            }
+
+            if (!checkHourlyRateLimit()) {
+                showToast(I18N[currentLang].toastHourlyLimit, 'warn');
+                return;
+            }
+
+            if (searchSpinner) searchSpinner.classList.add('active');
+
+            try {
+                const token = getAutocompleteSessionToken();
+                const request = {
+                    input: trimmed,
+                    sessionToken: token,
+                    language: currentLang,
+                    includedPrimaryTypes: ['establishment'],
+                    internalUsageAttributionIds: ['gmp_git_agentskills_v1']
+                };
+
+                const { suggestions } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+                autocompleteCache.set(cacheKey, suggestions || []);
+                renderSuggestions(suggestions || []);
+            } catch (err) {
+                console.warn('Autocomplete fetch error:', err);
+                hideDropdown();
+            } finally {
+                if (searchSpinner) searchSpinner.classList.remove('active');
+            }
+        }
+
+        function renderSuggestions(suggestions) {
+            currentSuggestions = suggestions || [];
+            highlightedSuggestionIndex = -1;
+
+            if (!currentSuggestions.length) {
+                hideDropdown();
+                return;
+            }
+
+            placesDropdown.innerHTML = '';
+
+            currentSuggestions.forEach((sugg, idx) => {
+                const pred = sugg.placePrediction;
+                if (!pred) return;
+
+                const mainText = pred.mainText ? pred.mainText.toString() : pred.text.toString();
+                const secondaryText = pred.secondaryText ? pred.secondaryText.toString() : '';
+
+                const item = document.createElement('div');
+                item.className = 'place-suggestion-item';
+                item.setAttribute('role', 'option');
+                item.setAttribute('data-index', idx);
+                item.innerHTML = `
+                    <div class="place-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    </div>
+                    <div class="place-text">
+                        <div class="place-main">${escapeHtml(mainText)}</div>
+                        ${secondaryText ? `<div class="place-secondary">${escapeHtml(secondaryText)}</div>` : ''}
+                    </div>
+                `;
+
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    selectSuggestion(sugg);
+                });
+
+                placesDropdown.appendChild(item);
+            });
+
+            // Powered by Google Attribution (Mandatory under ToS)
+            const attribution = document.createElement('div');
+            attribution.className = 'places-attribution';
+            attribution.innerHTML = `
+                <span>powered by</span>
+                <svg viewBox="0 0 74 24" height="14" width="44">
+                    <path fill="#4285F4" d="M9.24 9.19v2.45h5.86c-.24 1.37-1.6 4.02-5.86 4.02-3.53 0-6.4-2.91-6.4-6.49 0-3.58 2.87-6.49 6.4-6.49 2.01 0 3.36.86 4.13 1.6l1.94-1.87C13.98 1.15 11.78.25 9.24.25 4.31.25.29 4.28.29 9.17s4.02 8.92 8.95 8.92c5.15 0 8.57-3.62 8.57-8.73 0-.59-.06-1.03-.14-1.47H9.24z"/>
+                    <path fill="#EA4335" d="M23.95 6.36c-3.15 0-5.71 2.45-5.71 5.69 0 3.22 2.56 5.69 5.71 5.69 3.15 0 5.71-2.47 5.71-5.69 0-3.24-2.56-5.69-5.71-5.69zm0 9.13c-1.73 0-3.22-1.42-3.22-3.44 0-2.04 1.49-3.44 3.22-3.44 1.73 0 3.22 1.4 3.22 3.44 0 2.02-1.49 3.44-3.22 3.44z"/>
+                    <path fill="#FBBC05" d="M36.19 6.36c-3.15 0-5.71 2.45-5.71 5.69 0 3.22 2.56 5.69 5.71 5.69 3.15 0 5.71-2.47 5.71-5.69 0-3.24-2.56-5.69-5.71-5.69zm0 9.13c-1.73 0-3.22-1.42-3.22-3.44 0-2.04 1.49-3.44 3.22-3.44 1.73 0 3.22 1.4 3.22 3.44 0 2.02-1.49 3.44-3.22 3.44z"/>
+                    <path fill="#4285F4" d="M48.06 6.36c-3.04 0-5.46 2.47-5.46 5.69 0 3.2 2.42 5.69 5.46 5.69 1.83 0 2.87-.79 3.57-1.62v1.31c0 2.18-1.16 3.34-3.04 3.34-1.53 0-2.49-1.1-2.89-2.02l-2.18.91c.63 1.51 2.3 3.36 5.07 3.36 2.95 0 5.44-1.73 5.44-5.91V6.65h-2.39v1.07c-.7-.84-1.76-1.36-3.58-1.36zm.26 9.13c-1.69 0-3.08-1.42-3.08-3.44 0-2.04 1.39-3.44 3.08-3.44 1.67 0 2.97 1.4 2.97 3.44 0 2.02-1.3 3.44-2.97 3.44z"/>
+                    <path fill="#34A853" d="M55.85.5h2.51v17.25h-2.51z"/>
+                    <path fill="#EA4335" d="M64.71 15.49c-1.29 0-2.19-.59-2.79-1.76l7.65-3.15-.26-.65c-.48-1.31-1.95-3.57-4.9-3.57-2.95 0-5.4 2.31-5.4 5.69 0 3.2 2.43 5.69 5.7 5.69 2.64 0 4.17-1.62 4.8-2.56l-1.97-1.31c-.63.95-1.51 1.62-2.83 1.62zm-.19-7.08c1.01 0 1.87.52 2.15 1.25l-5.15 2.13c0-2.4 1.71-3.38 3-3.38z"/>
+                </svg>
+            `;
+            placesDropdown.appendChild(attribution);
+
+            placesDropdown.classList.add('show');
+        }
+
+        async function selectSuggestion(suggestion) {
+            if (!suggestion || !suggestion.placePrediction) return;
+            const pred = suggestion.placePrediction;
+            const placeId = pred.placeId;
+            const mainText = pred.mainText ? pred.mainText.toString() : pred.text.toString();
+
+            hideDropdown();
+            businessSearchInput.value = mainText;
+
+            if (searchSpinner) searchSpinner.classList.add('active');
+
+            try {
+                const place = pred.toPlace ? pred.toPlace() : new google.maps.places.Place({ id: placeId });
+
+                // Cost Protection: strict field masking + session token bundling
+                await place.fetchFields({
+                    fields: ['id', 'displayName', 'formattedAddress'],
+                    sessionToken: getAutocompleteSessionToken()
+                });
+
+                // Immediately cycle session token to close this billed session
+                resetAutocompleteSessionToken();
+
+                const resolvedPlaceId = place.id || placeId;
+                const displayName = place.displayName || mainText;
+
+                // Build direct 5-star review URL
+                generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(resolvedPlaceId)}`;
+                resultLinkText.textContent = generatedReviewUrl;
+                urlInput.value = generatedReviewUrl;
+
+                // Show results card
+                resultCard.classList.add('active');
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                showToast(I18N[currentLang].toastSelectSuccess || 'Business selected and review link generated', 'success');
+            } catch (err) {
+                console.error('Error fetching place fields:', err);
+                // Fallback to placeId directly if fetchFields encounters an issue
+                if (placeId) {
+                    generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+                    resultLinkText.textContent = generatedReviewUrl;
+                    urlInput.value = generatedReviewUrl;
+                    resultCard.classList.add('active');
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    showToast(I18N[currentLang].toastSuccess, 'success');
+                } else {
+                    showToast(I18N[currentLang].toastInvalid, 'error');
+                }
+            } finally {
+                if (searchSpinner) searchSpinner.classList.remove('active');
+            }
+        }
+
         function switchMode(mode) {
             if (mode === 'link') {
                 tabLinkMode.classList.add('active');
                 tabSearchMode.classList.remove('active');
                 modeLinkContent.classList.add('active');
                 modeSearchContent.classList.remove('active');
+                hideDropdown();
                 urlInput.focus();
             } else {
                 tabSearchMode.classList.add('active');
@@ -3329,6 +4181,9 @@
                 modeSearchContent.classList.add('active');
                 modeLinkContent.classList.remove('active');
                 businessSearchInput.focus();
+                
+                // Initialize Places API in background when search tab is activated
+                initGoogleMapsPlaces();
             }
         }
 
@@ -3339,11 +4194,20 @@
         if (searchClearBtn) {
             searchClearBtn.addEventListener('click', () => {
                 businessSearchInput.value = '';
+                searchClearBtn.classList.remove('visible');
+                hideDropdown();
                 businessSearchInput.focus();
             });
         }
 
-        // Launch Google Maps universal search
+        // Close dropdown on outside click
+        document.addEventListener('click', (e) => {
+            if (searchFieldWrapper && !searchFieldWrapper.contains(e.target)) {
+                hideDropdown();
+            }
+        });
+
+        // Launch Google Maps universal search fallback
         if (btnLaunchMaps) {
             btnLaunchMaps.addEventListener('click', () => {
                 const query = businessSearchInput.value.trim();
@@ -3359,20 +4223,68 @@
 
         if (businessSearchInput) {
             businessSearchInput.addEventListener('keydown', e => {
+                if (placesDropdown && placesDropdown.classList.contains('show')) {
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        highlightedSuggestionIndex = Math.min(highlightedSuggestionIndex + 1, currentSuggestions.length - 1);
+                        highlightSuggestion(highlightedSuggestionIndex);
+                        return;
+                    }
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        highlightedSuggestionIndex = Math.max(highlightedSuggestionIndex - 1, 0);
+                        highlightSuggestion(highlightedSuggestionIndex);
+                        return;
+                    }
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (highlightedSuggestionIndex >= 0 && currentSuggestions[highlightedSuggestionIndex]) {
+                            selectSuggestion(currentSuggestions[highlightedSuggestionIndex]);
+                            return;
+                        }
+                    }
+                    if (e.key === 'Escape') {
+                        hideDropdown();
+                        return;
+                    }
+                }
+
                 if (e.key === 'Enter') {
                     btnLaunchMaps.click();
                 }
             });
 
-            // Smart Auto-detection: If a Maps link is pasted/typed directly into the search field, auto-switch to Link Mode
             businessSearchInput.addEventListener('input', () => {
-                const val = businessSearchInput.value.trim();
-                if (/https?:\/\//i.test(val) || /maps\.app\.goo\.gl/i.test(val) || /goo\.gl\/maps/i.test(val) || /placeid/i.test(val) || /ChIJ/i.test(val)) {
+                const val = businessSearchInput.value;
+                const trimmed = val.trim();
+
+                if (searchClearBtn) {
+                    if (trimmed) {
+                        searchClearBtn.classList.add('visible');
+                    } else {
+                        searchClearBtn.classList.remove('visible');
+                    }
+                }
+
+                // Smart Auto-detection: If a Maps link is pasted/typed directly into the search field, auto-switch to Link Mode
+                if (/https?:\/\//i.test(trimmed) || /maps\.app\.goo\.gl/i.test(trimmed) || /goo\.gl\/maps/i.test(trimmed) || /placeid/i.test(trimmed) || /ChIJ/i.test(trimmed)) {
                     switchMode('link');
-                    urlInput.value = val;
+                    urlInput.value = trimmed;
                     businessSearchInput.value = '';
+                    hideDropdown();
                     showToast(I18N[currentLang].toastPasted, 'paste');
                     handleConvert();
+                    return;
+                }
+
+                // Real-time Autocomplete with 350ms debounce
+                clearTimeout(autocompleteDebounceTimer);
+                if (trimmed.length >= 3 && gmpPlacesLoaded) {
+                    autocompleteDebounceTimer = setTimeout(() => {
+                        fetchPlaceSuggestions(trimmed);
+                    }, 350);
+                } else {
+                    hideDropdown();
                 }
             });
         }
@@ -3415,6 +4327,66 @@
                 showToast(dict.toastClipDenied, 'paste');
             });
         }
+
+        // Google Maps API Key Modal Logic
+        function openMapsKeyModal() {
+            if (gmpApiKeyInput) {
+                gmpApiKeyInput.value = getActiveMapsApiKey();
+            }
+            if (gmpKeyOverlay) {
+                gmpKeyOverlay.classList.add('active');
+                setTimeout(() => {
+                    if (gmpApiKeyInput) gmpApiKeyInput.focus();
+                }, 100);
+            }
+        }
+
+        function closeMapsKeyModal() {
+            if (gmpKeyOverlay) {
+                gmpKeyOverlay.classList.remove('active');
+            }
+        }
+
+        if (btnKeySettings) btnKeySettings.addEventListener('click', openMapsKeyModal);
+        if (apiKeyStatus) apiKeyStatus.addEventListener('click', openMapsKeyModal);
+        if (gmpKeyCloseBtn) gmpKeyCloseBtn.addEventListener('click', closeMapsKeyModal);
+        if (gmpKeyOverlay) {
+            gmpKeyOverlay.addEventListener('click', (e) => {
+                if (e.target === gmpKeyOverlay) closeMapsKeyModal();
+            });
+        }
+
+        if (gmpKeySaveBtn) {
+            gmpKeySaveBtn.addEventListener('click', async () => {
+                const dict = I18N[currentLang];
+                const key = gmpApiKeyInput ? gmpApiKeyInput.value.trim() : '';
+                if (key) {
+                    localStorage.setItem('gmp_api_key', key);
+                    closeMapsKeyModal();
+                    showToast(dict.toastKeySaved || 'API Key saved. Connecting...', 'success');
+                    await initGoogleMapsPlaces();
+                } else {
+                    localStorage.removeItem('gmp_api_key');
+                    closeMapsKeyModal();
+                    updateApiKeyStatusDisplay(false);
+                    showToast(dict.toastKeyRemoved || 'API Key removed', 'trash');
+                }
+            });
+        }
+
+        if (gmpKeyClearBtn) {
+            gmpKeyClearBtn.addEventListener('click', () => {
+                const dict = I18N[currentLang];
+                localStorage.removeItem('gmp_api_key');
+                if (gmpApiKeyInput) gmpApiKeyInput.value = '';
+                closeMapsKeyModal();
+                updateApiKeyStatusDisplay(false);
+                showToast(dict.toastKeyRemoved || 'API Key removed', 'trash');
+            });
+        }
+
+        // Initialize API Key status display
+        updateApiKeyStatusDisplay();
 
         // Detect if running inside Android APK to show NFC button
         if (window.AndroidNative) {
