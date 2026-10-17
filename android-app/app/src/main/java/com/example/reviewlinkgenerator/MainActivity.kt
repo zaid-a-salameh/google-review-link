@@ -92,7 +92,8 @@ class MainActivity : ComponentActivity() {
         }
 
         setContentView(webView)
-        webView.loadUrl("file:///android_asset/index.html")
+        val htmlContent = assets.open("index.html").bufferedReader().use { it.readText() }
+        webView.loadDataWithBaseURL("https://zaid-a-salameh.github.io/google-review-link/", htmlContent, "text/html", "UTF-8", null)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {

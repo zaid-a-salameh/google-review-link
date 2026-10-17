@@ -2374,47 +2374,6 @@
                     <!-- Floating Places Autocomplete Dropdown -->
                     <div class="places-dropdown" id="placesDropdown" role="listbox"></div>
                 </div>
-
-                <!-- API Key / Autocomplete Status Bar -->
-                <div class="api-key-bar" id="apiKeyBar">
-                    <div class="api-key-status" id="apiKeyStatus">
-                        <span class="status-dot" id="apiKeyStatusDot"></span>
-                        <span id="apiKeyStatusText">Google Maps Search Ready</span>
-                    </div>
-                    <button type="button" class="btn-key-settings" id="btnKeySettings">
-                        <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                        <span id="btnKeySettingsText">API Key</span>
-                    </button>
-                </div>
-
-                <!-- Search Helper Card -->
-                <div class="search-helper-card" id="searchHelperCard">
-                    <div class="search-steps-list">
-                        <div class="search-step-item">
-                            <span class="step-num-pill">1</span>
-                            <span id="searchStep1Text">Type your business name & click Search</span>
-                        </div>
-                        <div class="search-step-item">
-                            <span class="step-num-pill">2</span>
-                            <span id="searchStep2Text">Click Share & Copy link on Google Maps</span>
-                        </div>
-                        <div class="search-step-item">
-                            <span class="step-num-pill">3</span>
-                            <span id="searchStep3Text">Click Auto-Paste & Convert below!</span>
-                        </div>
-                    </div>
-
-                    <div class="search-actions-grid">
-                        <button type="button" class="btn-maps-search" id="btnLaunchMaps">
-                            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                            <span id="btnLaunchMapsText">Search on Google Maps ↗</span>
-                        </button>
-                        <button type="button" class="btn-autopaste-convert" id="btnAutoPasteConvert">
-                            <svg viewBox="0 0 24 24"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>
-                            <span id="btnAutoPasteConvertText">Auto-Paste & Convert</span>
-                        </button>
-                    </div>
-                </div>
             </div>
 
         </div>
@@ -2657,53 +2616,6 @@
             <div class="nfc-title" id="nfcTitle">Ready to Write</div>
             <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near the NFC card or sticker. Existing data will be wiped automatically.</div>
             <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
-    <!-- Google Maps API Key Modal Dialog -->
-    <div class="gmp-key-overlay" id="gmpKeyOverlay">
-        <div class="gmp-key-modal" id="gmpKeyModalBox">
-            <div class="gmp-key-header">
-                <div class="gmp-key-title-row">
-                    <svg class="gmp-key-header-icon" viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                    <span class="gmp-key-title" id="gmpKeyTitle">Google Maps Search Key</span>
-                </div>
-                <button type="button" class="btn-gmp-key-close" id="gmpKeyCloseBtn" title="Close">&times;</button>
-            </div>
-            <div class="gmp-key-body">
-                <p class="gmp-key-desc" id="gmpKeyDesc">
-                    Connect a Google Maps API Key or free Maps Demo Key to enable real-time business search predictions as you type.
-                </p>
-                <div class="gmp-demo-box">
-                    <div class="gmp-demo-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                    </div>
-                    <div class="gmp-demo-content">
-                        <span class="gmp-demo-headline" id="gmpDemoHeadline">Free Maps Demo Key (No Card Required):</span>
-                        <span class="gmp-demo-sub" id="gmpDemoSub">Get an official demo key for prototyping in 1 click without any Google Cloud billing account.</span>
-                        <a href="https://mapsplatform.google.com/maps-demo-key?utm_campaign=gmp_git_agentskills_v1" target="_blank" rel="noopener noreferrer" class="gmp-demo-link" id="gmpDemoLink">Get Free Demo Key ↗</a>
-                    </div>
-                </div>
-                <div class="gmp-input-group">
-                    <label for="gmpApiKeyInput" id="gmpApiKeyLabel">Enter API Key:</label>
-                    <input type="text" id="gmpApiKeyInput" class="gmp-input-field" placeholder="AIzaSy..." autocomplete="off" spellcheck="false">
-                </div>
-                <div class="gmp-safety-box">
-                    <div class="gmp-safety-item">
-                        <span class="safety-check">✓</span>
-                        <span id="gmpSafetySession">Session Tokens: Keystrokes bundled into 1 single session</span>
-                    </div>
-                    <div class="gmp-safety-item">
-                        <span class="safety-check">✓</span>
-                        <span id="gmpSafetyFields">Field Masking: Only basic ID & Name queried (no paid tiers)</span>
-                    </div>
-                    <div class="gmp-safety-item">
-                        <span class="safety-check">✓</span>
-                        <span id="gmpSafetyDebounce">Debounce: 350ms delay & 3-character threshold</span>
-                    </div>
-                </div>
-            </div>
-            <div class="gmp-key-actions">
-                <button type="button" class="btn-gmp-key-clear" id="gmpKeyClearBtn">Remove Key</button>
-                <button type="button" class="btn-gmp-key-save" id="gmpKeySaveBtn">Save & Connect</button>
-            </div>
         </div>
     </div>
 
@@ -2781,36 +2693,9 @@
         // Search Mode Elements
         const businessSearchInput = $('businessSearchInput');
         const searchClearBtn = $('searchClearBtn');
-        const searchStep1Text = $('searchStep1Text');
-        const searchStep2Text = $('searchStep2Text');
-        const searchStep3Text = $('searchStep3Text');
-        const btnLaunchMaps = $('btnLaunchMaps');
-        const btnLaunchMapsText = $('btnLaunchMapsText');
-        const btnAutoPasteConvert = $('btnAutoPasteConvert');
-        const btnAutoPasteConvertText = $('btnAutoPasteConvertText');
         const searchFieldWrapper = $('searchFieldWrapper');
         const searchSpinner = $('searchSpinner');
         const placesDropdown = $('placesDropdown');
-        const apiKeyBar = $('apiKeyBar');
-        const apiKeyStatusDot = $('apiKeyStatusDot');
-        const apiKeyStatusText = $('apiKeyStatusText');
-        const btnKeySettings = $('btnKeySettings');
-        const btnKeySettingsText = $('btnKeySettingsText');
-        const gmpKeyOverlay = $('gmpKeyOverlay');
-        const gmpKeyModalBox = $('gmpKeyModalBox');
-        const gmpKeyTitle = $('gmpKeyTitle');
-        const gmpKeyCloseBtn = $('gmpKeyCloseBtn');
-        const gmpKeyDesc = $('gmpKeyDesc');
-        const gmpDemoHeadline = $('gmpDemoHeadline');
-        const gmpDemoSub = $('gmpDemoSub');
-        const gmpDemoLink = $('gmpDemoLink');
-        const gmpApiKeyLabel = $('gmpApiKeyLabel');
-        const gmpApiKeyInput = $('gmpApiKeyInput');
-        const gmpSafetySession = $('gmpSafetySession');
-        const gmpSafetyFields = $('gmpSafetyFields');
-        const gmpSafetyDebounce = $('gmpSafetyDebounce');
-        const gmpKeyClearBtn = $('gmpKeyClearBtn');
-        const gmpKeySaveBtn = $('gmpKeySaveBtn');
 
         // Desktop Navbar Elements
         const navBtnEn = $('navBtnEn');
@@ -3157,26 +3042,6 @@
             pasteBtn.title = dict.pasteBtn;
 
             if (businessSearchInput) businessSearchInput.placeholder = dict.searchPlaceholder;
-            if (searchStep1Text) searchStep1Text.textContent = dict.searchStep1;
-            if (searchStep2Text) searchStep2Text.textContent = dict.searchStep2;
-            if (searchStep3Text) searchStep3Text.textContent = dict.searchStep3;
-            if (btnLaunchMapsText) btnLaunchMapsText.textContent = dict.btnLaunchMaps;
-            if (btnAutoPasteConvertText) btnAutoPasteConvertText.textContent = dict.btnAutoPasteConvert;
-            if (btnKeySettingsText) btnKeySettingsText.textContent = dict.btnKeyConfigure;
-            if (gmpKeyTitle) gmpKeyTitle.textContent = dict.gmpKeyTitle;
-            if (gmpKeyDesc) gmpKeyDesc.textContent = dict.gmpKeyDesc;
-            if (gmpDemoHeadline) gmpDemoHeadline.textContent = dict.gmpDemoHeadline;
-            if (gmpDemoSub) gmpDemoSub.textContent = dict.gmpDemoSub;
-            if (gmpDemoLink) gmpDemoLink.textContent = dict.gmpDemoLink;
-            if (gmpApiKeyLabel) gmpApiKeyLabel.textContent = dict.gmpApiKeyLabel;
-            if (gmpSafetySession) gmpSafetySession.textContent = dict.gmpSafetySession;
-            if (gmpSafetyFields) gmpSafetyFields.textContent = dict.gmpSafetyFields;
-            if (gmpSafetyDebounce) gmpSafetyDebounce.textContent = dict.gmpSafetyDebounce;
-            if (gmpKeyClearBtn) gmpKeyClearBtn.textContent = dict.btnKeyRemove;
-            if (gmpKeySaveBtn) gmpKeySaveBtn.textContent = dict.btnKeySave;
-            if (typeof updateApiKeyStatusDisplay === 'function') {
-                updateApiKeyStatusDisplay();
-            }
             
             if (!convertBtn.disabled) {
                 btnText.textContent = dict.convertBtn;
@@ -3895,27 +3760,28 @@
             }[tag] || tag));
         }
 
-        function getActiveMapsApiKey() {
-            return localStorage.getItem('gmp_api_key') || CONFIG_MAPS_API_KEY || '';
+        if (window.location.protocol === 'file:' && !window.AndroidNative && decodeURIComponent(window.location.href).indexOf('Zaid-PC') !== -1) {
+            fetch('http://localhost:8080/index.html', { method: 'HEAD', mode: 'no-cors' })
+                .then(() => { window.location.replace('http://localhost:8080/'); })
+                .catch(() => {});
         }
 
-        function updateApiKeyStatusDisplay(isConnected, state) {
-            const dict = I18N[currentLang];
-            const hasKey = !!getActiveMapsApiKey();
-
-            if (isConnected || (hasKey && gmpPlacesLoaded)) {
-                apiKeyStatusDot.className = 'status-dot connected';
-                apiKeyStatusText.textContent = dict.apiKeyConnected || 'Google Maps Autocomplete Active';
-            } else if (state === 'auth_error') {
-                apiKeyStatusDot.className = 'status-dot warning';
-                apiKeyStatusText.textContent = dict.apiKeyAuthError || 'API Key Invalid';
-            } else if (hasKey) {
-                apiKeyStatusDot.className = 'status-dot demo';
-                apiKeyStatusText.textContent = dict.apiKeyConnected || 'Connecting to Google Maps...';
-            } else {
-                apiKeyStatusDot.className = 'status-dot';
-                apiKeyStatusText.textContent = dict.apiKeyNotSet || 'Configure Maps API / Demo Key';
+        function isAuthorizedOrigin() {
+            if (window.AndroidNative) return true;
+            const proto = window.location.protocol;
+            const host = window.location.hostname;
+            if (host === 'zaid-a-salameh.github.io' || host === 'localhost' || host === '127.0.0.1') {
+                return true;
             }
+            if (proto === 'file:' && decodeURIComponent(window.location.href).indexOf('Zaid-PC') !== -1) {
+                return true;
+            }
+            return false;
+        }
+
+        function getActiveMapsApiKey() {
+            if (!isAuthorizedOrigin()) return '';
+            return CONFIG_MAPS_API_KEY || '';
         }
 
         function getAutocompleteSessionToken() {
@@ -3936,12 +3802,10 @@
         function initGoogleMapsPlaces() {
             const key = getActiveMapsApiKey();
             if (!key) {
-                updateApiKeyStatusDisplay(false);
                 return Promise.resolve(false);
             }
 
-            if (gmpPlacesLoaded && window.google && window.google.maps && window.google.maps.importLibrary) {
-                updateApiKeyStatusDisplay(true);
+            if (gmpPlacesLoaded && window.google && window.google.maps && window.google.maps.places && window.google.maps.places.AutocompleteSuggestion) {
                 return Promise.resolve(true);
             }
 
@@ -3953,10 +3817,25 @@
                 window.gm_authFailure = () => {
                     console.error('Google Maps API authentication failed.');
                     gmpPlacesLoaded = false;
-                    updateApiKeyStatusDisplay(false, 'auth_error');
-                    showToast(currentLang === 'ar' ? 'فشل التحقق من مفتاح خرائط Google' : 'Google Maps API key authentication error', 'warn');
                     gmpScriptLoadingPromise = null;
                     resolve(false);
+                };
+
+                window.__onGmpLoaded = async () => {
+                    try {
+                        if (window.google && window.google.maps && window.google.maps.importLibrary) {
+                            await google.maps.importLibrary("places");
+                            gmpPlacesLoaded = true;
+                            resolve(true);
+                        } else {
+                            gmpScriptLoadingPromise = null;
+                            resolve(false);
+                        }
+                    } catch (err) {
+                        console.error('Error importing places library:', err);
+                        gmpScriptLoadingPromise = null;
+                        resolve(false);
+                    }
                 };
 
                 const existingScript = document.getElementById('gmpScript');
@@ -3964,29 +3843,11 @@
 
                 const script = document.createElement('script');
                 script.id = 'gmpScript';
-                script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=places&loading=async`;
+                script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=places&loading=async&callback=__onGmpLoaded`;
                 script.async = true;
                 script.defer = true;
-                script.onload = async () => {
-                    try {
-                        if (window.google && window.google.maps && window.google.maps.importLibrary) {
-                            await google.maps.importLibrary("places");
-                            gmpPlacesLoaded = true;
-                            updateApiKeyStatusDisplay(true);
-                            resolve(true);
-                        } else {
-                            updateApiKeyStatusDisplay(false);
-                            resolve(false);
-                        }
-                    } catch (err) {
-                        console.error('Error importing places library:', err);
-                        updateApiKeyStatusDisplay(false);
-                        resolve(false);
-                    }
-                };
                 script.onerror = () => {
                     console.error('Failed to load Google Maps script.');
-                    updateApiKeyStatusDisplay(false);
                     gmpScriptLoadingPromise = null;
                     resolve(false);
                 };
@@ -4019,12 +3880,17 @@
 
         async function fetchPlaceSuggestions(query) {
             const trimmed = query.trim();
-            if (!trimmed || trimmed.length < 3) {
+            if (!trimmed || trimmed.length < 2) {
                 hideDropdown();
                 return;
             }
 
-            if (!gmpPlacesLoaded || !window.google || !window.google.maps || !window.google.maps.places || !window.google.maps.places.AutocompleteSuggestion) {
+            if (!gmpPlacesLoaded) {
+                const ready = await initGoogleMapsPlaces();
+                if (!ready) return;
+            }
+
+            if (!window.google || !window.google.maps || !window.google.maps.places || !window.google.maps.places.AutocompleteSuggestion) {
                 return;
             }
 
@@ -4046,8 +3912,7 @@
                 const request = {
                     input: trimmed,
                     sessionToken: token,
-                    language: currentLang,
-                    internalUsageAttributionIds: ['gmp_git_agentskills_v1']
+                    language: currentLang
                 };
 
                 const { suggestions } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
@@ -4059,6 +3924,16 @@
             } finally {
                 if (searchSpinner) searchSpinner.classList.remove('active');
             }
+        }
+
+        function getPredictionStrings(pred) {
+            const mainText = (pred.mainText && typeof pred.mainText.text === 'string')
+                ? pred.mainText.text
+                : ((pred.text && typeof pred.text.text === 'string') ? pred.text.text : String(pred.mainText || pred.text || ''));
+            const secondaryText = (pred.secondaryText && typeof pred.secondaryText.text === 'string')
+                ? pred.secondaryText.text
+                : '';
+            return { mainText, secondaryText };
         }
 
         function renderSuggestions(suggestions) {
@@ -4076,8 +3951,7 @@
                 const pred = sugg.placePrediction;
                 if (!pred) return;
 
-                const mainText = pred.mainText ? pred.mainText.toString() : pred.text.toString();
-                const secondaryText = pred.secondaryText ? pred.secondaryText.toString() : '';
+                const { mainText, secondaryText } = getPredictionStrings(pred);
 
                 const item = document.createElement('div');
                 item.className = 'place-suggestion-item';
@@ -4124,53 +3998,24 @@
             if (!suggestion || !suggestion.placePrediction) return;
             const pred = suggestion.placePrediction;
             const placeId = pred.placeId;
-            const mainText = pred.mainText ? pred.mainText.toString() : pred.text.toString();
+            const { mainText, secondaryText } = getPredictionStrings(pred);
 
             hideDropdown();
-            businessSearchInput.value = mainText;
+            businessSearchInput.value = secondaryText ? `${mainText} - ${secondaryText}` : mainText;
+            if (searchClearBtn) searchClearBtn.classList.add('visible');
 
-            if (searchSpinner) searchSpinner.classList.add('active');
+            // Cycle session token
+            resetAutocompleteSessionToken();
 
-            try {
-                const place = pred.toPlace ? pred.toPlace() : new google.maps.places.Place({ id: placeId });
-
-                // Cost Protection: strict field masking + session token bundling
-                await place.fetchFields({
-                    fields: ['id', 'displayName', 'formattedAddress'],
-                    sessionToken: getAutocompleteSessionToken()
-                });
-
-                // Immediately cycle session token to close this billed session
-                resetAutocompleteSessionToken();
-
-                const resolvedPlaceId = place.id || placeId;
-                const displayName = place.displayName || mainText;
-
-                // Build direct 5-star review URL
-                generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(resolvedPlaceId)}`;
+            if (placeId) {
+                generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
                 resultLinkText.textContent = generatedReviewUrl;
                 urlInput.value = generatedReviewUrl;
-
-                // Show results card
                 resultCard.classList.add('active');
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
                 showToast(I18N[currentLang].toastSelectSuccess || 'Business selected and review link generated', 'success');
-            } catch (err) {
-                console.error('Error fetching place fields:', err);
-                // Fallback to placeId directly if fetchFields encounters an issue
-                if (placeId) {
-                    generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
-                    resultLinkText.textContent = generatedReviewUrl;
-                    urlInput.value = generatedReviewUrl;
-                    resultCard.classList.add('active');
-                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    showToast(I18N[currentLang].toastSuccess, 'success');
-                } else {
-                    showToast(I18N[currentLang].toastInvalid, 'error');
-                }
-            } finally {
-                if (searchSpinner) searchSpinner.classList.remove('active');
+            } else {
+                showToast(I18N[currentLang].toastInvalid, 'error');
             }
         }
 
@@ -4188,8 +4033,6 @@
                 modeSearchContent.classList.add('active');
                 modeLinkContent.classList.remove('active');
                 businessSearchInput.focus();
-                
-                // Initialize Places API in background when search tab is activated
                 initGoogleMapsPlaces();
             }
         }
@@ -4214,20 +4057,6 @@
             }
         });
 
-        // Launch Google Maps universal search fallback
-        if (btnLaunchMaps) {
-            btnLaunchMaps.addEventListener('click', () => {
-                const query = businessSearchInput.value.trim();
-                if (!query) {
-                    showToast(I18N[currentLang].toastEnterQuery, 'warn');
-                    businessSearchInput.focus();
-                    return;
-                }
-                const mapsSearchUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
-                window.open(mapsSearchUrl, '_blank');
-            });
-        }
-
         if (businessSearchInput) {
             businessSearchInput.addEventListener('keydown', e => {
                 if (placesDropdown && placesDropdown.classList.contains('show')) {
@@ -4247,17 +4076,15 @@
                         e.preventDefault();
                         if (highlightedSuggestionIndex >= 0 && currentSuggestions[highlightedSuggestionIndex]) {
                             selectSuggestion(currentSuggestions[highlightedSuggestionIndex]);
-                            return;
+                        } else if (currentSuggestions.length > 0) {
+                            selectSuggestion(currentSuggestions[0]);
                         }
+                        return;
                     }
                     if (e.key === 'Escape') {
                         hideDropdown();
                         return;
                     }
-                }
-
-                if (e.key === 'Enter') {
-                    btnLaunchMaps.click();
                 }
             });
 
@@ -4284,116 +4111,19 @@
                     return;
                 }
 
-                // Real-time Autocomplete with 350ms debounce
+                // Real-time Autocomplete with 250ms debounce
                 clearTimeout(autocompleteDebounceTimer);
-                if (trimmed.length >= 3 && gmpPlacesLoaded) {
+                if (trimmed.length >= 2) {
                     autocompleteDebounceTimer = setTimeout(() => {
                         fetchPlaceSuggestions(trimmed);
-                    }, 350);
+                    }, 250);
                 } else {
                     hideDropdown();
                 }
             });
         }
 
-        // Auto-Paste & Convert Button
-        if (btnAutoPasteConvert) {
-            btnAutoPasteConvert.addEventListener('click', async () => {
-                const dict = I18N[currentLang];
-                
-                // 1. Android APK Native Bridge
-                if (window.AndroidNative && window.AndroidNative.pasteFromClipboard) {
-                    pendingAutoConvert = true;
-                    switchMode('link');
-                    window.AndroidNative.pasteFromClipboard();
-                    return;
-                }
-
-                // 2. Modern Web Clipboard API
-                if (navigator.clipboard && navigator.clipboard.readText) {
-                    try {
-                        const text = await navigator.clipboard.readText();
-                        if (text && text.trim()) {
-                            switchMode('link');
-                            urlInput.value = text.trim();
-                            showToast(dict.toastPasted, 'paste');
-                            handleConvert();
-                            return;
-                        } else {
-                            showToast(dict.toastEmptyClip, 'warn');
-                            return;
-                        }
-                    } catch (err) {
-                        console.warn('Clipboard read error:', err);
-                    }
-                }
-
-                // 3. Fallback: switch to link mode and prompt
-                switchMode('link');
-                urlInput.focus();
-                showToast(dict.toastClipDenied, 'paste');
-            });
-        }
-
-        // Google Maps API Key Modal Logic
-        function openMapsKeyModal() {
-            if (gmpApiKeyInput) {
-                gmpApiKeyInput.value = getActiveMapsApiKey();
-            }
-            if (gmpKeyOverlay) {
-                gmpKeyOverlay.classList.add('active');
-                setTimeout(() => {
-                    if (gmpApiKeyInput) gmpApiKeyInput.focus();
-                }, 100);
-            }
-        }
-
-        function closeMapsKeyModal() {
-            if (gmpKeyOverlay) {
-                gmpKeyOverlay.classList.remove('active');
-            }
-        }
-
-        if (btnKeySettings) btnKeySettings.addEventListener('click', openMapsKeyModal);
-        if (apiKeyStatus) apiKeyStatus.addEventListener('click', openMapsKeyModal);
-        if (gmpKeyCloseBtn) gmpKeyCloseBtn.addEventListener('click', closeMapsKeyModal);
-        if (gmpKeyOverlay) {
-            gmpKeyOverlay.addEventListener('click', (e) => {
-                if (e.target === gmpKeyOverlay) closeMapsKeyModal();
-            });
-        }
-
-        if (gmpKeySaveBtn) {
-            gmpKeySaveBtn.addEventListener('click', async () => {
-                const dict = I18N[currentLang];
-                const key = gmpApiKeyInput ? gmpApiKeyInput.value.trim() : '';
-                if (key) {
-                    localStorage.setItem('gmp_api_key', key);
-                    closeMapsKeyModal();
-                    showToast(dict.toastKeySaved || 'API Key saved. Connecting...', 'success');
-                    await initGoogleMapsPlaces();
-                } else {
-                    localStorage.removeItem('gmp_api_key');
-                    closeMapsKeyModal();
-                    updateApiKeyStatusDisplay(false);
-                    showToast(dict.toastKeyRemoved || 'API Key removed', 'trash');
-                }
-            });
-        }
-
-        if (gmpKeyClearBtn) {
-            gmpKeyClearBtn.addEventListener('click', () => {
-                const dict = I18N[currentLang];
-                localStorage.removeItem('gmp_api_key');
-                if (gmpApiKeyInput) gmpApiKeyInput.value = '';
-                closeMapsKeyModal();
-                updateApiKeyStatusDisplay(false);
-                showToast(dict.toastKeyRemoved || 'API Key removed', 'trash');
-            });
-        }
-
-        // Initialize API Key status display and load Places SDK
-        updateApiKeyStatusDisplay();
+        // Load Places SDK on startup
         initGoogleMapsPlaces();
 
         // Detect if running inside Android APK to show NFC button
