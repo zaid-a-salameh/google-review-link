@@ -26,7 +26,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Toast
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.content.ContentValues
@@ -262,7 +261,6 @@ class MainActivity : ComponentActivity() {
 
             val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             val downloadId = dm.enqueue(request)
-            Toast.makeText(this, "جاري تنزيل التحديث في الخلفية...", Toast.LENGTH_LONG).show()
 
             val receiver = object : BroadcastReceiver() {
                 override fun onReceive(context: Context?, intent: Intent?) {
@@ -308,7 +306,9 @@ class MainActivity : ComponentActivity() {
                 }
                 startActivity(browserIntent)
             } catch (ex: Exception) {
-                Toast.makeText(this, "تعذر بدء التنزيل", Toast.LENGTH_SHORT).show()
+                runOnUiThread {
+                    webView.evaluateJavascript("window.onApkUpdateError && window.onApkUpdateError();", null)
+                }
             }
         }
     }
@@ -342,15 +342,15 @@ class MainActivity : ComponentActivity() {
                         val text = clip.getItemAt(0).coerceToText(activity).toString().trim()
                         if (text.isNotEmpty()) {
                             val escaped = JSONObject.quote(text)
-                            webView.evaluateJavascript("window.onNativePaste($escaped);", null)
+                            webView.evaluateJavascript("window.onNativePaste && window.onNativePaste($escaped);", null)
                         } else {
-                            Toast.makeText(activity, "الحافظة فارغة", Toast.LENGTH_SHORT).show()
+                            webView.evaluateJavascript("window.onNativePaste && window.onNativePaste('');", null)
                         }
                     } else {
-                        Toast.makeText(activity, "الحافظة فارغة", Toast.LENGTH_SHORT).show()
+                        webView.evaluateJavascript("window.onNativePaste && window.onNativePaste('');", null)
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(activity, "تعذر قراءة الحافظة", Toast.LENGTH_SHORT).show()
+                    webView.evaluateJavascript("window.onNativePaste && window.onNativePaste('');", null)
                 }
             }
         }
@@ -442,12 +442,11 @@ class MainActivity : ComponentActivity() {
                             contentValues.put(MediaStore.MediaColumns.IS_PENDING, 0)
                             activity.contentResolver.update(uri, contentValues, null, null)
                         }
-                        Toast.makeText(activity, "تم حفظ صورة الـ QR في الصور", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(activity, "فشل حفظ الصورة", Toast.LENGTH_SHORT).show()
+                        webView.evaluateJavascript("window.onSaveQrError && window.onSaveQrError();", null)
                     }
                 } catch (e: Exception) {
-                    Toast.makeText(activity, "خطأ أثناء حفظ الصورة", Toast.LENGTH_SHORT).show()
+                    webView.evaluateJavascript("window.onSaveQrError && window.onSaveQrError();", null)
                 }
             }
         }

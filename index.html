@@ -3350,7 +3350,8 @@
                 toastUpToDate: "You are already using the latest version ({version})",
                 toastUpdateFound: "New version {version} is available!",
                 toastUpdateError: "Unable to check for updates right now",
-                toastDownloadStarted: "Downloading update in background..."
+                toastDownloadStarted: "Downloading update in background...",
+                toastQrSaveError: "Failed to save QR image"
             },
             ar: {
                 apkDownload: "تحميل تطبيق الأندرويد",
@@ -3484,7 +3485,8 @@
                 toastUpToDate: "أنت تستخدم أحدث إصدار بالفعل ({version})",
                 toastUpdateFound: "يتوفر إصدار جديد {version}!",
                 toastUpdateError: "تعذر التحقق من التحديثات حالياً",
-                toastDownloadStarted: "جاري تنزيل التحديث في الخلفية..."
+                toastDownloadStarted: "جاري تنزيل التحديث في الخلفية...",
+                toastQrSaveError: "فشل حفظ صورة رمز الـ QR"
             }
         };
 
@@ -3883,7 +3885,7 @@
             showToast(dict.toastCleared, 'trash');
         });
 
-        // ── Native Paste Callback ──
+        // ── Native Bridge Callbacks ──
         window.onNativePaste = function(text) {
             const dict = I18N[currentLang];
             if (text) {
@@ -3894,7 +3896,19 @@
                     pendingAutoConvert = false;
                     handleConvert();
                 }
+            } else {
+                showToast(dict.toastEmptyClip, 'warn');
             }
+        };
+
+        window.onApkUpdateError = function() {
+            const dict = I18N[currentLang];
+            showToast(dict.toastUpdateError, 'error');
+        };
+
+        window.onSaveQrError = function() {
+            const dict = I18N[currentLang];
+            showToast(dict.toastQrSaveError, 'error');
         };
 
         // ── Paste Action ──
