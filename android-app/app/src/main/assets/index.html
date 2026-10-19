@@ -145,15 +145,13 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Inter:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+    </noscript>
 
-    <!-- QR Code Engine (Local for APK + CDN fallback for Web) -->
-    <script src="qrcode.min.js"></script>
-    <script>
-        if (typeof QRCode === 'undefined') {
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\\/script>');
-        }
-    </script>
+    <!-- QR Code Engine (Local bundled with defer) -->
+    <script src="qrcode.min.js" defer></script>
 
     <style>
         :root {
@@ -188,7 +186,7 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             min-height: 100vh;
@@ -210,8 +208,9 @@
             padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
         }
 
-        html[lang="ar"] body {
-            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+        html[lang="ar"] body,
+        [dir="rtl"] body {
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', 'Tahoma', sans-serif;
         }
 
         /* Desktop Sticky Navbar */
@@ -4271,12 +4270,6 @@
             }[tag] || tag));
         }
 
-        if (window.location.protocol === 'file:' && !window.AndroidNative && decodeURIComponent(window.location.href).indexOf('Zaid-PC') !== -1) {
-            fetch('http://localhost:8080/index.html', { method: 'HEAD', mode: 'no-cors' })
-                .then(() => { window.location.replace('http://localhost:8080/'); })
-                .catch(() => {});
-        }
-
         function isAuthorizedOrigin() {
             if (window.AndroidNative) return true;
             const proto = window.location.protocol;
@@ -4642,9 +4635,6 @@
             });
         }
 
-        // Load Places SDK on startup
-        initGoogleMapsPlaces();
-
         // ═══════════════════════════════════════════════════════════════
         //  APP UPDATE & VERSION CHECKER
         // ═══════════════════════════════════════════════════════════════
@@ -4801,10 +4791,15 @@
             }
 
             try {
+                const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                const timeoutId = controller ? setTimeout(() => controller.abort(), 3500) : null;
+
                 const res = await fetch(GITHUB_LATEST_RELEASE_URL, {
                     headers: { 'Accept': 'application/vnd.github.v3+json' },
-                    cache: 'no-cache'
+                    cache: 'no-cache',
+                    signal: controller ? controller.signal : undefined
                 });
+                if (timeoutId) clearTimeout(timeoutId);
 
                 if (!res.ok) {
                     throw new Error(`HTTP status ${res.status}`);
@@ -4846,7 +4841,7 @@
                     }
                 }
             } catch (err) {
-                console.error('Update check error:', err);
+                console.warn('Update check bypassed:', err.name === 'AbortError' ? 'timeout' : err.message);
                 if (isManual) {
                     showToast(dict.toastUpdateError, 'error');
                 }
@@ -4888,10 +4883,14 @@
             navBrandBadge.addEventListener('click', () => checkForAppUpdates(true));
         }
 
-        // Automatically check for updates silently 2.5s after app startup
-        setTimeout(() => {
-            checkForAppUpdates(false);
-        }, 2500);
+        // Automatically check for updates silently when idle after startup
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => checkForAppUpdates(false), { timeout: 4500 });
+        } else {
+            setTimeout(() => {
+                checkForAppUpdates(false);
+            }, 4000);
+        }
 
         // Detect if running inside Android APK to show NFC button
         if (window.AndroidNative) {
