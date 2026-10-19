@@ -33,6 +33,9 @@ import android.content.ContentValues
 import android.provider.MediaStore
 import android.os.Environment
 import android.util.Base64
+import android.app.DownloadManager
+import android.content.BroadcastReceiver
+import android.content.IntentFilter
 import java.io.OutputStream
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -246,7 +249,88 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun handleApkUpdate(downloadUrl: String) {
+        try {
+            val uri = Uri.parse(downloadUrl)
+            val request = DownloadManager.Request(uri).apply {
+                setTitle("ReviewLinkGenerator Update")
+                setDescription("Downloading updated APK...")
+                setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "ReviewLinkGenerator.apk")
+                setMimeType("application/vnd.android.package-archive")
+            }
+
+            val dm = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val downloadId = dm.enqueue(request)
+            Toast.makeText(this, "جاري تنزيل التحديث في الخلفية...", Toast.LENGTH_LONG).show()
+
+            val receiver = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                    if (id == downloadId) {
+                        try {
+                            val fileUri = dm.getUriForDownloadedFile(downloadId)
+                            if (fileUri != null) {
+                                val installIntent = Intent(Intent.ACTION_VIEW).apply {
+                                    setDataAndType(fileUri, "application/vnd.android.package-archive")
+                                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                                startActivity(installIntent)
+                            }
+                        } catch (e: Exception) {
+                            try {
+                                val viewIntent = Intent(DownloadManager.ACTION_VIEW_DOWNLOADS).apply {
+                                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                                }
+                                startActivity(viewIntent)
+                            } catch (ex: Exception) {
+                                // Ignored
+                            }
+                        }
+                        try {
+                            unregisterReceiver(this)
+                        } catch (e: Exception) {
+                            // Ignored
+                        }
+                    }
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_EXPORTED)
+            } else {
+                registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+            }
+        } catch (e: Exception) {
+            try {
+                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)).apply {
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                }
+                startActivity(browserIntent)
+            } catch (ex: Exception) {
+                Toast.makeText(this, "تعذر بدء التنزيل", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     class WebAppInterface(private val activity: MainActivity, private val webView: WebView) {
+
+        @JavascriptInterface
+        fun getAppVersion(): String {
+            return try {
+                val pInfo = activity.packageManager.getPackageInfo(activity.packageName, 0)
+                pInfo.versionName ?: "1.0.0"
+            } catch (e: Exception) {
+                "1.0.0"
+            }
+        }
+
+        @JavascriptInterface
+        fun downloadAndInstallApk(url: String) {
+            activity.runOnUiThread {
+                activity.handleApkUpdate(url)
+            }
+        }
 
         @JavascriptInterface
         fun pasteFromClipboard() {
