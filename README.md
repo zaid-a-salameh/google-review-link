@@ -14,13 +14,14 @@
 ## Core Capabilities & Features
 
 - **Direct 5-Star Review Generation**: Extracts Place IDs from full Google Maps URLs, place share links, and `maps.app.goo.gl` shortlinks into direct `search.google.com/local/writereview?placeid=...` review links.
-- **Find Business Search Mode**: Integrated workflow allowing users to query businesses directly on Google Maps and auto-convert via 1-tap clipboard integration.
+- **Real-Time Places Search Mode**: Integrated Google Maps Places Autocomplete engine allowing users to discover businesses with live suggestions and instant 5-star review link generation.
+- **Continuous Batch NFC Writing (Android)**: Multi-tag writing engine that programs dozens of NFC cards/stickers (NTAG213/215/216) in a continuous loop with live counter tracking and haptic vibration feedback.
+- **In-App Update Checker & Self-Updating APK**: Built-in update engine that checks GitHub Releases for new versions, shows release highlights, and downloads/installs APK updates directly inside the app.
+- **High-Resolution QR Code Engine**: Generates crisp, downloadable vector-grade QR codes inside an animated modal dialog.
 - **Desktop Showcase & Sticky Navigation**: Tailored desktop experience featuring a glassmorphic top navigation bar, 3-step visual workflow guides, and interactive feature highlights.
 - **Micro-Spring & Entrance Animations**: Hardware-accelerated entrance choreography and physics-based spring toggles for instantaneous feedback with zero layout shifts.
-- **Instant NFC Tag Writing (Android)**: Cleanly overwrites, formats, and locks writable NFC tags (NTAG213/215/216) with the direct review URL in one tap.
-- **High-Resolution QR Code Engine**: Generates crisp, downloadable vector-grade QR codes inside an animated modal dialog.
-- **Bilingual English & Arabic Interface**: Full bi-directional support (LTR / RTL) with seamless cross-dissolve transitions between Inter and Cairo typography.
-- **Zero API Key Requirement**: Completely free and open-source architecture that requires no third-party API credentials or billing accounts.
+- **Bilingual English & Arabic Interface**: Full bi-directional support (LTR / RTL) with seamless cross-dissolve transitions between Inter and Cairo typography, plus 100% localized notifications.
+- **Zero API Key Requirement**: Completely free and open-source architecture that requires no mandatory third-party API credentials or billing accounts.
 - **100% Offline-First Architecture**: Android APK bundles all dependencies locally for offline Place ID parsing and QR generation.
 
 ---
