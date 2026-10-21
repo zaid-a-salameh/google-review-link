@@ -16,6 +16,9 @@
         const openBtn = $('openBtn');
         const shareBtn = $('shareBtn');
         const qrBtn = $('qrBtn');
+        const qrOverlay = $('qrOverlay');
+        const qrCloseBtn = $('qrCloseBtn');
+        const qrDownloadBtn = $('qrDownloadBtn');
         const tabLinkMode = $('tabLinkMode');
         const tabSearchMode = $('tabSearchMode');
         const businessSearchInput = $('businessSearchInput');
@@ -23,15 +26,11 @@
         const searchFieldWrapper = $('searchFieldWrapper');
         const placesDropdown = $('placesDropdown');
         const resultCard = $('resultCard');
-        const qrOverlay = $('qrOverlay');
-        const qrCloseBtn = $('qrCloseBtn');
-        const qrDownloadBtn = $('qrDownloadBtn');
         const btnEn = $('btnEn');
         const btnAr = $('btnAr');
         const navBtnEn = $('navBtnEn');
         const navBtnAr = $('navBtnAr');
 
-        let pendingAutoConvert = false;
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
 
@@ -66,7 +65,7 @@
                     urlInput.focus();
                 }
                 if (resultCard) resultCard.classList.remove('active');
-                window.showToast(dict.toastCleared, 'trash');
+                if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }
 
@@ -83,11 +82,11 @@
                                 urlInput.value = text.trim();
                                 urlInput.focus();
                             }
-                            window.showToast(dict.toastPasted, 'paste');
+                            if (window.showToast) window.showToast(dict.toastPasted, 'paste');
                             window.handleConvert();
                             return;
                         } else {
-                            window.showToast(dict.toastEmptyClip, 'warn');
+                            if (window.showToast) window.showToast(dict.toastEmptyClip, 'warn');
                             if (urlInput) urlInput.focus();
                             return;
                         }
@@ -99,7 +98,7 @@
                     urlInput.focus();
                     urlInput.select();
                 }
-                window.showToast(dict.toastClipDenied, 'paste');
+                if (window.showToast) window.showToast(dict.toastClipDenied, 'paste');
             });
         }
 
@@ -113,13 +112,13 @@
                     await navigator.clipboard.writeText(reviewUrl);
                     copyBtn.classList.add('copied');
                     if (copyBtnLabel) copyBtnLabel.textContent = dict.copySuccess;
-                    window.showToast(dict.toastCopied, 'copy');
+                    if (window.showToast) window.showToast(dict.toastCopied, 'copy');
                     setTimeout(() => {
                         copyBtn.classList.remove('copied');
                         if (copyBtnLabel) copyBtnLabel.textContent = dict.copyBtn;
                     }, 2000);
                 } catch (e) {
-                    window.showToast(dict.toastCopied, 'copy');
+                    if (window.showToast) window.showToast(dict.toastCopied, 'copy');
                 }
             });
         }
@@ -146,13 +145,14 @@
                     } catch (err) {}
                 } else {
                     await navigator.clipboard.writeText(reviewUrl);
-                    window.showToast(dict.toastShareCopied, 'copy');
+                    if (window.showToast) window.showToast(dict.toastShareCopied, 'copy');
                 }
             });
         }
 
         if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
         if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
+        if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
         if (qrOverlay) {
             qrOverlay.addEventListener('click', e => {
                 if (e.target === qrOverlay) window.closeQrModal();
@@ -224,7 +224,7 @@
                     if (urlInput) urlInput.value = trimmed;
                     businessSearchInput.value = '';
                     window.hidePlacesDropdown();
-                    window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
+                    if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
                     window.handleConvert();
                     return;
                 }

@@ -4,7 +4,7 @@
 (function() {
     'use strict';
 
-        const I18N = {
+    const I18N = {
             en: {
                 apkDownload: "Get Android App",
                 docTitle: "Review Link Generator",
@@ -60,6 +60,7 @@
                 faq4A: "Yes, it is 100% free and open-source. It does not require any Google Cloud API key, credit card, or user registration. All Place ID resolution and link formatting runs directly in your browser or Android device.",
                 footerTagline: "Free open-source 5-star Google review link creator & NFC tool.",
                 footerApk: "Android APK",
+                footerGithub: "GitHub Repository",
                 footerBackToTop: "↑ Back to Top",
                 footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
                 resultLabel: "Direct Review Link:",
@@ -195,6 +196,7 @@
                 faq4A: "الأداة مجانية ومفتوحة المصدر بالكامل بنسبة 100%. لا تتطلب أي مفتاح Google Cloud API أو بطاقة بنكية أو تسجيل حساب، وتعمل مباشرة عبر المتصفح أو تطبيق الأندرويد.",
                 footerTagline: "أداة مفتوحة المصدر ومجانية لإنشاء روابط تقييم جوجل 5 نجوم وبرمجة بطاقات NFC.",
                 footerApk: "تطبيق أندرويد",
+                footerGithub: "مستودع GitHub",
                 footerBackToTop: "↑ العودة للأعلى",
                 footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
                 resultLabel: "رابط التقييم المباشر:",
@@ -280,188 +282,217 @@
     let currentLang = localStorage.getItem('app_lang') || 'en';
     let isLangSwitching = false;
 
-        function updateSliderPill(lang) {
-            const isAr = lang === 'ar';
-            const offset = isAr ? '48px' : '0px';
+    function updateSliderPill(lang) {
+        const isAr = lang === 'ar';
+        const offset = isAr ? '48px' : '0px';
 
-            if (btnEn && btnAr && langSlider) {
-                if (isAr) {
-                    btnEn.classList.remove('active');
-                    btnAr.classList.add('active');
-                } else {
-                    btnAr.classList.remove('active');
-                    btnEn.classList.add('active');
-                }
-                langSlider.style.transform = `translateX(${offset})`;
+        const btnEn = document.getElementById('btnEn');
+        const btnAr = document.getElementById('btnAr');
+        const langSlider = document.getElementById('langSlider');
+        if (btnEn && btnAr && langSlider) {
+            if (isAr) {
+                btnEn.classList.remove('active');
+                btnAr.classList.add('active');
+            } else {
+                btnAr.classList.remove('active');
+                btnEn.classList.add('active');
             }
-
-            if (navBtnEn && navBtnAr && navLangSlider) {
-                if (isAr) {
-                    navBtnEn.classList.remove('active');
-                    navBtnAr.classList.add('active');
-                } else {
-                    navBtnAr.classList.remove('active');
-                    navBtnEn.classList.add('active');
-                }
-                navLangSlider.style.transform = `translateX(${offset})`;
-            }
+            langSlider.style.transform = `translateX(${offset})`;
         }
 
-        function updateDomLanguageStrings(lang, dict) {
-            // Update HTML attributes
-            document.documentElement.lang = lang;
-            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-            document.title = dict.docTitle;
-            if (metaDescription) metaDescription.setAttribute('content', dict.metaDesc);
-
-            // Update text content
-            if (apkDownloadLabel) apkDownloadLabel.textContent = dict.apkDownload;
-            appTitle.textContent = dict.appTitle;
-            appSubtitle.textContent = dict.appSubtitle;
-            
-            // Mode Switcher & Inputs
-            if (tabLinkLabel) tabLinkLabel.textContent = dict.tabLink;
-            if (tabSearchLabel) tabSearchLabel.textContent = dict.tabSearch;
-            urlInput.placeholder = dict.placeholder;
-            clearBtn.title = dict.trashTitle;
-            pasteBtnLabel.textContent = dict.pasteBtn;
-            pasteBtn.title = dict.pasteBtn;
-
-            if (businessSearchInput) businessSearchInput.placeholder = dict.searchPlaceholder;
-            
-            if (!convertBtn.disabled) {
-                btnText.textContent = dict.convertBtn;
+        const navBtnEn = document.getElementById('navBtnEn');
+        const navBtnAr = document.getElementById('navBtnAr');
+        const navLangSlider = document.getElementById('navLangSlider');
+        if (navBtnEn && navBtnAr && navLangSlider) {
+            if (isAr) {
+                navBtnEn.classList.remove('active');
+                navBtnAr.classList.add('active');
+            } else {
+                navBtnAr.classList.remove('active');
+                navBtnEn.classList.add('active');
             }
-            
-            resultLabelText.textContent = dict.resultLabel;
-            if (!copyBtn.classList.contains('copied')) {
-                copyBtnLabel.textContent = dict.copyBtn;
-            }
-            openBtnLabel.textContent = dict.openBtn;
-            shareBtnLabel.textContent = dict.shareBtn;
-            if (qrBtnLabel) qrBtnLabel.textContent = dict.qrBtn;
-            if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle;
-            if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc;
-            if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn;
-            if (qrCloseBtn) qrCloseBtn.textContent = dict.qrCloseBtn;
-            if (nfcBtnLabel) nfcBtnLabel.textContent = dict.nfcBtn;
-            if (nfcCancelBtn) nfcCancelBtn.textContent = (nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+            navLangSlider.style.transform = `translateX(${offset})`;
+        }
+    }
 
-            // Desktop Navbar
-            if (navApkLabel) navApkLabel.textContent = dict.navApk;
-            if (navGithubLabel) navGithubLabel.textContent = dict.navGithub;
+    function updateDomLanguageStrings(lang, dict) {
+        if (!dict) return;
 
-            // Desktop Marketing & Footer
-            if (tagHowItWorks) tagHowItWorks.textContent = dict.tagHowItWorks;
-            if (titleHowItWorks) titleHowItWorks.textContent = dict.titleHowItWorks;
-            if (subHowItWorks) subHowItWorks.textContent = dict.subHowItWorks;
-            if (step1Title) step1Title.textContent = dict.step1Title;
-            if (step1Desc) step1Desc.textContent = dict.step1Desc;
-            if (step2Title) step2Title.textContent = dict.step2Title;
-            if (step2Desc) step2Desc.textContent = dict.step2Desc;
-            if (step3Title) step3Title.textContent = dict.step3Title;
-            if (step3Desc) step3Desc.textContent = dict.step3Desc;
-            if (tagFeatures) tagFeatures.textContent = dict.tagFeatures;
-            if (titleFeatures) titleFeatures.textContent = dict.titleFeatures;
-            if (subFeatures) subFeatures.textContent = dict.subFeatures;
-            if (feat1Title) feat1Title.textContent = dict.feat1Title;
-            if (feat1Desc) feat1Desc.textContent = dict.feat1Desc;
-            if (feat2Title) feat2Title.textContent = dict.feat2Title;
-            if (feat2Desc) feat2Desc.textContent = dict.feat2Desc;
-            if (feat3Title) feat3Title.textContent = dict.feat3Title;
-            if (feat3Desc) feat3Desc.textContent = dict.feat3Desc;
-            if (feat4Title) feat4Title.textContent = dict.feat4Title;
-            if (feat4Desc) feat4Desc.textContent = dict.feat4Desc;
-            if (tagFaq) tagFaq.textContent = dict.tagFaq;
-            if (titleFaq) titleFaq.textContent = dict.titleFaq;
-            if (subFaq) subFaq.textContent = dict.subFaq;
-            if (faq1Q) faq1Q.textContent = dict.faq1Q;
-            if (faq1A) faq1A.textContent = dict.faq1A;
-            if (faq2Q) faq2Q.textContent = dict.faq2Q;
-            if (faq2A) faq2A.textContent = dict.faq2A;
-            if (faq3Q) faq3Q.textContent = dict.faq3Q;
-            if (faq3A) faq3A.textContent = dict.faq3A;
-            if (faq4Q) faq4Q.textContent = dict.faq4Q;
-            if (faq4A) faq4A.textContent = dict.faq4A;
-            if (footerTagline) footerTagline.textContent = dict.footerTagline;
-            if (footerApkLink) footerApkLink.textContent = dict.footerApk;
-            if (footerBackToTop) footerBackToTop.textContent = dict.footerBackToTop;
-            if (footerCopyright) footerCopyright.innerHTML = dict.footerCopyright;
+        const setTxt = (id, text) => {
+            const el = document.getElementById(id);
+            if (el && text !== undefined && text !== null) el.textContent = text;
+        };
+        const setHtml = (id, html) => {
+            const el = document.getElementById(id);
+            if (el && html !== undefined && html !== null) el.innerHTML = html;
+        };
 
-            // App Update Modal
-            if (updateBadgeText) updateBadgeText.textContent = dict.updateAvailable;
-            if (updateModalTitle) updateModalTitle.textContent = dict.updateReadyTitle;
-            if (lblCurrentVer) lblCurrentVer.textContent = dict.updateCurrent;
-            if (lblLatestVer) lblLatestVer.textContent = dict.updateNew;
-            if (updateChangelogHeader) updateChangelogHeader.textContent = dict.updateHighlights;
-            if (btnUpdateNowLabel) btnUpdateNowLabel.textContent = dict.updateInstallBtn;
-            if (btnUpdateGithubLabel) btnUpdateGithubLabel.textContent = dict.updateViewGithub;
-            if (btnUpdateLater) btnUpdateLater.textContent = dict.updateLater;
+        // Update HTML attributes
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        if (dict.docTitle) document.title = dict.docTitle;
+
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && dict.metaDesc) metaDesc.setAttribute('content', dict.metaDesc);
+
+        // Desktop Navbar
+        setTxt('navGithubLabel', dict.navGithub);
+        setTxt('navApkLabel', dict.navApk);
+
+        // Top bar & Header
+        setTxt('apkDownloadLabel', dict.apkDownload);
+        setTxt('appTitle', dict.appTitle);
+        setTxt('appSubtitle', dict.appSubtitle);
+
+        // Mode Switcher & Inputs
+        setTxt('tabLinkLabel', dict.tabLink);
+        setTxt('tabSearchLabel', dict.tabSearch);
+
+        const urlInput = document.getElementById('urlInput');
+        if (urlInput && dict.placeholder) urlInput.placeholder = dict.placeholder;
+
+        const clearBtn = document.getElementById('clearBtn');
+        if (clearBtn && dict.trashTitle) clearBtn.title = dict.trashTitle;
+
+        setTxt('pasteBtnLabel', dict.pasteBtn);
+        const pasteBtn = document.getElementById('pasteBtn');
+        if (pasteBtn && dict.pasteBtn) pasteBtn.title = dict.pasteBtn;
+
+        const businessSearchInput = document.getElementById('businessSearchInput');
+        if (businessSearchInput && dict.searchPlaceholder) businessSearchInput.placeholder = dict.searchPlaceholder;
+
+        const searchClearBtn = document.getElementById('searchClearBtn');
+        if (searchClearBtn && dict.trashTitle) searchClearBtn.title = dict.trashTitle;
+
+        const convertBtn = document.getElementById('convertBtn');
+        if (convertBtn && !convertBtn.disabled) {
+            setTxt('btnText', dict.convertBtn);
         }
 
-        function applyLanguage(lang, animate = true) {
-            if (animate && (lang === currentLang || isLangSwitching)) return;
+        // Results Card
+        setTxt('resultLabelText', dict.resultLabel);
 
-            currentLang = lang;
+        const copyBtn = document.getElementById('copyBtn');
+        if (copyBtn && !copyBtn.classList.contains('copied')) {
+            setTxt('copyBtnLabel', dict.copyBtn);
+        }
+        setTxt('openBtnLabel', dict.openBtn);
+        setTxt('shareBtnLabel', dict.shareBtn);
+        setTxt('qrBtnLabel', dict.qrBtn);
+        setTxt('nfcBtnLabel', dict.nfcBtn);
+
+        // QR Modal
+        setTxt('qrModalTitle', dict.qrModalTitle);
+        setTxt('qrModalDesc', dict.qrModalDesc);
+        setTxt('qrDownloadBtnLabel', dict.qrDownloadBtn);
+        setTxt('qrCloseBtn', dict.qrCloseBtn);
+
+        // NFC Modal (Native App)
+        setTxt('nfcTitle', dict.nfcTitleReady);
+        setTxt('nfcDesc', dict.nfcDescReady);
+        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+        if (nfcCancelBtn) {
+            nfcCancelBtn.textContent = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+        }
+
+        // Desktop Marketing (Web)
+        setTxt('tagHowItWorks', dict.tagHowItWorks);
+        setTxt('titleHowItWorks', dict.titleHowItWorks);
+        setTxt('subHowItWorks', dict.subHowItWorks);
+        setTxt('step1Title', dict.step1Title);
+        setTxt('step1Desc', dict.step1Desc);
+        setTxt('step2Title', dict.step2Title);
+        setTxt('step2Desc', dict.step2Desc);
+        setTxt('step3Title', dict.step3Title);
+        setTxt('step3Desc', dict.step3Desc);
+
+        setTxt('tagFeatures', dict.tagFeatures);
+        setTxt('titleFeatures', dict.titleFeatures);
+        setTxt('subFeatures', dict.subFeatures);
+        setTxt('feat1Title', dict.feat1Title);
+        setTxt('feat1Desc', dict.feat1Desc);
+        setTxt('feat2Title', dict.feat2Title);
+        setTxt('feat2Desc', dict.feat2Desc);
+        setTxt('feat3Title', dict.feat3Title);
+        setTxt('feat3Desc', dict.feat3Desc);
+        setTxt('feat4Title', dict.feat4Title);
+        setTxt('feat4Desc', dict.feat4Desc);
+
+        setTxt('tagFaq', dict.tagFaq);
+        setTxt('titleFaq', dict.titleFaq);
+        setTxt('subFaq', dict.subFaq);
+        setTxt('faq1Q', dict.faq1Q);
+        setTxt('faq1A', dict.faq1A);
+        setTxt('faq2Q', dict.faq2Q);
+        setTxt('faq2A', dict.faq2A);
+        setTxt('faq3Q', dict.faq3Q);
+        setTxt('faq3A', dict.faq3A);
+        setTxt('faq4Q', dict.faq4Q);
+        setTxt('faq4A', dict.faq4A);
+
+        // Footer
+        setTxt('footerTagline', dict.footerTagline);
+        setTxt('footerApkLink', dict.footerApk);
+        setTxt('footerGithubLink', dict.footerGithub);
+        setTxt('footerBackToTop', dict.footerBackToTop);
+        setHtml('footerCopyright', dict.footerCopyright);
+
+        // App Update Modal (Native App)
+        setTxt('updateBadgeText', dict.updateAvailable);
+        setTxt('updateModalTitle', dict.updateReadyTitle);
+        setTxt('lblCurrentVer', dict.updateCurrent);
+        setTxt('lblLatestVer', dict.updateNew);
+        setTxt('updateChangelogHeader', dict.updateHighlights);
+        setTxt('btnUpdateNowLabel', dict.updateInstallBtn);
+        setTxt('btnUpdateGithubLabel', dict.updateViewGithub);
+        setTxt('btnUpdateLater', dict.updateLater);
+    }
+
+    function applyLanguage(lang, animate = true) {
+        if (animate && (lang === currentLang || isLangSwitching)) return;
+
+        currentLang = lang;
+        try {
             localStorage.setItem('app_lang', lang);
-            const dict = I18N[lang];
+        } catch (e) {}
+        const dict = I18N[lang];
+        if (!dict) return;
 
-            // 1. Instant feedback: glide slider pill immediately with spring physics
-            updateSliderPill(lang);
+        // 1. Instant feedback: glide slider pill immediately with spring physics
+        updateSliderPill(lang);
 
-            if (!animate) {
+        if (!animate) {
+            try {
                 updateDomLanguageStrings(lang, dict);
-                return;
+            } catch (e) {
+                console.error('Error applying language strings:', e);
             }
+            return;
+        }
 
-            // 2. Coordinated cross-dissolve with layout lock
-            isLangSwitching = true;
-            document.body.classList.add('is-lang-switching');
+        // 2. Coordinated cross-dissolve with layout lock
+        isLangSwitching = true;
+        document.body.classList.add('is-lang-switching');
 
-            // Phase 1: Wait for fade-out and subtle blur to reach apex (~140ms)
-            setTimeout(() => {
-                // Update DOM text & layout direction while completely invisible
+        setTimeout(() => {
+            try {
                 updateDomLanguageStrings(lang, dict);
-
-                // Force layout reflow so the browser computes new RTL/LTR geometry and typography
                 void document.documentElement.offsetHeight;
-
-                // Phase 2: Smoothly bloom into focus
+            } catch (e) {
+                console.error('Error during language switch:', e);
+            } finally {
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
                     setTimeout(() => {
                         isLangSwitching = false;
                     }, 240);
                 });
-            }, 140);
-        }
-
-        // Toggle Listeners (Mobile Header)
-        btnEn.addEventListener('click', () => {
-            if (currentLang !== 'en') applyLanguage('en', true);
-        });
-        btnAr.addEventListener('click', () => {
-            if (currentLang !== 'ar') applyLanguage('ar', true);
-        });
-
-        // Toggle Listeners (Desktop Navbar)
-        if (navBtnEn) {
-            navBtnEn.addEventListener('click', () => {
-                if (currentLang !== 'en') applyLanguage('en', true);
-            });
-        }
-        if (navBtnAr) {
-            navBtnAr.addEventListener('click', () => {
-                if (currentLang !== 'ar') applyLanguage('ar', true);
-            });
-        }
+            }
+        }, 140);
+    }
 
     function switchLanguage(lang) {
         if (lang === currentLang) return;
-        currentLang = lang;
-        try {
-            localStorage.setItem('app_lang', lang);
-        } catch (e) {}
         applyLanguage(lang, true);
     }
 

@@ -70,7 +70,7 @@
                     urlInput.focus();
                 }
                 if (resultCard) resultCard.classList.remove('active');
-                window.showToast(dict.toastCleared, 'trash');
+                if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }
 
@@ -84,13 +84,13 @@
                         if (text && text.trim()) {
                             window.switchMode('link');
                             if (urlInput) urlInput.value = text.trim();
-                            window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
+                            if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
                             window.handleConvert();
                         } else {
-                            window.showToast(window.I18N[window.getCurrentLang()].toastEmptyClip, 'warn');
+                            if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastEmptyClip, 'warn');
                         }
                     }).catch(() => {
-                        window.showToast(window.I18N[window.getCurrentLang()].toastClipDenied, 'paste');
+                        if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastClipDenied, 'paste');
                     });
                 }
             });
@@ -109,7 +109,7 @@
                 }
                 copyBtn.classList.add('copied');
                 if (copyBtnLabel) copyBtnLabel.textContent = dict.copySuccess;
-                window.showToast(dict.toastCopied, 'copy');
+                if (window.showToast) window.showToast(dict.toastCopied, 'copy');
                 setTimeout(() => {
                     copyBtn.classList.remove('copied');
                     if (copyBtnLabel) copyBtnLabel.textContent = dict.copyBtn;
@@ -135,7 +135,7 @@
                     navigator.share({ title: dict.shareTitle, text: dict.shareText, url: reviewUrl }).catch(() => {});
                 } else if (navigator.clipboard) {
                     navigator.clipboard.writeText(reviewUrl);
-                    window.showToast(dict.toastShareCopied, 'copy');
+                    if (window.showToast) window.showToast(dict.toastShareCopied, 'copy');
                 }
             });
         }
@@ -143,6 +143,7 @@
         // ── QR Code Modal Handlers ──
         if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
         if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
+        if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
         if (qrOverlay) {
             qrOverlay.addEventListener('click', e => {
                 if (e.target === qrOverlay) window.closeQrModal();
@@ -150,19 +151,7 @@
         }
 
         // ── NFC Button & Modal Handlers ──
-        if (nfcBtn) {
-            nfcBtn.addEventListener('click', () => {
-                const reviewUrl = window.getGeneratedReviewUrl();
-                if (!reviewUrl) return;
-                const dict = window.I18N[window.getCurrentLang()];
-                if (window.AndroidNative && window.AndroidNative.startNfcWrite) {
-                    window.openNfcModal();
-                    window.AndroidNative.startNfcWrite(reviewUrl);
-                } else {
-                    window.showToast(dict.nfcNoHardware, 'warn');
-                }
-            });
-        }
+        if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
         if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
 
         // ── In-App Update Handlers ──
@@ -175,7 +164,7 @@
                 const targetUrl = window.latestApkDownloadUrl || 'https://github.com/zaid-a-salameh/google-review-link/releases/latest/download/ReviewLinkGenerator.apk';
                 if (window.AndroidNative && typeof window.AndroidNative.downloadAndInstallApk === 'function') {
                     window.AndroidNative.downloadAndInstallApk(targetUrl);
-                    window.showToast(dict.toastDownloadStarted, 'download');
+                    if (window.showToast) window.showToast(dict.toastDownloadStarted, 'download');
                     window.closeUpdateModal();
                 } else {
                     window.open(targetUrl, '_blank');
@@ -256,7 +245,7 @@
                     if (urlInput) urlInput.value = trimmed;
                     businessSearchInput.value = '';
                     window.hidePlacesDropdown();
-                    window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
+                    if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
                     window.handleConvert();
                     return;
                 }
@@ -279,7 +268,10 @@
         // ── Native Body Marker ──
         document.body.classList.add('is-native-app');
 
-        // ── Initialize ──
+        // ── Initialize Version Text ──
+        if (window.initAppVersionDisplay) window.initAppVersionDisplay();
+
+        // ── Initialize Language & Places ──
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
 
