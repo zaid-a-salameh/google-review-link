@@ -1,0 +1,28 @@
+/* ======================================================== */
+/* Native Android App Layout & Viewport Overrides           */
+/* ======================================================== */
+
+body {
+    padding: 16px;
+    padding-top: max(56px, env(safe-area-inset-top, 56px));
+    padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+    overflow-x: hidden;
+}
+
+.main-wrapper {
+    padding: 0;
+    max-width: 100%;
+}
+
+.app-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.btn-download-apk {
+    display: none !important;
+}
+
+.desktop-navbar {
+    display: none !important;
+}

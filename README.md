@@ -40,16 +40,40 @@ Download and install [ReviewLinkGenerator.apk](https://github.com/zaid-a-salameh
 
 <pre>
 google-review-link/
-├── index.html                   # Core web application & desktop showcase
-├── qrcode.min.js                # Offline client-side QR generation engine
-├── ReviewLinkGenerator.apk      # Compiled standalone Android application
-├── README.md                    # Project documentation
-├── .gitignore                   # Git version control rules
-└── android-app/                 # Native Android Studio project (Kotlin)
+├── src/                             # Modular source codebase
+│   ├── css/                         # Scoped stylesheets
+│   │   ├── variables.css            # Design tokens & keyframes
+│   │   ├── base.css                 # Reset, typography & containers
+│   │   ├── components.css           # Inputs, tabs, result card & action buttons
+│   │   ├── search-dropdown.css      # Places Autocomplete & search mode
+│   │   ├── modals.css               # QR, NFC & Update modal dialogs
+│   │   ├── toast.css                # Localized notification toast styles
+│   │   ├── marketing.css            # Desktop navbar, steps, FAQ & footer (Web only)
+│   │   └── app.css                  # Viewport & safe-area styles (Android only)
+│   ├── js/                          # Scoped JavaScript modules
+│   │   ├── core/                    # Shared business logic (i18n, toast, converter, places, qr)
+│   │   ├── app/                     # Android native logic (nfc, updater, bridge)
+│   │   ├── web/                     # Web desktop interactions (marketing)
+│   │   ├── app-main.js              # Native Android entry point
+│   │   └── web-main.js              # Web production entry point
+│   └── templates/                   # Clean HTML templates
+│       ├── web-index.html           # Full Web & marketing template
+│       └── app-index.html           # Lightweight Native APK template
+├── scripts/
+│   └── build_and_sync.py            # Automated build & asset synchronization script
+├── index.html                       # Web entry point (GitHub Pages)
+├── qrcode.min.js                    # Offline client-side QR generation engine
+├── ReviewLinkGenerator.apk          # Compiled standalone Android application
+├── README.md                        # Project documentation
+├── .gitignore                       # Git version control rules
+└── android-app/                     # Native Android Studio project (Kotlin)
     ├── app/src/main/
-    │   ├── java/.../MainActivity.kt   # Native NFC, clipboard, and bridge layer
-    │   └── assets/index.html          # Bundled offline assets
-    └── build.gradle                   # Gradle configuration
+    │   ├── java/.../MainActivity.kt # Native NFC, clipboard, and bridge layer
+    │   └── assets/                  # Synchronized high-performance APK assets
+    │       ├── index.html           # Dedicated native UI (zero marketing DOM)
+    │       ├── css/                 # Scoped APK styles
+    │       └── js/                  # Scoped APK scripts
+    └── build.gradle.kts             # Gradle configuration
 </pre>
 
 ---

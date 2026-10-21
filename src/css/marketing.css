@@ -1,0 +1,475 @@
+/* Desktop Marketing, Navbar, FAQ & Footer (Web Only) */
+        /* Desktop Sticky Navbar */
+        .desktop-navbar {
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(12, 10, 9, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--border);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        body.is-native-app .desktop-navbar {
+            display: none !important;
+        }
+        .navbar-inner {
+            max-width: 1060px;
+            margin: 0 auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #ffffff;
+            user-select: none;
+        }
+        .brand-logo-mini {
+            width: 34px;
+            height: 34px;
+            border-radius: 11px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+        }
+        .brand-logo-mini svg {
+            width: 20px;
+            height: 20px;
+        }
+        .brand-name {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+        }
+        .brand-badge {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 50px;
+            background: rgba(249, 115, 22, 0.15);
+            color: #fdba74;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .nav-link-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .btn-nav-github {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            color: #d6d3d1;
+        }
+        .btn-nav-github:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-nav-github svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+        .btn-nav-apk {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+        }
+        .btn-nav-apk:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+        }
+        .btn-nav-apk svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+        @media (max-width: 600px) {
+            .brand-name, .brand-badge {
+                display: none;
+            }
+            .nav-link-btn span {
+                display: none;
+            }
+            .nav-link-btn {
+                padding: 6px 10px;
+            }
+        }
+
+
+        /* Download APK Button (Visible on Web only, hidden in native app) */
+        .btn-download-apk {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(249, 115, 22, 0.12);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: 50px;
+            color: #fdba74;
+            font-family: 'Inter', 'Cairo', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-decoration: none;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .btn-download-apk:hover {
+            background: rgba(249, 115, 22, 0.22);
+            border-color: rgba(249, 115, 22, 0.6);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-download-apk:active {
+            transform: scale(0.96);
+        }
+        .btn-download-apk svg {
+            width: 13px;
+            height: 13px;
+            fill: currentColor;
+        }
+        body.is-native-app .btn-download-apk {
+            display: none !important;
+        }
+
+
+        /* Marketing Sections (Desktop Web) */
+        .desktop-marketing {
+            width: 100%;
+            max-width: 1060px;
+            margin-top: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 60px;
+            position: relative;
+            z-index: 5;
+        }
+        .marketing-section {
+            position: relative;
+            z-index: 5;
+        }
+        body.is-native-app .desktop-marketing {
+            display: none !important;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .section-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 50px;
+            background: rgba(249, 115, 22, 0.12);
+            color: #fb923c;
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+        .section-title {
+            font-size: 26px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.4px;
+            margin-bottom: 8px;
+        }
+        .section-subtitle {
+            font-size: 14px;
+            color: var(--text-sub);
+            max-width: 580px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Steps Grid */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .step-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-app);
+            padding: 28px 22px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+        .step-card:hover {
+            border-color: rgba(249, 115, 22, 0.4);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+        .step-card-num {
+            position: absolute;
+            top: 20px;
+            right: 22px;
+            font-size: 20px;
+            font-weight: 900;
+            color: rgba(255, 255, 255, 0.12);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        html[lang="ar"] .step-card-num {
+            right: auto;
+            left: 22px;
+        }
+        .step-illustration-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 18px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .step-illustration-box svg {
+            width: 32px;
+            height: 32px;
+        }
+        .step-card-heading {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .step-card-text {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.6;
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (max-width: 520px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .feat-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 22px 18px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.25s;
+        }
+        .feat-card:hover {
+            border-color: rgba(249, 115, 22, 0.35);
+            transform: translateY(-2px);
+        }
+        .feat-icon-badge {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+            transition: all 0.25s ease;
+        }
+        .feat-icon-badge svg {
+            width: 22px;
+            height: 22px;
+        }
+        .feat-badge-star {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.3);
+            fill: #f59e0b;
+        }
+        .feat-badge-nfc {
+            background: rgba(249, 115, 22, 0.12);
+            border-color: rgba(249, 115, 22, 0.3);
+            fill: #fb923c;
+        }
+        .feat-badge-qr {
+            background: rgba(56, 189, 248, 0.12);
+            border-color: rgba(56, 189, 248, 0.3);
+            fill: #38bdf8;
+        }
+        .feat-badge-shield {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.3);
+            fill: #10b981;
+        }
+        .feat-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .feat-card-text {
+            font-size: 12.5px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* FAQ Section */
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 768px) {
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .faq-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-app);
+            padding: 24px 22px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: all 0.25s ease;
+        }
+        .faq-item:hover {
+            border-color: rgba(249, 115, 22, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+        .faq-question {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .faq-answer {
+            font-size: 13.5px;
+            color: var(--text-sub);
+            line-height: 1.65;
+        }
+
+        /* Footer */
+        .app-footer {
+            width: 100%;
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+        .footer-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-brand-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .footer-brand-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .footer-nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+        .footer-nav-links a {
+            color: var(--text-sub);
+            text-decoration: none;
+            font-size: 12.5px;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .footer-nav-links a:hover {
+            color: #fb923c;
+        }
+        .footer-bottom {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding-top: 16px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.06);
+        }
+        .footer-bottom a {
+            color: var(--text-sub);
+            text-decoration: none;
+        }
+        .footer-bottom a:hover {
+            color: #fb923c;
+        }
+
+        /* Desktop Layout Overrides */
+        @media (min-width: 768px) {
+            header h1 {
+                font-size: 28px;
+            }
+            header p {
+                font-size: 14.5px;
+            }
+            .glass-card {
+                padding: 26px 22px;
+            }
+            .search-field-wrapper {
+                height: 56px;
+            }
+            .input-box-wrapper {
+                height: 56px;
+            }
+            .tool-btn {
+                height: 56px;
+            }
+            .btn-convert {
+                height: 56px;
+                font-size: 16px;
+            }
+        }

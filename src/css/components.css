@@ -1,0 +1,353 @@
+/* Form Controls, Buttons, Tabs & Result Card */
+        /* Mode Switcher Tabs */
+        .mode-switcher-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .mode-tabs {
+            display: inline-flex;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+            gap: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .mode-tab {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .mode-tab:hover {
+            color: #ffffff;
+        }
+        .mode-tab.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+        }
+        .mode-tab svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        .mode-content {
+            display: none;
+            position: relative;
+            z-index: 50;
+            animation: fadeInMode 0.22s ease forwards;
+        }
+        .mode-content.active {
+            display: block;
+        }
+        .mode-content:has(.places-dropdown.show),
+        .mode-content.has-dropdown-open {
+            z-index: 2001;
+        }
+        @keyframes fadeInMode {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+
+        /* Input Controls Row */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 14px;
+            width: 100%;
+        }
+
+        .input-box-wrapper {
+            flex: 1;
+            min-width: 0;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-input);
+            display: flex;
+            align-items: center;
+            transition: all 0.25s ease;
+            overflow: hidden;
+        }
+        .input-box-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+            background: rgba(18, 16, 15, 0.98);
+        }
+        .url-input {
+            width: 100%;
+            min-width: 0;
+            height: 100%;
+            padding: 0 12px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            direction: ltr;
+            text-align: left;
+        }
+        .url-input::placeholder {
+            font-family: 'Inter', 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: 0.85;
+        }
+        html[lang="ar"] .url-input::placeholder {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        html[lang="en"] .url-input::placeholder {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Tool Buttons (Trash & Paste) */
+        .tool-btn {
+            height: 52px;
+            border-radius: var(--radius-input);
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        .tool-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* Trash/Clear Button */
+        .btn-trash {
+            width: 44px;
+            min-width: 44px;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+        .btn-trash:active {
+            background: rgba(239, 68, 68, 0.25);
+        }
+        .btn-trash svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Paste Button (Exclusive to Android Native APK) */
+        .btn-paste {
+            display: none;
+            padding: 0 12px;
+            background: rgba(249, 115, 22, 0.14);
+            border-color: rgba(249, 115, 22, 0.35);
+            color: #fdba74;
+        }
+        body.is-native-app .btn-paste {
+            display: flex;
+        }
+        .btn-paste:active {
+            background: rgba(249, 115, 22, 0.28);
+        }
+        .btn-paste svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        /* Convert Button */
+        .btn-convert {
+            width: 100%;
+            height: 52px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.45);
+            transition: all 0.2s ease;
+        }
+        .btn-convert:active {
+            transform: scale(0.98);
+            filter: brightness(0.92);
+        }
+        .btn-convert:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+        .btn-convert svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
+        /* Result Section */
+        .result-section {
+            display: none;
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .result-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .result-label svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--primary-light);
+        }
+
+        .result-link-box {
+            background: rgba(18, 16, 15, 0.9);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* The 3 Action Buttons */
+        .actions-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-action {
+            width: 100%;
+            height: 48px;
+            border-radius: var(--radius-btn);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+        .btn-action svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Button 1: Copy */
+        .btn-copy {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            color: #fdba74;
+        }
+        .btn-copy.copied {
+            background: rgba(16, 185, 129, 0.2) !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        /* Button 2: Open */
+        .btn-open {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #ffffff;
+        }
+
+        /* Button 3: Share */
+        .btn-share {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+        }
+
+        /* Button 4: QR Code */
+        .btn-qr {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: #ffffff;
+        }
+
+        /* Button 5: Write to NFC (Exclusive to Android Native APK) */
+        .btn-nfc {
+            display: none;
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.25) 0%, rgba(194, 65, 12, 0.35) 100%);
+            border: 1.5px solid rgba(249, 115, 22, 0.6);
+            color: #ffedd5;
+            box-shadow: 0 4px 18px rgba(234, 88, 12, 0.25);
+            margin-top: 4px;
+        }
+        body.is-native-app .btn-nfc {
+            display: flex;
+        }
+        .btn-nfc:active {
+            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.4);
+        }
