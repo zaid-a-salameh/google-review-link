@@ -23,6 +23,7 @@ import android.os.VibratorManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -87,6 +88,33 @@ class MainActivity : ComponentActivity() {
                     } catch (e: Exception) {
                         false
                     }
+                }
+
+                override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                    val url = request?.url ?: return null
+                    val host = url.host ?: ""
+                    val path = url.path ?: ""
+                    if (host == "zaid-a-salameh.github.io" && path.startsWith("/google-review-link/")) {
+                        val assetPath = path.removePrefix("/google-review-link/").trimStart('/')
+                        if (assetPath.isNotEmpty()) {
+                            try {
+                                val mimeType = when {
+                                    assetPath.endsWith(".css") -> "text/css"
+                                    assetPath.endsWith(".js") -> "application/javascript"
+                                    assetPath.endsWith(".png") -> "image/png"
+                                    assetPath.endsWith(".svg") -> "image/svg+xml"
+                                    assetPath.endsWith(".ico") -> "image/x-icon"
+                                    assetPath.endsWith(".html") -> "text/html"
+                                    else -> "text/plain"
+                                }
+                                val inputStream = assets.open(assetPath)
+                                return WebResourceResponse(mimeType, "UTF-8", inputStream)
+                            } catch (e: Exception) {
+                                // Asset not found locally, let WebView load normally
+                            }
+                        }
+                    }
+                    return super.shouldInterceptRequest(view, request)
                 }
             }
 

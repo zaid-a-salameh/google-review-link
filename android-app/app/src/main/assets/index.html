@@ -151,17 +151,2048 @@
     </noscript>
 
     <!-- QR Code Engine (Local bundled with defer) -->
-    <script src="qrcode.min.js" defer></script>
-
     <!-- Modular Stylesheets (Android Native APK) -->
-    <link rel="stylesheet" href="css/variables.css">
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/search-dropdown.css">
-    <link rel="stylesheet" href="css/modals.css">
-    <link rel="stylesheet" href="css/toast.css">
-    <link rel="stylesheet" href="css/app.css">
-</head>
+    <style>
+/* == variables.css == */
+/* Design Tokens & Root Variables */
+        :root {
+            --bg: #0c0a09;
+            --card: rgba(28, 25, 23, 0.75);
+            --card-elevated: rgba(41, 37, 36, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(249, 115, 22, 0.45);
+            
+            --primary: #f97316;
+            --primary-light: #fb923c;
+            --primary-gradient: linear-gradient(135deg, #ea580c, #f97316, #fb923c);
+            --success: #10b981;
+            --danger: #ef4444;
+            
+            --text: #fafaf9;
+            --text-sub: #a8a29e;
+            --text-muted: #78716c;
+            
+            --radius-app: 28px;
+            --radius-btn: 16px;
+            --radius-input: 16px;
+            
+            --shadow-glass: 0 16px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 0;
+            margin: 0;
+            position: relative;
+            overflow-x: hidden;
+            transition: opacity 0.2s ease;
+        }
+
+        body.is-native-app {
+            padding: 16px;
+            padding-top: max(56px, env(safe-area-inset-top, 56px));
+            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+        }
+
+        html[lang="ar"] body,
+        [dir="rtl"] body {
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Arabic', 'Tahoma', sans-serif;
+        }
+
+
+        /* Ambient Lighting */
+        .ambient-glow {
+            position: fixed;
+            width: 340px;
+            height: 340px;
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.35;
+        }
+        .glow-top {
+            background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, transparent 70%);
+            top: -70px;
+            right: -70px;
+        }
+        .glow-bottom {
+            background: radial-gradient(circle, rgba(234, 88, 12, 0.35) 0%, transparent 70%);
+            bottom: -90px;
+            left: -80px;
+        }
+
+
+        /* Seamless Morphing Language Transition */
+        .lang-fade-node {
+            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
+                        filter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform, filter;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+        }
+        body.is-lang-switching .lang-fade-node {
+            opacity: 0;
+            transform: translateY(4px) scale(0.996);
+            filter: blur(2.5px);
+            pointer-events: none;
+            transition: opacity 0.14s cubic-bezier(0.4, 0, 1, 1), 
+                        transform 0.14s cubic-bezier(0.4, 0, 1, 1), 
+                        filter 0.14s cubic-bezier(0.4, 0, 1, 1);
+        }
+
+
+        /* ======================================================== */
+        /* Page Opening & Entrance Animations (Smooth Cascade)     */
+        /* ======================================================== */
+        @keyframes pageGlowBloom {
+            0% {
+                opacity: 0;
+                transform: scale(0.65);
+            }
+            100% {
+                opacity: 0.35;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pageNavSlideDown {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pageFadeSlideUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pageIconSpring {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) rotate(-8deg);
+            }
+            65% {
+                transform: scale(1.05) rotate(1deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        @keyframes pageCardFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(32px) scale(0.97);
+                filter: blur(4px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0px);
+            }
+        }
+
+        @keyframes pageSectionCascade {
+            0% {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Entrance Assignments with Orchestrated Delays */
+        .ambient-glow {
+            animation: pageGlowBloom 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+
+        .desktop-navbar {
+            animation: pageNavSlideDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+        }
+
+        .top-bar {
+            animation: pageFadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+        }
+
+        header {
+            animation: pageFadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+        }
+
+        .app-icon {
+            animation: pageIconSpring 0.85s cubic-bezier(0.34, 1.4, 0.64, 1) 0.12s backwards;
+        }
+
+        .glass-card {
+            animation: pageCardFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards;
+        }
+
+        #howItWorksSection {
+            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s backwards;
+        }
+
+        #featuresSection {
+            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.42s backwards;
+        }
+
+        #faqSection {
+            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+        }
+
+        .app-footer {
+            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s backwards;
+        }
+
+        /* Seamless Interruption Handling: When switching languages, cancel entrance keyframes */
+        body.is-lang-switching .ambient-glow,
+        body.is-lang-switching .desktop-navbar,
+        body.is-lang-switching .top-bar,
+        body.is-lang-switching header,
+        body.is-lang-switching .app-icon,
+        body.is-lang-switching .glass-card,
+        body.is-lang-switching .marketing-section,
+        body.is-lang-switching #faqSection,
+        body.is-lang-switching .app-footer {
+            animation: none !important;
+        }
+
+        /* Accessibility: Respect Reduced Motion Preferences */
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-glow,
+            .desktop-navbar,
+            .top-bar,
+            header,
+            .app-icon,
+            .glass-card,
+            .marketing-section,
+            .app-footer {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+            }
+        }
+
+/* == base.css == */
+/* Base Layout, Containers & Typography */
+        /* Main Page Wrapper */
+        .main-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 16px 60px;
+            position: relative;
+            z-index: 10;
+        }
+        body.is-native-app .main-wrapper {
+            padding: 0;
+        }
+
+        /* Screen Container */
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+            z-index: 10;
+            margin: 0 auto;
+        }
+        .app-container:has(.places-dropdown.show),
+        .app-container.has-dropdown-open {
+            z-index: 2000;
+        }
+        @media (min-width: 768px) {
+            .app-container {
+                max-width: 660px;
+            }
+        }
+        body.is-native-app .app-container {
+            max-width: 450px !important;
+        }
+
+        /* Top Bar with Language Switcher & APK Download (Mobile/Native) */
+        .top-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            width: 100%;
+            direction: ltr !important;
+        }
+        body.is-native-app .top-bar {
+            display: flex;
+        }
+
+
+        /* Language Toggle Pill */
+        .lang-pill-container {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background: rgba(28, 25, 23, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 3px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            direction: ltr !important;
+            unicode-bidi: isolate;
+        }
+        .lang-btn {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-family: 'Inter', 'Cairo', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            width: 48px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: color 0.22s ease, transform 0.12s ease;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .lang-btn:active {
+            transform: scale(0.92);
+        }
+        .lang-btn.active {
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .lang-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 48px;
+            height: 26px;
+            background: var(--primary-gradient);
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.45);
+            transition: transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+            z-index: 1;
+            pointer-events: none;
+            will-change: transform;
+        }
+
+
+        /* Header */
+        header {
+            text-align: center;
+            margin-top: 4px;
+            margin-bottom: 22px;
+        }
+        .app-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 12px;
+            border-radius: 18px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .app-icon svg {
+            width: 32px;
+            height: 32px;
+        }
+        header h1 {
+            font-size: 22px;
+            font-weight: 900;
+            letter-spacing: -0.3px;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        header p {
+            font-size: 13px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+
+        /* Glass Cards */
+        .glass-card {
+            position: relative;
+            z-index: 20;
+            background: var(--card);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-app);
+            padding: 20px 16px;
+            box-shadow: var(--shadow-glass);
+            margin-bottom: 16px;
+        }
+
+        .main-input-card {
+            z-index: 50;
+        }
+        .main-input-card:has(.places-dropdown.show),
+        .main-input-card.has-dropdown-open {
+            z-index: 2000;
+        }
+
+
+        /* App Version & Update Pill in Top Bar */
+        .btn-version-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            font-family: 'Inter', 'Cairo', sans-serif;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            backdrop-filter: blur(12px);
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .btn-version-pill:hover {
+            background: rgba(249, 115, 22, 0.12);
+            border-color: rgba(249, 115, 22, 0.4);
+            color: #fdba74;
+            transform: translateY(-1px);
+        }
+        .btn-version-pill:active {
+            transform: scale(0.96);
+        }
+        .btn-version-pill.has-update {
+            background: rgba(34, 197, 94, 0.12);
+            border-color: rgba(34, 197, 94, 0.45);
+            color: #86efac;
+        }
+        .version-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #78716c;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        .btn-version-pill.has-update .version-dot {
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e;
+            animation: pulse-update-dot 1.8s infinite;
+        }
+        @keyframes pulse-update-dot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.3); }
+        }
+
+        /* Brand Badge (Navbar) clickable */
+        .brand-badge {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .brand-badge:hover {
+            transform: scale(1.05);
+            background: rgba(249, 115, 22, 0.25);
+            border-color: rgba(249, 115, 22, 0.5);
+            color: #fdba74;
+        }
+        .brand-badge.has-update {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.5);
+            color: #86efac;
+        }
+
+
+        /* Responsive adjustments for compact screens */
+        @media (max-width: 380px) {
+            body {
+                padding: 12px 10px;
+            }
+            .glass-card {
+                padding: 16px 12px;
+            }
+            .input-row {
+                gap: 5px;
+            }
+            .btn-trash {
+                width: 40px;
+                min-width: 40px;
+            }
+            .btn-paste {
+                padding: 0 9px;
+                font-size: 11px;
+            }
+            .url-input {
+                padding: 0 8px;
+            }
+            .url-input::placeholder {
+                font-size: 10.5px;
+            }
+        }
+
+/* == components.css == */
+/* Form Controls, Buttons, Tabs & Result Card */
+        /* Mode Switcher Tabs */
+        .mode-switcher-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .mode-tabs {
+            display: inline-flex;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 4px;
+            gap: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .mode-tab {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 18px;
+            border-radius: 50px;
+            background: transparent;
+            border: none;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+        }
+        .mode-tab:hover {
+            color: #ffffff;
+        }
+        .mode-tab.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+        }
+        .mode-tab svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+        .mode-content {
+            display: none;
+            position: relative;
+            z-index: 50;
+            animation: fadeInMode 0.22s ease forwards;
+        }
+        .mode-content.active {
+            display: block;
+        }
+        .mode-content:has(.places-dropdown.show),
+        .mode-content.has-dropdown-open {
+            z-index: 2001;
+        }
+        @keyframes fadeInMode {
+            from { opacity: 0; transform: translateY(3px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+
+        /* Input Controls Row */
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 14px;
+            width: 100%;
+        }
+
+        .input-box-wrapper {
+            flex: 1;
+            min-width: 0;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-input);
+            display: flex;
+            align-items: center;
+            transition: all 0.25s ease;
+            overflow: hidden;
+        }
+        .input-box-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+            background: rgba(18, 16, 15, 0.98);
+        }
+        .url-input {
+            width: 100%;
+            min-width: 0;
+            height: 100%;
+            padding: 0 12px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            direction: ltr;
+            text-align: left;
+        }
+        .url-input::placeholder {
+            font-family: 'Inter', 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-muted);
+            font-size: 11.5px;
+            font-weight: 400;
+            letter-spacing: -0.1px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: 0.85;
+        }
+        html[lang="ar"] .url-input::placeholder {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        html[lang="en"] .url-input::placeholder {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Tool Buttons (Trash & Paste) */
+        .tool-btn {
+            height: 52px;
+            border-radius: var(--radius-input);
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            flex-shrink: 0;
+            transition: all 0.2s ease;
+            border: 1px solid var(--border);
+        }
+        .tool-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* Trash/Clear Button */
+        .btn-trash {
+            width: 44px;
+            min-width: 44px;
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.25);
+            color: #f87171;
+        }
+        .btn-trash:active {
+            background: rgba(239, 68, 68, 0.25);
+        }
+        .btn-trash svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Paste Button (Exclusive to Android Native APK) */
+        .btn-paste {
+            display: none;
+            padding: 0 12px;
+            background: rgba(249, 115, 22, 0.14);
+            border-color: rgba(249, 115, 22, 0.35);
+            color: #fdba74;
+        }
+        body.is-native-app .btn-paste {
+            display: flex;
+        }
+        .btn-paste:active {
+            background: rgba(249, 115, 22, 0.28);
+        }
+        .btn-paste svg {
+            width: 15px;
+            height: 15px;
+            fill: currentColor;
+        }
+
+        /* Convert Button */
+        .btn-convert {
+            width: 100%;
+            height: 52px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 8px 24px -4px rgba(234, 88, 12, 0.45);
+            transition: all 0.2s ease;
+        }
+        .btn-convert:active {
+            transform: scale(0.98);
+            filter: brightness(0.92);
+        }
+        .btn-convert:disabled {
+            opacity: 0.7;
+            cursor: wait;
+        }
+        .btn-convert svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        
+        .spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+
+        /* Result Section */
+        .result-section {
+            display: none;
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .result-section.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary-light);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .result-label svg {
+            width: 15px;
+            height: 15px;
+            fill: var(--primary-light);
+        }
+
+        .result-link-box {
+            background: rgba(18, 16, 15, 0.9);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            direction: ltr;
+            text-align: left;
+            word-break: break-all;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        /* The 3 Action Buttons */
+        .actions-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-action {
+            width: 100%;
+            height: 48px;
+            border-radius: var(--radius-btn);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+        .btn-action:active {
+            transform: scale(0.97);
+        }
+        .btn-action svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        /* Button 1: Copy */
+        .btn-copy {
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            color: #fdba74;
+        }
+        .btn-copy.copied {
+            background: rgba(16, 185, 129, 0.2) !important;
+            border-color: var(--success) !important;
+            color: var(--success) !important;
+        }
+
+        /* Button 2: Open */
+        .btn-open {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #ffffff;
+        }
+
+        /* Button 3: Share */
+        .btn-share {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            color: var(--text-sub);
+        }
+
+        /* Button 4: QR Code */
+        .btn-qr {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: #ffffff;
+        }
+
+        /* Button 5: Write to NFC (Exclusive to Android Native APK) */
+        .btn-nfc {
+            display: none;
+            background: linear-gradient(135deg, rgba(234, 88, 12, 0.25) 0%, rgba(194, 65, 12, 0.35) 100%);
+            border: 1.5px solid rgba(249, 115, 22, 0.6);
+            color: #ffedd5;
+            box-shadow: 0 4px 18px rgba(234, 88, 12, 0.25);
+            margin-top: 4px;
+        }
+        body.is-native-app .btn-nfc {
+            display: flex;
+        }
+        .btn-nfc:active {
+            box-shadow: 0 2px 10px rgba(234, 88, 12, 0.4);
+        }
+
+/* == search-dropdown.css == */
+/* Places Autocomplete & Search Mode */
+        /* Mode 2: Search Business Field & Helper */
+        .search-field-wrapper {
+            position: relative;
+            z-index: 60;
+            display: flex;
+            align-items: center;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 0 14px;
+            transition: all 0.25s ease;
+            margin-bottom: 14px;
+        }
+        .search-field-wrapper:has(.places-dropdown.show),
+        .search-field-wrapper.has-dropdown-open,
+        .search-field-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+            background: rgba(18, 16, 15, 0.98);
+            z-index: 2002;
+        }
+        .search-field-icon {
+            width: 20px;
+            height: 20px;
+            fill: var(--text-muted);
+            flex-shrink: 0;
+            margin-right: 10px;
+        }
+        html[lang="ar"] .search-field-icon {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .search-input::placeholder {
+            color: var(--text-muted);
+            font-size: 12px;
+        }
+        .search-clear-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 4px;
+            transition: color 0.2s;
+        }
+        .search-clear-btn:hover {
+            color: #ffffff;
+        }
+        .search-clear-btn.visible {
+            display: flex;
+        }
+        .search-clear-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* Search Guide Card */
+        .search-helper-card {
+            background: rgba(41, 37, 36, 0.4);
+            border: 1px dashed rgba(249, 115, 22, 0.35);
+            border-radius: var(--radius-btn);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .search-steps-list {
+            display: flex;
+            flex-direction: column;
+            gap: 9px;
+            font-size: 12.5px;
+            color: var(--text-sub);
+        }
+        .search-step-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .step-num-pill {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(249, 115, 22, 0.2);
+            color: #fb923c;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .search-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 480px) {
+            .search-actions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .btn-maps-search {
+            height: 48px;
+            border-radius: var(--radius-btn);
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid var(--border);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            transition: all 0.2s;
+        }
+        .btn-maps-search:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+        .btn-maps-search svg {
+            width: 17px;
+            height: 17px;
+            fill: #38bdf8;
+        }
+        .btn-autopaste-convert {
+            height: 48px;
+            border-radius: var(--radius-btn);
+            background: var(--primary-gradient);
+            border: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            transition: all 0.2s;
+        }
+        .btn-autopaste-convert:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+        .btn-autopaste-convert svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+        }
+
+        /* Mode 2: Real-time Autocomplete Dropdown & Key Settings */
+        .search-loading-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(249, 115, 22, 0.25);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        html[lang="ar"] .search-loading-spinner {
+            margin-right: 0;
+            margin-left: 8px;
+        }
+        .search-loading-spinner.active {
+            display: block;
+        }
+        .places-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            background: rgba(24, 20, 18, 0.98);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            border-radius: var(--radius-btn);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(249, 115, 22, 0.12);
+            max-height: 290px;
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            overscroll-behavior: contain;
+        }
+        .places-dropdown.show {
+            display: flex;
+        }
+        .place-suggestion-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.15s ease;
+            text-align: left;
+        }
+        html[lang="ar"] .place-suggestion-item {
+            text-align: right;
+        }
+        .place-suggestion-item:last-of-type {
+            border-bottom: none;
+        }
+        .place-suggestion-item:hover,
+        .place-suggestion-item.selected {
+            background: rgba(249, 115, 22, 0.16);
+        }
+        .place-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: rgba(249, 115, 22, 0.14);
+            border: 1px solid rgba(249, 115, 22, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .place-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: #fb923c;
+        }
+        .place-text {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .place-main {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .place-secondary {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .places-attribution {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 8px 14px;
+            background: rgba(0, 0, 0, 0.25);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 10px;
+            color: var(--text-muted);
+            gap: 6px;
+        }
+        html[lang="ar"] .places-attribution {
+            justify-content: flex-start;
+        }
+        .places-attribution svg {
+            height: 14px;
+            width: auto;
+        }
+
+        /* API Key Status Bar */
+        .api-key-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 12px;
+            background: rgba(41, 37, 36, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 12px;
+            margin-bottom: 14px;
+            font-size: 11.5px;
+        }
+        .api-key-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-sub);
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #94a3b8;
+            flex-shrink: 0;
+            transition: background 0.3s ease;
+        }
+        .status-dot.connected {
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+        .status-dot.demo {
+            background: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+        }
+        .status-dot.warning {
+            background: #f59e0b;
+        }
+        .btn-key-settings {
+            background: transparent;
+            border: none;
+            color: #fb923c;
+            font-family: inherit;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        .btn-key-settings:hover {
+            background: rgba(249, 115, 22, 0.15);
+        }
+        .btn-key-settings svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        /* Google Maps API Key Modal */
+        .gmp-key-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .gmp-key-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        .gmp-key-modal {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(28, 25, 23, 0.98);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(234, 88, 12, 0.2);
+            transform: scale(0.9) translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .gmp-key-overlay.active .gmp-key-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .gmp-key-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .gmp-key-title-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .gmp-key-header-icon {
+            width: 22px;
+            height: 22px;
+            fill: #fb923c;
+        }
+        .gmp-key-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .btn-gmp-key-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 24px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 2px 6px;
+            transition: color 0.2s;
+        }
+        .btn-gmp-key-close:hover {
+            color: #ffffff;
+        }
+        .gmp-key-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .gmp-key-desc {
+            font-size: 12.5px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+        .gmp-demo-box {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 14px;
+            padding: 12px 14px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .gmp-demo-icon {
+            width: 20px;
+            height: 20px;
+            fill: #38bdf8;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+        .gmp-demo-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: currentColor;
+        }
+        .gmp-demo-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 11.5px;
+        }
+        .gmp-demo-headline {
+            font-weight: 700;
+            color: #e0f2fe;
+        }
+        .gmp-demo-sub {
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+        .gmp-demo-link {
+            color: #38bdf8;
+            font-weight: 700;
+            text-decoration: underline;
+            margin-top: 3px;
+            align-self: flex-start;
+        }
+        .gmp-input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .gmp-input-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-sub);
+        }
+        .gmp-input-field {
+            height: 46px;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 0 14px;
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .gmp-input-field:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+        .gmp-safety-box {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 11px;
+            color: #d1fae5;
+        }
+        .gmp-safety-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .safety-check {
+            color: #10b981;
+            font-weight: bold;
+        }
+        .gmp-key-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .btn-gmp-key-clear {
+            flex: 1;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-gmp-key-clear:hover {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+        .btn-gmp-key-save {
+            flex: 2;
+            height: 44px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            transition: all 0.2s;
+        }
+        .btn-gmp-key-save:hover {
+            filter: brightness(1.08);
+            transform: translateY(-1px);
+        }
+
+/* == modals.css == */
+/* Modals: NFC, QR Code & App Update */
+        /* NFC Modal / Overlay */
+        .nfc-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .nfc-modal {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(28, 25, 23, 0.95);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            border-radius: 28px;
+            padding: 32px 24px 28px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(234, 88, 12, 0.2);
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-overlay.active .nfc-modal {
+            transform: scale(1) translateY(0);
+        }
+        .nfc-wave-container {
+            position: relative;
+            width: 84px;
+            height: 84px;
+            margin: 0 auto 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .nfc-wave-ring {
+            position: absolute;
+            inset: -8px;
+            border-radius: 50%;
+            border: 2px solid rgba(249, 115, 22, 0.5);
+            animation: nfcPulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+        }
+        .nfc-wave-ring:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+        @keyframes nfcPulse {
+            0% { transform: scale(0.7); opacity: 0.9; }
+            100% { transform: scale(1.6); opacity: 0; }
+        }
+        .nfc-icon-circle {
+            position: relative;
+            z-index: 2;
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(234, 88, 12, 0.5);
+            transition: all 0.3s ease;
+        }
+        .nfc-icon-circle svg {
+            width: 36px;
+            height: 36px;
+            fill: #ffffff;
+            transition: transform 0.3s ease;
+        }
+        .nfc-modal.success .nfc-wave-ring {
+            display: none;
+        }
+        .nfc-modal.success .nfc-icon-circle {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+            transform: scale(1.08);
+        }
+        .nfc-counter-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #34d399;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+        .nfc-counter-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px #10b981;
+        }
+        .nfc-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+        .nfc-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .btn-nfc-cancel {
+            width: 100%;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-btn);
+            color: var(--text-sub);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-nfc-cancel:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+
+        /* QR Code Modal / Overlay */
+        .qr-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+            visibility: hidden;
+        }
+        .qr-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        .qr-modal {
+            width: 100%;
+            max-width: 320px;
+            background: rgba(28, 25, 23, 0.95);
+            border: 1px solid rgba(249, 115, 22, 0.4);
+            border-radius: 28px;
+            padding: 28px 24px 24px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(234, 88, 12, 0.2);
+            transform: scale(0.82) translateY(24px);
+            opacity: 0;
+            transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+        }
+        .qr-overlay.active .qr-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .qr-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 6px;
+        }
+        .qr-desc {
+            font-size: 12px;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+        .qr-box-wrapper {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+        .qr-box-wrapper canvas,
+        .qr-box-wrapper img {
+            display: block;
+            border-radius: 8px;
+        }
+        .qr-actions-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .btn-qr-download {
+            width: 100%;
+            height: 48px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(234, 88, 12, 0.4);
+            transition: transform 0.15s, box-shadow 0.2s;
+        }
+        .btn-qr-download:active {
+            transform: scale(0.97);
+        }
+        .btn-qr-download svg {
+            width: 18px;
+            height: 18px;
+            fill: #ffffff;
+        }
+        .btn-qr-close {
+            width: 100%;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-btn);
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-qr-close:active {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+
+        /* App Update Modal Dialog */
+        .update-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1050;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+        }
+        .update-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+        }
+        .update-modal {
+            width: 100%;
+            max-width: 460px;
+            background: rgba(24, 21, 19, 0.98);
+            border: 1px solid rgba(249, 115, 22, 0.45);
+            border-radius: 24px;
+            padding: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(234, 88, 12, 0.22);
+            transform: scale(0.92) translateY(20px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .update-overlay.active .update-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .update-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .update-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .update-icon-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: rgba(249, 115, 22, 0.15);
+            border: 1px solid rgba(249, 115, 22, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #fb923c;
+        }
+        .update-icon-circle svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+        .update-header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .update-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #38bdf8;
+        }
+        .update-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+        }
+        .btn-update-close {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 26px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 2px 6px;
+            transition: color 0.2s;
+        }
+        .btn-update-close:hover {
+            color: #ffffff;
+        }
+
+        /* Version comparison chips */
+        .update-version-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+        .version-chip {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .version-chip-label {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        .version-chip-val {
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        .version-chip.current .version-chip-val {
+            color: #a8a29e;
+        }
+        .version-chip.latest .version-chip-val {
+            color: #4ade80;
+        }
+        .version-arrow {
+            color: var(--primary);
+            font-size: 16px;
+            font-weight: bold;
+        }
+        [dir="rtl"] .version-arrow {
+            transform: scaleX(-1);
+        }
+
+        .update-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+        }
+        .update-meta-divider {
+            color: var(--border);
+        }
+
+        /* Changelog Card */
+        .update-changelog-card {
+            background: rgba(14, 12, 11, 0.8);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            max-height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .update-changelog-card::-webkit-scrollbar {
+            width: 5px;
+        }
+        .update-changelog-card::-webkit-scrollbar-thumb {
+            background: rgba(249, 115, 22, 0.4);
+            border-radius: 3px;
+        }
+        .update-changelog-header {
+            font-size: 12px;
+            font-weight: 700;
+            color: #fdba74;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 6px;
+        }
+        .update-changelog-body {
+            font-size: 12px;
+            line-height: 1.6;
+            color: var(--text-sub);
+        }
+        .update-changelog-body ul {
+            margin: 0;
+            padding-left: 18px;
+            padding-right: 0;
+        }
+        [dir="rtl"] .update-changelog-body ul {
+            padding-left: 0;
+            padding-right: 18px;
+        }
+        .update-changelog-body li {
+            margin-bottom: 4px;
+        }
+
+        /* Update Action Buttons */
+        .update-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .btn-update-now {
+            width: 100%;
+            height: 48px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 14px;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(234, 88, 12, 0.4);
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .btn-update-now:hover {
+            filter: brightness(1.1);
+            transform: translateY(-1px);
+        }
+        .btn-update-now:active {
+            transform: scale(0.98);
+        }
+        .btn-update-now svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+        .update-sub-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-update-github {
+            flex: 1;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+        .btn-update-github:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        .btn-update-github svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+        .btn-update-later {
+            flex: 1;
+            height: 40px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-update-later:hover {
+            background: rgba(255, 255, 255, 0.04);
+            color: #ffffff;
+        }
+
+/* == toast.css == */
+/* Toast Notification */
+        /* Toast Message */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: rgba(28, 25, 23, 0.95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glow);
+            color: #ffffff;
+            padding: 10px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .toast-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .toast-icon svg {
+            width: 17px;
+            height: 17px;
+            display: block;
+        }
+
+/* == app.css == */
+/* ======================================================== */
+/* Native Android App Layout & Viewport Overrides           */
+/* ======================================================== */
+
+body {
+    padding: 16px;
+    padding-top: max(56px, env(safe-area-inset-top, 56px));
+    padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+    overflow-x: hidden;
+}
+
+.main-wrapper {
+    padding: 0;
+    max-width: 100%;
+}
+
+.app-container {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.btn-download-apk {
+    display: none !important;
+}
+
+.desktop-navbar {
+    display: none !important;
+}
+    </style>
 </head>
 <body>
 
@@ -426,14 +2457,1946 @@
 
 
     <!-- Modular Scripts (Android Native APK) -->
-    <script src="js/core/i18n.js" defer></script>
-    <script src="js/core/toast.js" defer></script>
-    <script src="js/core/converter.js" defer></script>
-    <script src="js/core/places.js" defer></script>
-    <script src="js/core/qr.js" defer></script>
-    <script src="js/app/nfc.js" defer></script>
-    <script src="js/app/updater.js" defer></script>
-    <script src="js/app/bridge.js" defer></script>
-    <script src="js/app-main.js" defer></script>
+    <script>
+/* == qrcode.min.js == */
+var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this.parsedData=[];for(var b=[],d=0,e=this.data.length;e>d;d++){var f=this.data.charCodeAt(d);f>65536?(b[0]=240|(1835008&f)>>>18,b[1]=128|(258048&f)>>>12,b[2]=128|(4032&f)>>>6,b[3]=128|63&f):f>2048?(b[0]=224|(61440&f)>>>12,b[1]=128|(4032&f)>>>6,b[2]=128|63&f):f>128?(b[0]=192|(1984&f)>>>6,b[1]=128|63&f):b[0]=f,this.parsedData=this.parsedData.concat(b)}this.parsedData.length!=this.data.length&&(this.parsedData.unshift(191),this.parsedData.unshift(187),this.parsedData.unshift(239))}function b(a,b){this.typeNumber=a,this.errorCorrectLevel=b,this.modules=null,this.moduleCount=0,this.dataCache=null,this.dataList=[]}function i(a,b){if(void 0==a.length)throw new Error(a.length+"/"+b);for(var c=0;c<a.length&&0==a[c];)c++;this.num=new Array(a.length-c+b);for(var d=0;d<a.length-c;d++)this.num[d]=a[d+c]}function j(a,b){this.totalCount=a,this.dataCount=b}function k(){this.buffer=[],this.length=0}function m(){return"undefined"!=typeof CanvasRenderingContext2D}function n(){var a=!1,b=navigator.userAgent;return/android/i.test(b)&&(a=!0,aMat=b.toString().match(/android ([0-9]\.[0-9])/i),aMat&&aMat[1]&&(a=parseFloat(aMat[1]))),a}function r(a,b){for(var c=1,e=s(a),f=0,g=l.length;g>=f;f++){var h=0;switch(b){case d.L:h=l[f][0];break;case d.M:h=l[f][1];break;case d.Q:h=l[f][2];break;case d.H:h=l[f][3]}if(h>=e)break;c++}if(c>l.length)throw new Error("Too long data");return c}function s(a){var b=encodeURI(a).toString().replace(/\%[0-9a-fA-F]{2}/g,"a");return b.length+(b.length!=a?3:0)}a.prototype={getLength:function(){return this.parsedData.length},write:function(a){for(var b=0,c=this.parsedData.length;c>b;b++)a.put(this.parsedData[b],8)}},b.prototype={addData:function(b){var c=new a(b);this.dataList.push(c),this.dataCache=null},isDark:function(a,b){if(0>a||this.moduleCount<=a||0>b||this.moduleCount<=b)throw new Error(a+","+b);return this.modules[a][b]},getModuleCount:function(){return this.moduleCount},make:function(){this.makeImpl(!1,this.getBestMaskPattern())},makeImpl:function(a,c){this.moduleCount=4*this.typeNumber+17,this.modules=new Array(this.moduleCount);for(var d=0;d<this.moduleCount;d++){this.modules[d]=new Array(this.moduleCount);for(var e=0;e<this.moduleCount;e++)this.modules[d][e]=null}this.setupPositionProbePattern(0,0),this.setupPositionProbePattern(this.moduleCount-7,0),this.setupPositionProbePattern(0,this.moduleCount-7),this.setupPositionAdjustPattern(),this.setupTimingPattern(),this.setupTypeInfo(a,c),this.typeNumber>=7&&this.setupTypeNumber(a),null==this.dataCache&&(this.dataCache=b.createData(this.typeNumber,this.errorCorrectLevel,this.dataList)),this.mapData(this.dataCache,c)},setupPositionProbePattern:function(a,b){for(var c=-1;7>=c;c++)if(!(-1>=a+c||this.moduleCount<=a+c))for(var d=-1;7>=d;d++)-1>=b+d||this.moduleCount<=b+d||(this.modules[a+c][b+d]=c>=0&&6>=c&&(0==d||6==d)||d>=0&&6>=d&&(0==c||6==c)||c>=2&&4>=c&&d>=2&&4>=d?!0:!1)},getBestMaskPattern:function(){for(var a=0,b=0,c=0;8>c;c++){this.makeImpl(!0,c);var d=f.getLostPoint(this);(0==c||a>d)&&(a=d,b=c)}return b},createMovieClip:function(a,b,c){var d=a.createEmptyMovieClip(b,c),e=1;this.make();for(var f=0;f<this.modules.length;f++)for(var g=f*e,h=0;h<this.modules[f].length;h++){var i=h*e,j=this.modules[f][h];j&&(d.beginFill(0,100),d.moveTo(i,g),d.lineTo(i+e,g),d.lineTo(i+e,g+e),d.lineTo(i,g+e),d.endFill())}return d},setupTimingPattern:function(){for(var a=8;a<this.moduleCount-8;a++)null==this.modules[a][6]&&(this.modules[a][6]=0==a%2);for(var b=8;b<this.moduleCount-8;b++)null==this.modules[6][b]&&(this.modules[6][b]=0==b%2)},setupPositionAdjustPattern:function(){for(var a=f.getPatternPosition(this.typeNumber),b=0;b<a.length;b++)for(var c=0;c<a.length;c++){var d=a[b],e=a[c];if(null==this.modules[d][e])for(var g=-2;2>=g;g++)for(var h=-2;2>=h;h++)this.modules[d+g][e+h]=-2==g||2==g||-2==h||2==h||0==g&&0==h?!0:!1}},setupTypeNumber:function(a){for(var b=f.getBCHTypeNumber(this.typeNumber),c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[Math.floor(c/3)][c%3+this.moduleCount-8-3]=d}for(var c=0;18>c;c++){var d=!a&&1==(1&b>>c);this.modules[c%3+this.moduleCount-8-3][Math.floor(c/3)]=d}},setupTypeInfo:function(a,b){for(var c=this.errorCorrectLevel<<3|b,d=f.getBCHTypeInfo(c),e=0;15>e;e++){var g=!a&&1==(1&d>>e);6>e?this.modules[e][8]=g:8>e?this.modules[e+1][8]=g:this.modules[this.moduleCount-15+e][8]=g}for(var e=0;15>e;e++){var g=!a&&1==(1&d>>e);8>e?this.modules[8][this.moduleCount-e-1]=g:9>e?this.modules[8][15-e-1+1]=g:this.modules[8][15-e-1]=g}this.modules[this.moduleCount-8][8]=!a},mapData:function(a,b){for(var c=-1,d=this.moduleCount-1,e=7,g=0,h=this.moduleCount-1;h>0;h-=2)for(6==h&&h--;;){for(var i=0;2>i;i++)if(null==this.modules[d][h-i]){var j=!1;g<a.length&&(j=1==(1&a[g]>>>e));var k=f.getMask(b,d,h-i);k&&(j=!j),this.modules[d][h-i]=j,e--,-1==e&&(g++,e=7)}if(d+=c,0>d||this.moduleCount<=d){d-=c,c=-c;break}}}},b.PAD0=236,b.PAD1=17,b.createData=function(a,c,d){for(var e=j.getRSBlocks(a,c),g=new k,h=0;h<d.length;h++){var i=d[h];g.put(i.mode,4),g.put(i.getLength(),f.getLengthInBits(i.mode,a)),i.write(g)}for(var l=0,h=0;h<e.length;h++)l+=e[h].dataCount;if(g.getLengthInBits()>8*l)throw new Error("code length overflow. ("+g.getLengthInBits()+">"+8*l+")");for(g.getLengthInBits()+4<=8*l&&g.put(0,4);0!=g.getLengthInBits()%8;)g.putBit(!1);for(;;){if(g.getLengthInBits()>=8*l)break;if(g.put(b.PAD0,8),g.getLengthInBits()>=8*l)break;g.put(b.PAD1,8)}return b.createBytes(g,e)},b.createBytes=function(a,b){for(var c=0,d=0,e=0,g=new Array(b.length),h=new Array(b.length),j=0;j<b.length;j++){var k=b[j].dataCount,l=b[j].totalCount-k;d=Math.max(d,k),e=Math.max(e,l),g[j]=new Array(k);for(var m=0;m<g[j].length;m++)g[j][m]=255&a.buffer[m+c];c+=k;var n=f.getErrorCorrectPolynomial(l),o=new i(g[j],n.getLength()-1),p=o.mod(n);h[j]=new Array(n.getLength()-1);for(var m=0;m<h[j].length;m++){var q=m+p.getLength()-h[j].length;h[j][m]=q>=0?p.get(q):0}}for(var r=0,m=0;m<b.length;m++)r+=b[m].totalCount;for(var s=new Array(r),t=0,m=0;d>m;m++)for(var j=0;j<b.length;j++)m<g[j].length&&(s[t++]=g[j][m]);for(var m=0;e>m;m++)for(var j=0;j<b.length;j++)m<h[j].length&&(s[t++]=h[j][m]);return s};for(var c={MODE_NUMBER:1,MODE_ALPHA_NUM:2,MODE_8BIT_BYTE:4,MODE_KANJI:8},d={L:1,M:0,Q:3,H:2},e={PATTERN000:0,PATTERN001:1,PATTERN010:2,PATTERN011:3,PATTERN100:4,PATTERN101:5,PATTERN110:6,PATTERN111:7},f={PATTERN_POSITION_TABLE:[[],[6,18],[6,22],[6,26],[6,30],[6,34],[6,22,38],[6,24,42],[6,26,46],[6,28,50],[6,30,54],[6,32,58],[6,34,62],[6,26,46,66],[6,26,48,70],[6,26,50,74],[6,30,54,78],[6,30,56,82],[6,30,58,86],[6,34,62,90],[6,28,50,72,94],[6,26,50,74,98],[6,30,54,78,102],[6,28,54,80,106],[6,32,58,84,110],[6,30,58,86,114],[6,34,62,90,118],[6,26,50,74,98,122],[6,30,54,78,102,126],[6,26,52,78,104,130],[6,30,56,82,108,134],[6,34,60,86,112,138],[6,30,58,86,114,142],[6,34,62,90,118,146],[6,30,54,78,102,126,150],[6,24,50,76,102,128,154],[6,28,54,80,106,132,158],[6,32,58,84,110,136,162],[6,26,54,82,110,138,166],[6,30,58,86,114,142,170]],G15:1335,G18:7973,G15_MASK:21522,getBCHTypeInfo:function(a){for(var b=a<<10;f.getBCHDigit(b)-f.getBCHDigit(f.G15)>=0;)b^=f.G15<<f.getBCHDigit(b)-f.getBCHDigit(f.G15);return(a<<10|b)^f.G15_MASK},getBCHTypeNumber:function(a){for(var b=a<<12;f.getBCHDigit(b)-f.getBCHDigit(f.G18)>=0;)b^=f.G18<<f.getBCHDigit(b)-f.getBCHDigit(f.G18);return a<<12|b},getBCHDigit:function(a){for(var b=0;0!=a;)b++,a>>>=1;return b},getPatternPosition:function(a){return f.PATTERN_POSITION_TABLE[a-1]},getMask:function(a,b,c){switch(a){case e.PATTERN000:return 0==(b+c)%2;case e.PATTERN001:return 0==b%2;case e.PATTERN010:return 0==c%3;case e.PATTERN011:return 0==(b+c)%3;case e.PATTERN100:return 0==(Math.floor(b/2)+Math.floor(c/3))%2;case e.PATTERN101:return 0==b*c%2+b*c%3;case e.PATTERN110:return 0==(b*c%2+b*c%3)%2;case e.PATTERN111:return 0==(b*c%3+(b+c)%2)%2;default:throw new Error("bad maskPattern:"+a)}},getErrorCorrectPolynomial:function(a){for(var b=new i([1],0),c=0;a>c;c++)b=b.multiply(new i([1,g.gexp(c)],0));return b},getLengthInBits:function(a,b){if(b>=1&&10>b)switch(a){case c.MODE_NUMBER:return 10;case c.MODE_ALPHA_NUM:return 9;case c.MODE_8BIT_BYTE:return 8;case c.MODE_KANJI:return 8;default:throw new Error("mode:"+a)}else if(27>b)switch(a){case c.MODE_NUMBER:return 12;case c.MODE_ALPHA_NUM:return 11;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 10;default:throw new Error("mode:"+a)}else{if(!(41>b))throw new Error("type:"+b);switch(a){case c.MODE_NUMBER:return 14;case c.MODE_ALPHA_NUM:return 13;case c.MODE_8BIT_BYTE:return 16;case c.MODE_KANJI:return 12;default:throw new Error("mode:"+a)}}},getLostPoint:function(a){for(var b=a.getModuleCount(),c=0,d=0;b>d;d++)for(var e=0;b>e;e++){for(var f=0,g=a.isDark(d,e),h=-1;1>=h;h++)if(!(0>d+h||d+h>=b))for(var i=-1;1>=i;i++)0>e+i||e+i>=b||(0!=h||0!=i)&&g==a.isDark(d+h,e+i)&&f++;f>5&&(c+=3+f-5)}for(var d=0;b-1>d;d++)for(var e=0;b-1>e;e++){var j=0;a.isDark(d,e)&&j++,a.isDark(d+1,e)&&j++,a.isDark(d,e+1)&&j++,a.isDark(d+1,e+1)&&j++,(0==j||4==j)&&(c+=3)}for(var d=0;b>d;d++)for(var e=0;b-6>e;e++)a.isDark(d,e)&&!a.isDark(d,e+1)&&a.isDark(d,e+2)&&a.isDark(d,e+3)&&a.isDark(d,e+4)&&!a.isDark(d,e+5)&&a.isDark(d,e+6)&&(c+=40);for(var e=0;b>e;e++)for(var d=0;b-6>d;d++)a.isDark(d,e)&&!a.isDark(d+1,e)&&a.isDark(d+2,e)&&a.isDark(d+3,e)&&a.isDark(d+4,e)&&!a.isDark(d+5,e)&&a.isDark(d+6,e)&&(c+=40);for(var k=0,e=0;b>e;e++)for(var d=0;b>d;d++)a.isDark(d,e)&&k++;var l=Math.abs(100*k/b/b-50)/5;return c+=10*l}},g={glog:function(a){if(1>a)throw new Error("glog("+a+")");return g.LOG_TABLE[a]},gexp:function(a){for(;0>a;)a+=255;for(;a>=256;)a-=255;return g.EXP_TABLE[a]},EXP_TABLE:new Array(256),LOG_TABLE:new Array(256)},h=0;8>h;h++)g.EXP_TABLE[h]=1<<h;for(var h=8;256>h;h++)g.EXP_TABLE[h]=g.EXP_TABLE[h-4]^g.EXP_TABLE[h-5]^g.EXP_TABLE[h-6]^g.EXP_TABLE[h-8];for(var h=0;255>h;h++)g.LOG_TABLE[g.EXP_TABLE[h]]=h;i.prototype={get:function(a){return this.num[a]},getLength:function(){return this.num.length},multiply:function(a){for(var b=new Array(this.getLength()+a.getLength()-1),c=0;c<this.getLength();c++)for(var d=0;d<a.getLength();d++)b[c+d]^=g.gexp(g.glog(this.get(c))+g.glog(a.get(d)));return new i(b,0)},mod:function(a){if(this.getLength()-a.getLength()<0)return this;for(var b=g.glog(this.get(0))-g.glog(a.get(0)),c=new Array(this.getLength()),d=0;d<this.getLength();d++)c[d]=this.get(d);for(var d=0;d<a.getLength();d++)c[d]^=g.gexp(g.glog(a.get(d))+b);return new i(c,0).mod(a)}},j.RS_BLOCK_TABLE=[[1,26,19],[1,26,16],[1,26,13],[1,26,9],[1,44,34],[1,44,28],[1,44,22],[1,44,16],[1,70,55],[1,70,44],[2,35,17],[2,35,13],[1,100,80],[2,50,32],[2,50,24],[4,25,9],[1,134,108],[2,67,43],[2,33,15,2,34,16],[2,33,11,2,34,12],[2,86,68],[4,43,27],[4,43,19],[4,43,15],[2,98,78],[4,49,31],[2,32,14,4,33,15],[4,39,13,1,40,14],[2,121,97],[2,60,38,2,61,39],[4,40,18,2,41,19],[4,40,14,2,41,15],[2,146,116],[3,58,36,2,59,37],[4,36,16,4,37,17],[4,36,12,4,37,13],[2,86,68,2,87,69],[4,69,43,1,70,44],[6,43,19,2,44,20],[6,43,15,2,44,16],[4,101,81],[1,80,50,4,81,51],[4,50,22,4,51,23],[3,36,12,8,37,13],[2,116,92,2,117,93],[6,58,36,2,59,37],[4,46,20,6,47,21],[7,42,14,4,43,15],[4,133,107],[8,59,37,1,60,38],[8,44,20,4,45,21],[12,33,11,4,34,12],[3,145,115,1,146,116],[4,64,40,5,65,41],[11,36,16,5,37,17],[11,36,12,5,37,13],[5,109,87,1,110,88],[5,65,41,5,66,42],[5,54,24,7,55,25],[11,36,12],[5,122,98,1,123,99],[7,73,45,3,74,46],[15,43,19,2,44,20],[3,45,15,13,46,16],[1,135,107,5,136,108],[10,74,46,1,75,47],[1,50,22,15,51,23],[2,42,14,17,43,15],[5,150,120,1,151,121],[9,69,43,4,70,44],[17,50,22,1,51,23],[2,42,14,19,43,15],[3,141,113,4,142,114],[3,70,44,11,71,45],[17,47,21,4,48,22],[9,39,13,16,40,14],[3,135,107,5,136,108],[3,67,41,13,68,42],[15,54,24,5,55,25],[15,43,15,10,44,16],[4,144,116,4,145,117],[17,68,42],[17,50,22,6,51,23],[19,46,16,6,47,17],[2,139,111,7,140,112],[17,74,46],[7,54,24,16,55,25],[34,37,13],[4,151,121,5,152,122],[4,75,47,14,76,48],[11,54,24,14,55,25],[16,45,15,14,46,16],[6,147,117,4,148,118],[6,73,45,14,74,46],[11,54,24,16,55,25],[30,46,16,2,47,17],[8,132,106,4,133,107],[8,75,47,13,76,48],[7,54,24,22,55,25],[22,45,15,13,46,16],[10,142,114,2,143,115],[19,74,46,4,75,47],[28,50,22,6,51,23],[33,46,16,4,47,17],[8,152,122,4,153,123],[22,73,45,3,74,46],[8,53,23,26,54,24],[12,45,15,28,46,16],[3,147,117,10,148,118],[3,73,45,23,74,46],[4,54,24,31,55,25],[11,45,15,31,46,16],[7,146,116,7,147,117],[21,73,45,7,74,46],[1,53,23,37,54,24],[19,45,15,26,46,16],[5,145,115,10,146,116],[19,75,47,10,76,48],[15,54,24,25,55,25],[23,45,15,25,46,16],[13,145,115,3,146,116],[2,74,46,29,75,47],[42,54,24,1,55,25],[23,45,15,28,46,16],[17,145,115],[10,74,46,23,75,47],[10,54,24,35,55,25],[19,45,15,35,46,16],[17,145,115,1,146,116],[14,74,46,21,75,47],[29,54,24,19,55,25],[11,45,15,46,46,16],[13,145,115,6,146,116],[14,74,46,23,75,47],[44,54,24,7,55,25],[59,46,16,1,47,17],[12,151,121,7,152,122],[12,75,47,26,76,48],[39,54,24,14,55,25],[22,45,15,41,46,16],[6,151,121,14,152,122],[6,75,47,34,76,48],[46,54,24,10,55,25],[2,45,15,64,46,16],[17,152,122,4,153,123],[29,74,46,14,75,47],[49,54,24,10,55,25],[24,45,15,46,46,16],[4,152,122,18,153,123],[13,74,46,32,75,47],[48,54,24,14,55,25],[42,45,15,32,46,16],[20,147,117,4,148,118],[40,75,47,7,76,48],[43,54,24,22,55,25],[10,45,15,67,46,16],[19,148,118,6,149,119],[18,75,47,31,76,48],[34,54,24,34,55,25],[20,45,15,61,46,16]],j.getRSBlocks=function(a,b){var c=j.getRsBlockTable(a,b);if(void 0==c)throw new Error("bad rs block @ typeNumber:"+a+"/errorCorrectLevel:"+b);for(var d=c.length/3,e=[],f=0;d>f;f++)for(var g=c[3*f+0],h=c[3*f+1],i=c[3*f+2],k=0;g>k;k++)e.push(new j(h,i));return e},j.getRsBlockTable=function(a,b){switch(b){case d.L:return j.RS_BLOCK_TABLE[4*(a-1)+0];case d.M:return j.RS_BLOCK_TABLE[4*(a-1)+1];case d.Q:return j.RS_BLOCK_TABLE[4*(a-1)+2];case d.H:return j.RS_BLOCK_TABLE[4*(a-1)+3];default:return void 0}},k.prototype={get:function(a){var b=Math.floor(a/8);return 1==(1&this.buffer[b]>>>7-a%8)},put:function(a,b){for(var c=0;b>c;c++)this.putBit(1==(1&a>>>b-c-1))},getLengthInBits:function(){return this.length},putBit:function(a){var b=Math.floor(this.length/8);this.buffer.length<=b&&this.buffer.push(0),a&&(this.buffer[b]|=128>>>this.length%8),this.length++}};var l=[[17,14,11,7],[32,26,20,14],[53,42,32,24],[78,62,46,34],[106,84,60,44],[134,106,74,58],[154,122,86,64],[192,152,108,84],[230,180,130,98],[271,213,151,119],[321,251,177,137],[367,287,203,155],[425,331,241,177],[458,362,258,194],[520,412,292,220],[586,450,322,250],[644,504,364,280],[718,560,394,310],[792,624,442,338],[858,666,482,382],[929,711,509,403],[1003,779,565,439],[1091,857,611,461],[1171,911,661,511],[1273,997,715,535],[1367,1059,751,593],[1465,1125,805,625],[1528,1190,868,658],[1628,1264,908,698],[1732,1370,982,742],[1840,1452,1030,790],[1952,1538,1112,842],[2068,1628,1168,898],[2188,1722,1228,958],[2303,1809,1283,983],[2431,1911,1351,1051],[2563,1989,1423,1093],[2699,2099,1499,1139],[2809,2213,1579,1219],[2953,2331,1663,1273]],o=function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){function g(a,b){var c=document.createElementNS("http://www.w3.org/2000/svg",a);for(var d in b)b.hasOwnProperty(d)&&c.setAttribute(d,b[d]);return c}var b=this._htOption,c=this._el,d=a.getModuleCount();Math.floor(b.width/d),Math.floor(b.height/d),this.clear();var h=g("svg",{viewBox:"0 0 "+String(d)+" "+String(d),width:"100%",height:"100%",fill:b.colorLight});h.setAttributeNS("http://www.w3.org/2000/xmlns/","xmlns:xlink","http://www.w3.org/1999/xlink"),c.appendChild(h),h.appendChild(g("rect",{fill:b.colorDark,width:"1",height:"1",id:"template"}));for(var i=0;d>i;i++)for(var j=0;d>j;j++)if(a.isDark(i,j)){var k=g("use",{x:String(i),y:String(j)});k.setAttributeNS("http://www.w3.org/1999/xlink","href","#template"),h.appendChild(k)}},a.prototype.clear=function(){for(;this._el.hasChildNodes();)this._el.removeChild(this._el.lastChild)},a}(),p="svg"===document.documentElement.tagName.toLowerCase(),q=p?o:m()?function(){function a(){this._elImage.src=this._elCanvas.toDataURL("image/png"),this._elImage.style.display="block",this._elCanvas.style.display="none"}function d(a,b){var c=this;if(c._fFail=b,c._fSuccess=a,null===c._bSupportDataURI){var d=document.createElement("img"),e=function(){c._bSupportDataURI=!1,c._fFail&&_fFail.call(c)},f=function(){c._bSupportDataURI=!0,c._fSuccess&&c._fSuccess.call(c)};return d.onabort=e,d.onerror=e,d.onload=f,d.src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",void 0}c._bSupportDataURI===!0&&c._fSuccess?c._fSuccess.call(c):c._bSupportDataURI===!1&&c._fFail&&c._fFail.call(c)}if(this._android&&this._android<=2.1){var b=1/window.devicePixelRatio,c=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingContext2D.prototype.drawImage=function(a,d,e,f,g,h,i,j){if("nodeName"in a&&/img/i.test(a.nodeName))for(var l=arguments.length-1;l>=1;l--)arguments[l]=arguments[l]*b;else"undefined"==typeof j&&(arguments[1]*=b,arguments[2]*=b,arguments[3]*=b,arguments[4]*=b);c.apply(this,arguments)}}var e=function(a,b){this._bIsPainted=!1,this._android=n(),this._htOption=b,this._elCanvas=document.createElement("canvas"),this._elCanvas.width=b.width,this._elCanvas.height=b.height,a.appendChild(this._elCanvas),this._el=a,this._oContext=this._elCanvas.getContext("2d"),this._bIsPainted=!1,this._elImage=document.createElement("img"),this._elImage.style.display="none",this._el.appendChild(this._elImage),this._bSupportDataURI=null};return e.prototype.draw=function(a){var b=this._elImage,c=this._oContext,d=this._htOption,e=a.getModuleCount(),f=d.width/e,g=d.height/e,h=Math.round(f),i=Math.round(g);b.style.display="none",this.clear();for(var j=0;e>j;j++)for(var k=0;e>k;k++){var l=a.isDark(j,k),m=k*f,n=j*g;c.strokeStyle=l?d.colorDark:d.colorLight,c.lineWidth=1,c.fillStyle=l?d.colorDark:d.colorLight,c.fillRect(m,n,f,g),c.strokeRect(Math.floor(m)+.5,Math.floor(n)+.5,h,i),c.strokeRect(Math.ceil(m)-.5,Math.ceil(n)-.5,h,i)}this._bIsPainted=!0},e.prototype.makeImage=function(){this._bIsPainted&&d.call(this,a)},e.prototype.isPainted=function(){return this._bIsPainted},e.prototype.clear=function(){this._oContext.clearRect(0,0,this._elCanvas.width,this._elCanvas.height),this._bIsPainted=!1},e.prototype.round=function(a){return a?Math.floor(1e3*a)/1e3:a},e}():function(){var a=function(a,b){this._el=a,this._htOption=b};return a.prototype.draw=function(a){for(var b=this._htOption,c=this._el,d=a.getModuleCount(),e=Math.floor(b.width/d),f=Math.floor(b.height/d),g=['<table style="border:0;border-collapse:collapse;">'],h=0;d>h;h++){g.push("<tr>");for(var i=0;d>i;i++)g.push('<td style="border:0;border-collapse:collapse;padding:0;margin:0;width:'+e+"px;height:"+f+"px;background-color:"+(a.isDark(h,i)?b.colorDark:b.colorLight)+';"></td>');g.push("</tr>")}g.push("</table>"),c.innerHTML=g.join("");var j=c.childNodes[0],k=(b.width-j.offsetWidth)/2,l=(b.height-j.offsetHeight)/2;k>0&&l>0&&(j.style.margin=l+"px "+k+"px")},a.prototype.clear=function(){this._el.innerHTML=""},a}();QRCode=function(a,b){if(this._htOption={width:256,height:256,typeNumber:4,colorDark:"#000000",colorLight:"#ffffff",correctLevel:d.H},"string"==typeof b&&(b={text:b}),b)for(var c in b)this._htOption[c]=b[c];"string"==typeof a&&(a=document.getElementById(a)),this._android=n(),this._el=a,this._oQRCode=null,this._oDrawing=new q(this._el,this._htOption),this._htOption.text&&this.makeCode(this._htOption.text)},QRCode.prototype.makeCode=function(a){this._oQRCode=new b(r(a,this._htOption.correctLevel),this._htOption.correctLevel),this._oQRCode.addData(a),this._oQRCode.make(),this._el.title=a,this._oDrawing.draw(this._oQRCode),this.makeImage()},QRCode.prototype.makeImage=function(){"function"==typeof this._oDrawing.makeImage&&(!this._android||this._android>=3)&&this._oDrawing.makeImage()},QRCode.prototype.clear=function(){this._oDrawing.clear()},QRCode.CorrectLevel=d}();
+
+/* == core/i18n.js == */
+// ========================================================
+// Bilingual Translation Dictionary & Localization Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    const I18N = {
+            en: {
+                apkDownload: "Get Android App",
+                docTitle: "Review Link Generator",
+                metaDesc: "Convert any Google Maps link into an instant 5-star review link. Generate QR codes and write to NFC cards effortlessly.",
+                appTitle: "Review Link Generator",
+                appSubtitle: "Convert Google Maps links to instant review links",
+                tabLink: "Direct Link",
+                tabSearch: "Find Business",
+                placeholder: "Paste Google Maps link here...",
+                trashTitle: "Clear text",
+                pasteBtn: "Paste",
+                convertBtn: "Convert Link",
+                resolvingBtn: "Resolving link...",
+                searchPlaceholder: "Enter business name & city (e.g. Al-Quds Restaurant Amman)...",
+                searchStep1: "Type business name & click Search Maps",
+                searchStep2: "Click 'Share' & copy link on Google Maps",
+                searchStep3: "Click 'Auto-Paste & Convert' below!",
+                btnLaunchMaps: "Search on Google Maps ↗",
+                btnAutoPasteConvert: "Auto-Paste & Convert",
+                toastEnterQuery: "Please enter a business name first",
+                navApk: "Get APK",
+                navGithub: "GitHub",
+                tagHowItWorks: "Workflow",
+                titleHowItWorks: "How It Works in 3 Simple Steps",
+                subHowItWorks: "Generate frictionless review links that skyrocket your 5-star customer feedback",
+                step1Title: "Copy or Find Link",
+                step1Desc: "Search your place or copy your business share link directly from Google Maps app or browser.",
+                step2Title: "Instant 5-Star Conversion",
+                step2Desc: "Our engine extracts the Place ID and constructs a direct URL that pops open the 5-star rating window automatically.",
+                step3Title: "Print QR or Tap NFC",
+                step3Desc: "Download crisp QR codes for table tents and counter stands, or tap your phone to write to NFC cards with our Android app.",
+                tagFeatures: "Advantages",
+                titleFeatures: "Why Businesses Choose Our Tool",
+                subFeatures: "Designed for speed, customer conversion, and modern contactless technology",
+                feat1Title: "Direct 5-Star Pre-Selection",
+                feat1Desc: "Customers don't have to search for the review button. The 5-star popup opens immediately upon opening the link.",
+                feat2Title: "Free NFC Tag Writer",
+                feat2Desc: "Program NFC review cards, stands, and stickers directly from our native Android app without subscription fees.",
+                feat3Title: "High-Res Vector QR Codes",
+                feat3Desc: "Download instant, clean QR codes formatted perfectly for print menus, flyers, and point-of-sale displays.",
+                feat4Title: "Zero Tracking & 100% Free",
+                feat4Desc: "No account required, no link redirection, no rate limits, and 100% open-source software you can trust.",
+                tagFaq: "Knowledge Base",
+                titleFaq: "Frequently Asked Questions",
+                subFaq: "Everything you need to know about Google review links, QR codes, and NFC contactless cards",
+                faq1Q: "How do I create a direct 5-star Google review link?",
+                faq1A: "Simply search for your business name using our Find Business tool or copy your Google Maps share link and paste it here. Our system resolves your Google Place ID and crafts a direct URL that immediately opens the 5-star review submission pop-up for your customers.",
+                faq2Q: "How does writing to NFC review cards work?",
+                faq2A: "Download our free Android APK. After generating your review URL, tap 'Write to NFC Tag', then hold your NFC card, coin, or sticker to the back of your phone. The app formats the tag and writes your review link in under a second with zero subscription fees.",
+                faq3Q: "Can I print the generated QR code for my business?",
+                faq3A: "Yes! The generated QR code is high-resolution and downloadable in PNG format. You can print it on table talkers, restaurant menus, cash register counters, business cards, and packaging stickers.",
+                faq4Q: "Is ReviewLinkGenerator free and does it require an API key?",
+                faq4A: "Yes, it is 100% free and open-source. It does not require any Google Cloud API key, credit card, or user registration. All Place ID resolution and link formatting runs directly in your browser or Android device.",
+                footerTagline: "Free open-source 5-star Google review link creator & NFC tool.",
+                footerApk: "Android APK",
+                footerGithub: "GitHub Repository",
+                footerBackToTop: "↑ Back to Top",
+                footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
+                resultLabel: "Direct Review Link:",
+                copyBtn: "Copy Link",
+                copySuccess: "Copied!",
+                openBtn: "Open Link",
+                shareBtn: "Share Link",
+                qrBtn: "Generate QR Code",
+                qrModalTitle: "Google Review QR Code",
+                qrModalDesc: "Scan with any smartphone camera to leave a review directly",
+                qrDownloadBtn: "Download QR Image",
+                qrCloseBtn: "Close",
+                qrDownloaded: "QR Code downloaded",
+                nfcBtn: "Write to NFC Tag",
+                nfcTitleReady: "Ready to Write",
+                nfcDescReady: "Hold your phone near an NFC card or sticker. Multi-tag writing is active.",
+                nfcTitleSuccess: "Write Successful!",
+                nfcDescSuccess: "Tag #{count} programmed! Hold next card to continue...",
+                nfcTitleNext: "Ready for Next Card",
+                nfcDescNext: "Hold the next NFC tag near your phone to write...",
+                nfcCardsCount: "{count} tag(s) written",
+                nfcCancel: "Cancel",
+                nfcDone: "Done & Close",
+                nfcTitleError: "Write Failed",
+                nfcNoHardware: "NFC is not supported on this device",
+                nfcDisabled: "Please enable NFC in your phone settings",
+                nfcLocked: "NFC card is locked or read-only",
+                nfcCapacity: "NFC card has insufficient memory",
+                nfcUnsupported: "Unsupported NFC tag type",
+                nfcWriteFailed: "Error writing to NFC tag. Try again.",
+                toastPasteFirst: "Please paste a link first",
+                toastInvalid: "Could not extract Place ID",
+                toastNoInternet: "No network connection",
+                toastSuccess: "Link converted successfully",
+                toastNfcWritten: "Successfully written to NFC card",
+                toastNfcBatchSuccess: "Successfully programmed {count} NFC card(s)",
+                toastCleared: "Text cleared",
+                toastPasted: "Pasted from clipboard",
+                toastEmptyClip: "Clipboard is empty",
+                toastClipDenied: "Press Ctrl+V to paste",
+                toastCopied: "Review link copied",
+                toastShareCopied: "Link copied for sharing",
+                shareTitle: "Google Review",
+                shareText: "Leave us a review on Google Maps",
+                apiKeyConnected: "Google Maps Autocomplete Active",
+                apiKeyAuthError: "API Key Authentication Error",
+                apiKeyNotSet: "Configure Maps API / Demo Key",
+                btnKeyConfigure: "API Key",
+                gmpKeyTitle: "Google Maps Search Key",
+                gmpKeyDesc: "Connect a Google Maps API Key or free Maps Demo Key to enable real-time business search predictions as you type.",
+                gmpDemoHeadline: "Free Maps Demo Key (No Card Required):",
+                gmpDemoSub: "Get an official demo key for prototyping in 1 click without any Google Cloud billing account.",
+                gmpDemoLink: "Get Free Demo Key ↗",
+                gmpApiKeyLabel: "Enter API Key:",
+                gmpSafetySession: "Session Tokens: Keystrokes bundled into 1 single session",
+                gmpSafetyFields: "Field Masking: Only basic ID & Name queried (no paid tiers)",
+                gmpSafetyDebounce: "Debounce: 350ms delay & 3-character threshold",
+                btnKeySave: "Save & Connect",
+                btnKeyRemove: "Remove Key",
+                toastKeySaved: "API Key saved. Connecting...",
+                toastKeyRemoved: "API Key removed",
+                toastHourlyLimit: "Hourly search limit reached to protect your quota",
+                toastSelectSuccess: "Business selected and review link generated",
+                updateAvailable: "Update Available",
+                updateReadyTitle: "New Version Ready",
+                updateCurrent: "Current",
+                updateNew: "New",
+                updateSize: "Size: {size}",
+                updateDate: "Published: {date}",
+                updateHighlights: "What's New in this Release",
+                updateInstallBtn: "Download & Install Update",
+                updateViewGithub: "Release Notes",
+                updateLater: "Later",
+                toastCheckingUpdate: "Checking for updates...",
+                toastUpToDate: "You are already using the latest version ({version})",
+                toastUpdateFound: "New version {version} is available!",
+                toastUpdateError: "Unable to check for updates right now",
+                toastDownloadStarted: "Downloading update in background...",
+                toastQrSaveError: "Failed to save QR image"
+            },
+            ar: {
+                apkDownload: "تحميل تطبيق الأندرويد",
+                docTitle: "محوّل روابط التقييم",
+                metaDesc: "حوّل أي رابط خرائط جوجل إلى رابط تقييم 5 نجوم مباشر مع إنشاء رمز QR والبرمجة على بطاقات NFC.",
+                appTitle: "محوّل روابط التقييم",
+                appSubtitle: "تحويل رابط خرائط جوجل إلى رابط تقييم فوري",
+                tabLink: "وضع الرابط",
+                tabSearch: "بحث عن مكان",
+                placeholder: "الصق رابط Google Maps هنا...",
+                trashTitle: "مسح النص",
+                pasteBtn: "لصق",
+                convertBtn: "تحويل الرابط",
+                resolvingBtn: "جاري فك اختصار الرابط...",
+                searchPlaceholder: "اكتب اسم المكان والمدينة (مثال: مطعم القدس عمان)...",
+                searchStep1: "اكتب اسم نشاطك واضغط بحث في الخرائط",
+                searchStep2: "اضغط مشاركة ثم نسخ الرابط من خرائط جوجل",
+                searchStep3: "اضغط لصق ذكي وتحويل بالأسفل!",
+                btnLaunchMaps: "بحث في خرائط جوجل ↗",
+                btnAutoPasteConvert: "لصق ذكي وتحويل فوري",
+                toastEnterQuery: "يرجى كتابة اسم المكان أولاً",
+                navApk: "تحميل التطبيق",
+                navGithub: "المستودع",
+                tagHowItWorks: "طريقة العمل",
+                titleHowItWorks: "كيف يعمل في 3 خطوات بسيطة؟",
+                subHowItWorks: "أنشئ روابط تقييم مباشرة تضاعف تقييمات الـ 5 نجوم لعملائك دون أي تعقيد",
+                step1Title: "ابحث أو انسخ الرابط",
+                step1Desc: "ابحث عن نشاطك أو انسخ رابط المشاركة مباشرة من تطبيق خرائط جوجل أو المتصفح.",
+                step2Title: "تحويل فوري إلى 5 نجوم",
+                step2Desc: "محركنا الذكي يستخرج معرّف المكان (Place ID) ويولد رابطاً يفتح نافذة الـ 5 نجوم تلقائياً.",
+                step3Title: "طباعة QR أو برمجة NFC",
+                step3Desc: "نزّل كود QR عالي الدقة لطاولات ومكاتب الاستقبال، أو برمج بطاقات NFC بلمسة واحدة عبر تطبيق الأندرويد.",
+                tagFeatures: "المميزات",
+                titleFeatures: "لماذا تختار منصتنا لنشاطك التجاري؟",
+                subFeatures: "صُممت خصيصاً لتحقيق أعلى معدل استجابة من العملاء باستخدام أحدث تقنيات اللمس",
+                feat1Title: "فتح نافذة 5 نجوم مباشرة",
+                feat1Desc: "لا حاجة للبحث عن زر التقييم داخل الخريطة؛ تنبثق شاشة تقييم الـ 5 نجوم فور فتح الرابط.",
+                feat2Title: "برمجة بطاقات NFC مجاناً",
+                feat2Desc: "برمج بطاقات واستندات وميداليات NFC الخاصة بتقييمك مباشرة من تطبيقنا دون رسوم أو اشتراكات.",
+                feat3Title: "رموز QR فائقة الدقة",
+                feat3Desc: "حمّل رموز استجابة سريعة فورية مهيأة للطباعة على القوائم، المنشورات، وشاشات نقاط البيع.",
+                feat4Title: "مجاني 100% وبلا تتبع",
+                feat4Desc: "بدون تسجيل دخول، بدون روابط وسيطة أو إعلانات، ومفتوح المصدر بالكامل مع خصوصية تامة.",
+                tagFaq: "الأسئلة الشائعة",
+                titleFaq: "الأسئلة الأكثر تكراراً",
+                subFaq: "كل ما تحتاج معرفته حول روابط تقييم خرائط Google ورموز QR وبطاقات NFC",
+                faq1Q: "كيف أنشئ رابط تقييم خرائط Google مباشر 5 نجوم؟",
+                faq1A: "ابحث عن اسم نشاطك التجاري عبر أداة البحث أو الصق رابط مشاركة خرائط Google. سيقوم نظامنا باستخراج معرّف المكان (Place ID) وتوليد رابط مباشر يفتح نافذة كتابة التقييم مع تقييم 5 نجوم تلقائياً لعملائك.",
+                faq2Q: "كيف تتم برمجة بطاقات الـ NFC لتقييمات Google؟",
+                faq2A: "حمّل تطبيقنا المجاني لنظام أندرويد. بعد استخراج رابط التقييم، اضغط 'كتابة على بطاقة NFC'، ثم قرّب بطاقة أو ملصق NFC من ظهر الهاتف ليتم مسح وبرمجة الرابط فوراً في ثانية واحدة دون أي اشتراكات.",
+                faq3Q: "هل يمكنني طباعة رمز QR للتقييم على مطبوعات نشاطي التجاري؟",
+                faq3A: "نعم! رمز QR المُولد عالي الدقة وقابل للتنزيل بصيغة PNG، مما يجعله مثالياً للطباعة على استندات الطاولات، القوائم، كاونتر المحاسبة، كروت العمل والملصقات.",
+                faq4Q: "هل الأداة مجانية وهل تتطلب مفتاح API أو بطاقة بنكية؟",
+                faq4A: "الأداة مجانية ومفتوحة المصدر بالكامل بنسبة 100%. لا تتطلب أي مفتاح Google Cloud API أو بطاقة بنكية أو تسجيل حساب، وتعمل مباشرة عبر المتصفح أو تطبيق الأندرويد.",
+                footerTagline: "أداة مفتوحة المصدر ومجانية لإنشاء روابط تقييم جوجل 5 نجوم وبرمجة بطاقات NFC.",
+                footerApk: "تطبيق أندرويد",
+                footerGithub: "مستودع GitHub",
+                footerBackToTop: "↑ العودة للأعلى",
+                footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
+                resultLabel: "رابط التقييم المباشر:",
+                copyBtn: "نسخ الرابط",
+                copySuccess: "تم النسخ!",
+                openBtn: "فتح الرابط",
+                shareBtn: "مشاركة الرابط",
+                qrBtn: "إنشاء رمز QR",
+                qrModalTitle: "رمز QR لتقييم جوجل",
+                qrModalDesc: "امسح الرمز بكاميرا أي هاتف ليفتح صفحة التقييم فوراً",
+                qrDownloadBtn: "تنزيل صورة الـ QR",
+                qrCloseBtn: "إغلاق",
+                qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
+                nfcBtn: "كتابة على بطاقة NFC",
+                nfcTitleReady: "جاهز للكتابة على البطاقة",
+                nfcDescReady: "قرّب بطاقة أو ملصق NFC من ظهر الهاتف. وضع الكتابة المتتالية مفعّل.",
+                nfcTitleSuccess: "تمت الكتابة بنجاح!",
+                nfcDescSuccess: "تمت برمجة البطاقة {count} بنجاح. جهّز البطاقة التالية...",
+                nfcTitleNext: "جاهز للبطاقة التالية",
+                nfcDescNext: "قرّب البطاقة التالية من ظهر الهاتف للبرمجة...",
+                nfcCardsCount: "تمت برمجة: {count} بطاقات",
+                nfcCancel: "إلغاء",
+                nfcDone: "إنهاء وإغلاق",
+                nfcTitleError: "فشلت الكتابة",
+                nfcNoHardware: "جهازك لا يدعم خاصية الـ NFC",
+                nfcDisabled: "يرجى تفعيل الـ NFC من إعدادات الهاتف أولاً",
+                nfcLocked: "البطاقة محمية ضد الكتابة أو للقراءة فقط",
+                nfcCapacity: "سعة البطاقة غير كافية للرابط",
+                nfcUnsupported: "نوع بطاقة الـ NFC غير مدعوم",
+                nfcWriteFailed: "حدث خطأ أثناء الكتابة. يرجى المحاولة مجدداً.",
+                toastPasteFirst: "الرجاء لصق الرابط أولاً",
+                toastInvalid: "تعذر استخراج معرّف المكان",
+                toastNoInternet: "لا يوجد اتصال بالشبكة",
+                toastSuccess: "تم تحويل الرابط بنجاح",
+                toastNfcWritten: "تمت الكتابة على البطاقة بنجاح",
+                toastNfcBatchSuccess: "تمت برمجة {count} بطاقات NFC بنجاح",
+                toastCleared: "تم مسح النص",
+                toastPasted: "تم اللصق من الحافظة",
+                toastEmptyClip: "الحافظة فارغة",
+                toastClipDenied: "اضغط Ctrl+V للصق الرابط",
+                toastCopied: "تم نسخ رابط التقييم",
+                toastShareCopied: "تم نسخ الرابط للمشاركة",
+                shareTitle: "تقييم على Google",
+                shareText: "شاركنا تقييمك على خرائط Google",
+                apiKeyConnected: "البحث الحي عبر خرائط Google مفعّل",
+                apiKeyAuthError: "خطأ في التحقق من مفتاح الـ API",
+                apiKeyNotSet: "ربط مفتاح خرائط Google / المفتاح التجريبي",
+                btnKeyConfigure: "مفتاح الـ API",
+                gmpKeyTitle: "مفتاح بحث خرائط Google",
+                gmpKeyDesc: "اربط مفتاح Google Maps API أو المفتاح التجريبي المجاني لتفعيل اقتراحات الأماكن الحية أثناء الكتابة.",
+                gmpDemoHeadline: "مفتاح تجريبي مجاني (بدون أي بطاقة بنكية):",
+                gmpDemoSub: "استخرج مفتاح تجريبي رسمي للتطوير بنقرة زر واحدة دون الحاجة لحساب فوترة في Google Cloud.",
+                gmpDemoLink: "استخراج المفتاح التجريبي مجاناً ↗",
+                gmpApiKeyLabel: "أدخل مفتاح الـ API:",
+                gmpSafetySession: "رموز الجلسة (Sessions): دمج كل الحروف في طلب فوترة واحد",
+                gmpSafetyFields: "حصر الحقول (Field Mask): طلب الاسم والمعرف فقط لحماية الرصيد",
+                gmpSafetyDebounce: "مؤقت الأمان: تأخير 350ms وحد أدنى 3 أحرف لمنع استهلاك الطلبات",
+                btnKeySave: "حفظ وتفعيل",
+                btnKeyRemove: "إزالة المفتاح",
+                toastKeySaved: "تم حفظ المفتاح، جاري الاتصال...",
+                toastKeyRemoved: "تمت إزالة المفتاح",
+                toastHourlyLimit: "تم الوصول للحد الأقصى للبحث في هذه الساعة لحماية الرصيد",
+                toastSelectSuccess: "تم اختيار النشاط التجاري وتوليد رابط التقييم",
+                updateAvailable: "تحديث جديد متوفر",
+                updateReadyTitle: "إصدار جديد جاهز للتثبيت",
+                updateCurrent: "الحالي",
+                updateNew: "الجديد",
+                updateSize: "الحجم: {size}",
+                updateDate: "تاريخ النشر: {date}",
+                updateHighlights: "أبرز مميزات هذا الإصدار",
+                updateInstallBtn: "تنزيل وتثبيت التحديث الآن",
+                updateViewGithub: "ملاحظات الإصدار",
+                updateLater: "لاحقاً",
+                toastCheckingUpdate: "جاري التحقق من وجود تحديثات...",
+                toastUpToDate: "أنت تستخدم أحدث إصدار بالفعل ({version})",
+                toastUpdateFound: "يتوفر إصدار جديد {version}!",
+                toastUpdateError: "تعذر التحقق من التحديثات حالياً",
+                toastDownloadStarted: "جاري تنزيل التحديث في الخلفية...",
+                toastQrSaveError: "فشل حفظ صورة رمز الـ QR"
+            }
+        };
+
+    let currentLang = localStorage.getItem('app_lang') || 'en';
+    let isLangSwitching = false;
+
+    function updateSliderPill(lang) {
+        const isAr = lang === 'ar';
+        const offset = isAr ? '48px' : '0px';
+
+        const btnEn = document.getElementById('btnEn');
+        const btnAr = document.getElementById('btnAr');
+        const langSlider = document.getElementById('langSlider');
+        if (btnEn && btnAr && langSlider) {
+            if (isAr) {
+                btnEn.classList.remove('active');
+                btnAr.classList.add('active');
+            } else {
+                btnAr.classList.remove('active');
+                btnEn.classList.add('active');
+            }
+            langSlider.style.transform = `translateX(${offset})`;
+        }
+
+        const navBtnEn = document.getElementById('navBtnEn');
+        const navBtnAr = document.getElementById('navBtnAr');
+        const navLangSlider = document.getElementById('navLangSlider');
+        if (navBtnEn && navBtnAr && navLangSlider) {
+            if (isAr) {
+                navBtnEn.classList.remove('active');
+                navBtnAr.classList.add('active');
+            } else {
+                navBtnAr.classList.remove('active');
+                navBtnEn.classList.add('active');
+            }
+            navLangSlider.style.transform = `translateX(${offset})`;
+        }
+    }
+
+    function updateDomLanguageStrings(lang, dict) {
+        if (!dict) return;
+
+        const setTxt = (id, text) => {
+            const el = document.getElementById(id);
+            if (el && text !== undefined && text !== null) el.textContent = text;
+        };
+        const setHtml = (id, html) => {
+            const el = document.getElementById(id);
+            if (el && html !== undefined && html !== null) el.innerHTML = html;
+        };
+
+        // Update HTML attributes
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        if (dict.docTitle) document.title = dict.docTitle;
+
+        const metaDesc = document.querySelector('meta[name="description"]');
+        if (metaDesc && dict.metaDesc) metaDesc.setAttribute('content', dict.metaDesc);
+
+        // Desktop Navbar
+        setTxt('navGithubLabel', dict.navGithub);
+        setTxt('navApkLabel', dict.navApk);
+
+        // Top bar & Header
+        setTxt('apkDownloadLabel', dict.apkDownload);
+        setTxt('appTitle', dict.appTitle);
+        setTxt('appSubtitle', dict.appSubtitle);
+
+        // Mode Switcher & Inputs
+        setTxt('tabLinkLabel', dict.tabLink);
+        setTxt('tabSearchLabel', dict.tabSearch);
+
+        const urlInput = document.getElementById('urlInput');
+        if (urlInput && dict.placeholder) urlInput.placeholder = dict.placeholder;
+
+        const clearBtn = document.getElementById('clearBtn');
+        if (clearBtn && dict.trashTitle) clearBtn.title = dict.trashTitle;
+
+        setTxt('pasteBtnLabel', dict.pasteBtn);
+        const pasteBtn = document.getElementById('pasteBtn');
+        if (pasteBtn && dict.pasteBtn) pasteBtn.title = dict.pasteBtn;
+
+        const businessSearchInput = document.getElementById('businessSearchInput');
+        if (businessSearchInput && dict.searchPlaceholder) businessSearchInput.placeholder = dict.searchPlaceholder;
+
+        const searchClearBtn = document.getElementById('searchClearBtn');
+        if (searchClearBtn && dict.trashTitle) searchClearBtn.title = dict.trashTitle;
+
+        const convertBtn = document.getElementById('convertBtn');
+        if (convertBtn && !convertBtn.disabled) {
+            setTxt('btnText', dict.convertBtn);
+        }
+
+        // Results Card
+        setTxt('resultLabelText', dict.resultLabel);
+
+        const copyBtn = document.getElementById('copyBtn');
+        if (copyBtn && !copyBtn.classList.contains('copied')) {
+            setTxt('copyBtnLabel', dict.copyBtn);
+        }
+        setTxt('openBtnLabel', dict.openBtn);
+        setTxt('shareBtnLabel', dict.shareBtn);
+        setTxt('qrBtnLabel', dict.qrBtn);
+        setTxt('nfcBtnLabel', dict.nfcBtn);
+
+        // QR Modal
+        setTxt('qrModalTitle', dict.qrModalTitle);
+        setTxt('qrModalDesc', dict.qrModalDesc);
+        setTxt('qrDownloadBtnLabel', dict.qrDownloadBtn);
+        setTxt('qrCloseBtn', dict.qrCloseBtn);
+
+        // NFC Modal (Native App)
+        setTxt('nfcTitle', dict.nfcTitleReady);
+        setTxt('nfcDesc', dict.nfcDescReady);
+        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+        if (nfcCancelBtn) {
+            nfcCancelBtn.textContent = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+        }
+
+        // Desktop Marketing (Web)
+        setTxt('tagHowItWorks', dict.tagHowItWorks);
+        setTxt('titleHowItWorks', dict.titleHowItWorks);
+        setTxt('subHowItWorks', dict.subHowItWorks);
+        setTxt('step1Title', dict.step1Title);
+        setTxt('step1Desc', dict.step1Desc);
+        setTxt('step2Title', dict.step2Title);
+        setTxt('step2Desc', dict.step2Desc);
+        setTxt('step3Title', dict.step3Title);
+        setTxt('step3Desc', dict.step3Desc);
+
+        setTxt('tagFeatures', dict.tagFeatures);
+        setTxt('titleFeatures', dict.titleFeatures);
+        setTxt('subFeatures', dict.subFeatures);
+        setTxt('feat1Title', dict.feat1Title);
+        setTxt('feat1Desc', dict.feat1Desc);
+        setTxt('feat2Title', dict.feat2Title);
+        setTxt('feat2Desc', dict.feat2Desc);
+        setTxt('feat3Title', dict.feat3Title);
+        setTxt('feat3Desc', dict.feat3Desc);
+        setTxt('feat4Title', dict.feat4Title);
+        setTxt('feat4Desc', dict.feat4Desc);
+
+        setTxt('tagFaq', dict.tagFaq);
+        setTxt('titleFaq', dict.titleFaq);
+        setTxt('subFaq', dict.subFaq);
+        setTxt('faq1Q', dict.faq1Q);
+        setTxt('faq1A', dict.faq1A);
+        setTxt('faq2Q', dict.faq2Q);
+        setTxt('faq2A', dict.faq2A);
+        setTxt('faq3Q', dict.faq3Q);
+        setTxt('faq3A', dict.faq3A);
+        setTxt('faq4Q', dict.faq4Q);
+        setTxt('faq4A', dict.faq4A);
+
+        // Footer
+        setTxt('footerTagline', dict.footerTagline);
+        setTxt('footerApkLink', dict.footerApk);
+        setTxt('footerGithubLink', dict.footerGithub);
+        setTxt('footerBackToTop', dict.footerBackToTop);
+        setHtml('footerCopyright', dict.footerCopyright);
+
+        // App Update Modal (Native App)
+        setTxt('updateBadgeText', dict.updateAvailable);
+        setTxt('updateModalTitle', dict.updateReadyTitle);
+        setTxt('lblCurrentVer', dict.updateCurrent);
+        setTxt('lblLatestVer', dict.updateNew);
+        setTxt('updateChangelogHeader', dict.updateHighlights);
+        setTxt('btnUpdateNowLabel', dict.updateInstallBtn);
+        setTxt('btnUpdateGithubLabel', dict.updateViewGithub);
+        setTxt('btnUpdateLater', dict.updateLater);
+    }
+
+    function applyLanguage(lang, animate = true) {
+        if (animate && (lang === currentLang || isLangSwitching)) return;
+
+        currentLang = lang;
+        try {
+            localStorage.setItem('app_lang', lang);
+        } catch (e) {}
+        const dict = I18N[lang];
+        if (!dict) return;
+
+        // 1. Instant feedback: glide slider pill immediately with spring physics
+        updateSliderPill(lang);
+
+        if (!animate) {
+            try {
+                updateDomLanguageStrings(lang, dict);
+            } catch (e) {
+                console.error('Error applying language strings:', e);
+            }
+            return;
+        }
+
+        // 2. Coordinated cross-dissolve with layout lock
+        isLangSwitching = true;
+        document.body.classList.add('is-lang-switching');
+
+        setTimeout(() => {
+            try {
+                updateDomLanguageStrings(lang, dict);
+                void document.documentElement.offsetHeight;
+            } catch (e) {
+                console.error('Error during language switch:', e);
+            } finally {
+                requestAnimationFrame(() => {
+                    document.body.classList.remove('is-lang-switching');
+                    setTimeout(() => {
+                        isLangSwitching = false;
+                    }, 240);
+                });
+            }
+        }, 140);
+    }
+
+    function switchLanguage(lang) {
+        if (lang === currentLang) return;
+        applyLanguage(lang, true);
+    }
+
+    // Expose globals
+    window.I18N = I18N;
+    window.getCurrentLang = function() { return currentLang; };
+    window.setCurrentLang = function(l) { currentLang = l; try { localStorage.setItem('app_lang', l); } catch(e){} };
+    window.updateSliderPill = updateSliderPill;
+    window.updateDomLanguageStrings = updateDomLanguageStrings;
+    window.applyLanguage = applyLanguage;
+    window.switchLanguage = switchLanguage;
+})();
+
+/* == core/toast.js == */
+// ========================================================
+// Unified Toast Notification Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    const ICONS = {
+        success: '<svg viewBox="0 0 24 24" fill="#10b981"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>',
+        error: '<svg viewBox="0 0 24 24" fill="#ef4444"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>',
+        warn: '<svg viewBox="0 0 24 24" fill="#f59e0b"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>',
+        paste: '<svg viewBox="0 0 24 24" fill="#fb923c"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>',
+        copy: '<svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>',
+        download: '<svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
+        trash: '<svg viewBox="0 0 24 24" fill="#f87171"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>'
+    };
+
+    let toastTimer = null;
+    function showToast(msg, type = 'info') {
+        if (toastTimer) clearTimeout(toastTimer);
+        const toast = document.getElementById('toast');
+        const toastIcon = document.getElementById('toastIcon');
+        const toastText = document.getElementById('toastText');
+        if (!toast) return;
+
+        if (toastIcon) {
+            toastIcon.innerHTML = ICONS[type] || '';
+        }
+        if (toastText) {
+            toastText.textContent = msg;
+        } else {
+            toast.textContent = msg;
+        }
+        toast.classList.add('show');
+        toastTimer = setTimeout(() => {
+            if (toast) toast.classList.remove('show');
+        }, 2500);
+    }
+
+    window.showToast = showToast;
+})();
+
+/* == core/converter.js == */
+// ========================================================
+// Google Maps URL Resolver & Place ID Extraction Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    let generatedReviewUrl = '';
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function setLoading(isLoading) {
+        const dict = getDict();
+        const convertBtn = document.getElementById('convertBtn');
+        const btnSpinner = document.getElementById('btnSpinner');
+        const btnIcon = document.getElementById('btnIcon');
+        const btnText = document.getElementById('btnText');
+
+        if (convertBtn) convertBtn.disabled = isLoading;
+        if (btnSpinner) btnSpinner.style.display = isLoading ? 'block' : 'none';
+        if (btnIcon) btnIcon.style.display = isLoading ? 'none' : 'block';
+        if (btnText && dict.resolvingBtn && dict.convertBtn) {
+            btnText.textContent = isLoading ? dict.resolvingBtn : dict.convertBtn;
+        }
+    }
+
+    // ── Protobuf Hex Decoder (0x...:0x... -> ChIJ...) ──
+    function hexToPlaceId(featureId) {
+        try {
+            const parts = featureId.split(':');
+            if (parts.length !== 2) return null;
+
+            const hexA = parts[0].replace(/^0x/i, '').padStart(16, '0');
+            const hexB = parts[1].replace(/^0x/i, '').padStart(16, '0');
+
+            function toLittleEndian(hex) {
+                const bytes = [];
+                for (let i = hex.length - 2; i >= 0; i -= 2) {
+                    bytes.push(parseInt(hex.substring(i, i + 2), 16));
+                }
+                return bytes;
+            }
+
+            const msg = [
+                0x0A, 0x12,
+                0x09,
+                ...toLittleEndian(hexA),
+                0x11,
+                ...toLittleEndian(hexB)
+            ];
+
+            const b64 = btoa(String.fromCharCode.apply(null, msg));
+            return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        } catch (e) {
+            return null;
+        }
+    }
+
+    // ── Direct Place ID Parser ──
+    function parsePlaceIdFromText(text) {
+        if (!text) return null;
+
+        let decoded;
+        try { decoded = decodeURIComponent(text); } catch(e) { decoded = text; }
+
+        let match = decoded.match(/place_?id[=:]\s*([A-Za-z0-9_-]{15,})/i);
+        if (match) return match[1];
+
+        match = decoded.match(/(ChIJ[A-Za-z0-9_-]{20,})/);
+        if (match) return match[1];
+
+        match = decoded.match(/(?:!1s|ftid=)(0x[0-9a-fA-F]+:0x[0-9a-fA-F]+)/);
+        if (match) {
+            const pid = hexToPlaceId(match[1]);
+            if (pid) return pid;
+        }
+
+        match = decoded.match(/(0x[0-9a-fA-F]{10,}:0x[0-9a-fA-F]{10,})/);
+        if (match) {
+            const pid = hexToPlaceId(match[1]);
+            if (pid) return pid;
+        }
+
+        return null;
+    }
+
+    // ── Device Connectivity Check ──
+    function isDeviceOnline() {
+        if (window.AndroidNative && typeof window.AndroidNative.isNetworkConnected === 'function') {
+            try {
+                return window.AndroidNative.isNetworkConnected();
+            } catch (e) {
+                console.warn('isNetworkConnected error:', e);
+            }
+        }
+        return navigator.onLine !== false;
+    }
+
+    // ── Unshorten maps.app.goo.gl / goo.gl shortlinks ──
+    async function resolveShortenedUrl(shortUrl) {
+        if (!isDeviceOnline()) {
+            return { url: null, error: 'NO_INTERNET' };
+        }
+
+        let networkError = false;
+
+        try {
+            const endpoint = `https://unshorten.me/json/${encodeURIComponent(shortUrl.trim())}`;
+            const res = await fetch(endpoint, { method: 'GET' });
+            if (res.ok) {
+                const data = await res.json();
+                if (data && data.resolved_url) {
+                    return { url: data.resolved_url, error: null };
+                }
+            }
+        } catch (e) {
+            console.warn('unshorten.me error:', e);
+            networkError = true;
+        }
+
+        try {
+            const proxy = `https://api.allorigins.win/raw?url=${encodeURIComponent(shortUrl.trim())}`;
+            const res = await fetch(proxy);
+            if (res.ok) {
+                const html = await res.text();
+                const match = html.match(/(0x[0-9a-fA-F]{10,}(?::|%3A)0x[0-9a-fA-F]{10,})/i);
+                if (match) {
+                    return { url: decodeURIComponent(match[1]), error: null };
+                }
+            }
+        } catch (e) {
+            console.warn('allorigins proxy error:', e);
+            networkError = true;
+        }
+
+        if (!isDeviceOnline() || networkError) {
+            return { url: null, error: 'NO_INTERNET' };
+        }
+
+        return { url: null, error: null };
+    }
+
+    // ── Execute Convert ──
+    async function handleConvert() {
+        const dict = getDict();
+        const urlInput = document.getElementById('urlInput');
+        const resultCard = document.getElementById('resultCard');
+        const resultLinkText = document.getElementById('resultLinkText');
+
+        const raw = urlInput ? urlInput.value.trim() : '';
+        if (!raw) {
+            if (window.showToast) window.showToast(dict.toastPasteFirst || 'Please paste a link first');
+            if (urlInput) urlInput.focus();
+            return;
+        }
+
+        let placeId = parsePlaceIdFromText(raw);
+
+        if (!placeId && /maps\.app\.goo\.gl|goo\.gl\/maps/i.test(raw)) {
+            if (!isDeviceOnline()) {
+                if (window.showToast) window.showToast(dict.toastNoInternet || 'No network connection', 'warn');
+                return;
+            }
+
+            setLoading(true);
+            const result = await resolveShortenedUrl(raw);
+            setLoading(false);
+
+            if (result && result.error === 'NO_INTERNET') {
+                if (window.showToast) window.showToast(dict.toastNoInternet || 'No network connection', 'warn');
+                return;
+            }
+
+            if (result && result.url) {
+                placeId = parsePlaceIdFromText(result.url);
+            }
+        }
+
+        if (!placeId) {
+            if (!isDeviceOnline()) {
+                if (window.showToast) window.showToast(dict.toastNoInternet || 'No network connection', 'warn');
+            } else {
+                if (window.showToast) window.showToast(dict.toastInvalid || 'Could not extract Place ID', 'error');
+            }
+            return;
+        }
+
+        generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+        if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
+        
+        if (resultCard) {
+            resultCard.classList.add('active');
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+        if (window.showToast) window.showToast(dict.toastSuccess || 'Link converted successfully', 'success');
+    }
+
+    window.handleConvert = handleConvert;
+    window.parsePlaceIdFromText = parsePlaceIdFromText;
+    window.resolveShortenedUrl = resolveShortenedUrl;
+    window.isDeviceOnline = isDeviceOnline;
+    window.getGeneratedReviewUrl = function() { return generatedReviewUrl; };
+    window.setGeneratedReviewUrl = function(u) { generatedReviewUrl = u; };
+})();
+
+/* == core/places.js == */
+// ========================================================
+// Google Maps Places Autocomplete & Search Mode Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    const CONFIG_MAPS_API_KEY = 'AIzaSyB-s2VuNM3Cqbli4YF5YIry7qfR_r34_UE';
+
+    let gmpPlacesLoaded = false;
+    let gmpScriptLoadingPromise = null;
+    let currentSessionToken = null;
+    let autocompleteDebounceTimer = null;
+    let highlightedSuggestionIndex = -1;
+    let currentSuggestions = [];
+    const autocompleteCache = new Map();
+
+    let autocompleteHourlyCount = 0;
+    let autocompleteHourlyResetTime = Date.now() + 3600000;
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function checkHourlyRateLimit() {
+        const now = Date.now();
+        if (now > autocompleteHourlyResetTime) {
+            autocompleteHourlyCount = 0;
+            autocompleteHourlyResetTime = now + 3600000;
+        }
+        if (autocompleteHourlyCount >= 60) {
+            return false;
+        }
+        autocompleteHourlyCount++;
+        return true;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/[&<>'"]/g, tag => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            "'": '&#39;',
+            '"': '&quot;'
+        }[tag] || tag));
+    }
+
+    function isAuthorizedOrigin() {
+        if (window.AndroidNative) return true;
+        if (!window.location) return false;
+        const proto = window.location.protocol || '';
+        const host = window.location.hostname || '';
+        if (host === 'zaid-a-salameh.github.io' || host === 'localhost' || host === '127.0.0.1') {
+            return true;
+        }
+        if (proto === 'file:' && decodeURIComponent(window.location.href || '').indexOf('Zaid-PC') !== -1) {
+            return true;
+        }
+        return false;
+    }
+
+    function getActiveMapsApiKey() {
+        if (!isAuthorizedOrigin()) return '';
+        return CONFIG_MAPS_API_KEY || '';
+    }
+
+    function getAutocompleteSessionToken() {
+        if (!currentSessionToken && window.google && window.google.maps && window.google.maps.places && window.google.maps.places.AutocompleteSessionToken) {
+            currentSessionToken = new google.maps.places.AutocompleteSessionToken();
+        }
+        return currentSessionToken;
+    }
+
+    function resetAutocompleteSessionToken() {
+        if (window.google && window.google.maps && window.google.maps.places && window.google.maps.places.AutocompleteSessionToken) {
+            currentSessionToken = new google.maps.places.AutocompleteSessionToken();
+        } else {
+            currentSessionToken = null;
+        }
+    }
+
+    function initGoogleMapsPlaces() {
+        const key = getActiveMapsApiKey();
+        if (!key) {
+            return Promise.resolve(false);
+        }
+
+        if (gmpPlacesLoaded && window.google && window.google.maps && window.google.maps.places && window.google.maps.places.AutocompleteSuggestion) {
+            return Promise.resolve(true);
+        }
+
+        if (gmpScriptLoadingPromise) {
+            return gmpScriptLoadingPromise;
+        }
+
+        gmpScriptLoadingPromise = new Promise((resolve) => {
+            window.gm_authFailure = () => {
+                console.error('Google Maps API authentication failed.');
+                gmpPlacesLoaded = false;
+                gmpScriptLoadingPromise = null;
+                resolve(false);
+            };
+
+            window.__onGmpLoaded = async () => {
+                try {
+                    if (window.google && window.google.maps && window.google.maps.importLibrary) {
+                        await google.maps.importLibrary("places");
+                        gmpPlacesLoaded = true;
+                        resolve(true);
+                    } else {
+                        gmpScriptLoadingPromise = null;
+                        resolve(false);
+                    }
+                } catch (err) {
+                    console.error('Error importing places library:', err);
+                    gmpScriptLoadingPromise = null;
+                    resolve(false);
+                }
+            };
+
+            const existingScript = document.getElementById('gmpScript');
+            if (existingScript) existingScript.remove();
+
+            const script = document.createElement('script');
+            script.id = 'gmpScript';
+            script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&v=weekly&libraries=places&loading=async&callback=__onGmpLoaded`;
+            script.async = true;
+            script.defer = true;
+            script.onerror = () => {
+                console.error('Failed to load Google Maps script.');
+                gmpScriptLoadingPromise = null;
+                resolve(false);
+            };
+            if (document.head) { document.head.appendChild(script); } else if (document.body) { document.body.appendChild(script); }
+        });
+
+        return gmpScriptLoadingPromise;
+    }
+
+    function hideDropdown() {
+        const placesDropdown = document.getElementById('placesDropdown');
+        const mainInputCard = document.getElementById('mainInputCard');
+        const appContainer = document.getElementById('appContainer');
+        const modeSearchContent = document.getElementById('modeSearchContent');
+        const searchFieldWrapper = document.getElementById('searchFieldWrapper');
+
+        if (placesDropdown) {
+            placesDropdown.classList.remove('show');
+            placesDropdown.innerHTML = '';
+        }
+        if (mainInputCard) mainInputCard.classList.remove('has-dropdown-open');
+        if (appContainer) appContainer.classList.remove('has-dropdown-open');
+        if (modeSearchContent) modeSearchContent.classList.remove('has-dropdown-open');
+        if (searchFieldWrapper) searchFieldWrapper.classList.remove('has-dropdown-open');
+        highlightedSuggestionIndex = -1;
+        currentSuggestions = [];
+    }
+
+    function highlightSuggestion(index) {
+        const placesDropdown = document.getElementById('placesDropdown');
+        if (!placesDropdown) return;
+        const items = placesDropdown.querySelectorAll('.place-suggestion-item');
+        items.forEach((item, i) => {
+            if (i === index) {
+                item.classList.add('selected');
+                item.scrollIntoView({ block: 'nearest' });
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+    }
+
+    async function fetchPlaceSuggestions(query) {
+        const trimmed = query.trim();
+        if (!trimmed || trimmed.length < 2) {
+            hideDropdown();
+            return;
+        }
+
+        if (!gmpPlacesLoaded) {
+            const ready = await initGoogleMapsPlaces();
+            if (!ready) return;
+        }
+
+        if (!window.google || !window.google.maps || !window.google.maps.places || !window.google.maps.places.AutocompleteSuggestion) {
+            return;
+        }
+
+        const currentLang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        const cacheKey = `${currentLang}:${trimmed.toLowerCase()}`;
+        if (autocompleteCache.has(cacheKey)) {
+            renderSuggestions(autocompleteCache.get(cacheKey));
+            return;
+        }
+
+        if (!checkHourlyRateLimit()) {
+            const dict = getDict();
+            if (window.showToast) window.showToast(dict.toastHourlyLimit || 'Search limit reached', 'warn');
+            return;
+        }
+
+        const searchSpinner = document.getElementById('searchSpinner');
+        if (searchSpinner) searchSpinner.classList.add('active');
+
+        try {
+            const token = getAutocompleteSessionToken();
+            const request = {
+                input: trimmed,
+                sessionToken: token,
+                language: currentLang
+            };
+
+            const { suggestions } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
+            autocompleteCache.set(cacheKey, suggestions || []);
+            renderSuggestions(suggestions || []);
+        } catch (err) {
+            console.warn('Autocomplete fetch error:', err);
+            hideDropdown();
+        } finally {
+            if (searchSpinner) searchSpinner.classList.remove('active');
+        }
+    }
+
+    function getPredictionStrings(pred) {
+        const mainText = (pred.mainText && typeof pred.mainText.text === 'string')
+            ? pred.mainText.text
+            : ((pred.text && typeof pred.text.text === 'string') ? pred.text.text : String(pred.mainText || pred.text || ''));
+        const secondaryText = (pred.secondaryText && typeof pred.secondaryText.text === 'string')
+            ? pred.secondaryText.text
+            : '';
+        return { mainText, secondaryText };
+    }
+
+    function renderSuggestions(suggestions) {
+        currentSuggestions = suggestions || [];
+        highlightedSuggestionIndex = -1;
+
+        if (!currentSuggestions.length) {
+            hideDropdown();
+            return;
+        }
+
+        const placesDropdown = document.getElementById('placesDropdown');
+        const mainInputCard = document.getElementById('mainInputCard');
+        const appContainer = document.getElementById('appContainer');
+        const modeSearchContent = document.getElementById('modeSearchContent');
+        const searchFieldWrapper = document.getElementById('searchFieldWrapper');
+
+        if (!placesDropdown) return;
+        placesDropdown.innerHTML = '';
+
+        currentSuggestions.forEach((sugg, idx) => {
+            const pred = sugg.placePrediction;
+            if (!pred) return;
+
+            const { mainText, secondaryText } = getPredictionStrings(pred);
+
+            const item = document.createElement('div');
+            item.className = 'place-suggestion-item';
+            item.setAttribute('role', 'option');
+            item.setAttribute('data-index', idx);
+            item.innerHTML = `
+                <div class="place-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                </div>
+                <div class="place-text">
+                    <div class="place-main">${escapeHtml(mainText)}</div>
+                    ${secondaryText ? `<div class="place-secondary">${escapeHtml(secondaryText)}</div>` : ''}
+                </div>
+            `;
+
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectSuggestion(sugg);
+            });
+
+            placesDropdown.appendChild(item);
+        });
+
+        // Powered by Google Attribution (Mandatory under ToS)
+        const attribution = document.createElement('div');
+        attribution.className = 'places-attribution';
+        attribution.innerHTML = `
+            <span>powered by</span>
+            <svg viewBox="0 0 74 24" height="14" width="44">
+                <path fill="#4285F4" d="M9.24 9.19v2.45h5.86c-.24 1.37-1.6 4.02-5.86 4.02-3.53 0-6.4-2.91-6.4-6.49 0-3.58 2.87-6.49 6.4-6.49 2.01 0 3.36.86 4.13 1.6l1.94-1.87C13.98 1.15 11.78.25 9.24.25 4.31.25.29 4.28.29 9.17s4.02 8.92 8.95 8.92c5.15 0 8.57-3.62 8.57-8.73 0-.59-.06-1.03-.14-1.47H9.24z"/>
+                <path fill="#EA4335" d="M23.95 6.36c-3.15 0-5.71 2.45-5.71 5.69 0 3.22 2.56 5.69 5.71 5.69 3.15 0 5.71-2.47 5.71-5.69 0-3.24-2.56-5.69-5.71-5.69zm0 9.13c-1.73 0-3.22-1.42-3.22-3.44 0-2.04 1.49-3.44 3.22-3.44 1.73 0 3.22 1.4 3.22 3.44 0 2.02-1.49 3.44-3.22 3.44z"/>
+                <path fill="#FBBC05" d="M36.19 6.36c-3.15 0-5.71 2.45-5.71 5.69 0 3.22 2.56 5.69 5.71 5.69 3.15 0 5.71-2.47 5.71-5.69 0-3.24-2.56-5.69-5.71-5.69zm0 9.13c-1.73 0-3.22-1.42-3.22-3.44 0-2.04 1.49-3.44 3.22-3.44 1.73 0 3.22 1.4 3.22 3.44 0 2.02-1.49 3.44-3.22 3.44z"/>
+                <path fill="#4285F4" d="M48.06 6.36c-3.04 0-5.46 2.47-5.46 5.69 0 3.2 2.42 5.69 5.46 5.69 1.83 0 2.87-.79 3.57-1.62v1.31c0 2.18-1.16 3.34-3.04 3.34-1.53 0-2.49-1.1-2.89-2.02l-2.18.91c.63 1.51 2.3 3.36 5.07 3.36 2.95 0 5.44-1.73 5.44-5.91V6.65h-2.39v1.07c-.7-.84-1.76-1.36-3.58-1.36zm.26 9.13c-1.69 0-3.08-1.42-3.08-3.44 0-2.04 1.39-3.44 3.08-3.44 1.67 0 2.97 1.4 2.97 3.44 0 2.02-1.3 3.44-2.97 3.44z"/>
+                <path fill="#34A853" d="M55.85.5h2.51v17.25h-2.51z"/>
+                <path fill="#EA4335" d="M64.71 15.49c-1.29 0-2.19-.59-2.79-1.76l7.65-3.15-.26-.65c-.48-1.31-1.95-3.57-4.9-3.57-2.95 0-5.4 2.31-5.4 5.69 0 3.2 2.43 5.69 5.7 5.69 2.64 0 4.17-1.62 4.8-2.56l-1.97-1.31c-.63.95-1.51 1.62-2.83 1.62zm-.19-7.08c1.01 0 1.87.52 2.15 1.25l-5.15 2.13c0-2.4 1.71-3.38 3-3.38z"/>
+            </svg>
+        `;
+        placesDropdown.appendChild(attribution);
+
+        placesDropdown.classList.add('show');
+        if (mainInputCard) mainInputCard.classList.add('has-dropdown-open');
+        if (appContainer) appContainer.classList.add('has-dropdown-open');
+        if (modeSearchContent) modeSearchContent.classList.add('has-dropdown-open');
+        if (searchFieldWrapper) searchFieldWrapper.classList.add('has-dropdown-open');
+    }
+
+    async function selectSuggestion(suggestion) {
+        if (!suggestion || !suggestion.placePrediction) return;
+        const pred = suggestion.placePrediction;
+        const placeId = pred.placeId;
+        const { mainText, secondaryText } = getPredictionStrings(pred);
+        const dict = getDict();
+
+        const businessSearchInput = document.getElementById('businessSearchInput');
+        const searchClearBtn = document.getElementById('searchClearBtn');
+        const urlInput = document.getElementById('urlInput');
+        const resultCard = document.getElementById('resultCard');
+        const resultLinkText = document.getElementById('resultLinkText');
+
+        hideDropdown();
+        if (businessSearchInput) {
+            businessSearchInput.value = secondaryText ? `${mainText} - ${secondaryText}` : mainText;
+        }
+        if (searchClearBtn) searchClearBtn.classList.add('visible');
+
+        resetAutocompleteSessionToken();
+
+        if (placeId) {
+            const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+            if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
+            if (resultLinkText) resultLinkText.textContent = reviewUrl;
+            if (urlInput) urlInput.value = reviewUrl;
+            if (resultCard) {
+                resultCard.classList.add('active');
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            if (window.showToast) window.showToast(dict.toastSelectSuccess || 'Business selected and review link generated', 'success');
+        } else {
+            if (window.showToast) window.showToast(dict.toastInvalid || 'Could not extract Place ID', 'error');
+        }
+    }
+
+    function switchMode(mode) {
+        const tabLinkMode = document.getElementById('tabLinkMode');
+        const tabSearchMode = document.getElementById('tabSearchMode');
+        const modeLinkContent = document.getElementById('modeLinkContent');
+        const modeSearchContent = document.getElementById('modeSearchContent');
+        const urlInput = document.getElementById('urlInput');
+        const businessSearchInput = document.getElementById('businessSearchInput');
+
+        if (mode === 'link') {
+            if (tabLinkMode) tabLinkMode.classList.add('active');
+            if (tabSearchMode) tabSearchMode.classList.remove('active');
+            if (modeLinkContent) modeLinkContent.classList.add('active');
+            if (modeSearchContent) modeSearchContent.classList.remove('active');
+            hideDropdown();
+            if (urlInput) urlInput.focus();
+        } else {
+            if (tabSearchMode) tabSearchMode.classList.add('active');
+            if (tabLinkMode) tabLinkMode.classList.remove('active');
+            if (modeSearchContent) modeSearchContent.classList.add('active');
+            if (modeLinkContent) modeLinkContent.classList.remove('active');
+            if (businessSearchInput) businessSearchInput.focus();
+            initGoogleMapsPlaces();
+        }
+    }
+
+    window.initGoogleMapsPlaces = initGoogleMapsPlaces;
+    window.fetchPlaceSuggestions = fetchPlaceSuggestions;
+    window.hidePlacesDropdown = hideDropdown;
+    window.selectSuggestion = selectSuggestion;
+    window.switchMode = switchMode;
+})();
+
+/* == core/qr.js == */
+// ========================================================
+// QR Code Generator & Modal Management Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    let qrInstance = null;
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function generateQrCode(url) {
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        if (!qrCodeContainer) return;
+        qrCodeContainer.innerHTML = '';
+        if (typeof QRCode !== 'undefined') {
+            qrInstance = new QRCode(qrCodeContainer, {
+                text: url,
+                width: 200,
+                height: 200,
+                colorDark: "#1c1917",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        } else {
+            const img = document.createElement('img');
+            img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=1&data=${encodeURIComponent(url)}`;
+            img.alt = 'Google Review QR Code';
+            img.width = 200;
+            img.height = 200;
+            qrCodeContainer.appendChild(img);
+        }
+    }
+
+    function openQrModal() {
+        const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
+        if (!url) return;
+        const qrOverlay = document.getElementById('qrOverlay');
+        if (qrOverlay) qrOverlay.classList.add('active');
+        requestAnimationFrame(() => {
+            generateQrCode(url);
+        });
+    }
+
+    function closeQrModal() {
+        const qrOverlay = document.getElementById('qrOverlay');
+        if (qrOverlay) qrOverlay.classList.remove('active');
+    }
+
+    function downloadQrImage() {
+        const dict = getDict();
+        const qrCodeContainer = document.getElementById('qrCodeContainer');
+        if (!qrCodeContainer) return;
+
+        let dataUrl = null;
+        const canvas = qrCodeContainer.querySelector('canvas');
+        if (canvas) {
+            const framed = document.createElement('canvas');
+            framed.width = canvas.width + 40;
+            framed.height = canvas.height + 40;
+            const ctx = framed.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, framed.width, framed.height);
+            ctx.drawImage(canvas, 20, 20);
+            dataUrl = framed.toDataURL('image/png');
+        } else {
+            const img = qrCodeContainer.querySelector('img');
+            if (img && img.src) {
+                dataUrl = img.src;
+            }
+        }
+
+        if (!dataUrl) return;
+
+        if (window.AndroidNative && window.AndroidNative.saveQrImage) {
+            window.AndroidNative.saveQrImage(dataUrl, "google_review_qr.png");
+            if (window.showToast) window.showToast(dict.qrDownloaded || 'QR downloaded', 'success');
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.download = 'google_review_qr.png';
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        if (window.showToast) window.showToast(dict.qrDownloaded || 'QR downloaded', 'success');
+    }
+
+    window.generateQrCode = generateQrCode;
+    window.openQrModal = openQrModal;
+    window.closeQrModal = closeQrModal;
+    window.downloadQrImage = downloadQrImage;
+})();
+
+/* == app/nfc.js == */
+// ========================================================
+// Native Android Hardware NFC Tag Writing Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    let nfcBatchCount = 0;
+    let nfcResetTimer = null;
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function setNfcModalState(state, count = 0) {
+        const dict = getDict();
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        const nfcTitle = document.getElementById('nfcTitle');
+        const nfcDesc = document.getElementById('nfcDesc');
+        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+        const nfcCounterBadge = document.getElementById('nfcCounterBadge');
+        const nfcCounterText = document.getElementById('nfcCounterText');
+        const nfcSvgIcon = document.getElementById('nfcSvgIcon');
+
+        if (state === 'ready') {
+            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReady;
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescReady;
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+                <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
+            `;
+        } else if (state === 'success') {
+            if (nfcModalBox) nfcModalBox.classList.add('success');
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
+            if (nfcDesc) nfcDesc.textContent = (dict.nfcDescSuccess || '').replace('{count}', count);
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'inline-flex';
+            if (nfcCounterText) nfcCounterText.textContent = (dict.nfcCardsCount || '').replace('{count}', count);
+            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
+        } else if (state === 'next') {
+            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleNext;
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescNext;
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'inline-flex';
+            if (nfcCounterText) nfcCounterText.textContent = (dict.nfcCardsCount || '').replace('{count}', count);
+            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+                <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
+            `;
+        }
+    }
+
+    function openNfcModal() {
+        nfcBatchCount = 0;
+        window.nfcBatchCount = 0;
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
+        setNfcModalState('ready');
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay) nfcOverlay.classList.add('active');
+    }
+
+    function closeNfcModal() {
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay) nfcOverlay.classList.remove('active');
+
+        if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
+            window.AndroidNative.cancelNfcWrite();
+        }
+
+        const dict = getDict();
+        if (nfcBatchCount > 0 && window.showToast) {
+            const toastMsg = (dict.toastNfcBatchSuccess || '').replace('{count}', nfcBatchCount);
+            window.showToast(toastMsg, 'success');
+        }
+    }
+
+    function startNfcWrite() {
+        const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
+        if (!url) return;
+        const dict = getDict();
+
+        if (window.AndroidNative && window.AndroidNative.startNfcWrite) {
+            openNfcModal();
+            window.AndroidNative.startNfcWrite(url);
+        } else if ('NDEFReader' in window) {
+            openNfcModal();
+            const ndef = new NDEFReader();
+            ndef.write({
+                records: [{ recordType: "url", data: url }]
+            }, { overwrite: true }).then(() => {
+                if (window.onNfcSuccess) window.onNfcSuccess(1);
+            }).catch(() => {
+                if (window.onNfcError) window.onNfcError('WRITE_FAILED');
+            });
+        } else {
+            if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
+        }
+    }
+
+    // Bridge Callbacks from Android Native
+    window.onNfcSuccess = function(count) {
+        nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
+        window.nfcBatchCount = nfcBatchCount;
+        setNfcModalState('success', nfcBatchCount);
+
+        const dict = getDict();
+        if (window.showToast) window.showToast(dict.toastNfcWritten || 'NFC Written', 'success');
+
+        if (nfcResetTimer) clearTimeout(nfcResetTimer);
+        nfcResetTimer = setTimeout(() => {
+            setNfcModalState('next', nfcBatchCount);
+        }, 1500);
+    };
+
+    window.onNfcError = function(errorType) {
+        const dict = getDict();
+        let msg = dict.nfcWriteFailed || 'Write failed';
+        if (errorType === 'NOT_SUPPORTED') msg = dict.nfcNoHardware;
+        else if (errorType === 'DISABLED') msg = dict.nfcDisabled;
+        else if (errorType === 'LOCKED') msg = dict.nfcLocked;
+        else if (errorType === 'CAPACITY') msg = dict.nfcCapacity;
+        else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
+
+        if (window.showToast) window.showToast(msg, 'error');
+    };
+
+    window.openNfcModal = openNfcModal;
+    window.closeNfcModal = closeNfcModal;
+    window.startNfcWrite = startNfcWrite;
+    window.setNfcModalState = setNfcModalState;
+})();
+
+/* == app/updater.js == */
+// ========================================================
+// In-App Version Checker & Self-Updating Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    const GITHUB_REPO_OWNER = 'zaid-a-salameh';
+    const GITHUB_REPO_NAME = 'google-review-link';
+    const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
+    
+    let currentAppVersion = '1.1.0';
+    if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
+        try {
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.0';
+        } catch (e) {
+            currentAppVersion = '1.1.0';
+        }
+    }
+    window.currentAppVersion = currentAppVersion;
+
+    function initAppVersionDisplay() {
+        const displayVersion = 'v' + currentAppVersion.replace(/^v/i, '');
+        const appVersionText = document.getElementById('appVersionText');
+        const navBrandBadge = document.getElementById('navBrandBadge');
+        const updateCurrentVer = document.getElementById('updateCurrentVer');
+        if (appVersionText) appVersionText.textContent = displayVersion;
+        if (navBrandBadge) navBrandBadge.textContent = displayVersion;
+        if (updateCurrentVer) updateCurrentVer.textContent = displayVersion;
+    }
+
+    let latestReleaseData = null;
+    let latestApkDownloadUrl = '';
+    let isCheckingUpdate = false;
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function parseSemVer(verStr) {
+        if (!verStr) return [0, 0, 0];
+        const cleaned = String(verStr).trim().replace(/^v/i, '');
+        const parts = cleaned.split('.').map(p => parseInt(p, 10) || 0);
+        while (parts.length < 3) parts.push(0);
+        return parts.slice(0, 3);
+    }
+
+    function compareVersions(v1, v2) {
+        const p1 = parseSemVer(v1);
+        const p2 = parseSemVer(v2);
+        for (let i = 0; i < 3; i++) {
+            if (p1[i] > p2[i]) return 1;
+            if (p1[i] < p2[i]) return -1;
+        }
+        return 0;
+    }
+
+    function formatBytes(bytes) {
+        if (!bytes || isNaN(bytes)) return '';
+        const mb = (bytes / (1024 * 1024)).toFixed(1);
+        return `${mb} MB`;
+    }
+
+    function formatReleaseDate(dateStr) {
+        if (!dateStr) return '';
+        try {
+            const currentLang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString(currentLang === 'ar' ? 'ar-EG' : 'en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        } catch (e) {
+            return dateStr;
+        }
+    }
+
+    function renderReleaseMarkdown(md) {
+        if (!md) return '';
+        let html = md
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+
+        html = html.replace(/^### (.*$)/gim, '<h4 style="margin:8px 0 4px;color:#fdba74;font-size:12px;">$1</h4>');
+        html = html.replace(/^## (.*$)/gim, '<h3 style="margin:10px 0 6px;color:#fff;font-size:13px;">$1</h3>');
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        html = html.replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:4px;font-size:11px;">$1</code>');
+
+        const lines = html.split('\n');
+        let inList = false;
+        let outputLines = [];
+
+        for (let line of lines) {
+            const trimmed = line.trim();
+            if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                if (!inList) {
+                    outputLines.push('<ul>');
+                    inList = true;
+                }
+                outputLines.push('<li>' + trimmed.substring(2) + '</li>');
+            } else {
+                if (inList) {
+                    outputLines.push('</ul>');
+                    inList = false;
+                }
+                if (trimmed) {
+                    outputLines.push('<p style="margin:3px 0;">' + trimmed + '</p>');
+                }
+            }
+        }
+        if (inList) outputLines.push('</ul>');
+        return outputLines.join('');
+    }
+
+    function openUpdateModal(release, apkAsset) {
+        if (!release) return;
+        const dict = getDict();
+
+        const updateCurrentVer = document.getElementById('updateCurrentVer');
+        const updateLatestVer = document.getElementById('updateLatestVer');
+        const updateFileSize = document.getElementById('updateFileSize');
+        const updateReleaseDate = document.getElementById('updateReleaseDate');
+        const updateChangelogBody = document.getElementById('updateChangelogBody');
+        const btnUpdateGithub = document.getElementById('btnUpdateGithub');
+        const updateOverlay = document.getElementById('updateOverlay');
+
+        if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.0';
+
+        if (updateFileSize) {
+            const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
+            updateFileSize.textContent = (dict.updateSize || 'Size: {size}').replace('{size}', sizeText);
+        }
+
+        if (updateReleaseDate) {
+            const dateText = formatReleaseDate(release.published_at);
+            updateReleaseDate.textContent = (dict.updateDate || 'Published: {date}').replace('{date}', dateText);
+        }
+
+        if (updateChangelogBody) {
+            updateChangelogBody.innerHTML = renderReleaseMarkdown(release.body) || '<p>No details provided for this release.</p>';
+        }
+
+        if (btnUpdateGithub) {
+            btnUpdateGithub.href = release.html_url || `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases`;
+        }
+
+        latestApkDownloadUrl = apkAsset ? apkAsset.browser_download_url : `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest/download/ReviewLinkGenerator.apk`;
+        window.latestApkDownloadUrl = latestApkDownloadUrl;
+
+        if (updateOverlay) {
+            updateOverlay.classList.add('active');
+        }
+    }
+
+    function closeUpdateModal() {
+        const updateOverlay = document.getElementById('updateOverlay');
+        if (updateOverlay) {
+            updateOverlay.classList.remove('active');
+        }
+    }
+
+    async function checkForAppUpdates(isManual = false) {
+        if (isCheckingUpdate) return;
+        isCheckingUpdate = true;
+        const dict = getDict();
+
+        if (isManual && window.showToast) {
+            window.showToast(dict.toastCheckingUpdate || 'Checking for updates...', 'download');
+        }
+
+        try {
+            const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+            const timeoutId = controller ? setTimeout(() => controller.abort(), 3500) : null;
+
+            const res = await fetch(GITHUB_LATEST_RELEASE_URL, {
+                headers: { 'Accept': 'application/vnd.github.v3+json' },
+                cache: 'no-cache',
+                signal: controller ? controller.signal : undefined
+            });
+            if (timeoutId) clearTimeout(timeoutId);
+
+            if (!res.ok) {
+                throw new Error(`HTTP status ${res.status}`);
+            }
+
+            const data = await res.json();
+            latestReleaseData = data;
+
+            const latestTag = data.tag_name || '';
+            const assets = data.assets || [];
+            const apkAsset = assets.find(a => a.name && a.name.toLowerCase().endsWith('.apk')) || assets[0];
+
+            const btnCheckUpdate = document.getElementById('btnCheckUpdate');
+            const navBrandBadge = document.getElementById('navBrandBadge');
+
+            if (compareVersions(latestTag, currentAppVersion) > 0) {
+                if (btnCheckUpdate) {
+                    btnCheckUpdate.classList.add('has-update');
+                    btnCheckUpdate.title = (dict.updateAvailable || 'Update available') + ` (${latestTag})`;
+                }
+                if (navBrandBadge) {
+                    navBrandBadge.classList.add('has-update');
+                    navBrandBadge.title = (dict.updateAvailable || 'Update available') + ` (${latestTag})`;
+                }
+
+                openUpdateModal(data, apkAsset);
+
+                if (isManual && window.showToast) {
+                    window.showToast((dict.toastUpdateFound || 'New update found: {version}').replace('{version}', latestTag), 'success');
+                }
+            } else {
+                if (btnCheckUpdate) btnCheckUpdate.classList.remove('has-update');
+                if (navBrandBadge) navBrandBadge.classList.remove('has-update');
+                if (isManual && window.showToast) {
+                    window.showToast((dict.toastUpToDate || 'App is up to date: {version}').replace('{version}', currentAppVersion), 'success');
+                }
+            }
+        } catch (err) {
+            console.warn('Update check bypassed:', err.name === 'AbortError' ? 'timeout' : err.message);
+            if (isManual && window.showToast) {
+                window.showToast(dict.toastUpdateError || 'Unable to check for updates', 'error');
+            }
+        } finally {
+            isCheckingUpdate = false;
+        }
+    }
+
+    window.checkForAppUpdates = checkForAppUpdates;
+    window.openUpdateModal = openUpdateModal;
+    window.closeUpdateModal = closeUpdateModal;
+    window.initAppVersionDisplay = initAppVersionDisplay;
+})();
+
+/* == app/bridge.js == */
+// ========================================================
+// Native Android Bridge Callbacks & Interop
+// ========================================================
+(function() {
+    'use strict';
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    // ── Native Bridge Callbacks ──
+    window.onNativePaste = function(text) {
+        const dict = getDict();
+        const urlInput = document.getElementById('urlInput');
+        if (text) {
+            if (window.switchMode) window.switchMode('link');
+            if (urlInput) {
+                urlInput.value = text;
+                urlInput.focus();
+            }
+            if (window.showToast) window.showToast(dict.toastPasted || 'Pasted', 'paste');
+            if (window.handleConvert) window.handleConvert();
+        } else {
+            if (window.showToast) window.showToast(dict.toastEmptyClip || 'Clipboard is empty', 'warn');
+        }
+    };
+
+    window.onApkUpdateError = function() {
+        const dict = getDict();
+        if (window.showToast) window.showToast(dict.toastUpdateError || 'Update error', 'error');
+    };
+
+    window.onSaveQrError = function() {
+        const dict = getDict();
+        if (window.showToast) window.showToast(dict.toastQrSaveError || 'Error saving QR', 'error');
+    };
+})();
+
+/* == app-main.js == */
+// ========================================================
+// Native Android App Main Bootstrapper & Event Orchestrator
+// ========================================================
+(function() {
+    'use strict';
+
+    const $ = id => document.getElementById(id);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const urlInput = $('urlInput');
+        const clearBtn = $('clearBtn');
+        const pasteBtn = $('pasteBtn');
+        const convertBtn = $('convertBtn');
+        const copyBtn = $('copyBtn');
+        const copyBtnLabel = $('copyBtnLabel');
+        const openBtn = $('openBtn');
+        const shareBtn = $('shareBtn');
+        const qrBtn = $('qrBtn');
+        const nfcBtn = $('nfcBtn');
+        const tabLinkMode = $('tabLinkMode');
+        const tabSearchMode = $('tabSearchMode');
+        const businessSearchInput = $('businessSearchInput');
+        const searchClearBtn = $('searchClearBtn');
+        const searchFieldWrapper = $('searchFieldWrapper');
+        const placesDropdown = $('placesDropdown');
+        const resultCard = $('resultCard');
+        const qrOverlay = $('qrOverlay');
+        const qrCloseBtn = $('qrCloseBtn');
+        const qrDownloadBtn = $('qrDownloadBtn');
+        const nfcCancelBtn = $('nfcCancelBtn');
+        const btnEn = $('btnEn');
+        const btnAr = $('btnAr');
+        const btnCheckUpdate = $('btnCheckUpdate');
+        const btnUpdateNow = $('btnUpdateNow');
+        const updateCloseBtn = $('updateCloseBtn');
+        const btnUpdateLater = $('btnUpdateLater');
+        const updateOverlay = $('updateOverlay');
+
+        let autocompleteDebounceTimer = null;
+        let highlightedSuggestionIndex = -1;
+
+        // ── Mode Switcher ──
+        if (tabLinkMode) tabLinkMode.addEventListener('click', () => window.switchMode('link'));
+        if (tabSearchMode) tabSearchMode.addEventListener('click', () => window.switchMode('search'));
+
+        // ── Input & Convert Listeners ──
+        if (convertBtn) convertBtn.addEventListener('click', window.handleConvert);
+        if (urlInput) {
+            urlInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') window.handleConvert();
+            });
+            urlInput.addEventListener('input', () => {
+                const val = urlInput.value.trim();
+                if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
+                    window.switchMode('search');
+                    if (businessSearchInput) {
+                        businessSearchInput.value = val;
+                        businessSearchInput.dispatchEvent(new Event('input'));
+                    }
+                }
+            });
+        }
+
+        // ── Clear / Trash ──
+        if (clearBtn) {
+            clearBtn.addEventListener('click', () => {
+                const dict = window.I18N[window.getCurrentLang()];
+                if (urlInput) {
+                    urlInput.value = '';
+                    urlInput.focus();
+                }
+                if (resultCard) resultCard.classList.remove('active');
+                if (window.showToast) window.showToast(dict.toastCleared, 'trash');
+            });
+        }
+
+        // ── Paste Action (Native Android Clipboard Bridge) ──
+        if (pasteBtn) {
+            pasteBtn.addEventListener('click', () => {
+                if (window.AndroidNative && window.AndroidNative.pasteFromClipboard) {
+                    window.AndroidNative.pasteFromClipboard();
+                } else if (navigator.clipboard && navigator.clipboard.readText) {
+                    navigator.clipboard.readText().then(text => {
+                        if (text && text.trim()) {
+                            window.switchMode('link');
+                            if (urlInput) urlInput.value = text.trim();
+                            if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
+                            window.handleConvert();
+                        } else {
+                            if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastEmptyClip, 'warn');
+                        }
+                    }).catch(() => {
+                        if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastClipDenied, 'paste');
+                    });
+                }
+            });
+        }
+
+        // ── Action Buttons (Copy, Open, Share, QR, NFC) ──
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                const reviewUrl = window.getGeneratedReviewUrl();
+                if (!reviewUrl) return;
+                const dict = window.I18N[window.getCurrentLang()];
+                if (window.AndroidNative && window.AndroidNative.copyToClipboard) {
+                    window.AndroidNative.copyToClipboard(reviewUrl);
+                } else if (navigator.clipboard) {
+                    navigator.clipboard.writeText(reviewUrl);
+                }
+                copyBtn.classList.add('copied');
+                if (copyBtnLabel) copyBtnLabel.textContent = dict.copySuccess;
+                if (window.showToast) window.showToast(dict.toastCopied, 'copy');
+                setTimeout(() => {
+                    copyBtn.classList.remove('copied');
+                    if (copyBtnLabel) copyBtnLabel.textContent = dict.copyBtn;
+                }, 2000);
+            });
+        }
+
+        if (openBtn) {
+            openBtn.addEventListener('click', () => {
+                const reviewUrl = window.getGeneratedReviewUrl();
+                if (reviewUrl) window.open(reviewUrl, '_blank');
+            });
+        }
+
+        if (shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                const reviewUrl = window.getGeneratedReviewUrl();
+                if (!reviewUrl) return;
+                const dict = window.I18N[window.getCurrentLang()];
+                if (window.AndroidNative && window.AndroidNative.shareText) {
+                    window.AndroidNative.shareText(reviewUrl, dict.shareText);
+                } else if (navigator.share) {
+                    navigator.share({ title: dict.shareTitle, text: dict.shareText, url: reviewUrl }).catch(() => {});
+                } else if (navigator.clipboard) {
+                    navigator.clipboard.writeText(reviewUrl);
+                    if (window.showToast) window.showToast(dict.toastShareCopied, 'copy');
+                }
+            });
+        }
+
+        // ── QR Code Modal Handlers ──
+        if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
+        if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
+        if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
+        if (qrOverlay) {
+            qrOverlay.addEventListener('click', e => {
+                if (e.target === qrOverlay) window.closeQrModal();
+            });
+        }
+
+        // ── NFC Button & Modal Handlers ──
+        if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
+        if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
+
+        // ── In-App Update Handlers ──
+        if (btnCheckUpdate) {
+            btnCheckUpdate.addEventListener('click', () => window.checkForAppUpdates(true));
+        }
+        if (btnUpdateNow) {
+            btnUpdateNow.addEventListener('click', () => {
+                const dict = window.I18N[window.getCurrentLang()];
+                const targetUrl = window.latestApkDownloadUrl || 'https://github.com/zaid-a-salameh/google-review-link/releases/latest/download/ReviewLinkGenerator.apk';
+                if (window.AndroidNative && typeof window.AndroidNative.downloadAndInstallApk === 'function') {
+                    window.AndroidNative.downloadAndInstallApk(targetUrl);
+                    if (window.showToast) window.showToast(dict.toastDownloadStarted, 'download');
+                    window.closeUpdateModal();
+                } else {
+                    window.open(targetUrl, '_blank');
+                    window.closeUpdateModal();
+                }
+            });
+        }
+        if (updateCloseBtn) updateCloseBtn.addEventListener('click', window.closeUpdateModal);
+        if (btnUpdateLater) btnUpdateLater.addEventListener('click', window.closeUpdateModal);
+        if (updateOverlay) {
+            updateOverlay.addEventListener('click', e => {
+                if (e.target === updateOverlay) window.closeUpdateModal();
+            });
+        }
+
+        // ── Search Business Input Events ──
+        if (searchClearBtn) {
+            searchClearBtn.addEventListener('click', () => {
+                if (businessSearchInput) {
+                    businessSearchInput.value = '';
+                    searchClearBtn.classList.remove('visible');
+                    window.hidePlacesDropdown();
+                    businessSearchInput.focus();
+                }
+            });
+        }
+
+        document.addEventListener('click', e => {
+            if (searchFieldWrapper && !searchFieldWrapper.contains(e.target)) {
+                window.hidePlacesDropdown();
+            }
+        });
+
+        if (businessSearchInput) {
+            businessSearchInput.addEventListener('keydown', e => {
+                if (placesDropdown && placesDropdown.classList.contains('show')) {
+                    const items = placesDropdown.querySelectorAll('.place-suggestion-item');
+                    if (e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        highlightedSuggestionIndex = Math.min(highlightedSuggestionIndex + 1, items.length - 1);
+                        items.forEach((item, i) => item.classList.toggle('selected', i === highlightedSuggestionIndex));
+                        if (items[highlightedSuggestionIndex]) items[highlightedSuggestionIndex].scrollIntoView({ block: 'nearest' });
+                        return;
+                    }
+                    if (e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        highlightedSuggestionIndex = Math.max(highlightedSuggestionIndex - 1, 0);
+                        items.forEach((item, i) => item.classList.toggle('selected', i === highlightedSuggestionIndex));
+                        if (items[highlightedSuggestionIndex]) items[highlightedSuggestionIndex].scrollIntoView({ block: 'nearest' });
+                        return;
+                    }
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (highlightedSuggestionIndex >= 0 && items[highlightedSuggestionIndex]) {
+                            items[highlightedSuggestionIndex].click();
+                        } else if (items.length > 0) {
+                            items[0].click();
+                        }
+                        return;
+                    }
+                    if (e.key === 'Escape') {
+                        window.hidePlacesDropdown();
+                        return;
+                    }
+                }
+            });
+
+            businessSearchInput.addEventListener('input', () => {
+                const val = businessSearchInput.value;
+                const trimmed = val.trim();
+
+                if (searchClearBtn) {
+                    searchClearBtn.classList.toggle('visible', trimmed.length > 0);
+                }
+
+                if (/https?:\/\//i.test(trimmed) || /maps\.app\.goo\.gl/i.test(trimmed) || /goo\.gl\/maps/i.test(trimmed) || /placeid/i.test(trimmed) || /ChIJ/i.test(trimmed)) {
+                    window.switchMode('link');
+                    if (urlInput) urlInput.value = trimmed;
+                    businessSearchInput.value = '';
+                    window.hidePlacesDropdown();
+                    if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
+                    window.handleConvert();
+                    return;
+                }
+
+                clearTimeout(autocompleteDebounceTimer);
+                if (trimmed.length >= 2) {
+                    autocompleteDebounceTimer = setTimeout(() => {
+                        window.fetchPlaceSuggestions(trimmed);
+                    }, 250);
+                } else {
+                    window.hidePlacesDropdown();
+                }
+            });
+        }
+
+        // ── Language Toggle Buttons ──
+        if (btnEn) btnEn.addEventListener('click', () => window.switchLanguage('en'));
+        if (btnAr) btnAr.addEventListener('click', () => window.switchLanguage('ar'));
+
+        // ── Native Body Marker ──
+        document.body.classList.add('is-native-app');
+
+        // ── Initialize Version Text ──
+        if (window.initAppVersionDisplay) window.initAppVersionDisplay();
+
+        // ── Initialize Language & Places ──
+        window.applyLanguage(window.getCurrentLang(), false);
+        window.initGoogleMapsPlaces();
+
+        // ── Auto Update Check when Idle ──
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => window.checkForAppUpdates(false), { timeout: 4500 });
+        } else {
+            setTimeout(() => window.checkForAppUpdates(false), 4000);
+        }
+    });
+})();
+    </script>
 </body>
 </html>
