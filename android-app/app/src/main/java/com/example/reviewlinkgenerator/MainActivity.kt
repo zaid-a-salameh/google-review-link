@@ -352,9 +352,9 @@ class MainActivity : ComponentActivity() {
         fun getAppVersion(): String {
             return try {
                 val pInfo = activity.packageManager.getPackageInfo(activity.packageName, 0)
-                pInfo.versionName ?: "1.2.0"
+                pInfo.versionName ?: "1.2.1"
             } catch (e: Exception) {
-                "1.2.0"
+                "1.2.1"
             }
         }
 

@@ -48,3 +48,27 @@
             word-break: break-word;
             white-space: normal;
         }
+
+        /* Mobile & Native App: Slide in from the TOP so it never covers action buttons */
+        @media (max-width: 640px) {
+            .toast {
+                top: max(16px, env(safe-area-inset-top, 16px));
+                bottom: auto;
+                transform: translate3d(-50%, -80px, 0);
+                z-index: 99999;
+            }
+            .toast.show {
+                transform: translate3d(-50%, 0, 0);
+                opacity: 1;
+            }
+        }
+        body.is-native-app .toast {
+            top: max(16px, env(safe-area-inset-top, 16px));
+            bottom: auto;
+            transform: translate3d(-50%, -80px, 0);
+            z-index: 99999;
+        }
+        body.is-native-app .toast.show {
+            transform: translate3d(-50%, 0, 0);
+            opacity: 1;
+        }

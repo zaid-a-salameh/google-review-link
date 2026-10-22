@@ -300,7 +300,7 @@
         initScrollReveal();
 
 
-        const CURRENT_VERSION = 'v1.2.0';
+        const CURRENT_VERSION = 'v1.2.1';
         if (navBrandBadge) {
             navBrandBadge.textContent = CURRENT_VERSION;
             navBrandBadge.addEventListener('click', e => {

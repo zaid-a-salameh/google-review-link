@@ -19,15 +19,16 @@
             position: absolute;
             top: 4px;
             bottom: 4px;
+            left: 0;
             border-radius: 50px;
             background: var(--primary-gradient);
             box-shadow: 0 4px 14px rgba(234, 88, 12, 0.45);
-            transition: left 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
-                        right 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
-                        width 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.24s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1;
             pointer-events: none;
-            will-change: left, right, width;
+            will-change: transform, width;
+            transform: translate3d(0, 0, 0);
         }
         .mode-tab {
             position: relative;
@@ -67,22 +68,19 @@
             fill: currentColor;
             flex-shrink: 0;
         }
-        .main-input-card {
-            transition: height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: height;
-        }
+
         .mode-content {
             display: none;
             position: relative;
             z-index: 50;
             opacity: 0;
-            transform: translateY(5px);
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translate3d(0, 4px, 0);
+            transition: opacity 0.18s ease, transform 0.18s ease;
         }
         .mode-content.active {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0);
         }
         .mode-content:has(.places-dropdown.show),
         .mode-content.has-dropdown-open {
@@ -268,14 +266,15 @@
             display: none;
             position: relative;
             z-index: 10;
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .result-section.active {
             display: block;
+            animation: resultCardSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes resultCardSlideUp {
+            from { opacity: 0; transform: translate3d(0, 8px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
         .result-label {

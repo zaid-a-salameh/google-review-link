@@ -776,15 +776,16 @@
             position: absolute;
             top: 4px;
             bottom: 4px;
+            left: 0;
             border-radius: 50px;
             background: var(--primary-gradient);
             box-shadow: 0 4px 14px rgba(234, 88, 12, 0.45);
-            transition: left 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
-                        right 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
-                        width 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.24s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 1;
             pointer-events: none;
-            will-change: left, right, width;
+            will-change: transform, width;
+            transform: translate3d(0, 0, 0);
         }
         .mode-tab {
             position: relative;
@@ -824,22 +825,19 @@
             fill: currentColor;
             flex-shrink: 0;
         }
-        .main-input-card {
-            transition: height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: height;
-        }
+
         .mode-content {
             display: none;
             position: relative;
             z-index: 50;
             opacity: 0;
-            transform: translateY(5px);
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translate3d(0, 4px, 0);
+            transition: opacity 0.18s ease, transform 0.18s ease;
         }
         .mode-content.active {
             display: block;
             opacity: 1;
-            transform: translateY(0);
+            transform: translate3d(0, 0, 0);
         }
         .mode-content:has(.places-dropdown.show),
         .mode-content.has-dropdown-open {
@@ -1025,14 +1023,15 @@
             display: none;
             position: relative;
             z-index: 10;
-            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .result-section.active {
             display: block;
+            animation: resultCardSlideUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            will-change: transform, opacity;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(12px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes resultCardSlideUp {
+            from { opacity: 0; transform: translate3d(0, 8px, 0); }
+            to { opacity: 1; transform: translate3d(0, 0, 0); }
         }
 
         .result-label {
@@ -2407,6 +2406,30 @@
             white-space: normal;
         }
 
+        /* Mobile & Native App: Slide in from the TOP so it never covers action buttons */
+        @media (max-width: 640px) {
+            .toast {
+                top: max(16px, env(safe-area-inset-top, 16px));
+                bottom: auto;
+                transform: translate3d(-50%, -80px, 0);
+                z-index: 99999;
+            }
+            .toast.show {
+                transform: translate3d(-50%, 0, 0);
+                opacity: 1;
+            }
+        }
+        body.is-native-app .toast {
+            top: max(16px, env(safe-area-inset-top, 16px));
+            bottom: auto;
+            transform: translate3d(-50%, -80px, 0);
+            z-index: 99999;
+        }
+        body.is-native-app .toast.show {
+            transform: translate3d(-50%, 0, 0);
+            opacity: 1;
+        }
+
 /* == app.css == */
 /* ======================================================== */
 /* Native Android App Layout & Viewport Overrides           */
@@ -2454,7 +2477,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.2.0</span>
+                <span id="appVersionText">v1.2.1</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2658,12 +2681,12 @@ body {
             <div class="update-version-row">
                 <div class="version-chip current">
                     <span class="version-chip-label" id="lblCurrentVer">Current</span>
-                    <span class="version-chip-val" id="updateCurrentVer">v1.2.0</span>
+                    <span class="version-chip-val" id="updateCurrentVer">v1.2.1</span>
                 </div>
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.2.0</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.2.1</span>
                 </div>
             </div>
 
@@ -3882,23 +3905,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     function updateModeTabSlider() {
         const slider = document.getElementById('modeTabSlider');
         const activeTab = document.querySelector('.mode-tab.active');
-        const container = document.querySelector('.mode-tabs');
-        if (!slider || !activeTab || !container) return;
+        if (!slider || !activeTab) return;
 
-        const isRtl = (document.documentElement.dir === 'rtl' || document.documentElement.lang === 'ar' || document.body.dir === 'rtl');
-        const containerRect = container.getBoundingClientRect();
-        const tabRect = activeTab.getBoundingClientRect();
-
-        slider.style.width = `${tabRect.width}px`;
-        if (isRtl) {
-            const offset = containerRect.right - tabRect.right;
-            slider.style.left = 'auto';
-            slider.style.right = `${Math.max(0, offset)}px`;
-        } else {
-            const offset = tabRect.left - containerRect.left;
-            slider.style.right = 'auto';
-            slider.style.left = `${Math.max(0, offset)}px`;
-        }
+        slider.style.left = '0px';
+        slider.style.right = 'auto';
+        slider.style.width = `${activeTab.offsetWidth}px`;
+        slider.style.transform = `translate3d(${activeTab.offsetLeft}px, 0, 0)`;
     }
 
     function switchMode(mode) {
@@ -3910,8 +3922,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const businessSearchInput = document.getElementById('businessSearchInput');
         const mainInputCard = document.getElementById('mainInputCard');
 
-        const startHeight = mainInputCard ? mainInputCard.offsetHeight : 0;
-
+        
         if (window.AppModes) {
             window.AppModes.activeMode = mode;
         }
@@ -3933,22 +3944,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         updateModeTabSlider();
-
-        if (mainInputCard && startHeight > 0) {
-            const endHeight = mainInputCard.offsetHeight;
-            if (startHeight !== endHeight) {
-                mainInputCard.style.height = `${startHeight}px`;
-                mainInputCard.style.overflow = 'hidden';
-                mainInputCard.style.transition = 'height 0.32s cubic-bezier(0.16, 1, 0.3, 1)';
-                void mainInputCard.offsetHeight;
-                mainInputCard.style.height = `${endHeight}px`;
-                setTimeout(() => {
-                    mainInputCard.style.height = '';
-                    mainInputCard.style.overflow = '';
-                    mainInputCard.style.transition = '';
-                }, 330);
-            }
-        }
 
         if (window.AppModes) {
             window.AppModes.syncResultCard();
@@ -4233,12 +4228,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.2.0';
+    let currentAppVersion = '1.2.1';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.2.0';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.2.1';
         } catch (e) {
-            currentAppVersion = '1.2.0';
+            currentAppVersion = '1.2.1';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -4353,7 +4348,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.2.0';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.2.1';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';

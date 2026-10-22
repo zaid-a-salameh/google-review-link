@@ -343,23 +343,12 @@
     function updateModeTabSlider() {
         const slider = document.getElementById('modeTabSlider');
         const activeTab = document.querySelector('.mode-tab.active');
-        const container = document.querySelector('.mode-tabs');
-        if (!slider || !activeTab || !container) return;
+        if (!slider || !activeTab) return;
 
-        const isRtl = (document.documentElement.dir === 'rtl' || document.documentElement.lang === 'ar' || document.body.dir === 'rtl');
-        const containerRect = container.getBoundingClientRect();
-        const tabRect = activeTab.getBoundingClientRect();
-
-        slider.style.width = `${tabRect.width}px`;
-        if (isRtl) {
-            const offset = containerRect.right - tabRect.right;
-            slider.style.left = 'auto';
-            slider.style.right = `${Math.max(0, offset)}px`;
-        } else {
-            const offset = tabRect.left - containerRect.left;
-            slider.style.right = 'auto';
-            slider.style.left = `${Math.max(0, offset)}px`;
-        }
+        slider.style.left = '0px';
+        slider.style.right = 'auto';
+        slider.style.width = `${activeTab.offsetWidth}px`;
+        slider.style.transform = `translate3d(${activeTab.offsetLeft}px, 0, 0)`;
     }
 
     function switchMode(mode) {
@@ -371,8 +360,7 @@
         const businessSearchInput = document.getElementById('businessSearchInput');
         const mainInputCard = document.getElementById('mainInputCard');
 
-        const startHeight = mainInputCard ? mainInputCard.offsetHeight : 0;
-
+        
         if (window.AppModes) {
             window.AppModes.activeMode = mode;
         }
@@ -394,22 +382,6 @@
         }
 
         updateModeTabSlider();
-
-        if (mainInputCard && startHeight > 0) {
-            const endHeight = mainInputCard.offsetHeight;
-            if (startHeight !== endHeight) {
-                mainInputCard.style.height = `${startHeight}px`;
-                mainInputCard.style.overflow = 'hidden';
-                mainInputCard.style.transition = 'height 0.32s cubic-bezier(0.16, 1, 0.3, 1)';
-                void mainInputCard.offsetHeight;
-                mainInputCard.style.height = `${endHeight}px`;
-                setTimeout(() => {
-                    mainInputCard.style.height = '';
-                    mainInputCard.style.overflow = '';
-                    mainInputCard.style.transition = '';
-                }, 330);
-            }
-        }
 
         if (window.AppModes) {
             window.AppModes.syncResultCard();
