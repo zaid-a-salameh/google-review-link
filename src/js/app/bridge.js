@@ -17,7 +17,7 @@
             if (window.switchMode) window.switchMode('link');
             if (urlInput) {
                 urlInput.value = text;
-                urlInput.focus();
+                urlInput.blur();
             }
             if (window.showToast) window.showToast(dict.toastPasted || 'Pasted', 'paste');
             if (window.handleConvert) window.handleConvert();

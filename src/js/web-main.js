@@ -64,7 +64,7 @@
                 const dict = window.I18N[window.getCurrentLang()];
                 if (urlInput) {
                     urlInput.value = '';
-                    urlInput.focus();
+                    if (!window.isTouchDevice || !window.isTouchDevice()) urlInput.focus();
                 }
                 if (window.AppModes) {
                     window.AppModes.clearModeResult('link');
@@ -86,21 +86,21 @@
                             window.switchMode('link');
                             if (urlInput) {
                                 urlInput.value = text.trim();
-                                urlInput.focus();
+                                if (!window.isTouchDevice || !window.isTouchDevice()) urlInput.focus();
                             }
                             if (window.showToast) window.showToast(dict.toastPasted, 'paste');
                             window.handleConvert();
                             return;
                         } else {
                             if (window.showToast) window.showToast(dict.toastEmptyClip, 'warn');
-                            if (urlInput) urlInput.focus();
+                            if (urlInput && (!window.isTouchDevice || !window.isTouchDevice())) urlInput.focus();
                             return;
                         }
                     } catch (err) {
                         console.warn('Clipboard readText failed or was blocked by browser:', err);
                     }
                 }
-                if (urlInput) {
+                if (urlInput && (!window.isTouchDevice || !window.isTouchDevice())) {
                     urlInput.focus();
                     urlInput.select();
                 }
@@ -172,7 +172,7 @@
                     businessSearchInput.value = '';
                     searchClearBtn.classList.remove('visible');
                     window.hidePlacesDropdown();
-                    businessSearchInput.focus();
+                    if (!window.isTouchDevice || !window.isTouchDevice()) businessSearchInput.focus();
                 }
                 if (window.AppModes) {
                     window.AppModes.clearModeResult('search');
@@ -259,7 +259,7 @@
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
 
-        const CURRENT_VERSION = 'v1.1.5';
+        const CURRENT_VERSION = 'v1.1.6';
         if (navBrandBadge) {
             navBrandBadge.textContent = CURRENT_VERSION;
             navBrandBadge.addEventListener('click', e => {

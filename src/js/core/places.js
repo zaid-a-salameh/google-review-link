@@ -358,13 +358,13 @@
             if (modeLinkContent) modeLinkContent.classList.add('active');
             if (modeSearchContent) modeSearchContent.classList.remove('active');
             hideDropdown();
-            if (urlInput) urlInput.focus();
+            if (urlInput && (!window.isTouchDevice || !window.isTouchDevice())) urlInput.focus();
         } else {
             if (tabSearchMode) tabSearchMode.classList.add('active');
             if (tabLinkMode) tabLinkMode.classList.remove('active');
             if (modeSearchContent) modeSearchContent.classList.add('active');
             if (modeLinkContent) modeLinkContent.classList.remove('active');
-            if (businessSearchInput) businessSearchInput.focus();
+            if (businessSearchInput && (!window.isTouchDevice || !window.isTouchDevice())) businessSearchInput.focus();
             initGoogleMapsPlaces();
         }
 

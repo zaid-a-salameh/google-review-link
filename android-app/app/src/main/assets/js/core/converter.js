@@ -191,7 +191,7 @@
         const raw = urlInput ? urlInput.value.trim() : '';
         if (!raw) {
             if (window.showToast) window.showToast(dict.toastPasteFirst || 'Please paste a link first');
-            if (urlInput) urlInput.focus();
+            if (urlInput && (!window.isTouchDevice || !window.isTouchDevice())) urlInput.focus();
             return;
         }
 

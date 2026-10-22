@@ -2317,7 +2317,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.1.5</span>
+                <span id="appVersionText">v1.1.6</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2525,7 +2525,7 @@ body {
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.1.5</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.1.6</span>
                 </div>
             </div>
 
@@ -3067,6 +3067,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         applyLanguage(lang, true);
     }
 
+    function isTouchDevice() {
+        return Boolean(
+            window.AndroidNative ||
+            (window.matchMedia && (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches)) ||
+            ('ontouchstart' in window) ||
+            (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || '')
+        );
+    }
+
     // Expose globals
     window.I18N = I18N;
     window.getCurrentLang = function() { return currentLang; };
@@ -3075,6 +3085,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.updateDomLanguageStrings = updateDomLanguageStrings;
     window.applyLanguage = applyLanguage;
     window.switchLanguage = switchLanguage;
+    window.isTouchDevice = isTouchDevice;
 })();
 
 /* == core/toast.js == */
@@ -3313,7 +3324,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const raw = urlInput ? urlInput.value.trim() : '';
         if (!raw) {
             if (window.showToast) window.showToast(dict.toastPasteFirst || 'Please paste a link first');
-            if (urlInput) urlInput.focus();
+            if (urlInput && (!window.isTouchDevice || !window.isTouchDevice())) urlInput.focus();
             return;
         }
 
@@ -3740,13 +3751,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (modeLinkContent) modeLinkContent.classList.add('active');
             if (modeSearchContent) modeSearchContent.classList.remove('active');
             hideDropdown();
-            if (urlInput) urlInput.focus();
+            if (urlInput && (!window.isTouchDevice || !window.isTouchDevice())) urlInput.focus();
         } else {
             if (tabSearchMode) tabSearchMode.classList.add('active');
             if (tabLinkMode) tabLinkMode.classList.remove('active');
             if (modeSearchContent) modeSearchContent.classList.add('active');
             if (modeLinkContent) modeLinkContent.classList.remove('active');
-            if (businessSearchInput) businessSearchInput.focus();
+            if (businessSearchInput && (!window.isTouchDevice || !window.isTouchDevice())) businessSearchInput.focus();
             initGoogleMapsPlaces();
         }
 
@@ -4015,12 +4026,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.5';
+    let currentAppVersion = '1.1.6';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.5';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.6';
         } catch (e) {
-            currentAppVersion = '1.1.5';
+            currentAppVersion = '1.1.6';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -4135,7 +4146,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.5';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.6';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
@@ -4272,7 +4283,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (window.switchMode) window.switchMode('link');
             if (urlInput) {
                 urlInput.value = text;
-                urlInput.focus();
+                urlInput.blur();
             }
             if (window.showToast) window.showToast(dict.toastPasted || 'Pasted', 'paste');
             if (window.handleConvert) window.handleConvert();
@@ -4362,7 +4373,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 const dict = window.I18N[window.getCurrentLang()];
                 if (urlInput) {
                     urlInput.value = '';
-                    urlInput.focus();
+                    if (!window.isTouchDevice || !window.isTouchDevice()) urlInput.focus();
                 }
                 if (window.AppModes) {
                     window.AppModes.clearModeResult('link');
@@ -4486,7 +4497,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     businessSearchInput.value = '';
                     searchClearBtn.classList.remove('visible');
                     window.hidePlacesDropdown();
-                    businessSearchInput.focus();
+                    if (!window.isTouchDevice || !window.isTouchDevice()) businessSearchInput.focus();
                 }
                 if (window.AppModes) {
                     window.AppModes.clearModeResult('search');

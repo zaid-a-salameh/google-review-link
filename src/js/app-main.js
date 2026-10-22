@@ -67,7 +67,7 @@
                 const dict = window.I18N[window.getCurrentLang()];
                 if (urlInput) {
                     urlInput.value = '';
-                    urlInput.focus();
+                    if (!window.isTouchDevice || !window.isTouchDevice()) urlInput.focus();
                 }
                 if (window.AppModes) {
                     window.AppModes.clearModeResult('link');
@@ -191,7 +191,7 @@
                     businessSearchInput.value = '';
                     searchClearBtn.classList.remove('visible');
                     window.hidePlacesDropdown();
-                    businessSearchInput.focus();
+                    if (!window.isTouchDevice || !window.isTouchDevice()) businessSearchInput.focus();
                 }
                 if (window.AppModes) {
                     window.AppModes.clearModeResult('search');

@@ -496,6 +496,16 @@
         applyLanguage(lang, true);
     }
 
+    function isTouchDevice() {
+        return Boolean(
+            window.AndroidNative ||
+            (window.matchMedia && (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches)) ||
+            ('ontouchstart' in window) ||
+            (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) ||
+            /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent || '')
+        );
+    }
+
     // Expose globals
     window.I18N = I18N;
     window.getCurrentLang = function() { return currentLang; };
@@ -504,4 +514,5 @@
     window.updateDomLanguageStrings = updateDomLanguageStrings;
     window.applyLanguage = applyLanguage;
     window.switchLanguage = switchLanguage;
+    window.isTouchDevice = isTouchDevice;
 })();
