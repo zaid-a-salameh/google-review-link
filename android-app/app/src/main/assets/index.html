@@ -185,6 +185,24 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+        /* Custom Text Selection Highlight: Orange text on crisp white background */
+        ::selection {
+            background-color: #ffffff !important;
+            color: #ea580c !important;
+            text-shadow: none !important;
+        }
+        ::-moz-selection {
+            background-color: #ffffff !important;
+            color: #ea580c !important;
+            text-shadow: none !important;
+        }
+        input::selection,
+        textarea::selection {
+            background-color: #ffffff !important;
+            color: #ea580c !important;
+            text-shadow: none !important;
+        }
+
 
         body {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -745,23 +763,39 @@
             margin-bottom: 20px;
         }
         .mode-tabs {
+            position: relative;
             display: inline-flex;
             max-width: 100%;
             background: rgba(18, 16, 15, 0.95);
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 4px;
-            gap: 4px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
+        .mode-tab-slider {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            border-radius: 50px;
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.45);
+            transition: left 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
+                        right 0.32s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1;
+            pointer-events: none;
+            will-change: left, right, width;
+        }
         .mode-tab {
+            position: relative;
+            z-index: 2;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
             padding: 7px 14px;
             border-radius: 50px;
-            background: transparent;
+            background: transparent !important;
             border: none;
             color: var(--text-sub);
             font-family: inherit;
@@ -770,7 +804,7 @@
             white-space: nowrap;
             flex-shrink: 0;
             cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: color 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
         }
         .mode-tab span {
@@ -780,9 +814,9 @@
             color: #ffffff;
         }
         .mode-tab.active {
-            background: var(--primary-gradient);
             color: #ffffff;
-            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+            background: transparent !important;
+            box-shadow: none !important;
         }
         .mode-tab svg {
             width: 15px;
@@ -790,14 +824,22 @@
             fill: currentColor;
             flex-shrink: 0;
         }
+        .main-input-card {
+            transition: height 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: height;
+        }
         .mode-content {
             display: none;
             position: relative;
             z-index: 50;
-            animation: fadeInMode 0.22s ease forwards;
+            opacity: 0;
+            transform: translateY(5px);
+            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .mode-content.active {
             display: block;
+            opacity: 1;
+            transform: translateY(0);
         }
         .mode-content:has(.places-dropdown.show),
         .mode-content.has-dropdown-open {
@@ -1370,6 +1412,25 @@
         }
         .places-dropdown.show {
             display: flex;
+            animation: dropdownExpandAnim 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform-origin: top center;
+        }
+        @keyframes dropdownExpandAnim {
+            0% {
+                opacity: 0;
+                transform: translateY(-8px) scaleY(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scaleY(1);
+            }
+        }
+        .places-dropdown.show .place-suggestion-item {
+            animation: suggestionItemFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes suggestionItemFade {
+            0% { opacity: 0; transform: translateY(-4px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         .place-suggestion-item {
             display: flex;
@@ -1803,13 +1864,45 @@
             fill: #ffffff;
             transition: transform 0.3s ease;
         }
+        .nfc-modal.success {
+            animation: modalHapticThump 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        @keyframes modalHapticThump {
+            0% { transform: scale(1); }
+            30% { transform: scale(1.035) translateY(-2px); }
+            55% { transform: scale(0.985) translateY(1px); }
+            80% { transform: scale(1.01); }
+            100% { transform: scale(1); }
+        }
         .nfc-modal.success .nfc-wave-ring {
             display: none;
         }
         .nfc-modal.success .nfc-icon-circle {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6), 0 0 20px rgba(16, 185, 129, 0.35);
+            animation: iconCheckPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform: scale(1.08);
+        }
+        @keyframes iconCheckPopIn {
+            0% { transform: scale(0.5) rotate(-20deg); opacity: 0; }
+            65% { transform: scale(1.22) rotate(4deg); opacity: 1; }
+            100% { transform: scale(1.08) rotate(0deg); opacity: 1; }
+        }
+        .nfc-modal.success .nfc-icon-circle svg {
+            animation: checkmarkScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes checkmarkScaleIn {
+            0% { transform: scale(0.4); opacity: 0; }
+            70% { transform: scale(1.15); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .nfc-modal.morph-to-ready .nfc-icon-circle {
+            animation: iconCheckMorphExit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+        @keyframes iconCheckMorphExit {
+            0% { transform: scale(1.08); opacity: 1; }
+            50% { transform: scale(0.85); opacity: 0.6; }
+            100% { transform: scale(1); opacity: 1; }
         }
         .nfc-counter-badge {
             display: inline-flex;
@@ -2389,6 +2482,7 @@ body {
             <!-- Mode Switcher Tabs -->
             <div class="mode-switcher-container">
                 <div class="mode-tabs">
+                    <div class="mode-tab-slider" id="modeTabSlider"></div>
                     <button type="button" class="mode-tab" id="tabLinkMode" data-mode="link">
                         <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
                         <span id="tabLinkLabel">Direct Link</span>
@@ -2540,7 +2634,7 @@ body {
                 <span id="nfcCounterText">0 Cards</span>
             </div>
             <div class="nfc-title" id="nfcTitle">Ready to Write</div>
-            <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near the NFC card or sticker. Existing data will be wiped automatically.</div>
+            <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near an NFC card or sticker to write the review link.</div>
             <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
         </div>
     </div>
@@ -2651,22 +2745,22 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 titleHowItWorks: "How It Works in 3 Simple Steps",
                 subHowItWorks: "Generate frictionless review links that skyrocket your 5-star customer feedback",
                 step1Title: "Copy or Find Link",
-                step1Desc: "Search your place or copy your business share link directly from Google Maps app or browser.",
+                step1Desc: "Copy your Google Maps link or search for your place directly.",
                 step2Title: "Instant 5-Star Conversion",
-                step2Desc: "Our engine extracts the Place ID and constructs a direct URL that pops open the 5-star rating window automatically.",
+                step2Desc: "The link automatically converts into an instant 5-star review prompt.",
                 step3Title: "Print QR or Tap NFC",
-                step3Desc: "Download crisp QR codes for table tents and counter stands, or tap your phone to write to NFC cards with our Android app.",
+                step3Desc: "Download a print-ready QR code or write to an NFC card with one tap.",
                 tagFeatures: "Advantages",
                 titleFeatures: "Why Businesses Choose Our Tool",
                 subFeatures: "Designed for speed, customer conversion, and modern contactless technology",
                 feat1Title: "Direct 5-Star Pre-Selection",
-                feat1Desc: "Customers don't have to search for the review button. The 5-star popup opens immediately upon opening the link.",
+                feat1Desc: "The 5-star rating popup opens directly without searching through Maps.",
                 feat2Title: "Free NFC Tag Writer",
-                feat2Desc: "Program NFC review cards, stands, and stickers directly from our native Android app without subscription fees.",
+                feat2Desc: "Program NFC review cards and stands directly from the app for free.",
                 feat3Title: "High-Res Vector QR Codes",
-                feat3Desc: "Download instant, clean QR codes formatted perfectly for print menus, flyers, and point-of-sale displays.",
+                feat3Desc: "Get crisp, high-resolution QR codes ready for printing on tables and menus.",
                 feat4Title: "Zero Tracking & 100% Free",
-                feat4Desc: "No account required, no link redirection, no rate limits, and 100% open-source software you can trust.",
+                feat4Desc: "Free forever, no login required, no ads or redirects, and 100% open-source.",
                 tagFaq: "Knowledge Base",
                 titleFaq: "Frequently Asked Questions",
                 subFaq: "Everything you need to know about Google review links, QR codes, and NFC contactless cards",
@@ -2696,12 +2790,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 qrDownloaded: "QR Code downloaded",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
-                nfcDescReady: "Hold your phone near an NFC card or sticker. Multi-tag writing is active.",
+                nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
                 nfcTitleSuccess: "Write Successful!",
-                nfcDescSuccess: "Tag #{count} programmed! Hold next card to continue...",
+                nfcDescSuccess: "The review link was successfully programmed onto the card.",
                 nfcTitleNext: "Ready for Next Card",
-                nfcDescNext: "Hold the next NFC tag near your phone to write...",
-                nfcCardsCount: "{count} tag(s) written",
+                nfcDescNext: "Hold another card near your phone to write, or tap Done.",
+                nfcCardsCount: "Cards written: {count}",
                 nfcCancel: "Cancel",
                 nfcDone: "Done & Close",
                 nfcTitleError: "Write Failed",
@@ -2787,22 +2881,22 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 titleHowItWorks: "كيف يعمل في 3 خطوات بسيطة؟",
                 subHowItWorks: "أنشئ روابط تقييم مباشرة تضاعف تقييمات الـ 5 نجوم لعملائك دون أي تعقيد",
                 step1Title: "ابحث أو انسخ الرابط",
-                step1Desc: "ابحث عن نشاطك أو انسخ رابط المشاركة مباشرة من تطبيق خرائط جوجل أو المتصفح.",
+                step1Desc: "انسخ رابط مكانك من خرائط Google أو ابحث عنه مباشرة باسمه.",
                 step2Title: "تحويل فوري إلى 5 نجوم",
-                step2Desc: "محركنا الذكي يستخرج معرّف المكان (Place ID) ويولد رابطاً يفتح نافذة الـ 5 نجوم تلقائياً.",
+                step2Desc: "يتحول الرابط تلقائياً إلى رابط تقييم يفتح نافذة الـ 5 نجوم للعميل فوراً.",
                 step3Title: "طباعة QR أو برمجة NFC",
-                step3Desc: "نزّل كود QR عالي الدقة لطاولات ومكاتب الاستقبال، أو برمج بطاقات NFC بلمسة واحدة عبر تطبيق الأندرويد.",
+                step3Desc: "حمّل كود QR للطباعة أو برمج بطاقة NFC بلمسة واحدة من هاتفك.",
                 tagFeatures: "المميزات",
                 titleFeatures: "لماذا تختار منصتنا لنشاطك التجاري؟",
                 subFeatures: "صُممت خصيصاً لتحقيق أعلى معدل استجابة من العملاء باستخدام أحدث تقنيات اللمس",
                 feat1Title: "فتح نافذة 5 نجوم مباشرة",
-                feat1Desc: "لا حاجة للبحث عن زر التقييم داخل الخريطة؛ تنبثق شاشة تقييم الـ 5 نجوم فور فتح الرابط.",
+                feat1Desc: "تفتح نافذة الـ 5 نجوم للعميل بضغطة واحدة دون الحاجة للبحث في الخريطة.",
                 feat2Title: "برمجة بطاقات NFC مجاناً",
-                feat2Desc: "برمج بطاقات واستندات وميداليات NFC الخاصة بتقييمك مباشرة من تطبيقنا دون رسوم أو اشتراكات.",
+                feat2Desc: "برمج بطاقات واستندات NFC لتقييمك مباشرة من التطبيق مجاناً وبلا اشتراكات.",
                 feat3Title: "رموز QR فائقة الدقة",
-                feat3Desc: "حمّل رموز استجابة سريعة فورية مهيأة للطباعة على القوائم، المنشورات، وشاشات نقاط البيع.",
+                feat3Desc: "احصل على كود QR واضح وعالي الدقة جاهز للطباعة على الطاولات والمطبوعات.",
                 feat4Title: "مجاني 100% وبلا تتبع",
-                feat4Desc: "بدون تسجيل دخول، بدون روابط وسيطة أو إعلانات، ومفتوح المصدر بالكامل مع خصوصية تامة.",
+                feat4Desc: "استخدام فوري بدون حساب، وبلا إعلانات أو روابط وسيطة، ومفتوح المصدر بالكامل.",
                 tagFaq: "الأسئلة الشائعة",
                 titleFaq: "الأسئلة الأكثر تكراراً",
                 subFaq: "كل ما تحتاج معرفته حول روابط تقييم خرائط Google ورموز QR وبطاقات NFC",
@@ -2836,7 +2930,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
                 nfcDescSuccess: "تمت برمجة البطاقة {count} بنجاح. جهّز البطاقة التالية...",
                 nfcTitleNext: "جاهز للبطاقة التالية",
-                nfcDescNext: "قرّب البطاقة التالية من ظهر الهاتف للبرمجة...",
+                nfcDescNext: "قرب بطاقة أخرى لبرمجتها، أو انقر تم للإنهاء.",
                 nfcCardsCount: "تمت برمجة: {count} بطاقات",
                 nfcCancel: "إلغاء",
                 nfcDone: "إنهاء وإغلاق",
@@ -3084,6 +3178,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (!animate) {
             try {
                 updateDomLanguageStrings(lang, dict);
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
             } catch (e) {
                 console.error('Error applying language strings:', e);
             }
@@ -3097,12 +3192,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         setTimeout(() => {
             try {
                 updateDomLanguageStrings(lang, dict);
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
                 void document.documentElement.offsetHeight;
             } catch (e) {
                 console.error('Error during language switch:', e);
             } finally {
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
+                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
                     setTimeout(() => {
                         isLangSwitching = false;
                     }, 240);
@@ -3782,6 +3879,28 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
+    function updateModeTabSlider() {
+        const slider = document.getElementById('modeTabSlider');
+        const activeTab = document.querySelector('.mode-tab.active');
+        const container = document.querySelector('.mode-tabs');
+        if (!slider || !activeTab || !container) return;
+
+        const isRtl = (document.documentElement.dir === 'rtl' || document.documentElement.lang === 'ar' || document.body.dir === 'rtl');
+        const containerRect = container.getBoundingClientRect();
+        const tabRect = activeTab.getBoundingClientRect();
+
+        slider.style.width = `${tabRect.width}px`;
+        if (isRtl) {
+            const offset = containerRect.right - tabRect.right;
+            slider.style.left = 'auto';
+            slider.style.right = `${Math.max(0, offset)}px`;
+        } else {
+            const offset = tabRect.left - containerRect.left;
+            slider.style.right = 'auto';
+            slider.style.left = `${Math.max(0, offset)}px`;
+        }
+    }
+
     function switchMode(mode) {
         const tabLinkMode = document.getElementById('tabLinkMode');
         const tabSearchMode = document.getElementById('tabSearchMode');
@@ -3789,6 +3908,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const modeSearchContent = document.getElementById('modeSearchContent');
         const urlInput = document.getElementById('urlInput');
         const businessSearchInput = document.getElementById('businessSearchInput');
+        const mainInputCard = document.getElementById('mainInputCard');
+
+        const startHeight = mainInputCard ? mainInputCard.offsetHeight : 0;
 
         if (window.AppModes) {
             window.AppModes.activeMode = mode;
@@ -3810,6 +3932,24 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             initGoogleMapsPlaces();
         }
 
+        updateModeTabSlider();
+
+        if (mainInputCard && startHeight > 0) {
+            const endHeight = mainInputCard.offsetHeight;
+            if (startHeight !== endHeight) {
+                mainInputCard.style.height = `${startHeight}px`;
+                mainInputCard.style.overflow = 'hidden';
+                mainInputCard.style.transition = 'height 0.32s cubic-bezier(0.16, 1, 0.3, 1)';
+                void mainInputCard.offsetHeight;
+                mainInputCard.style.height = `${endHeight}px`;
+                setTimeout(() => {
+                    mainInputCard.style.height = '';
+                    mainInputCard.style.overflow = '';
+                    mainInputCard.style.transition = '';
+                }, 330);
+            }
+        }
+
         if (window.AppModes) {
             window.AppModes.syncResultCard();
         }
@@ -3820,6 +3960,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.hidePlacesDropdown = hideDropdown;
     window.selectSuggestion = selectSuggestion;
     window.switchMode = switchMode;
+    window.updateModeTabSlider = updateModeTabSlider;
 })();
 
 /* == core/qr.js == */
@@ -3956,20 +4097,29 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
             `;
         } else if (state === 'success') {
-            if (nfcModalBox) nfcModalBox.classList.add('success');
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('morph-to-ready');
+                nfcModalBox.classList.add('success');
+            }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
-            if (nfcDesc) nfcDesc.textContent = (dict.nfcDescSuccess || '').replace('{count}', count);
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'inline-flex';
-            if (nfcCounterText) nfcCounterText.textContent = (dict.nfcCardsCount || '').replace('{count}', count);
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcSvgIcon) nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
         } else if (state === 'next') {
-            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcModalBox) {
+                nfcModalBox.classList.add('morph-to-ready');
+                setTimeout(() => {
+                    if (nfcModalBox) {
+                        nfcModalBox.classList.remove('success');
+                        nfcModalBox.classList.remove('morph-to-ready');
+                    }
+                }, 300);
+            }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleNext;
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescNext;
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'inline-flex';
-            if (nfcCounterText) nfcCounterText.textContent = (dict.nfcCardsCount || '').replace('{count}', count);
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
                 <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
@@ -4035,6 +4185,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.onNfcSuccess = function(count) {
         nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
         window.nfcBatchCount = nfcBatchCount;
+        
+        // Haptic feedback trigger (gentle vibration)
+        if (window.AndroidNative && typeof window.AndroidNative.triggerHapticFeedback === 'function') {
+            try { window.AndroidNative.triggerHapticFeedback(); } catch (e) {}
+        } else if (navigator.vibrate) {
+            try { navigator.vibrate([60, 40, 80]); } catch (e) {}
+        }
+
         setNfcModalState('success', nfcBatchCount);
 
         const dict = getDict();
@@ -4645,6 +4803,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         // ── Initialize Language & Places ──
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
+        if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
 
         // ── Auto Update Check when Idle ──
         if ('requestIdleCallback' in window) {

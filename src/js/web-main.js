@@ -267,6 +267,38 @@
         // ── Initialize ──
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
+        if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
+        // ── Scroll-driven Reveal Animation for Explanation Cards ──
+        function initScrollReveal() {
+            const targets = document.querySelectorAll('.step-card, .feat-card, .faq-item, .section-header');
+            if (!targets.length) return;
+
+            if (!('IntersectionObserver' in window)) {
+                targets.forEach(el => el.classList.add('is-revealed'));
+                return;
+            }
+
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-revealed');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                rootMargin: '0px 0px -40px 0px',
+                threshold: 0.12
+            });
+
+            targets.forEach(el => {
+                el.classList.add('reveal-on-scroll');
+                observer.observe(el);
+            });
+        }
+        initScrollReveal();
+
 
         const CURRENT_VERSION = 'v1.1.7';
         if (navBrandBadge) {

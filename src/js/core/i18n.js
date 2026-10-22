@@ -31,22 +31,22 @@
                 titleHowItWorks: "How It Works in 3 Simple Steps",
                 subHowItWorks: "Generate frictionless review links that skyrocket your 5-star customer feedback",
                 step1Title: "Copy or Find Link",
-                step1Desc: "Search your place or copy your business share link directly from Google Maps app or browser.",
+                step1Desc: "Copy your Google Maps link or search for your place directly.",
                 step2Title: "Instant 5-Star Conversion",
-                step2Desc: "Our engine extracts the Place ID and constructs a direct URL that pops open the 5-star rating window automatically.",
+                step2Desc: "The link automatically converts into an instant 5-star review prompt.",
                 step3Title: "Print QR or Tap NFC",
-                step3Desc: "Download crisp QR codes for table tents and counter stands, or tap your phone to write to NFC cards with our Android app.",
+                step3Desc: "Download a print-ready QR code or write to an NFC card with one tap.",
                 tagFeatures: "Advantages",
                 titleFeatures: "Why Businesses Choose Our Tool",
                 subFeatures: "Designed for speed, customer conversion, and modern contactless technology",
                 feat1Title: "Direct 5-Star Pre-Selection",
-                feat1Desc: "Customers don't have to search for the review button. The 5-star popup opens immediately upon opening the link.",
+                feat1Desc: "The 5-star rating popup opens directly without searching through Maps.",
                 feat2Title: "Free NFC Tag Writer",
-                feat2Desc: "Program NFC review cards, stands, and stickers directly from our native Android app without subscription fees.",
+                feat2Desc: "Program NFC review cards and stands directly from the app for free.",
                 feat3Title: "High-Res Vector QR Codes",
-                feat3Desc: "Download instant, clean QR codes formatted perfectly for print menus, flyers, and point-of-sale displays.",
+                feat3Desc: "Get crisp, high-resolution QR codes ready for printing on tables and menus.",
                 feat4Title: "Zero Tracking & 100% Free",
-                feat4Desc: "No account required, no link redirection, no rate limits, and 100% open-source software you can trust.",
+                feat4Desc: "Free forever, no login required, no ads or redirects, and 100% open-source.",
                 tagFaq: "Knowledge Base",
                 titleFaq: "Frequently Asked Questions",
                 subFaq: "Everything you need to know about Google review links, QR codes, and NFC contactless cards",
@@ -76,12 +76,12 @@
                 qrDownloaded: "QR Code downloaded",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
-                nfcDescReady: "Hold your phone near an NFC card or sticker. Multi-tag writing is active.",
+                nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
                 nfcTitleSuccess: "Write Successful!",
-                nfcDescSuccess: "Tag #{count} programmed! Hold next card to continue...",
+                nfcDescSuccess: "The review link was successfully programmed onto the card.",
                 nfcTitleNext: "Ready for Next Card",
-                nfcDescNext: "Hold the next NFC tag near your phone to write...",
-                nfcCardsCount: "{count} tag(s) written",
+                nfcDescNext: "Hold another card near your phone to write, or tap Done.",
+                nfcCardsCount: "Cards written: {count}",
                 nfcCancel: "Cancel",
                 nfcDone: "Done & Close",
                 nfcTitleError: "Write Failed",
@@ -167,22 +167,22 @@
                 titleHowItWorks: "كيف يعمل في 3 خطوات بسيطة؟",
                 subHowItWorks: "أنشئ روابط تقييم مباشرة تضاعف تقييمات الـ 5 نجوم لعملائك دون أي تعقيد",
                 step1Title: "ابحث أو انسخ الرابط",
-                step1Desc: "ابحث عن نشاطك أو انسخ رابط المشاركة مباشرة من تطبيق خرائط جوجل أو المتصفح.",
+                step1Desc: "انسخ رابط مكانك من خرائط Google أو ابحث عنه مباشرة باسمه.",
                 step2Title: "تحويل فوري إلى 5 نجوم",
-                step2Desc: "محركنا الذكي يستخرج معرّف المكان (Place ID) ويولد رابطاً يفتح نافذة الـ 5 نجوم تلقائياً.",
+                step2Desc: "يتحول الرابط تلقائياً إلى رابط تقييم يفتح نافذة الـ 5 نجوم للعميل فوراً.",
                 step3Title: "طباعة QR أو برمجة NFC",
-                step3Desc: "نزّل كود QR عالي الدقة لطاولات ومكاتب الاستقبال، أو برمج بطاقات NFC بلمسة واحدة عبر تطبيق الأندرويد.",
+                step3Desc: "حمّل كود QR للطباعة أو برمج بطاقة NFC بلمسة واحدة من هاتفك.",
                 tagFeatures: "المميزات",
                 titleFeatures: "لماذا تختار منصتنا لنشاطك التجاري؟",
                 subFeatures: "صُممت خصيصاً لتحقيق أعلى معدل استجابة من العملاء باستخدام أحدث تقنيات اللمس",
                 feat1Title: "فتح نافذة 5 نجوم مباشرة",
-                feat1Desc: "لا حاجة للبحث عن زر التقييم داخل الخريطة؛ تنبثق شاشة تقييم الـ 5 نجوم فور فتح الرابط.",
+                feat1Desc: "تفتح نافذة الـ 5 نجوم للعميل بضغطة واحدة دون الحاجة للبحث في الخريطة.",
                 feat2Title: "برمجة بطاقات NFC مجاناً",
-                feat2Desc: "برمج بطاقات واستندات وميداليات NFC الخاصة بتقييمك مباشرة من تطبيقنا دون رسوم أو اشتراكات.",
+                feat2Desc: "برمج بطاقات واستندات NFC لتقييمك مباشرة من التطبيق مجاناً وبلا اشتراكات.",
                 feat3Title: "رموز QR فائقة الدقة",
-                feat3Desc: "حمّل رموز استجابة سريعة فورية مهيأة للطباعة على القوائم، المنشورات، وشاشات نقاط البيع.",
+                feat3Desc: "احصل على كود QR واضح وعالي الدقة جاهز للطباعة على الطاولات والمطبوعات.",
                 feat4Title: "مجاني 100% وبلا تتبع",
-                feat4Desc: "بدون تسجيل دخول، بدون روابط وسيطة أو إعلانات، ومفتوح المصدر بالكامل مع خصوصية تامة.",
+                feat4Desc: "استخدام فوري بدون حساب، وبلا إعلانات أو روابط وسيطة، ومفتوح المصدر بالكامل.",
                 tagFaq: "الأسئلة الشائعة",
                 titleFaq: "الأسئلة الأكثر تكراراً",
                 subFaq: "كل ما تحتاج معرفته حول روابط تقييم خرائط Google ورموز QR وبطاقات NFC",
@@ -216,7 +216,7 @@
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
                 nfcDescSuccess: "تمت برمجة البطاقة {count} بنجاح. جهّز البطاقة التالية...",
                 nfcTitleNext: "جاهز للبطاقة التالية",
-                nfcDescNext: "قرّب البطاقة التالية من ظهر الهاتف للبرمجة...",
+                nfcDescNext: "قرب بطاقة أخرى لبرمجتها، أو انقر تم للإنهاء.",
                 nfcCardsCount: "تمت برمجة: {count} بطاقات",
                 nfcCancel: "إلغاء",
                 nfcDone: "إنهاء وإغلاق",
@@ -464,6 +464,7 @@
         if (!animate) {
             try {
                 updateDomLanguageStrings(lang, dict);
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
             } catch (e) {
                 console.error('Error applying language strings:', e);
             }
@@ -477,12 +478,14 @@
         setTimeout(() => {
             try {
                 updateDomLanguageStrings(lang, dict);
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
                 void document.documentElement.offsetHeight;
             } catch (e) {
                 console.error('Error during language switch:', e);
             } finally {
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
+                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
                     setTimeout(() => {
                         isLangSwitching = false;
                     }, 240);

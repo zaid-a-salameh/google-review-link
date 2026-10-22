@@ -33,20 +33,29 @@
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
             `;
         } else if (state === 'success') {
-            if (nfcModalBox) nfcModalBox.classList.add('success');
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('morph-to-ready');
+                nfcModalBox.classList.add('success');
+            }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
-            if (nfcDesc) nfcDesc.textContent = (dict.nfcDescSuccess || '').replace('{count}', count);
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'inline-flex';
-            if (nfcCounterText) nfcCounterText.textContent = (dict.nfcCardsCount || '').replace('{count}', count);
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcSvgIcon) nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
         } else if (state === 'next') {
-            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcModalBox) {
+                nfcModalBox.classList.add('morph-to-ready');
+                setTimeout(() => {
+                    if (nfcModalBox) {
+                        nfcModalBox.classList.remove('success');
+                        nfcModalBox.classList.remove('morph-to-ready');
+                    }
+                }, 300);
+            }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleNext;
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescNext;
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'inline-flex';
-            if (nfcCounterText) nfcCounterText.textContent = (dict.nfcCardsCount || '').replace('{count}', count);
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
                 <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
@@ -112,6 +121,14 @@
     window.onNfcSuccess = function(count) {
         nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
         window.nfcBatchCount = nfcBatchCount;
+        
+        // Haptic feedback trigger (gentle vibration)
+        if (window.AndroidNative && typeof window.AndroidNative.triggerHapticFeedback === 'function') {
+            try { window.AndroidNative.triggerHapticFeedback(); } catch (e) {}
+        } else if (navigator.vibrate) {
+            try { navigator.vibrate([60, 40, 80]); } catch (e) {}
+        }
+
         setNfcModalState('success', nfcBatchCount);
 
         const dict = getDict();

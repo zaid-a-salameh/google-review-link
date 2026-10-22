@@ -290,6 +290,8 @@
         // ── Initialize Language & Places ──
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
+        if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
 
         // ── Auto Update Check when Idle ──
         if ('requestIdleCallback' in window) {

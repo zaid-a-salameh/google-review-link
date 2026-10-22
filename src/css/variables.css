@@ -29,6 +29,24 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
+        /* Custom Text Selection Highlight: Orange text on crisp white background */
+        ::selection {
+            background-color: #ffffff !important;
+            color: #ea580c !important;
+            text-shadow: none !important;
+        }
+        ::-moz-selection {
+            background-color: #ffffff !important;
+            color: #ea580c !important;
+            text-shadow: none !important;
+        }
+        input::selection,
+        textarea::selection {
+            background-color: #ffffff !important;
+            color: #ea580c !important;
+            text-shadow: none !important;
+        }
+
 
         body {
             font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;

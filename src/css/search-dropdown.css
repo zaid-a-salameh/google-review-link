@@ -222,6 +222,25 @@
         }
         .places-dropdown.show {
             display: flex;
+            animation: dropdownExpandAnim 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            transform-origin: top center;
+        }
+        @keyframes dropdownExpandAnim {
+            0% {
+                opacity: 0;
+                transform: translateY(-8px) scaleY(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scaleY(1);
+            }
+        }
+        .places-dropdown.show .place-suggestion-item {
+            animation: suggestionItemFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @keyframes suggestionItemFade {
+            0% { opacity: 0; transform: translateY(-4px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
         .place-suggestion-item {
             display: flex;
