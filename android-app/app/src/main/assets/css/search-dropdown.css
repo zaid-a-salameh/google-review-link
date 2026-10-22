@@ -47,6 +47,20 @@
         .search-input::placeholder {
             color: var(--text-muted);
             font-size: 12px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: 0.85;
+        }
+        html[lang="ar"] .search-input::placeholder {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        html[lang="en"] .search-input::placeholder {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         }
         .search-clear-btn {
             background: transparent;

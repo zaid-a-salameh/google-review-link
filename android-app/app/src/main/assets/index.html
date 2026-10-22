@@ -645,15 +645,24 @@
             .glass-card {
                 padding: 16px 12px;
             }
+            .mode-tab {
+                padding: 6px 10px;
+                font-size: 11.5px;
+                gap: 5px;
+            }
+            .mode-tab svg {
+                width: 14px;
+                height: 14px;
+            }
             .input-row {
                 gap: 5px;
             }
             .btn-trash {
-                width: 40px;
-                min-width: 40px;
+                width: 38px;
+                min-width: 38px;
             }
             .btn-paste {
-                padding: 0 9px;
+                padding: 0 8px;
                 font-size: 11px;
             }
             .url-input {
@@ -661,6 +670,9 @@
             }
             .url-input::placeholder {
                 font-size: 10.5px;
+            }
+            .search-input::placeholder {
+                font-size: 11px;
             }
         }
 
@@ -674,6 +686,7 @@
         }
         .mode-tabs {
             display: inline-flex;
+            max-width: 100%;
             background: rgba(18, 16, 15, 0.95);
             border: 1px solid var(--border);
             border-radius: 50px;
@@ -682,20 +695,26 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         .mode-tab {
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 7px;
-            padding: 8px 18px;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 14px;
             border-radius: 50px;
             background: transparent;
             border: none;
             color: var(--text-sub);
             font-family: inherit;
-            font-size: 13px;
+            font-size: 12.5px;
             font-weight: 700;
+            white-space: nowrap;
+            flex-shrink: 0;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none;
+        }
+        .mode-tab span {
+            white-space: nowrap;
         }
         .mode-tab:hover {
             color: #ffffff;
@@ -706,9 +725,10 @@
             box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
         }
         .mode-tab svg {
-            width: 16px;
-            height: 16px;
+            width: 15px;
+            height: 15px;
             fill: currentColor;
+            flex-shrink: 0;
         }
         .mode-content {
             display: none;
@@ -814,8 +834,8 @@
 
         /* Trash/Clear Button */
         .btn-trash {
-            width: 44px;
-            min-width: 44px;
+            width: 40px;
+            min-width: 40px;
             background: rgba(239, 68, 68, 0.1);
             border-color: rgba(239, 68, 68, 0.25);
             color: #f87171;
@@ -832,10 +852,12 @@
         /* Paste Button (Exclusive to Android Native APK) */
         .btn-paste {
             display: none;
-            padding: 0 12px;
+            padding: 0 10px;
             background: rgba(249, 115, 22, 0.14);
             border-color: rgba(249, 115, 22, 0.35);
             color: #fdba74;
+            font-size: 12px;
+            gap: 4px;
         }
         body.is-native-app .btn-paste {
             display: flex;
@@ -1069,6 +1091,20 @@
         .search-input::placeholder {
             color: var(--text-muted);
             font-size: 12px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+            opacity: 0.85;
+        }
+        html[lang="ar"] .search-input::placeholder {
+            direction: rtl;
+            text-align: right;
+            font-family: 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        html[lang="en"] .search-input::placeholder {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
         }
         .search-clear-btn {
             background: transparent;
@@ -2261,7 +2297,7 @@ body {
                             type="url" 
                             id="urlInput" 
                             class="url-input" 
-                            placeholder="Paste Google Maps link here..." 
+                            placeholder="Paste link here..." 
                             autocomplete="off" 
                             spellcheck="false"
                         >
@@ -2289,7 +2325,7 @@ body {
                         type="text" 
                         id="businessSearchInput" 
                         class="search-input" 
-                        placeholder="Enter business name & city (e.g. Al-Quds Restaurant Amman)..." 
+                        placeholder="Search place name & city..." 
                         autocomplete="off"
                         spellcheck="false"
                     >
@@ -2477,12 +2513,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 appSubtitle: "Convert Google Maps links to instant review links",
                 tabLink: "Direct Link",
                 tabSearch: "Find Business",
-                placeholder: "Paste Google Maps link here...",
+                placeholder: "Paste link here...",
                 trashTitle: "Clear text",
                 pasteBtn: "Paste",
                 convertBtn: "Convert Link",
                 resolvingBtn: "Resolving link...",
-                searchPlaceholder: "Enter business name & city (e.g. Al-Quds Restaurant Amman)...",
+                searchPlaceholder: "Search place name & city...",
                 searchStep1: "Type business name & click Search Maps",
                 searchStep2: "Click 'Share' & copy link on Google Maps",
                 searchStep3: "Click 'Auto-Paste & Convert' below!",
@@ -2613,12 +2649,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 appSubtitle: "تحويل رابط خرائط جوجل إلى رابط تقييم فوري",
                 tabLink: "وضع الرابط",
                 tabSearch: "بحث عن مكان",
-                placeholder: "الصق رابط Google Maps هنا...",
+                placeholder: "الصق رابط الخريطة هنا...",
                 trashTitle: "مسح النص",
                 pasteBtn: "لصق",
                 convertBtn: "تحويل الرابط",
                 resolvingBtn: "جاري فك اختصار الرابط...",
-                searchPlaceholder: "اكتب اسم المكان والمدينة (مثال: مطعم القدس عمان)...",
+                searchPlaceholder: "ابحث باسم المكان والمدينة...",
                 searchStep1: "اكتب اسم نشاطك واضغط بحث في الخرائط",
                 searchStep2: "اضغط مشاركة ثم نسخ الرابط من خرائط جوجل",
                 searchStep3: "اضغط لصق ذكي وتحويل بالأسفل!",
