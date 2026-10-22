@@ -2210,7 +2210,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.1.0</span>
+                <span id="appVersionText">v1.1.1</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2418,7 +2418,7 @@ body {
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.1.0</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.1.1</span>
                 </div>
             </div>
 
@@ -3845,12 +3845,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.0';
+    let currentAppVersion = '1.1.1';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.0';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.1';
         } catch (e) {
-            currentAppVersion = '1.1.0';
+            currentAppVersion = '1.1.1';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -3964,7 +3964,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.0';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.1';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
