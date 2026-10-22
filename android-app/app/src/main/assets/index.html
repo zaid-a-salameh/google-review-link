@@ -2257,7 +2257,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.1.3</span>
+                <span id="appVersionText">v1.1.4</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2465,7 +2465,7 @@ body {
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.1.3</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.1.4</span>
                 </div>
             </div>
 
@@ -3066,6 +3066,45 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 (function() {
     'use strict';
 
+    const AppModes = {
+        activeMode: 'search',
+        link: {
+            reviewUrl: null,
+            isResultActive: false
+        },
+        search: {
+            reviewUrl: null,
+            isResultActive: false
+        },
+        getGeneratedReviewUrl: function() {
+            const mode = this.activeMode;
+            return this[mode] && this[mode].isResultActive ? this[mode].reviewUrl : null;
+        },
+        setModeResult: function(mode, url) {
+            if (!this[mode]) return;
+            this[mode].reviewUrl = url;
+            this[mode].isResultActive = !!url;
+            this.syncResultCard();
+        },
+        clearModeResult: function(mode) {
+            if (!this[mode]) return;
+            this[mode].reviewUrl = null;
+            this[mode].isResultActive = false;
+            this.syncResultCard();
+        },
+        syncResultCard: function() {
+            const resultCard = document.getElementById('resultCard');
+            const resultLinkText = document.getElementById('resultLinkText');
+            const current = this[this.activeMode];
+            if (current && current.isResultActive && current.reviewUrl) {
+                if (resultLinkText) resultLinkText.textContent = current.reviewUrl;
+                if (resultCard) resultCard.classList.add('active');
+            } else {
+                if (resultCard) resultCard.classList.remove('active');
+            }
+        }
+    };
+    window.AppModes = AppModes;
     let generatedReviewUrl = '';
 
     function getDict() {
@@ -3250,10 +3289,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
-        if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
+        if (window.AppModes) {
+            window.AppModes.setModeResult('link', generatedReviewUrl);
+        } else {
+            if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
+            if (resultCard) resultCard.classList.add('active');
+        }
         
-        if (resultCard) {
-            resultCard.classList.add('active');
+        if (resultCard && (!window.AppModes || window.AppModes.link.isResultActive)) {
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         if (window.showToast) window.showToast(dict.toastSuccess || 'Link converted successfully', 'success');
@@ -3263,8 +3306,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.parsePlaceIdFromText = parsePlaceIdFromText;
     window.resolveShortenedUrl = resolveShortenedUrl;
     window.isDeviceOnline = isDeviceOnline;
-    window.getGeneratedReviewUrl = function() { return generatedReviewUrl; };
-    window.setGeneratedReviewUrl = function(u) { generatedReviewUrl = u; };
+    window.getGeneratedReviewUrl = function() {
+        return window.AppModes ? window.AppModes.getGeneratedReviewUrl() : generatedReviewUrl;
+    };
+    window.setGeneratedReviewUrl = function(u, mode) {
+        const targetMode = mode || (window.AppModes ? window.AppModes.activeMode : 'link');
+        if (window.AppModes) {
+            window.AppModes.setModeResult(targetMode, u);
+        } else {
+            generatedReviewUrl = u;
+        }
+    };
 })();
 
 /* == core/places.js == */
@@ -3594,11 +3646,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (placeId) {
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
-            if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
-            if (resultLinkText) resultLinkText.textContent = reviewUrl;
-            if (urlInput) urlInput.value = reviewUrl;
-            if (resultCard) {
-                resultCard.classList.add('active');
+            if (window.AppModes) {
+                window.AppModes.setModeResult('search', reviewUrl);
+            } else {
+                if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
+                if (resultLinkText) resultLinkText.textContent = reviewUrl;
+                if (resultCard) resultCard.classList.add('active');
+            }
+            if (resultCard && (!window.AppModes || window.AppModes.search.isResultActive)) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
             if (window.showToast) window.showToast(dict.toastSelectSuccess || 'Business selected and review link generated', 'success');
@@ -3615,6 +3670,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const urlInput = document.getElementById('urlInput');
         const businessSearchInput = document.getElementById('businessSearchInput');
 
+        if (window.AppModes) {
+            window.AppModes.activeMode = mode;
+        }
+
         if (mode === 'link') {
             if (tabLinkMode) tabLinkMode.classList.add('active');
             if (tabSearchMode) tabSearchMode.classList.remove('active');
@@ -3629,6 +3688,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (modeLinkContent) modeLinkContent.classList.remove('active');
             if (businessSearchInput) businessSearchInput.focus();
             initGoogleMapsPlaces();
+        }
+
+        if (window.AppModes) {
+            window.AppModes.syncResultCard();
         }
     }
 
@@ -3892,12 +3955,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.3';
+    let currentAppVersion = '1.1.4';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.3';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.4';
         } catch (e) {
-            currentAppVersion = '1.1.3';
+            currentAppVersion = '1.1.4';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -4011,7 +4074,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.3';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.4';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
@@ -4230,7 +4293,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     urlInput.value = '';
                     urlInput.focus();
                 }
-                if (resultCard) resultCard.classList.remove('active');
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('link');
+                } else if (resultCard) {
+                    resultCard.classList.remove('active');
+                }
                 if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }
@@ -4349,6 +4416,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     searchClearBtn.classList.remove('visible');
                     window.hidePlacesDropdown();
                     businessSearchInput.focus();
+                }
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('search');
                 }
             });
         }

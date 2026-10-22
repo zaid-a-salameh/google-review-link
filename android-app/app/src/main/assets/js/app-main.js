@@ -69,7 +69,11 @@
                     urlInput.value = '';
                     urlInput.focus();
                 }
-                if (resultCard) resultCard.classList.remove('active');
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('link');
+                } else if (resultCard) {
+                    resultCard.classList.remove('active');
+                }
                 if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }
@@ -188,6 +192,9 @@
                     searchClearBtn.classList.remove('visible');
                     window.hidePlacesDropdown();
                     businessSearchInput.focus();
+                }
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('search');
                 }
             });
         }

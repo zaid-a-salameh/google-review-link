@@ -324,11 +324,14 @@
 
         if (placeId) {
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
-            if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
-            if (resultLinkText) resultLinkText.textContent = reviewUrl;
-            if (urlInput) urlInput.value = reviewUrl;
-            if (resultCard) {
-                resultCard.classList.add('active');
+            if (window.AppModes) {
+                window.AppModes.setModeResult('search', reviewUrl);
+            } else {
+                if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
+                if (resultLinkText) resultLinkText.textContent = reviewUrl;
+                if (resultCard) resultCard.classList.add('active');
+            }
+            if (resultCard && (!window.AppModes || window.AppModes.search.isResultActive)) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
             if (window.showToast) window.showToast(dict.toastSelectSuccess || 'Business selected and review link generated', 'success');
@@ -345,6 +348,10 @@
         const urlInput = document.getElementById('urlInput');
         const businessSearchInput = document.getElementById('businessSearchInput');
 
+        if (window.AppModes) {
+            window.AppModes.activeMode = mode;
+        }
+
         if (mode === 'link') {
             if (tabLinkMode) tabLinkMode.classList.add('active');
             if (tabSearchMode) tabSearchMode.classList.remove('active');
@@ -359,6 +366,10 @@
             if (modeLinkContent) modeLinkContent.classList.remove('active');
             if (businessSearchInput) businessSearchInput.focus();
             initGoogleMapsPlaces();
+        }
+
+        if (window.AppModes) {
+            window.AppModes.syncResultCard();
         }
     }
 

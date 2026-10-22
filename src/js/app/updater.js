@@ -8,12 +8,12 @@
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.3';
+    let currentAppVersion = '1.1.4';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.3';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.4';
         } catch (e) {
-            currentAppVersion = '1.1.3';
+            currentAppVersion = '1.1.4';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -127,7 +127,7 @@
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.3';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.4';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';

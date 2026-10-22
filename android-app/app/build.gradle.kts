@@ -10,8 +10,8 @@ android {
         applicationId = "com.example.reviewlinkgenerator"
         minSdk = 24
         targetSdk = 36
-        versionCode = 5
-        versionName = "1.1.3"
+        versionCode = 6
+        versionName = "1.1.4"
     }
 
     buildTypes {

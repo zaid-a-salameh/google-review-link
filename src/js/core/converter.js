@@ -4,6 +4,45 @@
 (function() {
     'use strict';
 
+    const AppModes = {
+        activeMode: 'search',
+        link: {
+            reviewUrl: null,
+            isResultActive: false
+        },
+        search: {
+            reviewUrl: null,
+            isResultActive: false
+        },
+        getGeneratedReviewUrl: function() {
+            const mode = this.activeMode;
+            return this[mode] && this[mode].isResultActive ? this[mode].reviewUrl : null;
+        },
+        setModeResult: function(mode, url) {
+            if (!this[mode]) return;
+            this[mode].reviewUrl = url;
+            this[mode].isResultActive = !!url;
+            this.syncResultCard();
+        },
+        clearModeResult: function(mode) {
+            if (!this[mode]) return;
+            this[mode].reviewUrl = null;
+            this[mode].isResultActive = false;
+            this.syncResultCard();
+        },
+        syncResultCard: function() {
+            const resultCard = document.getElementById('resultCard');
+            const resultLinkText = document.getElementById('resultLinkText');
+            const current = this[this.activeMode];
+            if (current && current.isResultActive && current.reviewUrl) {
+                if (resultLinkText) resultLinkText.textContent = current.reviewUrl;
+                if (resultCard) resultCard.classList.add('active');
+            } else {
+                if (resultCard) resultCard.classList.remove('active');
+            }
+        }
+    };
+    window.AppModes = AppModes;
     let generatedReviewUrl = '';
 
     function getDict() {
@@ -188,10 +227,14 @@
         }
 
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
-        if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
+        if (window.AppModes) {
+            window.AppModes.setModeResult('link', generatedReviewUrl);
+        } else {
+            if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
+            if (resultCard) resultCard.classList.add('active');
+        }
         
-        if (resultCard) {
-            resultCard.classList.add('active');
+        if (resultCard && (!window.AppModes || window.AppModes.link.isResultActive)) {
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         if (window.showToast) window.showToast(dict.toastSuccess || 'Link converted successfully', 'success');
@@ -201,6 +244,15 @@
     window.parsePlaceIdFromText = parsePlaceIdFromText;
     window.resolveShortenedUrl = resolveShortenedUrl;
     window.isDeviceOnline = isDeviceOnline;
-    window.getGeneratedReviewUrl = function() { return generatedReviewUrl; };
-    window.setGeneratedReviewUrl = function(u) { generatedReviewUrl = u; };
+    window.getGeneratedReviewUrl = function() {
+        return window.AppModes ? window.AppModes.getGeneratedReviewUrl() : generatedReviewUrl;
+    };
+    window.setGeneratedReviewUrl = function(u, mode) {
+        const targetMode = mode || (window.AppModes ? window.AppModes.activeMode : 'link');
+        if (window.AppModes) {
+            window.AppModes.setModeResult(targetMode, u);
+        } else {
+            generatedReviewUrl = u;
+        }
+    };
 })();
