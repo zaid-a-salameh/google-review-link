@@ -30,6 +30,8 @@
         const btnAr = $('btnAr');
         const navBtnEn = $('navBtnEn');
         const navBtnAr = $('navBtnAr');
+        const navBrandBadge = $('navBrandBadge');
+        const appVersionText = $('appVersionText');
 
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
@@ -256,5 +258,17 @@
         // ── Initialize ──
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
+
+        const CURRENT_VERSION = 'v1.1.4';
+        if (navBrandBadge) {
+            navBrandBadge.textContent = CURRENT_VERSION;
+            navBrandBadge.addEventListener('click', e => {
+                e.preventDefault();
+                window.open('https://github.com/zaid-a-salameh/google-review-link/releases/latest', '_blank');
+            });
+        }
+        if (appVersionText) {
+            appVersionText.textContent = CURRENT_VERSION;
+        }
     });
 })();

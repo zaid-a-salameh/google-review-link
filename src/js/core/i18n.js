@@ -162,7 +162,7 @@
                 btnAutoPasteConvert: "لصق ذكي وتحويل فوري",
                 toastEnterQuery: "يرجى كتابة اسم المكان أولاً",
                 navApk: "تحميل التطبيق",
-                navGithub: "المستودع",
+                navGithub: "GitHub",
                 tagHowItWorks: "طريقة العمل",
                 titleHowItWorks: "كيف يعمل في 3 خطوات بسيطة؟",
                 subHowItWorks: "أنشئ روابط تقييم مباشرة تضاعف تقييمات الـ 5 نجوم لعملائك دون أي تعقيد",
