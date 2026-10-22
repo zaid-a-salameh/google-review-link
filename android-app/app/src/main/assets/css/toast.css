@@ -2,11 +2,12 @@
         /* Toast Message */
         .toast {
             position: fixed;
-            bottom: 24px;
+            bottom: max(28px, env(safe-area-inset-bottom, 28px));
             left: 50%;
             transform: translateX(-50%) translateY(80px);
-            background: rgba(28, 25, 23, 0.95);
+            background: rgba(28, 25, 23, 0.96);
             backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--border-glow);
             color: #ffffff;
             padding: 10px 18px;
@@ -18,10 +19,15 @@
             opacity: 0;
             pointer-events: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            white-space: nowrap;
+            max-width: min(90vw, 360px);
+            width: max-content;
+            box-sizing: border-box;
             display: inline-flex;
             align-items: center;
-            gap: 9px;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+            line-height: 1.35;
         }
         .toast.show {
             transform: translateX(-50%) translateY(0);
@@ -37,4 +43,8 @@
             width: 17px;
             height: 17px;
             display: block;
+        }
+        .toast-text {
+            word-break: break-word;
+            white-space: normal;
         }

@@ -271,18 +271,18 @@
         }
         .update-modal {
             width: 100%;
-            max-width: 460px;
+            max-width: 400px;
             background: rgba(24, 21, 19, 0.98);
             border: 1px solid rgba(249, 115, 22, 0.45);
             border-radius: 24px;
-            padding: 24px;
+            padding: 22px 20px 20px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(234, 88, 12, 0.22);
             transform: scale(0.92) translateY(20px);
             opacity: 0;
             transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 14px;
         }
         .update-overlay.active .update-modal {
             transform: scale(1) translateY(0);
@@ -404,8 +404,9 @@
             color: var(--border);
         }
 
-        /* Changelog Card */
+        /* Changelog Card - Hidden for clean, compact modal */
         .update-changelog-card {
+            display: none !important;
             background: rgba(14, 12, 11, 0.8);
             border: 1px solid var(--border);
             border-radius: 14px;
