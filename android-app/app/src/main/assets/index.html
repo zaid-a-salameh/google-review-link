@@ -597,9 +597,30 @@
             transform: scale(0.96);
         }
         .btn-version-pill.has-update {
-            background: rgba(34, 197, 94, 0.12);
-            border-color: rgba(34, 197, 94, 0.45);
-            color: #86efac;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 185, 129, 0.35) 100%);
+            border: 1.5px solid #22c55e;
+            color: #ffffff;
+            font-weight: 800;
+            box-shadow: 0 0 16px rgba(34, 197, 94, 0.45), 0 2px 8px rgba(0, 0, 0, 0.4);
+            animation: badge-attention-glow 2.4s ease-in-out infinite;
+        }
+        .btn-version-pill.has-update::after {
+            content: 'New';
+            font-size: 9.5px;
+            font-weight: 800;
+            background: #22c55e;
+            color: #0c0a09;
+            padding: 1px 6px;
+            border-radius: 20px;
+            margin-left: 4px;
+            letter-spacing: 0.2px;
+            display: inline-block;
+        }
+        [dir="rtl"] .btn-version-pill.has-update::after,
+        html[lang="ar"] .btn-version-pill.has-update::after {
+            content: 'تحديث';
+            margin-left: 0;
+            margin-right: 4px;
         }
         .version-dot {
             width: 7px;
@@ -610,13 +631,33 @@
             transition: background 0.3s;
         }
         .btn-version-pill.has-update .version-dot {
-            background: #22c55e;
-            box-shadow: 0 0 8px #22c55e;
-            animation: pulse-update-dot 1.8s infinite;
+            background: #4ade80;
+            box-shadow: 0 0 10px #4ade80;
+            animation: ping-radar 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
         }
-        @keyframes pulse-update-dot {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.3); }
+        @keyframes ping-radar {
+            0% {
+                transform: scale(0.9);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.8);
+            }
+            70% {
+                transform: scale(1.25);
+                box-shadow: 0 0 0 7px rgba(74, 222, 128, 0);
+            }
+            100% {
+                transform: scale(0.9);
+                box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+            }
+        }
+        @keyframes badge-attention-glow {
+            0%, 100% {
+                box-shadow: 0 0 12px rgba(34, 197, 94, 0.35), inset 0 0 6px rgba(34, 197, 94, 0.2);
+                border-color: rgba(34, 197, 94, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 22px rgba(34, 197, 94, 0.75), inset 0 0 10px rgba(34, 197, 94, 0.4);
+                border-color: #4ade80;
+            }
         }
 
         /* Brand Badge (Navbar) clickable */
@@ -631,9 +672,28 @@
             color: #fdba74;
         }
         .brand-badge.has-update {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: rgba(34, 197, 94, 0.5);
-            color: #86efac;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 185, 129, 0.35) 100%);
+            border: 1.5px solid #22c55e;
+            color: #ffffff;
+            font-weight: 800;
+            box-shadow: 0 0 16px rgba(34, 197, 94, 0.45);
+            animation: badge-attention-glow 2.4s ease-in-out infinite;
+        }
+        .brand-badge.has-update::after {
+            content: 'New';
+            font-size: 9px;
+            font-weight: 800;
+            background: #22c55e;
+            color: #0c0a09;
+            padding: 1px 5px;
+            border-radius: 20px;
+            margin-left: 4px;
+        }
+        [dir="rtl"] .brand-badge.has-update::after,
+        html[lang="ar"] .brand-badge.has-update::after {
+            content: 'تحديث';
+            margin-left: 0;
+            margin-right: 4px;
         }
 
 
@@ -2257,7 +2317,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.1.4</span>
+                <span id="appVersionText">v1.1.5</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2465,7 +2525,7 @@ body {
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.1.4</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.1.5</span>
                 </div>
             </div>
 
@@ -3955,12 +4015,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.4';
+    let currentAppVersion = '1.1.5';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.4';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.5';
         } catch (e) {
-            currentAppVersion = '1.1.4';
+            currentAppVersion = '1.1.5';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -3976,6 +4036,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     let latestReleaseData = null;
+    let latestApkAsset = null;
     let latestApkDownloadUrl = '';
     let isCheckingUpdate = false;
 
@@ -4074,7 +4135,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.4';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.5';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
@@ -4110,6 +4171,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     async function checkForAppUpdates(isManual = false) {
+        if (isManual && latestReleaseData && compareVersions(latestReleaseData.tag_name || '', currentAppVersion) > 0) {
+            openUpdateModal(latestReleaseData, latestApkAsset);
+            return;
+        }
+
         if (isCheckingUpdate) return;
         isCheckingUpdate = true;
         const dict = getDict();
@@ -4139,6 +4205,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             const latestTag = data.tag_name || '';
             const assets = data.assets || [];
             const apkAsset = assets.find(a => a.name && a.name.toLowerCase().endsWith('.apk')) || assets[0];
+            latestApkAsset = apkAsset;
+            if (apkAsset && apkAsset.browser_download_url) {
+                latestApkDownloadUrl = apkAsset.browser_download_url;
+            }
 
             const btnCheckUpdate = document.getElementById('btnCheckUpdate');
             const navBrandBadge = document.getElementById('navBrandBadge');
@@ -4153,16 +4223,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     navBrandBadge.title = (dict.updateAvailable || 'Update available') + ` (${latestTag})`;
                 }
 
-                openUpdateModal(data, apkAsset);
-
-                if (isManual && window.showToast) {
-                    window.showToast((dict.toastUpdateFound || 'New update found: {version}').replace('{version}', latestTag), 'success');
+                if (isManual) {
+                    openUpdateModal(data, apkAsset);
+                    if (window.showToast) {
+                        window.showToast((dict.toastUpdateFound || 'New update found: {version}').replace('{version}', latestTag), 'success');
+                    }
                 }
             } else {
                 if (btnCheckUpdate) btnCheckUpdate.classList.remove('has-update');
                 if (navBrandBadge) navBrandBadge.classList.remove('has-update');
                 if (isManual && window.showToast) {
-                    window.showToast((dict.toastUpToDate || 'App is up to date: {version}').replace('{version}', currentAppVersion), 'success');
+                    window.showToast((dict.toastUpToDate || 'App is up to date ({version})').replace('{version}', currentAppVersion), 'success');
                 }
             }
         } catch (err) {

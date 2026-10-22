@@ -259,7 +259,7 @@
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
 
-        const CURRENT_VERSION = 'v1.1.4';
+        const CURRENT_VERSION = 'v1.1.5';
         if (navBrandBadge) {
             navBrandBadge.textContent = CURRENT_VERSION;
             navBrandBadge.addEventListener('click', e => {

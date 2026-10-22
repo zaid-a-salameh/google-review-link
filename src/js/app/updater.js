@@ -8,12 +8,12 @@
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.4';
+    let currentAppVersion = '1.1.5';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.4';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.5';
         } catch (e) {
-            currentAppVersion = '1.1.4';
+            currentAppVersion = '1.1.5';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -29,6 +29,7 @@
     }
 
     let latestReleaseData = null;
+    let latestApkAsset = null;
     let latestApkDownloadUrl = '';
     let isCheckingUpdate = false;
 
@@ -127,7 +128,7 @@
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.4';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.5';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
@@ -163,6 +164,11 @@
     }
 
     async function checkForAppUpdates(isManual = false) {
+        if (isManual && latestReleaseData && compareVersions(latestReleaseData.tag_name || '', currentAppVersion) > 0) {
+            openUpdateModal(latestReleaseData, latestApkAsset);
+            return;
+        }
+
         if (isCheckingUpdate) return;
         isCheckingUpdate = true;
         const dict = getDict();
@@ -192,6 +198,10 @@
             const latestTag = data.tag_name || '';
             const assets = data.assets || [];
             const apkAsset = assets.find(a => a.name && a.name.toLowerCase().endsWith('.apk')) || assets[0];
+            latestApkAsset = apkAsset;
+            if (apkAsset && apkAsset.browser_download_url) {
+                latestApkDownloadUrl = apkAsset.browser_download_url;
+            }
 
             const btnCheckUpdate = document.getElementById('btnCheckUpdate');
             const navBrandBadge = document.getElementById('navBrandBadge');
@@ -206,16 +216,17 @@
                     navBrandBadge.title = (dict.updateAvailable || 'Update available') + ` (${latestTag})`;
                 }
 
-                openUpdateModal(data, apkAsset);
-
-                if (isManual && window.showToast) {
-                    window.showToast((dict.toastUpdateFound || 'New update found: {version}').replace('{version}', latestTag), 'success');
+                if (isManual) {
+                    openUpdateModal(data, apkAsset);
+                    if (window.showToast) {
+                        window.showToast((dict.toastUpdateFound || 'New update found: {version}').replace('{version}', latestTag), 'success');
+                    }
                 }
             } else {
                 if (btnCheckUpdate) btnCheckUpdate.classList.remove('has-update');
                 if (navBrandBadge) navBrandBadge.classList.remove('has-update');
                 if (isManual && window.showToast) {
-                    window.showToast((dict.toastUpToDate || 'App is up to date: {version}').replace('{version}', currentAppVersion), 'success');
+                    window.showToast((dict.toastUpToDate || 'App is up to date ({version})').replace('{version}', currentAppVersion), 'success');
                 }
             }
         } catch (err) {
