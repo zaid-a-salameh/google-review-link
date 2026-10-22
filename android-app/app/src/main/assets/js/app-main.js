@@ -268,6 +268,15 @@
             });
         }
 
+        // ── Floating GitHub Button ──
+        const fabGithub = $('fabGithub');
+        if (fabGithub) {
+            fabGithub.addEventListener('click', e => {
+                e.preventDefault();
+                window.open('https://github.com/zaid-a-salameh/google-review-link', '_blank');
+            });
+        }
+
         // ── Language Toggle Buttons ──
         if (btnEn) btnEn.addEventListener('click', () => window.switchLanguage('en'));
         if (btnAr) btnAr.addEventListener('click', () => window.switchLanguage('ar'));

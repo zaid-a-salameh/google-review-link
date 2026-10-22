@@ -249,6 +249,15 @@
             });
         }
 
+        // ── Floating GitHub Button ──
+        const fabGithub = $('fabGithub');
+        if (fabGithub) {
+            fabGithub.addEventListener('click', e => {
+                e.preventDefault();
+                window.open('https://github.com/zaid-a-salameh/google-review-link', '_blank');
+            });
+        }
+
         // ── Language Toggle Buttons ──
         if (btnEn) btnEn.addEventListener('click', () => window.switchLanguage('en'));
         if (btnAr) btnAr.addEventListener('click', () => window.switchLanguage('ar'));
@@ -259,7 +268,7 @@
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
 
-        const CURRENT_VERSION = 'v1.1.6';
+        const CURRENT_VERSION = 'v1.1.7';
         if (navBrandBadge) {
             navBrandBadge.textContent = CURRENT_VERSION;
             navBrandBadge.addEventListener('click', e => {

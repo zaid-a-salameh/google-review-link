@@ -1101,6 +1101,50 @@
             box-shadow: 0 2px 10px rgba(234, 88, 12, 0.4);
         }
 
+        /* Floating GitHub Corner Button */
+        .fab-github {
+            position: fixed;
+            bottom: max(16px, env(safe-area-inset-bottom, 16px));
+            inset-inline-end: 16px;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(28, 25, 23, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #d6d3d1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
+            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
+            z-index: 85;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .fab-github svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+            transition: transform 0.2s ease;
+        }
+        .fab-github:hover {
+            transform: scale(1.08);
+            background: rgba(41, 37, 36, 0.96);
+            border-color: rgba(255, 255, 255, 0.32);
+            color: #ffffff;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), 0 0 12px rgba(255, 255, 255, 0.12);
+        }
+        .fab-github:hover svg {
+            transform: rotate(6deg) scale(1.05);
+        }
+        .fab-github:active {
+            transform: scale(0.92);
+            background: rgba(20, 18, 16, 0.98);
+        }
+
 /* == search-dropdown.css == */
 /* Places Autocomplete & Search Mode */
         /* Mode 2: Search Business Field & Helper */
@@ -2317,7 +2361,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.1.6</span>
+                <span id="appVersionText">v1.1.7</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2520,12 +2564,12 @@ body {
             <div class="update-version-row">
                 <div class="version-chip current">
                     <span class="version-chip-label" id="lblCurrentVer">Current</span>
-                    <span class="version-chip-val" id="updateCurrentVer">v1.1.4</span>
+                    <span class="version-chip-val" id="updateCurrentVer">v1.1.7</span>
                 </div>
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.1.6</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.1.7</span>
                 </div>
             </div>
 
@@ -2555,6 +2599,11 @@ body {
             </div>
         </div>
     </div>
+
+    <!-- Floating GitHub Project Button -->
+    <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer" class="fab-github" id="fabGithub" aria-label="GitHub Repository" title="GitHub">
+        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+    </a>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
@@ -4026,12 +4075,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.6';
+    let currentAppVersion = '1.1.7';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.6';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.7';
         } catch (e) {
-            currentAppVersion = '1.1.6';
+            currentAppVersion = '1.1.7';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -4146,7 +4195,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.6';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.7';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';
@@ -4571,6 +4620,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 } else {
                     window.hidePlacesDropdown();
                 }
+            });
+        }
+
+        // ── Floating GitHub Button ──
+        const fabGithub = $('fabGithub');
+        if (fabGithub) {
+            fabGithub.addEventListener('click', e => {
+                e.preventDefault();
+                window.open('https://github.com/zaid-a-salameh/google-review-link', '_blank');
             });
         }
 
