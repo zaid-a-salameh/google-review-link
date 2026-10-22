@@ -242,23 +242,22 @@ class MainActivity : ComponentActivity() {
 
     fun triggerSuccessVibration() {
         try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-                    vm?.defaultVibrator
-                } else {
-                    @Suppress("DEPRECATION")
-                    getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-                }
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    vibrator?.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
-                } else {
-                    vibrator?.vibrate(VibrationEffect.createOneShot(120, VibrationEffect.DEFAULT_AMPLITUDE))
-                }
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vm?.defaultVibrator
             } else {
                 @Suppress("DEPRECATION")
-                val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
-                vibrator?.vibrate(120)
+                getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            } ?: return
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val timings = longArrayOf(0, 140, 70, 180)
+                val amplitudes = intArrayOf(0, 220, 0, 255)
+                val effect = VibrationEffect.createWaveform(timings, amplitudes, -1)
+                vibrator.vibrate(effect)
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(longArrayOf(0, 140, 70, 180), -1)
             }
         } catch (e: Exception) {
             // vibration is optional
@@ -353,9 +352,9 @@ class MainActivity : ComponentActivity() {
         fun getAppVersion(): String {
             return try {
                 val pInfo = activity.packageManager.getPackageInfo(activity.packageName, 0)
-                pInfo.versionName ?: "1.1.7"
+                pInfo.versionName ?: "1.2.0"
             } catch (e: Exception) {
-                "1.1.7"
+                "1.2.0"
             }
         }
 

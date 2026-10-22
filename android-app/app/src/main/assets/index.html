@@ -2454,7 +2454,7 @@ body {
         <div class="top-bar">
             <button type="button" class="btn-version-pill" id="btnCheckUpdate" title="Check for Updates">
                 <span class="version-dot" id="updateDot"></span>
-                <span id="appVersionText">v1.1.7</span>
+                <span id="appVersionText">v1.2.0</span>
             </button>
             <div class="lang-pill-container">
                 <button type="button" class="lang-btn active" id="btnEn">EN</button>
@@ -2658,12 +2658,12 @@ body {
             <div class="update-version-row">
                 <div class="version-chip current">
                     <span class="version-chip-label" id="lblCurrentVer">Current</span>
-                    <span class="version-chip-val" id="updateCurrentVer">v1.1.7</span>
+                    <span class="version-chip-val" id="updateCurrentVer">v1.2.0</span>
                 </div>
                 <div class="version-arrow">→</div>
                 <div class="version-chip latest">
                     <span class="version-chip-label" id="lblLatestVer">New</span>
-                    <span class="version-chip-val" id="updateLatestVer">v1.1.7</span>
+                    <span class="version-chip-val" id="updateLatestVer">v1.2.0</span>
                 </div>
             </div>
 
@@ -2793,7 +2793,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
                 nfcTitleSuccess: "Write Successful!",
                 nfcDescSuccess: "The review link was successfully programmed onto the card.",
-                nfcTitleNext: "Ready for Next Card",
+                nfcTitleNext: "Ready to Write",
                 nfcDescNext: "Hold another card near your phone to write, or tap Done.",
                 nfcCardsCount: "Cards written: {count}",
                 nfcCancel: "Cancel",
@@ -2926,12 +2926,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
-                nfcDescReady: "قرّب بطاقة أو ملصق NFC من ظهر الهاتف. وضع الكتابة المتتالية مفعّل.",
+                nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
-                nfcDescSuccess: "تمت برمجة البطاقة {count} بنجاح. جهّز البطاقة التالية...",
-                nfcTitleNext: "جاهز للبطاقة التالية",
-                nfcDescNext: "قرب بطاقة أخرى لبرمجتها، أو انقر تم للإنهاء.",
-                nfcCardsCount: "تمت برمجة: {count} بطاقات",
+                nfcDescSuccess: "تمت برمجة بطاقة التقييم بنجاح.",
+                nfcTitleNext: "جاهز للكتابة",
+                nfcDescNext: "قرب بطاقة أخرى لبرمجتها، أو انقر إنهاء.",
+                nfcCardsCount: "البطاقات المكتملة: {count}",
                 nfcCancel: "إلغاء",
                 nfcDone: "إنهاء وإغلاق",
                 nfcTitleError: "فشلت الكتابة",
@@ -4190,7 +4190,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (window.AndroidNative && typeof window.AndroidNative.triggerHapticFeedback === 'function') {
             try { window.AndroidNative.triggerHapticFeedback(); } catch (e) {}
         } else if (navigator.vibrate) {
-            try { navigator.vibrate([60, 40, 80]); } catch (e) {}
+            try { navigator.vibrate([140, 70, 180]); } catch (e) {}
         }
 
         setNfcModalState('success', nfcBatchCount);
@@ -4233,12 +4233,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     const GITHUB_REPO_NAME = 'google-review-link';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
-    let currentAppVersion = '1.1.7';
+    let currentAppVersion = '1.2.0';
     if (window.AndroidNative && typeof window.AndroidNative.getAppVersion === 'function') {
         try {
-            currentAppVersion = window.AndroidNative.getAppVersion() || '1.1.7';
+            currentAppVersion = window.AndroidNative.getAppVersion() || '1.2.0';
         } catch (e) {
-            currentAppVersion = '1.1.7';
+            currentAppVersion = '1.2.0';
         }
     }
     window.currentAppVersion = currentAppVersion;
@@ -4353,7 +4353,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const updateOverlay = document.getElementById('updateOverlay');
 
         if (updateCurrentVer) updateCurrentVer.textContent = 'v' + currentAppVersion.replace(/^v/i, '');
-        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.1.7';
+        if (updateLatestVer) updateLatestVer.textContent = release.tag_name || 'v1.2.0';
 
         if (updateFileSize) {
             const sizeText = apkAsset ? formatBytes(apkAsset.size) : '~2.4 MB';

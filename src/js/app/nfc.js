@@ -126,7 +126,7 @@
         if (window.AndroidNative && typeof window.AndroidNative.triggerHapticFeedback === 'function') {
             try { window.AndroidNative.triggerHapticFeedback(); } catch (e) {}
         } else if (navigator.vibrate) {
-            try { navigator.vibrate([60, 40, 80]); } catch (e) {}
+            try { navigator.vibrate([140, 70, 180]); } catch (e) {}
         }
 
         setNfcModalState('success', nfcBatchCount);
