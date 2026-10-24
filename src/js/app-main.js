@@ -159,6 +159,10 @@
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;
             }
+            const pwdHintText = $('pwdHintText');
+            if (pwdHintText && dict.pwdHintText) {
+                pwdHintText.textContent = dict.pwdHintText;
+            }
         }
 
         if (btnPwdLockTag) {
@@ -171,7 +175,6 @@
                         nfcPinInput.type = 'password';
                         if (eyeIconOpen) eyeIconOpen.style.display = 'block';
                         if (eyeIconClosed) eyeIconClosed.style.display = 'none';
-                        setTimeout(() => nfcPinInput.focus(), 150);
                     }
                 }
             });
@@ -179,6 +182,7 @@
 
         if (btnPwdCancel && pwdModalOverlay) {
             btnPwdCancel.addEventListener('click', () => {
+                if (nfcPinInput) nfcPinInput.blur();
                 pwdModalOverlay.classList.remove('active');
             });
         }
@@ -213,9 +217,9 @@
                 const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
                 if (!pin) {
                     if (window.showToast) window.showToast(dict.toastEnterPwd || 'Please enter a password or PIN', 'warn');
-                    if (nfcPinInput) nfcPinInput.focus();
                     return;
                 }
+                if (nfcPinInput) nfcPinInput.blur();
                 if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
                 if (pwdCurrentAction === 'lock') {
                     if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin);

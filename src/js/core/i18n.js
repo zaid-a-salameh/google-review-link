@@ -92,6 +92,7 @@
                 nfcDescPwdUnlockReady: "Hold phone near NFC card to remove PIN protection.",
                 pwdModalTitle: "Card Password Protection",
                 pwdModalDesc: "Set a password or PIN to prevent unauthorized modifications",
+                pwdHintText: "4 characters recommended for standard NFC compatibility",
                 pwdPlaceholder: "Enter password or PIN...",
                 pwdTabLock: "Lock Card",
                 pwdTabUnlock: "Unlock Card",
@@ -266,6 +267,7 @@
                 nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
                 pwdModalTitle: "حماية البطاقة بكلمة مرور",
                 pwdModalDesc: "عيّن كلمة مرور أو رمز PIN لحماية البطاقة من التعديل",
+                pwdHintText: "يُفضّل استخدام 4 خانات للتوافق الكامل مع كافة أجهزة وقارئات NFC",
                 pwdPlaceholder: "أدخل كلمة المرور أو رمز PIN...",
                 pwdTabLock: "قفل البطاقة",
                 pwdTabUnlock: "فك القفل",
@@ -466,6 +468,7 @@
         setTxt('lblPermLockTag', dict.lblPermLockTag);
         setTxt('pwdModalTitle', dict.pwdModalTitle);
         setTxt('pwdModalDesc', dict.pwdModalDesc);
+        setTxt('pwdHintText', dict.pwdHintText);
         setTxt('pwdTabLock', dict.pwdTabLock);
         setTxt('pwdTabUnlock', dict.pwdTabUnlock);
         setTxt('btnPwdCancel', dict.pwdCancel);

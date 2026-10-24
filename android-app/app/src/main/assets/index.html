@@ -2496,6 +2496,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            overscroll-behavior: contain;
         }
         .pwd-overlay.active,
         .perm-lock-overlay.active {
@@ -2611,6 +2612,16 @@
             width: 19px;
             height: 19px;
             fill: currentColor;
+        }
+
+        .pwd-hint {
+            font-size: 11px;
+            color: #a8a29e;
+            margin-top: -6px;
+            margin-bottom: 6px;
+            text-align: center;
+            line-height: 1.35;
+            padding: 0 4px;
         }
 
         .pwd-actions,
@@ -3023,6 +3034,7 @@ body {
                     <svg id="eyeIconClosed" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
                 </button>
             </div>
+            <div class="pwd-hint" id="pwdHintText">4 characters recommended for standard NFC compatibility</div>
 
             <div class="pwd-actions">
                 <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">Set PIN & Touch Card</button>
@@ -3213,6 +3225,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcDescPwdUnlockReady: "Hold phone near NFC card to remove PIN protection.",
                 pwdModalTitle: "Card Password Protection",
                 pwdModalDesc: "Set a password or PIN to prevent unauthorized modifications",
+                pwdHintText: "4 characters recommended for standard NFC compatibility",
                 pwdPlaceholder: "Enter password or PIN...",
                 pwdTabLock: "Lock Card",
                 pwdTabUnlock: "Unlock Card",
@@ -3387,6 +3400,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
                 pwdModalTitle: "حماية البطاقة بكلمة مرور",
                 pwdModalDesc: "عيّن كلمة مرور أو رمز PIN لحماية البطاقة من التعديل",
+                pwdHintText: "يُفضّل استخدام 4 خانات للتوافق الكامل مع كافة أجهزة وقارئات NFC",
                 pwdPlaceholder: "أدخل كلمة المرور أو رمز PIN...",
                 pwdTabLock: "قفل البطاقة",
                 pwdTabUnlock: "فك القفل",
@@ -3587,6 +3601,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         setTxt('lblPermLockTag', dict.lblPermLockTag);
         setTxt('pwdModalTitle', dict.pwdModalTitle);
         setTxt('pwdModalDesc', dict.pwdModalDesc);
+        setTxt('pwdHintText', dict.pwdHintText);
         setTxt('pwdTabLock', dict.pwdTabLock);
         setTxt('pwdTabUnlock', dict.pwdTabUnlock);
         setTxt('btnPwdCancel', dict.pwdCancel);
@@ -5370,6 +5385,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;
             }
+            const pwdHintText = $('pwdHintText');
+            if (pwdHintText && dict.pwdHintText) {
+                pwdHintText.textContent = dict.pwdHintText;
+            }
         }
 
         if (btnPwdLockTag) {
@@ -5382,7 +5401,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         nfcPinInput.type = 'password';
                         if (eyeIconOpen) eyeIconOpen.style.display = 'block';
                         if (eyeIconClosed) eyeIconClosed.style.display = 'none';
-                        setTimeout(() => nfcPinInput.focus(), 150);
                     }
                 }
             });
@@ -5390,6 +5408,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnPwdCancel && pwdModalOverlay) {
             btnPwdCancel.addEventListener('click', () => {
+                if (nfcPinInput) nfcPinInput.blur();
                 pwdModalOverlay.classList.remove('active');
             });
         }
@@ -5424,9 +5443,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
                 if (!pin) {
                     if (window.showToast) window.showToast(dict.toastEnterPwd || 'Please enter a password or PIN', 'warn');
-                    if (nfcPinInput) nfcPinInput.focus();
                     return;
                 }
+                if (nfcPinInput) nfcPinInput.blur();
                 if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
                 if (pwdCurrentAction === 'lock') {
                     if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin);

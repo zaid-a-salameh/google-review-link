@@ -647,6 +647,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            overscroll-behavior: contain;
         }
         .pwd-overlay.active,
         .perm-lock-overlay.active {
@@ -762,6 +763,16 @@
             width: 19px;
             height: 19px;
             fill: currentColor;
+        }
+
+        .pwd-hint {
+            font-size: 11px;
+            color: #a8a29e;
+            margin-top: -6px;
+            margin-bottom: 6px;
+            text-align: center;
+            line-height: 1.35;
+            padding: 0 4px;
         }
 
         .pwd-actions,
