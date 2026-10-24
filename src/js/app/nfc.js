@@ -6,21 +6,31 @@
 
     let nfcBatchCount = 0;
     let nfcResetTimer = null;
+    let lastNfcOperation = 'write';
+    let lastNfcPin = '';
 
     function getDict() {
         const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
         return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
     }
 
-    function setNfcModalState(state, count = 0) {
+    function setNfcModalState(state, detail = null) {
         const dict = getDict();
         const nfcModalBox = document.getElementById('nfcModalBox');
         const nfcTitle = document.getElementById('nfcTitle');
         const nfcDesc = document.getElementById('nfcDesc');
         const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+        const nfcRetryBtn = document.getElementById('nfcRetryBtn');
         const nfcCounterBadge = document.getElementById('nfcCounterBadge');
         const nfcCounterText = document.getElementById('nfcCounterText');
         const nfcSvgIcon = document.getElementById('nfcSvgIcon');
+
+        if (nfcModalBox && state !== 'error') {
+            nfcModalBox.classList.remove('error');
+        }
+        if (nfcRetryBtn && state !== 'error') {
+            nfcRetryBtn.style.display = 'none';
+        }
 
         if (state === 'ready') {
             if (nfcModalBox) nfcModalBox.classList.remove('success');
@@ -87,7 +97,37 @@
                 <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
             `;
+        } else if (state === 'error') {
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('morph-to-ready');
+                nfcModalBox.classList.remove('success');
+                nfcModalBox.classList.add('error');
+            }
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleError || 'Write Failed';
+
+            let detailMsg = dict.nfcDescGenericError || 'Write operation failed. Ensure the phone is held steady near the card.';
+            if (detail === 'LOCKED') detailMsg = dict.nfcDescLocked || 'This card is locked or read-only and cannot be modified.';
+            else if (detail === 'CAPACITY') detailMsg = dict.nfcDescCapacity || 'Link size exceeds this card\'s memory capacity.';
+            else if (detail === 'UNSUPPORTED') detailMsg = dict.nfcDescUnsupported || 'This card type is not supported for writing.';
+            else if (detail === 'EMPTY_TAG') detailMsg = dict.toastNfcReadEmpty || 'No valid URL found on this card';
+            else if (detail === 'WRONG_PWD') detailMsg = dict.toastNfcWrongPwd || 'Incorrect PIN or password';
+            else if (detail === 'PWD_UNSUPPORTED') detailMsg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
+
+            if (nfcDesc) nfcDesc.textContent = detailMsg;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel || 'Cancel';
+
+            if (nfcRetryBtn) {
+                nfcRetryBtn.style.display = 'inline-flex';
+                const retryLabel = document.getElementById('nfcRetryBtnLabel');
+                if (retryLabel) retryLabel.textContent = dict.nfcRetryBtn || 'Try Again';
+            }
+
+            if (nfcSvgIcon) {
+                nfcSvgIcon.innerHTML = `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`;
+            }
         }
+    }
     }
 
     function openNfcModal() {
@@ -125,6 +165,7 @@
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
         const dict = getDict();
+        lastNfcOperation = 'write';
 
         if (window.AndroidNative && window.AndroidNative.startNfcWrite) {
             openNfcModal();
@@ -146,6 +187,7 @@
 
     function startNfcRead() {
         const dict = getDict();
+        lastNfcOperation = 'read';
         if (window.AndroidNative && window.AndroidNative.startNfcRead) {
             setNfcModalState('read_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
@@ -158,6 +200,7 @@
 
     function startNfcPermanentLock() {
         const dict = getDict();
+        lastNfcOperation = 'perm_lock';
         if (window.AndroidNative && window.AndroidNative.startNfcPermanentLock) {
             setNfcModalState('perm_lock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
@@ -170,7 +213,9 @@
 
     function startNfcPasswordLock(pin) {
         const dict = getDict();
-        if (!pin || pin.length < 4) return;
+        if (!pin || !pin.trim()) return;
+        lastNfcOperation = 'pwd_lock';
+        lastNfcPin = pin;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
@@ -183,7 +228,9 @@
 
     function startNfcPasswordUnlock(pin) {
         const dict = getDict();
-        if (!pin || pin.length < 4) return;
+        if (!pin || !pin.trim()) return;
+        lastNfcOperation = 'pwd_unlock';
+        lastNfcPin = pin;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
@@ -257,23 +304,46 @@
     };
 
     window.onNfcError = function(errorType) {
-        const dict = getDict();
-        let msg = dict.nfcWriteFailed || 'Operation failed';
-        if (errorType === 'NOT_SUPPORTED') msg = dict.nfcNoHardware;
-        else if (errorType === 'DISABLED') msg = dict.nfcDisabled;
-        else if (errorType === 'LOCKED') msg = dict.nfcLocked;
-        else if (errorType === 'CAPACITY') msg = dict.nfcCapacity;
-        else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
-        else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
-        else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
-        else if (errorType === 'PWD_UNSUPPORTED') msg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
-        else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = 'Locking failed on this tag';
-
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
-
-        if (window.showToast) window.showToast(msg, 'error');
+        const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
+        if (isModalOpen) {
+            setNfcModalState('error', errorType);
+        } else {
+            const dict = getDict();
+            let msg = dict.nfcWriteFailed || 'Operation failed';
+            if (errorType === 'NOT_SUPPORTED') msg = dict.nfcNoHardware;
+            else if (errorType === 'DISABLED') msg = dict.nfcDisabled;
+            else if (errorType === 'LOCKED') msg = dict.nfcLocked;
+            else if (errorType === 'CAPACITY') msg = dict.nfcCapacity;
+            else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
+            else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
+            else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
+            else if (errorType === 'PWD_UNSUPPORTED') msg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
+            else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = 'Locking failed on this tag';
+            if (window.showToast) window.showToast(msg, 'error');
+        }
     };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const nfcRetryBtn = document.getElementById('nfcRetryBtn');
+        if (nfcRetryBtn) {
+            nfcRetryBtn.addEventListener('click', () => {
+                if (lastNfcOperation === 'write') {
+                    startNfcWrite();
+                } else if (lastNfcOperation === 'read') {
+                    startNfcRead();
+                } else if (lastNfcOperation === 'perm_lock') {
+                    startNfcPermanentLock();
+                } else if (lastNfcOperation === 'pwd_lock') {
+                    startNfcPasswordLock(lastNfcPin);
+                } else if (lastNfcOperation === 'pwd_unlock') {
+                    startNfcPasswordUnlock(lastNfcPin);
+                } else {
+                    startNfcWrite();
+                }
+            });
+        }
+    });
 
     window.openNfcModal = openNfcModal;
     window.closeNfcModal = closeNfcModal;

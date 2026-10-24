@@ -387,14 +387,22 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun derivePasswordBytes(pin: String): ByteArray {
+        val trimmed = pin.trim()
+        if (trimmed.length == 4) {
+            return trimmed.toByteArray(Charsets.UTF_8)
+        }
+        val md = java.security.MessageDigest.getInstance("SHA-256")
+        val hash = md.digest(trimmed.toByteArray(Charsets.UTF_8))
+        return hash.copyOfRange(0, 4)
+    }
+
     private fun handlePwdLockTag(tag: Tag, pin: String) {
         try {
             val ultralight = MifareUltralight.get(tag)
             if (ultralight != null) {
                 ultralight.connect()
-                val pwdBytes = ByteArray(4)
-                val pinBytes = pin.toByteArray(Charsets.UTF_8)
-                System.arraycopy(pinBytes, 0, pwdBytes, 0, minOf(4, pinBytes.size))
+                val pwdBytes = derivePasswordBytes(pin)
                 val packBytes = byteArrayOf(0x12.toByte(), 0x34.toByte(), 0x00, 0x00)
 
                 val ntagType = detectNtagType(ultralight)
@@ -430,9 +438,7 @@ class MainActivity : ComponentActivity() {
             val ultralight = MifareUltralight.get(tag)
             if (nfca != null && ultralight != null) {
                 nfca.connect()
-                val pwdBytes = ByteArray(4)
-                val pinBytes = pin.toByteArray(Charsets.UTF_8)
-                System.arraycopy(pinBytes, 0, pwdBytes, 0, minOf(4, pinBytes.size))
+                val pwdBytes = derivePasswordBytes(pin)
 
                 val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
                 val resp = nfca.transceive(authCmd)
@@ -488,6 +494,30 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun triggerErrorVibration() {
+        try {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vm?.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            } ?: return
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val timings = longArrayOf(0, 100, 70, 100, 70, 100)
+                val amplitudes = intArrayOf(0, 220, 0, 220, 0, 255)
+                val effect = VibrationEffect.createWaveform(timings, amplitudes, -1)
+                vibrator.vibrate(effect)
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(longArrayOf(0, 100, 70, 100, 70, 100), -1)
+            }
+        } catch (e: Exception) {
+            // vibration is optional
+        }
+    }
+
     private fun notifyNfcSuccess(count: Int) {
         runOnUiThread {
             webView.evaluateJavascript("window.onNfcSuccess && window.onNfcSuccess($count);", null)
@@ -495,6 +525,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun notifyNfcError(errorCode: String) {
+        triggerErrorVibration()
         runOnUiThread {
             webView.evaluateJavascript("window.onNfcError && window.onNfcError('$errorCode');", null)
         }

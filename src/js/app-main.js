@@ -77,6 +77,18 @@
                 return;
             }
 
+            // Helper to dynamically set result label
+            const updateResultLabel = (url) => {
+                const resultLabelText = $('resultLabelText');
+                if (resultLabelText) {
+                    const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                    const isReview = /writereview\?placeid=/i.test(url);
+                    resultLabelText.textContent = isReview 
+                        ? (dict.resultLabelReview || 'Direct Review Link:') 
+                        : (dict.resultLabelCustom || 'Direct Link:');
+                }
+            };
+
             // 1. If it's already a 5-star Google review link (writereview?placeid=...)
             // Preserve it exactly as-is without re-converting or breaking it
             if (/writereview\?placeid=/i.test(text)) {
@@ -87,6 +99,7 @@
                     if (resultLinkText) resultLinkText.textContent = text;
                     if (resultCard) resultCard.classList.add('active');
                 }
+                updateResultLabel(text);
                 syncToolsVisibility();
                 if (resultCard) {
                     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -111,6 +124,7 @@
                 if (resultLinkText) resultLinkText.textContent = text;
                 if (resultCard) resultCard.classList.add('active');
             }
+            updateResultLabel(text);
             syncToolsVisibility();
             if (resultCard) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -125,12 +139,42 @@
             });
         }
 
+        const btnPwdToggleShow = $('btnPwdToggleShow');
+        const eyeIconOpen = $('eyeIconOpen');
+        const eyeIconClosed = $('eyeIconClosed');
+        if (btnPwdToggleShow && nfcPinInput) {
+            btnPwdToggleShow.addEventListener('click', () => {
+                const isPassword = nfcPinInput.type === 'password';
+                nfcPinInput.type = isPassword ? 'text' : 'password';
+                if (eyeIconOpen) eyeIconOpen.style.display = isPassword ? 'none' : 'block';
+                if (eyeIconClosed) eyeIconClosed.style.display = isPassword ? 'block' : 'none';
+            });
+        }
+
+        let pwdCurrentAction = 'lock';
+
+        function syncPwdModalText() {
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            if (btnPwdSubmit) {
+                btnPwdSubmit.textContent = (pwdCurrentAction === 'lock') 
+                    ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
+                    : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+            }
+            if (nfcPinInput && dict.pwdPlaceholder) {
+                nfcPinInput.placeholder = dict.pwdPlaceholder;
+            }
+        }
+
         if (btnPwdLockTag) {
             btnPwdLockTag.addEventListener('click', () => {
                 if (pwdModalOverlay) {
                     pwdModalOverlay.classList.add('active');
+                    syncPwdModalText();
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
+                        nfcPinInput.type = 'password';
+                        if (eyeIconOpen) eyeIconOpen.style.display = 'block';
+                        if (eyeIconClosed) eyeIconClosed.style.display = 'none';
                         setTimeout(() => nfcPinInput.focus(), 150);
                     }
                 }
@@ -143,29 +187,37 @@
             });
         }
 
-        let pwdCurrentAction = 'lock';
         if (pwdTabLock && pwdTabUnlock) {
             pwdTabLock.addEventListener('click', () => {
                 pwdCurrentAction = 'lock';
                 pwdTabLock.classList.add('active');
                 pwdTabUnlock.classList.remove('active');
-                const dict = window.I18N[window.getCurrentLang()];
-                if (btnPwdSubmit) btnPwdSubmit.textContent = dict.pwdSubmitLock || 'Set PIN & Touch Card';
+                syncPwdModalText();
             });
             pwdTabUnlock.addEventListener('click', () => {
                 pwdCurrentAction = 'unlock';
                 pwdTabUnlock.classList.add('active');
                 pwdTabLock.classList.remove('active');
-                const dict = window.I18N[window.getCurrentLang()];
-                if (btnPwdSubmit) btnPwdSubmit.textContent = dict.pwdSubmitUnlock || 'Unlock & Touch Card';
+                syncPwdModalText();
+            });
+        }
+
+        if (nfcPinInput) {
+            nfcPinInput.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (btnPwdSubmit) btnPwdSubmit.click();
+                }
             });
         }
 
         if (btnPwdSubmit) {
             btnPwdSubmit.addEventListener('click', () => {
                 const pin = nfcPinInput ? nfcPinInput.value.trim() : '';
-                if (!pin || pin.length < 4) {
-                    if (window.showToast) window.showToast('Please enter a 4-digit PIN', 'warn');
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                if (!pin) {
+                    if (window.showToast) window.showToast(dict.toastEnterPwd || 'Please enter a password or PIN', 'warn');
+                    if (nfcPinInput) nfcPinInput.focus();
                     return;
                 }
                 if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');

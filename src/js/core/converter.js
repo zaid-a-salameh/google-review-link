@@ -33,9 +33,17 @@
         syncResultCard: function() {
             const resultCard = document.getElementById('resultCard');
             const resultLinkText = document.getElementById('resultLinkText');
+            const resultLabelText = document.getElementById('resultLabelText');
             const current = this[this.activeMode];
             if (current && current.isResultActive && current.reviewUrl) {
                 if (resultLinkText) resultLinkText.textContent = current.reviewUrl;
+                if (resultLabelText) {
+                    const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                    const isReview = /writereview\?placeid=/i.test(current.reviewUrl);
+                    resultLabelText.textContent = isReview 
+                        ? (dict.resultLabelReview || 'Direct Review Link:') 
+                        : (dict.resultLabelCustom || 'Direct Link:');
+                }
                 if (resultCard) resultCard.classList.add('active');
             } else {
                 if (resultCard) resultCard.classList.remove('active');

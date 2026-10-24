@@ -63,7 +63,9 @@
                 footerGithub: "GitHub Repository",
                 footerBackToTop: "↑ Back to Top",
                 footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
-                resultLabel: "Direct Review Link:",
+                resultLabel: "Direct Link:",
+                resultLabelReview: "Direct Review Link:",
+                resultLabelCustom: "Direct Link:",
                 copyBtn: "Copy Link",
                 copySuccess: "Copied!",
                 openBtn: "Open Link",
@@ -88,13 +90,15 @@
                 nfcDescPwdLockReady: "Hold phone near NFC card to lock with your PIN.",
                 nfcTitlePwdUnlockReady: "Ready to Unlock",
                 nfcDescPwdUnlockReady: "Hold phone near NFC card to remove PIN protection.",
-                pwdModalTitle: "PIN Protection",
-                pwdModalDesc: "Set a 4-digit PIN to prevent unauthorized modifications",
+                pwdModalTitle: "Card Password Protection",
+                pwdModalDesc: "Set a password or PIN to prevent unauthorized modifications",
+                pwdPlaceholder: "Enter password or PIN...",
                 pwdTabLock: "Lock Card",
                 pwdTabUnlock: "Unlock Card",
-                pwdSubmitLock: "Set PIN & Touch Card",
-                pwdSubmitUnlock: "Unlock & Touch Card",
+                pwdSubmitLock: "Lock Card & Touch Phone",
+                pwdSubmitUnlock: "Unlock & Touch Phone",
                 pwdCancel: "Cancel",
+                toastEnterPwd: "Please enter a password or PIN",
                 permLockTitle: "Permanent Hardware Lock",
                 permLockDesc: "Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.",
                 permLockConfirmBtn: "Confirm Permanent Lock",
@@ -114,6 +118,11 @@
                 nfcCancel: "Cancel",
                 nfcDone: "Done & Close",
                 nfcTitleError: "Write Failed",
+                nfcDescLocked: "This card is locked or read-only and cannot be modified.",
+                nfcDescCapacity: "Link size exceeds this card's memory capacity.",
+                nfcDescUnsupported: "This card type is not supported for writing.",
+                nfcDescGenericError: "Write operation failed. Ensure the phone is held steady near the card.",
+                nfcRetryBtn: "Try Again",
                 nfcNoHardware: "NFC is not supported on this device",
                 nfcDisabled: "Please enable NFC in your phone settings",
                 nfcLocked: "NFC card is locked or read-only",
@@ -228,7 +237,9 @@
                 footerGithub: "مستودع GitHub",
                 footerBackToTop: "↑ العودة للأعلى",
                 footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
-                resultLabel: "رابط التقييم المباشر:",
+                resultLabel: "الرابط المباشر:",
+                resultLabelReview: "رابط التقييم المباشر:",
+                resultLabelCustom: "الرابط المباشر:",
                 copyBtn: "نسخ الرابط",
                 copySuccess: "تم النسخ!",
                 openBtn: "فتح الرابط",
@@ -253,13 +264,15 @@
                 nfcDescPwdLockReady: "قرّب ظهر الهاتف من البطاقة لتفعيل القفل بالرمز...",
                 nfcTitlePwdUnlockReady: "جاهز لفك القفل",
                 nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
-                pwdModalTitle: "حماية بطاقة NFC برمز",
-                pwdModalDesc: "عيّن رمز PIN من 4 أرقام لحماية البطاقة من التعديل",
+                pwdModalTitle: "حماية البطاقة بكلمة مرور",
+                pwdModalDesc: "عيّن كلمة مرور أو رمز PIN لحماية البطاقة من التعديل",
+                pwdPlaceholder: "أدخل كلمة المرور أو رمز PIN...",
                 pwdTabLock: "قفل البطاقة",
                 pwdTabUnlock: "فك القفل",
-                pwdSubmitLock: "تفعيل الرمز وتقريب البطاقة",
-                pwdSubmitUnlock: "فك القفل وتقريب البطاقة",
+                pwdSubmitLock: "قفل البطاقة وتقريب الهاتف",
+                pwdSubmitUnlock: "فك القفل وتقريب الهاتف",
                 pwdCancel: "إلغاء",
+                toastEnterPwd: "يرجى إدخال كلمة المرور أو الرمز",
                 permLockTitle: "الإقفال النهائي للبطاقة",
                 permLockDesc: "تحذير: سيتم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم وغير قابل للتراجع. لن يمكن تعديلها أو مسحها أبداً.",
                 permLockConfirmBtn: "تأكيد وقفل البطاقة نهائياً",
@@ -278,7 +291,12 @@
                 nfcCardsCount: "البطاقات المكتملة: {count}",
                 nfcCancel: "إلغاء",
                 nfcDone: "إنهاء وإغلاق",
-                nfcTitleError: "فشلت الكتابة",
+                nfcTitleError: "فشلت عملية الكتابة",
+                nfcDescLocked: "البطاقة مقفلة أو للقراءة فقط، ولا يمكن الكتابة عليها.",
+                nfcDescCapacity: "حجم الرابط أكبر من سعة ذاكرة البطاقة.",
+                nfcDescUnsupported: "نوع هذه البطاقة غير مدعوم للكتابة.",
+                nfcDescGenericError: "تعذرت الكتابة على البطاقة. تأكد من ثبات الهاتف فوق البطاقة.",
+                nfcRetryBtn: "إعادة المحاولة",
                 nfcNoHardware: "جهازك لا يدعم خاصية الـ NFC",
                 nfcDisabled: "يرجى تفعيل الـ NFC من إعدادات الهاتف أولاً",
                 nfcLocked: "البطاقة محمية ضد الكتابة أو للقراءة فقط",
@@ -428,7 +446,10 @@
         }
 
         // Results Card
-        setTxt('resultLabelText', dict.resultLabel);
+        const resultLinkText = document.getElementById('resultLinkText');
+        const currentUrl = (resultLinkText ? resultLinkText.textContent : '').trim();
+        const isReview = /writereview\?placeid=/i.test(currentUrl);
+        setTxt('resultLabelText', isReview ? (dict.resultLabelReview || 'Direct Review Link:') : (dict.resultLabelCustom || 'Direct Link:'));
 
         const copyBtn = document.getElementById('copyBtn');
         if (copyBtn && !copyBtn.classList.contains('copied')) {
@@ -448,10 +469,21 @@
         setTxt('pwdTabLock', dict.pwdTabLock);
         setTxt('pwdTabUnlock', dict.pwdTabUnlock);
         setTxt('btnPwdCancel', dict.pwdCancel);
+        const pwdTabLockEl = document.getElementById('pwdTabLock');
+        const btnPwdSubmitEl = document.getElementById('btnPwdSubmit');
+        if (btnPwdSubmitEl) {
+            const isLockActive = !pwdTabLockEl || pwdTabLockEl.classList.contains('active');
+            btnPwdSubmitEl.textContent = isLockActive ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+        }
+        const nfcPinInputEl = document.getElementById('nfcPinInput');
+        if (nfcPinInputEl && dict.pwdPlaceholder) {
+            nfcPinInputEl.placeholder = dict.pwdPlaceholder;
+        }
         setTxt('permLockTitle', dict.permLockTitle);
         setTxt('permLockDesc', dict.permLockDesc);
         setTxt('btnPermLockConfirm', dict.permLockConfirmBtn);
         setTxt('btnPermLockCancel', dict.permLockCancelBtn);
+        setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');
 
         // QR Modal
         setTxt('qrModalTitle', dict.qrModalTitle);
