@@ -227,6 +227,17 @@
         .btn-nfc-cancel:active {
             background: rgba(255, 255, 255, 0.15);
         }
+        .nfc-modal.success .btn-nfc-cancel {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+        }
+        .nfc-modal.success .btn-nfc-cancel:hover,
+        .nfc-modal.success .btn-nfc-cancel:active {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: scale(0.98);
+        }
 
 
         /* QR Code Modal / Overlay */

@@ -2076,6 +2076,17 @@
         .btn-nfc-cancel:active {
             background: rgba(255, 255, 255, 0.15);
         }
+        .nfc-modal.success .btn-nfc-cancel {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+        }
+        .nfc-modal.success .btn-nfc-cancel:hover,
+        .nfc-modal.success .btn-nfc-cancel:active {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: scale(0.98);
+        }
 
 
         /* QR Code Modal / Overlay */
@@ -3323,6 +3334,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcCardsCount: "Cards written: {count}",
                 nfcCancel: "Cancel",
                 nfcDone: "Done & Close",
+                nfcOk: "OK",
+                nfcTitlePwdLockSuccess: "Card Locked Successfully",
+                nfcDescPwdLockSuccess: "PIN protection enabled. Card modifications are locked.",
+                nfcTitlePwdUnlockSuccess: "Card Unlocked Successfully",
+                nfcDescPwdUnlockSuccess: "Protection removed. You can now write or modify the card freely.",
+                nfcTitlePermLockSuccess: "Card Permanently Locked",
+                nfcDescPermLockSuccess: "Card has been permanently set to Read-Only mode.",
                 nfcTitleError: "Write Failed",
                 nfcDescLocked: "This card is locked or read-only and cannot be modified.",
                 nfcDescCapacity: "Link size exceeds this card's memory capacity.",
@@ -3503,6 +3521,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcCardsCount: "البطاقات المكتملة: {count}",
                 nfcCancel: "إلغاء",
                 nfcDone: "إنهاء وإغلاق",
+                nfcOk: "موافق",
+                nfcTitlePwdLockSuccess: "تم قفل البطاقة بنجاح",
+                nfcDescPwdLockSuccess: "تم تفعيل رمز الحماية وقفل التعديل على البطاقة.",
+                nfcTitlePwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
+                nfcDescPwdUnlockSuccess: "تمت إزالة الحماية بنجاح، ويمكنك الآن الكتابة والتعديل على البطاقة.",
+                nfcTitlePermLockSuccess: "تم الإقفال النهائي بنجاح",
+                nfcDescPermLockSuccess: "تم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم.",
                 nfcTitleError: "فشلت عملية الكتابة",
                 nfcDescLocked: "البطاقة مقفلة أو للقراءة فقط، ولا يمكن الكتابة عليها.",
                 nfcDescCapacity: "حجم الرابط أكبر من سعة ذاكرة البطاقة.",
@@ -4725,12 +4750,28 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else if (state === 'success') {
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('morph-to-ready');
+                nfcModalBox.classList.remove('error');
                 nfcModalBox.classList.add('success');
             }
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
-            if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+            if (detail === 'PWD_UNLOCK') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked Successfully';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card protection removed. You can now write or edit the card.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else if (detail === 'PWD_LOCK') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked Successfully';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'PIN protection enabled. Card modifications are locked.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else if (detail === 'PERM_LOCK') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockSuccess || 'Card Permanently Locked';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockSuccess || 'Card permanently locked to Read-Only mode.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+            }
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
             if (nfcSvgIcon) nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
         } else if (state === 'next') {
             if (nfcModalBox) {
@@ -4940,21 +4981,36 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     };
 
     window.onNfcLockSuccess = function() {
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
         const dict = getDict();
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
-        if (window.showToast) {
-            window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+        const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
+        if (isModalOpen) {
+            setNfcModalState('success', 'PERM_LOCK');
+        } else {
+            if (window.showToast) {
+                window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+            }
         }
     };
 
     window.onNfcPasswordSuccess = function(action) {
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
         const dict = getDict();
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
-        if (window.showToast) {
+        const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
+        if (isModalOpen) {
+            const detail = action === 'LOCKED' ? 'PWD_LOCK' : 'PWD_UNLOCK';
+            setNfcModalState('success', detail);
+        } else {
             const msg = action === 'LOCKED' ? (dict.toastNfcPwdLockSuccess || 'Card locked with PIN') : (dict.toastNfcPwdUnlockSuccess || 'Card unlocked successfully');
-            window.showToast(msg, 'success');
+            if (window.showToast) window.showToast(msg, 'success');
         }
     };
 

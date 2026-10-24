@@ -72,12 +72,28 @@
         } else if (state === 'success') {
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('morph-to-ready');
+                nfcModalBox.classList.remove('error');
                 nfcModalBox.classList.add('success');
             }
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
-            if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+            if (detail === 'PWD_UNLOCK') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked Successfully';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card protection removed. You can now write or edit the card.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else if (detail === 'PWD_LOCK') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked Successfully';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'PIN protection enabled. Card modifications are locked.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else if (detail === 'PERM_LOCK') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockSuccess || 'Card Permanently Locked';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockSuccess || 'Card permanently locked to Read-Only mode.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+            }
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
             if (nfcSvgIcon) nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
         } else if (state === 'next') {
             if (nfcModalBox) {
@@ -287,21 +303,36 @@
     };
 
     window.onNfcLockSuccess = function() {
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
         const dict = getDict();
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
-        if (window.showToast) {
-            window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+        const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
+        if (isModalOpen) {
+            setNfcModalState('success', 'PERM_LOCK');
+        } else {
+            if (window.showToast) {
+                window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+            }
         }
     };
 
     window.onNfcPasswordSuccess = function(action) {
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
         const dict = getDict();
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
-        if (window.showToast) {
+        const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
+        if (isModalOpen) {
+            const detail = action === 'LOCKED' ? 'PWD_LOCK' : 'PWD_UNLOCK';
+            setNfcModalState('success', detail);
+        } else {
             const msg = action === 'LOCKED' ? (dict.toastNfcPwdLockSuccess || 'Card locked with PIN') : (dict.toastNfcPwdUnlockSuccess || 'Card unlocked successfully');
-            window.showToast(msg, 'success');
+            if (window.showToast) window.showToast(msg, 'success');
         }
     };
 
