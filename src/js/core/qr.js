@@ -35,6 +35,9 @@
     }
 
     function openQrModal() {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
         const qrOverlay = document.getElementById('qrOverlay');

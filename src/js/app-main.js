@@ -148,29 +148,52 @@
         }
 
         let pwdCurrentAction = 'lock';
+        const pwdModalBox = $('pwdModalBox');
         const pwdIconCircle = $('pwdIconCircle');
         const pwdStatusIcon = $('pwdStatusIcon');
         const pwdModalTitle = $('pwdModalTitle');
         const pwdModalDesc = $('pwdModalDesc');
         const btnPwdInfo = $('btnPwdInfo');
 
-        function syncPwdModalText() {
+        function syncPwdModalText(isSwitch = false) {
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
             if (btnPwdSubmit) {
                 btnPwdSubmit.textContent = isLock 
                     ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
                     : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+                if (isLock) {
+                    btnPwdSubmit.classList.remove('unlock-mode');
+                } else {
+                    btnPwdSubmit.classList.add('unlock-mode');
+                }
+            }
+            if (pwdModalBox) {
+                if (isLock) {
+                    pwdModalBox.classList.remove('unlock-mode');
+                } else {
+                    pwdModalBox.classList.add('unlock-mode');
+                }
             }
             if (pwdModalTitle) {
                 pwdModalTitle.textContent = isLock 
                     ? (dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card')
                     : (dict.pwdModalTitleUnlock || 'Unlock Card');
+                if (isSwitch) {
+                    pwdModalTitle.classList.remove('pwd-text-fade');
+                    void pwdModalTitle.offsetWidth;
+                    pwdModalTitle.classList.add('pwd-text-fade');
+                }
             }
             if (pwdModalDesc) {
                 pwdModalDesc.textContent = isLock 
                     ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
                     : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
+                if (isSwitch) {
+                    pwdModalDesc.classList.remove('pwd-text-fade');
+                    void pwdModalDesc.offsetWidth;
+                    pwdModalDesc.classList.add('pwd-text-fade');
+                }
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;
@@ -181,11 +204,22 @@
                 } else {
                     pwdIconCircle.classList.add('unlock-mode');
                 }
+                if (isSwitch) {
+                    pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
+                    void pwdIconCircle.offsetWidth;
+                    pwdIconCircle.classList.add(isLock ? 'mode-switch-lock' : 'mode-switch-unlock');
+                    setTimeout(() => {
+                        pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
+                    }, 400);
+                }
             }
             if (pwdStatusIcon) {
-                pwdStatusIcon.innerHTML = isLock
+                const targetSvg = isLock
                     ? '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>'
                     : '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>';
+                if (pwdStatusIcon.innerHTML !== targetSvg) {
+                    pwdStatusIcon.innerHTML = targetSvg;
+                }
             }
         }
         window.syncPwdModalText = syncPwdModalText;
@@ -203,9 +237,12 @@
 
         if (btnPwdLockTag) {
             btnPwdLockTag.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
                 if (pwdModalOverlay) {
                     pwdModalOverlay.classList.add('active');
-                    syncPwdModalText();
+                    syncPwdModalText(false);
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
@@ -225,16 +262,18 @@
 
         if (pwdTabLock && pwdTabUnlock) {
             pwdTabLock.addEventListener('click', () => {
+                if (pwdCurrentAction === 'lock') return;
                 pwdCurrentAction = 'lock';
                 pwdTabLock.classList.add('active');
-                pwdTabUnlock.classList.remove('active');
-                syncPwdModalText();
+                pwdTabUnlock.classList.remove('active', 'tab-unlock');
+                syncPwdModalText(true);
             });
             pwdTabUnlock.addEventListener('click', () => {
+                if (pwdCurrentAction === 'unlock') return;
                 pwdCurrentAction = 'unlock';
-                pwdTabUnlock.classList.add('active');
+                pwdTabUnlock.classList.add('active', 'tab-unlock');
                 pwdTabLock.classList.remove('active');
-                syncPwdModalText();
+                syncPwdModalText(true);
             });
         }
 
@@ -267,6 +306,9 @@
 
         if (btnPermLockTag) {
             btnPermLockTag.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
                 if (permLockOverlay) permLockOverlay.classList.add('active');
             });
         }

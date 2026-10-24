@@ -1852,7 +1852,7 @@
         .nfc-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.78);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             z-index: 1000;
@@ -1861,27 +1861,39 @@
             justify-content: center;
             padding: 24px;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+            will-change: opacity, visibility;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
         .nfc-overlay.active {
             opacity: 1;
+            visibility: visible;
             pointer-events: auto;
         }
         .nfc-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.95);
+            background: rgba(28, 25, 23, 0.96);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 28px;
             padding: 32px 24px 28px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.2);
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: scale(0.92) translateY(14px) translateZ(0);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            contain: layout style;
         }
         .nfc-overlay.active .nfc-modal {
-            transform: scale(1) translateY(0);
+            opacity: 1;
+            transform: scale(1) translateY(0) translateZ(0);
         }
         .nfc-wave-container {
             position: relative;
@@ -1898,13 +1910,18 @@
             border-radius: 50%;
             border: 2px solid rgba(139, 92, 246, 0.5);
             animation: nfcPulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+            will-change: transform, opacity;
+            transform: translateZ(0);
+        }
+        .nfc-overlay:not(.active) .nfc-wave-ring {
+            animation-play-state: paused;
         }
         .nfc-wave-ring:nth-child(2) {
             animation-delay: 0.6s;
         }
         @keyframes nfcPulse {
-            0% { transform: scale(0.7); opacity: 0.9; }
-            100% { transform: scale(1.6); opacity: 0; }
+            0% { transform: scale(0.7) translateZ(0); opacity: 0.9; }
+            100% { transform: scale(1.6) translateZ(0); opacity: 0; }
         }
         .nfc-icon-circle {
             position: relative;
@@ -2505,13 +2522,18 @@
             justify-content: center;
             padding: 24px;
             opacity: 0;
+            visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
+            will-change: opacity, visibility;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
             overscroll-behavior: contain;
         }
         .pwd-overlay.active,
         .perm-lock-overlay.active {
             opacity: 1;
+            visibility: visible;
             pointer-events: auto;
         }
         .pwd-modal,
@@ -2524,12 +2546,23 @@
             padding: 26px 22px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(124, 58, 237, 0.2);
-            transform: scale(0.92) translateY(16px);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+            transform: scale(0.92) translateY(14px) translateZ(0);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            contain: layout style;
         }
         .pwd-overlay.active .pwd-modal,
         .perm-lock-overlay.active .perm-lock-modal {
-            transform: scale(1) translateY(0);
+            opacity: 1;
+            transform: scale(1) translateY(0) translateZ(0);
+        }
+        .pwd-modal.unlock-mode {
+            border-color: rgba(16, 185, 129, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.22);
         }
 
         .pwd-tabs {
@@ -2539,6 +2572,7 @@
             border-radius: 50px;
             padding: 3px;
             margin-bottom: 14px;
+            position: relative;
         }
 
         .pwd-icon-circle-wrapper {
@@ -2557,18 +2591,48 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform: translateZ(0);
+            will-change: transform, box-shadow;
         }
         .pwd-icon-circle svg {
             width: 32px;
             height: 32px;
             fill: #ffffff;
-            transition: transform 0.25s ease;
+            transition: transform 0.25s ease, opacity 0.2s ease;
         }
         .pwd-icon-circle.unlock-mode {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
+            box-shadow: 0 10px 28px rgba(16, 185, 129, 0.55), 0 0 20px rgba(16, 185, 129, 0.3);
+            transform: scale(1.05) translateZ(0);
         }
+        @keyframes pwdIconPopLock {
+            0% { transform: scale(0.9) rotate(-10deg); }
+            55% { transform: scale(1.1) rotate(4deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        @keyframes pwdIconPopUnlock {
+            0% { transform: scale(0.9) rotate(10deg); }
+            55% { transform: scale(1.14) rotate(-4deg); }
+            100% { transform: scale(1.05) rotate(0deg); }
+        }
+        .pwd-icon-circle.mode-switch-lock {
+            animation: pwdIconPopLock 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .pwd-icon-circle.mode-switch-unlock {
+            animation: pwdIconPopUnlock 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .pwd-text-fade {
+            animation: pwdTextSlide 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes pwdTextSlide {
+            0% { opacity: 0; transform: translateY(4px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
         .pwd-tab {
             flex: 1;
             padding: 7px 10px;
@@ -2580,12 +2644,18 @@
             font-family: inherit;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            z-index: 2;
         }
         .pwd-tab.active {
             background: var(--primary-gradient);
             color: #ffffff;
-            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
+        }
+        .pwd-tab.active.tab-unlock {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 3px 12px rgba(16, 185, 129, 0.45);
         }
 
         .pwd-input-group {
@@ -2707,7 +2777,16 @@
             font-weight: 700;
             font-family: inherit;
             cursor: pointer;
-            transition: opacity 0.2s ease;
+            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s ease, opacity 0.2s ease;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
+        }
+        .btn-pwd-submit.unlock-mode {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
+        }
+        .btn-pwd-submit:active,
+        .btn-perm-lock-confirm:active {
+            transform: scale(0.98);
         }
         .btn-perm-lock-confirm {
             background: linear-gradient(135deg, #dc2626, #ef4444);
@@ -4641,6 +4720,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function openQrModal() {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
         const qrOverlay = document.getElementById('qrOverlay');
@@ -4718,6 +4800,23 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
     }
 
+    function setIconIfChanged(el, svgMarkup) {
+        if (!el) return;
+        const trimmed = svgMarkup.trim();
+        if (el.dataset.currentSvg !== trimmed) {
+            el.innerHTML = trimmed;
+            el.dataset.currentSvg = trimmed;
+        }
+    }
+
+    function blurActiveElement() {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try {
+                document.activeElement.blur();
+            } catch (e) {}
+        }
+    }
+
     function setNfcModalState(state, detail = null) {
         const dict = getDict();
         const nfcModalBox = document.getElementById('nfcModalBox');
@@ -4742,37 +4841,37 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReady;
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+            setIconIfChanged(nfcSvgIcon, `
                 <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
-            `;
+            `);
         } else if (state === 'read_ready') {
             if (nfcModalBox) nfcModalBox.classList.remove('success');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReadReady || 'Ready to Read Card';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReadReady || 'Hold phone near NFC card to read its content...';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+            setIconIfChanged(nfcSvgIcon, `
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-            `;
+            `);
         } else if (state === 'perm_lock_ready') {
             if (nfcModalBox) nfcModalBox.classList.remove('success');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockReady || 'Ready to Lock';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockReady || 'Hold phone near NFC card to apply permanent lock...';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+            setIconIfChanged(nfcSvgIcon, `
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-            `;
+            `);
         } else if (state === 'pwd_lock_ready' || state === 'pwd_unlock_ready') {
             if (nfcModalBox) nfcModalBox.classList.remove('success');
             if (nfcTitle) nfcTitle.textContent = state === 'pwd_lock_ready' ? (dict.nfcTitlePwdLockReady || 'Ready to Set PIN') : (dict.nfcTitlePwdUnlockReady || 'Ready to Unlock');
             if (nfcDesc) nfcDesc.textContent = state === 'pwd_lock_ready' ? (dict.nfcDescPwdLockReady || 'Hold phone near card to lock...') : (dict.nfcDescPwdUnlockReady || 'Hold phone near card to unlock...');
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+            setIconIfChanged(nfcSvgIcon, `
                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-            `;
+            `);
         } else if (state === 'success') {
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('morph-to-ready');
@@ -4802,7 +4901,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             }
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
-            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
+            setIconIfChanged(nfcSvgIcon, `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`);
         } else if (state === 'next') {
             if (nfcModalBox) {
                 nfcModalBox.classList.add('morph-to-ready');
@@ -4811,16 +4910,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         nfcModalBox.classList.remove('success');
                         nfcModalBox.classList.remove('morph-to-ready');
                     }
-                }, 300);
+                }, 350);
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleNext;
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescNext;
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+            setIconIfChanged(nfcSvgIcon, `
                 <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
-            `;
+            `);
         } else if (state === 'error') {
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('morph-to-ready');
@@ -4859,13 +4958,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (retryLabel) retryLabel.textContent = dict.nfcRetryBtn || 'Try Again';
             }
 
-            if (nfcSvgIcon) {
-                nfcSvgIcon.innerHTML = `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`;
-            }
+            setIconIfChanged(nfcSvgIcon, `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`);
         }
     }
 
     function openNfcModal() {
+        blurActiveElement();
         nfcBatchCount = 0;
         window.nfcBatchCount = 0;
         if (nfcResetTimer) {
@@ -4878,6 +4976,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function closeNfcModal() {
+        blurActiveElement();
         if (nfcResetTimer) {
             clearTimeout(nfcResetTimer);
             nfcResetTimer = null;
@@ -4897,6 +4996,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function startNfcWrite() {
+        blurActiveElement();
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
         const dict = getDict();
@@ -4921,6 +5021,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function startNfcRead() {
+        blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'read';
         if (window.AndroidNative && window.AndroidNative.startNfcRead) {
@@ -4934,6 +5035,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function startNfcPermanentLock() {
+        blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'perm_lock';
         if (window.AndroidNative && window.AndroidNative.startNfcPermanentLock) {
@@ -4947,6 +5049,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function startNfcPasswordLock(pin) {
+        blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_lock';
@@ -4962,6 +5065,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function startNfcPasswordUnlock(pin) {
+        blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_unlock';
@@ -5557,29 +5661,52 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         let pwdCurrentAction = 'lock';
+        const pwdModalBox = $('pwdModalBox');
         const pwdIconCircle = $('pwdIconCircle');
         const pwdStatusIcon = $('pwdStatusIcon');
         const pwdModalTitle = $('pwdModalTitle');
         const pwdModalDesc = $('pwdModalDesc');
         const btnPwdInfo = $('btnPwdInfo');
 
-        function syncPwdModalText() {
+        function syncPwdModalText(isSwitch = false) {
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
             if (btnPwdSubmit) {
                 btnPwdSubmit.textContent = isLock 
                     ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
                     : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+                if (isLock) {
+                    btnPwdSubmit.classList.remove('unlock-mode');
+                } else {
+                    btnPwdSubmit.classList.add('unlock-mode');
+                }
+            }
+            if (pwdModalBox) {
+                if (isLock) {
+                    pwdModalBox.classList.remove('unlock-mode');
+                } else {
+                    pwdModalBox.classList.add('unlock-mode');
+                }
             }
             if (pwdModalTitle) {
                 pwdModalTitle.textContent = isLock 
                     ? (dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card')
                     : (dict.pwdModalTitleUnlock || 'Unlock Card');
+                if (isSwitch) {
+                    pwdModalTitle.classList.remove('pwd-text-fade');
+                    void pwdModalTitle.offsetWidth;
+                    pwdModalTitle.classList.add('pwd-text-fade');
+                }
             }
             if (pwdModalDesc) {
                 pwdModalDesc.textContent = isLock 
                     ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
                     : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
+                if (isSwitch) {
+                    pwdModalDesc.classList.remove('pwd-text-fade');
+                    void pwdModalDesc.offsetWidth;
+                    pwdModalDesc.classList.add('pwd-text-fade');
+                }
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;
@@ -5590,11 +5717,22 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 } else {
                     pwdIconCircle.classList.add('unlock-mode');
                 }
+                if (isSwitch) {
+                    pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
+                    void pwdIconCircle.offsetWidth;
+                    pwdIconCircle.classList.add(isLock ? 'mode-switch-lock' : 'mode-switch-unlock');
+                    setTimeout(() => {
+                        pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
+                    }, 400);
+                }
             }
             if (pwdStatusIcon) {
-                pwdStatusIcon.innerHTML = isLock
+                const targetSvg = isLock
                     ? '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>'
                     : '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>';
+                if (pwdStatusIcon.innerHTML !== targetSvg) {
+                    pwdStatusIcon.innerHTML = targetSvg;
+                }
             }
         }
         window.syncPwdModalText = syncPwdModalText;
@@ -5612,9 +5750,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnPwdLockTag) {
             btnPwdLockTag.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
                 if (pwdModalOverlay) {
                     pwdModalOverlay.classList.add('active');
-                    syncPwdModalText();
+                    syncPwdModalText(false);
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
@@ -5634,16 +5775,18 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (pwdTabLock && pwdTabUnlock) {
             pwdTabLock.addEventListener('click', () => {
+                if (pwdCurrentAction === 'lock') return;
                 pwdCurrentAction = 'lock';
                 pwdTabLock.classList.add('active');
-                pwdTabUnlock.classList.remove('active');
-                syncPwdModalText();
+                pwdTabUnlock.classList.remove('active', 'tab-unlock');
+                syncPwdModalText(true);
             });
             pwdTabUnlock.addEventListener('click', () => {
+                if (pwdCurrentAction === 'unlock') return;
                 pwdCurrentAction = 'unlock';
-                pwdTabUnlock.classList.add('active');
+                pwdTabUnlock.classList.add('active', 'tab-unlock');
                 pwdTabLock.classList.remove('active');
-                syncPwdModalText();
+                syncPwdModalText(true);
             });
         }
 
@@ -5676,6 +5819,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnPermLockTag) {
             btnPermLockTag.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
                 if (permLockOverlay) permLockOverlay.classList.add('active');
             });
         }
