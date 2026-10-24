@@ -84,7 +84,7 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
 
-        html = html.replace(/^### (.*$)/gim, '<h4 style="margin:8px 0 4px;color:#fdba74;font-size:12px;">$1</h4>');
+        html = html.replace(/^### (.*$)/gim, '<h4 style="margin:8px 0 4px;color:#c4b5fd;font-size:12px;">$1</h4>');
         html = html.replace(/^## (.*$)/gim, '<h3 style="margin:10px 0 6px;color:#fff;font-size:13px;">$1</h3>');
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:4px;font-size:11px;">$1</code>');

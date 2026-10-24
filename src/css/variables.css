@@ -4,11 +4,11 @@
             --card: rgba(28, 25, 23, 0.75);
             --card-elevated: rgba(41, 37, 36, 0.85);
             --border: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(249, 115, 22, 0.45);
+            --border-glow: rgba(139, 92, 246, 0.45);
             
-            --primary: #f97316;
-            --primary-light: #fb923c;
-            --primary-gradient: linear-gradient(135deg, #ea580c, #f97316, #fb923c);
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --primary-gradient: linear-gradient(135deg, #7c3aed, #8b5cf6, #a78bfa);
             --success: #10b981;
             --danger: #ef4444;
             
@@ -29,21 +29,21 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Custom Text Selection Highlight: Orange text on crisp white background */
+        /* Custom Text Selection Highlight: Violet text on crisp white background */
         ::selection {
             background-color: #ffffff !important;
-            color: #ea580c !important;
+            color: #7c3aed !important;
             text-shadow: none !important;
         }
         ::-moz-selection {
             background-color: #ffffff !important;
-            color: #ea580c !important;
+            color: #7c3aed !important;
             text-shadow: none !important;
         }
         input::selection,
         textarea::selection {
             background-color: #ffffff !important;
-            color: #ea580c !important;
+            color: #7c3aed !important;
             text-shadow: none !important;
         }
 
@@ -89,12 +89,12 @@
             opacity: 0.35;
         }
         .glow-top {
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
             top: -70px;
             right: -70px;
         }
         .glow-bottom {
-            background: radial-gradient(circle, rgba(234, 88, 12, 0.35) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.35) 0%, transparent 70%);
             bottom: -90px;
             left: -80px;
         }

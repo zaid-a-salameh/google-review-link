@@ -38,7 +38,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 14px rgba(234, 88, 12, 0.4);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.4);
             border: 1px solid rgba(255, 255, 255, 0.2);
             flex-shrink: 0;
         }
@@ -57,9 +57,9 @@
             font-weight: 800;
             padding: 2px 7px;
             border-radius: 50px;
-            background: rgba(249, 115, 22, 0.15);
-            color: #fdba74;
-            border: 1px solid rgba(249, 115, 22, 0.3);
+            background: rgba(139, 92, 246, 0.15);
+            color: #c4b5fd;
+            border: 1px solid rgba(139, 92, 246, 0.3);
         }
         .navbar-actions {
             display: flex;
@@ -98,11 +98,11 @@
         .btn-nav-apk {
             background: var(--primary-gradient);
             color: #ffffff;
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
         }
         .btn-nav-apk:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(234, 88, 12, 0.5);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.5);
         }
         .btn-nav-apk svg {
             width: 14px;
@@ -128,10 +128,10 @@
             align-items: center;
             gap: 6px;
             padding: 5px 12px;
-            background: rgba(249, 115, 22, 0.12);
-            border: 1px solid rgba(249, 115, 22, 0.35);
+            background: rgba(139, 92, 246, 0.12);
+            border: 1px solid rgba(139, 92, 246, 0.35);
             border-radius: 50px;
-            color: #fdba74;
+            color: #c4b5fd;
             font-family: 'Inter', 'Cairo', sans-serif;
             font-size: 11px;
             font-weight: 700;
@@ -142,8 +142,8 @@
             user-select: none;
         }
         .btn-download-apk:hover {
-            background: rgba(249, 115, 22, 0.22);
-            border-color: rgba(249, 115, 22, 0.6);
+            background: rgba(139, 92, 246, 0.22);
+            border-color: rgba(139, 92, 246, 0.6);
             color: #ffffff;
             transform: translateY(-1px);
         }
@@ -186,9 +186,9 @@
             display: inline-block;
             padding: 4px 12px;
             border-radius: 50px;
-            background: rgba(249, 115, 22, 0.12);
-            color: #fb923c;
-            border: 1px solid rgba(249, 115, 22, 0.3);
+            background: rgba(139, 92, 246, 0.12);
+            color: #a78bfa;
+            border: 1px solid rgba(139, 92, 246, 0.3);
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
@@ -234,7 +234,7 @@
             flex-direction: column;
         }
         .step-card:hover {
-            border-color: rgba(249, 115, 22, 0.4);
+            border-color: rgba(139, 92, 246, 0.4);
             transform: translateY(-3px);
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
         }
@@ -255,8 +255,8 @@
             width: 60px;
             height: 60px;
             border-radius: 18px;
-            background: rgba(249, 115, 22, 0.1);
-            border: 1px solid rgba(249, 115, 22, 0.25);
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -304,7 +304,7 @@
             transition: all 0.25s;
         }
         .feat-card:hover {
-            border-color: rgba(249, 115, 22, 0.35);
+            border-color: rgba(139, 92, 246, 0.35);
             transform: translateY(-2px);
         }
         .feat-icon-badge {
@@ -329,9 +329,9 @@
             fill: #f59e0b;
         }
         .feat-badge-nfc {
-            background: rgba(249, 115, 22, 0.12);
-            border-color: rgba(249, 115, 22, 0.3);
-            fill: #fb923c;
+            background: rgba(139, 92, 246, 0.12);
+            border-color: rgba(139, 92, 246, 0.3);
+            fill: #a78bfa;
         }
         .feat-badge-qr {
             background: rgba(56, 189, 248, 0.12);
@@ -376,7 +376,7 @@
             transition: all 0.25s ease;
         }
         .faq-item:hover {
-            border-color: rgba(249, 115, 22, 0.4);
+            border-color: rgba(139, 92, 246, 0.4);
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
@@ -431,7 +431,7 @@
             transition: color 0.2s;
         }
         .footer-nav-links a:hover {
-            color: #fb923c;
+            color: #a78bfa;
         }
         .footer-bottom {
             text-align: center;
@@ -445,7 +445,7 @@
             text-decoration: none;
         }
         .footer-bottom a:hover {
-            color: #fb923c;
+            color: #a78bfa;
         }
 
         /* Desktop Layout Overrides */
