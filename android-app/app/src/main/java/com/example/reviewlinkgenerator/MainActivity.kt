@@ -424,7 +424,7 @@ class MainActivity : ComponentActivity() {
             nfca.timeout = 3000
             val cfg = getNtagConfig(nfca)
             val pwdBytes = derivePasswordBytes(pin)
-            val packBytes = byteArrayOf(0x12.toByte(), 0x34.toByte(), 0x00, 0x00)
+            val packBytes = byteArrayOf(0x00, 0x00, 0x00, 0x00)
 
             // Check if card is already locked
             var isAlreadyLocked = false
