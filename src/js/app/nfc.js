@@ -79,6 +79,10 @@
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked Successfully';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card protection removed. You can now write or edit the card.';
                 if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+            } else if (detail === 'ALREADY_UNLOCKED') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Is Not Locked';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescAlreadyUnlocked || 'This card does not have password protection enabled.';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
             } else if (detail === 'PWD_LOCK') {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked Successfully';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'PIN protection enabled. Card modifications are locked.';
@@ -128,6 +132,7 @@
             else if (detail === 'EMPTY_TAG') detailMsg = dict.toastNfcReadEmpty || 'No valid URL found on this card';
             else if (detail === 'WRONG_PWD') detailMsg = dict.toastNfcWrongPwd || 'Incorrect PIN or password';
             else if (detail === 'PWD_UNSUPPORTED') detailMsg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
+            else if (detail === 'ALREADY_LOCKED') detailMsg = dict.toastNfcAlreadyLocked || 'This card is already locked with a PIN. Unlock it first.';
 
             if (nfcDesc) nfcDesc.textContent = detailMsg;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
@@ -328,10 +333,14 @@
         const nfcOverlay = document.getElementById('nfcOverlay');
         const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
         if (isModalOpen) {
-            const detail = action === 'LOCKED' ? 'PWD_LOCK' : 'PWD_UNLOCK';
+            let detail = 'PWD_UNLOCK';
+            if (action === 'LOCKED') detail = 'PWD_LOCK';
+            else if (action === 'ALREADY_UNLOCKED') detail = 'ALREADY_UNLOCKED';
             setNfcModalState('success', detail);
         } else {
-            const msg = action === 'LOCKED' ? (dict.toastNfcPwdLockSuccess || 'Card locked with PIN') : (dict.toastNfcPwdUnlockSuccess || 'Card unlocked successfully');
+            let msg = dict.toastNfcPwdUnlockSuccess || 'Card unlocked successfully';
+            if (action === 'LOCKED') msg = dict.toastNfcPwdLockSuccess || 'Card locked with PIN';
+            else if (action === 'ALREADY_UNLOCKED') msg = dict.toastNfcAlreadyUnlocked || 'Card is already unlocked';
             if (window.showToast) window.showToast(msg, 'success');
         }
     };
@@ -352,6 +361,7 @@
             else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
             else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
             else if (errorType === 'PWD_UNSUPPORTED') msg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
+            else if (errorType === 'ALREADY_LOCKED') msg = dict.toastNfcAlreadyLocked || 'Card is already locked with a PIN';
             else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = 'Locking failed on this tag';
             if (window.showToast) window.showToast(msg, 'error');
         }

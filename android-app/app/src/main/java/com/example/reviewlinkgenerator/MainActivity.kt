@@ -373,17 +373,33 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun detectNtagType(ultralight: MifareUltralight): Int {
-        return try {
-            ultralight.readPages(130)
-            try {
-                ultralight.readPages(226)
-                216
-            } catch (e: Exception) {
-                215
+    private data class NtagConfig(val auth0Page: Int, val pwdPage: Int, val packPage: Int, val typeName: String)
+
+    private fun getNtagConfig(nfca: NfcA): NtagConfig {
+        try {
+            val verResp = nfca.transceive(byteArrayOf(0x60.toByte()))
+            if (verResp != null && verResp.size == 8) {
+                val storageSize = verResp[6].toInt() and 0xFF
+                when (storageSize) {
+                    0x0F -> return NtagConfig(41, 43, 44, "NTAG213")
+                    0x11 -> return NtagConfig(131, 133, 134, "NTAG215")
+                    0x13 -> return NtagConfig(227, 229, 230, "NTAG216")
+                }
             }
         } catch (e: Exception) {
-            213
+            // GET_VERSION failed or not supported, probe via READ
+        }
+
+        return try {
+            nfca.transceive(byteArrayOf(0x30.toByte(), 226.toByte()))
+            NtagConfig(227, 229, 230, "NTAG216")
+        } catch (e: Exception) {
+            try {
+                nfca.transceive(byteArrayOf(0x30.toByte(), 130.toByte()))
+                NtagConfig(131, 133, 134, "NTAG215")
+            } catch (e2: Exception) {
+                NtagConfig(41, 43, 44, "NTAG213")
+            }
         }
     }
 
@@ -399,34 +415,64 @@ class MainActivity : ComponentActivity() {
 
     private fun handlePwdLockTag(tag: Tag, pin: String) {
         try {
-            val ultralight = MifareUltralight.get(tag)
-            if (ultralight != null) {
-                ultralight.connect()
-                val pwdBytes = derivePasswordBytes(pin)
-                val packBytes = byteArrayOf(0x12.toByte(), 0x34.toByte(), 0x00, 0x00)
-
-                val ntagType = detectNtagType(ultralight)
-                val (auth0Page, pwdPage, packPage) = when (ntagType) {
-                    213 -> Triple(41, 43, 44)
-                    215 -> Triple(131, 133, 134)
-                    216 -> Triple(227, 229, 230)
-                    else -> Triple(41, 43, 44)
-                }
-
-                ultralight.writePage(pwdPage, pwdBytes)
-                ultralight.writePage(packPage, packBytes)
-                val auth0Bytes = byteArrayOf(0x04.toByte(), 0x00, 0x00, 0x00)
-                ultralight.writePage(auth0Page, auth0Bytes)
-
-                ultralight.close()
-                triggerSuccessVibration()
-                runOnUiThread {
-                    webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('LOCKED');", null)
-                }
-                stopNfcSession()
-            } else {
+            val nfca = NfcA.get(tag)
+            if (nfca == null) {
                 notifyNfcError("PWD_UNSUPPORTED")
+                return
             }
+            nfca.connect()
+            nfca.timeout = 3000
+            val cfg = getNtagConfig(nfca)
+            val pwdBytes = derivePasswordBytes(pin)
+            val packBytes = byteArrayOf(0x12.toByte(), 0x34.toByte(), 0x00, 0x00)
+
+            // Check if card is already locked
+            var isAlreadyLocked = false
+            try {
+                val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                if (readResp != null && readResp.size >= 4) {
+                    val currentAuth0 = readResp[3].toInt() and 0xFF
+                    if (currentAuth0 != 0xFF) {
+                        isAlreadyLocked = true
+                    }
+                }
+            } catch (e: Exception) {
+                isAlreadyLocked = true
+            }
+
+            if (isAlreadyLocked) {
+                // If already locked, verify provided PIN first so user can update or re-lock
+                val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
+                val authResp = try { nfca.transceive(authCmd) } catch (e: Exception) { null }
+                if (authResp == null || authResp.size < 2) {
+                    nfca.close()
+                    notifyNfcError("ALREADY_LOCKED")
+                    return
+                }
+            }
+
+            // Write PWD (page cfg.pwdPage)
+            val writePwdCmd = byteArrayOf(0xA2.toByte(), cfg.pwdPage.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
+            nfca.transceive(writePwdCmd)
+
+            // Write PACK (page cfg.packPage)
+            val writePackCmd = byteArrayOf(0xA2.toByte(), cfg.packPage.toByte(), packBytes[0], packBytes[1], packBytes[2], packBytes[3])
+            nfca.transceive(writePackCmd)
+
+            // Write AUTH0 (page cfg.auth0Page):
+            // Byte 0 = 0x00 (MIRROR disabled)
+            // Byte 1 = 0x00 (RFUI)
+            // Byte 2 = 0x00 (MIRROR_PAGE)
+            // Byte 3 = 0x04 (AUTH0 = user memory starting at page 4 is password protected)
+            val writeAuth0Cmd = byteArrayOf(0xA2.toByte(), cfg.auth0Page.toByte(), 0x00, 0x00, 0x00, 0x04.toByte())
+            nfca.transceive(writeAuth0Cmd)
+
+            nfca.close()
+            triggerSuccessVibration()
+            runOnUiThread {
+                webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('LOCKED');", null)
+            }
+            stopNfcSession()
         } catch (e: Exception) {
             notifyNfcError("PWD_FAILED")
         }
@@ -435,35 +481,87 @@ class MainActivity : ComponentActivity() {
     private fun handlePwdUnlockTag(tag: Tag, pin: String) {
         try {
             val nfca = NfcA.get(tag)
-            val ultralight = MifareUltralight.get(tag)
-            if (nfca != null && ultralight != null) {
-                nfca.connect()
-                val pwdBytes = derivePasswordBytes(pin)
-
-                val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
-                val resp = nfca.transceive(authCmd)
-                if (resp != null && resp.size >= 2) {
-                    val ntagType = detectNtagType(ultralight)
-                    val auth0Page = when (ntagType) {
-                        213 -> 41
-                        215 -> 131
-                        216 -> 227
-                        else -> 41
-                    }
-                    val disableCmd = byteArrayOf(0xA2.toByte(), auth0Page.toByte(), 0xFF.toByte(), 0x00, 0x00, 0x00)
-                    nfca.transceive(disableCmd)
-                    nfca.close()
-                    triggerSuccessVibration()
-                    runOnUiThread {
-                        webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('UNLOCKED');", null)
-                    }
-                    stopNfcSession()
-                } else {
-                    nfca.close()
-                    notifyNfcError("WRONG_PWD")
-                }
-            } else {
+            if (nfca == null) {
                 notifyNfcError("PWD_UNSUPPORTED")
+                return
+            }
+            nfca.connect()
+            nfca.timeout = 3000
+            val cfg = getNtagConfig(nfca)
+            val pwdBytes = derivePasswordBytes(pin)
+
+            // 1. Check if the card is already unlocked
+            var isLocked = false
+            try {
+                val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                if (readResp != null && readResp.size >= 4) {
+                    val currentAuth0 = readResp[3].toInt() and 0xFF
+                    if (currentAuth0 != 0xFF) {
+                        isLocked = true
+                    }
+                }
+            } catch (e: Exception) {
+                // If read threw an exception (e.g. read protection is active), it is locked
+                isLocked = true
+            }
+
+            if (!isLocked) {
+                // The card is NOT locked! Inform user cleanly
+                nfca.close()
+                triggerSuccessVibration()
+                runOnUiThread {
+                    webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('ALREADY_UNLOCKED');", null)
+                }
+                stopNfcSession()
+                return
+            }
+
+            // 2. The card IS locked. Authenticate using PWD_AUTH (0x1B)
+            val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
+            val resp = try {
+                nfca.transceive(authCmd)
+            } catch (e: Exception) {
+                null
+            }
+
+            if (resp != null && resp.size >= 2) {
+                // Authentication succeeded!
+                // Disable password protection by setting AUTH0 to 0xFF on auth0Page
+                // Byte 0 = 0x00, Byte 1 = 0x00, Byte 2 = 0x00, Byte 3 = 0xFF
+                val disableCmd = byteArrayOf(0xA2.toByte(), cfg.auth0Page.toByte(), 0x00, 0x00, 0x00, 0xFF.toByte())
+                nfca.transceive(disableCmd)
+
+                // Optional: reset PWD and PACK to default
+                try {
+                    val resetPwdCmd = byteArrayOf(0xA2.toByte(), cfg.pwdPage.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte())
+                    nfca.transceive(resetPwdCmd)
+                    val resetPackCmd = byteArrayOf(0xA2.toByte(), cfg.packPage.toByte(), 0x00, 0x00, 0x00, 0x00)
+                    nfca.transceive(resetPackCmd)
+                } catch (e: Exception) {
+                    // Non-critical
+                }
+
+                // If previous code accidentally wrote to page 41 on NTAG215/216, clean it up
+                if (cfg.auth0Page != 41) {
+                    try {
+                        val p41Resp = nfca.transceive(byteArrayOf(0x30.toByte(), 41.toByte()))
+                        if (p41Resp != null && (p41Resp[0].toInt() and 0xFF) == 0xFF && (p41Resp[1].toInt() and 0xFF) == 0x00) {
+                            nfca.transceive(byteArrayOf(0xA2.toByte(), 41.toByte(), 0x00, 0x00, 0x00, 0x00))
+                        }
+                    } catch (e: Exception) {
+                        // Non-critical
+                    }
+                }
+
+                nfca.close()
+                triggerSuccessVibration()
+                runOnUiThread {
+                    webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('UNLOCKED');", null)
+                }
+                stopNfcSession()
+            } else {
+                nfca.close()
+                notifyNfcError("WRONG_PWD")
             }
         } catch (e: Exception) {
             notifyNfcError("WRONG_PWD")
