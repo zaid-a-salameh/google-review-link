@@ -256,6 +256,50 @@
             transform: scale(0.98);
         }
 
+        /* Dynamic Theming for NFC Waiting Modal */
+        .nfc-modal.theme-lock {
+            border-color: rgba(245, 39, 125, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 39, 125, 0.25);
+        }
+        .nfc-modal.theme-lock .nfc-wave-ring {
+            border-color: rgba(245, 39, 125, 0.55);
+        }
+        .nfc-modal.theme-lock .nfc-icon-circle {
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 10px 30px rgba(245, 39, 125, 0.55), 0 0 25px rgba(245, 39, 125, 0.35);
+        }
+        .nfc-modal.theme-lock .btn-nfc-cancel:hover,
+        .nfc-modal.theme-lock .btn-nfc-cancel:active {
+            border-color: rgba(245, 39, 125, 0.45);
+            color: #ffffff;
+        }
+
+        .nfc-modal.theme-unlock {
+            border-color: rgba(16, 185, 129, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.25);
+        }
+        .nfc-modal.theme-unlock .nfc-wave-ring {
+            border-color: rgba(16, 185, 129, 0.55);
+        }
+        .nfc-modal.theme-unlock .nfc-icon-circle {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.55), 0 0 25px rgba(16, 185, 129, 0.35);
+        }
+        .nfc-modal.theme-unlock .btn-nfc-cancel:hover,
+        .nfc-modal.theme-unlock .btn-nfc-cancel:active {
+            border-color: rgba(16, 185, 129, 0.45);
+            color: #ffffff;
+        }
+
+        /* Error state retry button matching pink theme */
+        .nfc-modal.error .btn-nfc-retry {
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 4px 15px rgba(245, 39, 125, 0.4);
+        }
+        .nfc-modal.error .btn-nfc-retry:hover {
+            box-shadow: 0 6px 20px rgba(245, 39, 125, 0.55);
+        }
+
 
         /* QR Code Modal / Overlay */
         .qr-overlay {

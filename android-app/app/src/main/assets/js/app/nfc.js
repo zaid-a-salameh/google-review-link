@@ -50,7 +50,7 @@
         }
 
         if (state === 'ready') {
-            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReady;
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReady;
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
@@ -60,7 +60,7 @@
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
             `);
         } else if (state === 'read_ready') {
-            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReadReady || 'Ready to Read Card';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReadReady || 'Hold phone near NFC card to read its content...';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
@@ -69,7 +69,10 @@
                 <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
             `);
         } else if (state === 'perm_lock_ready') {
-            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('success', 'theme-unlock');
+                nfcModalBox.classList.add('theme-lock', 'theme-perm-lock');
+            }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockReady || 'Ready to Lock';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockReady || 'Hold phone near NFC card to apply permanent lock...';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
@@ -77,19 +80,33 @@
             setIconIfChanged(nfcSvgIcon, `
                 <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
             `);
-        } else if (state === 'pwd_lock_ready' || state === 'pwd_unlock_ready') {
-            if (nfcModalBox) nfcModalBox.classList.remove('success');
-            if (nfcTitle) nfcTitle.textContent = state === 'pwd_lock_ready' ? (dict.nfcTitlePwdLockReady || 'Ready to Set PIN') : (dict.nfcTitlePwdUnlockReady || 'Ready to Unlock');
-            if (nfcDesc) nfcDesc.textContent = state === 'pwd_lock_ready' ? (dict.nfcDescPwdLockReady || 'Hold phone near card to lock...') : (dict.nfcDescPwdUnlockReady || 'Hold phone near card to unlock...');
+        } else if (state === 'pwd_lock_ready') {
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('success', 'theme-unlock', 'theme-perm-lock');
+                nfcModalBox.classList.add('theme-lock');
+            }
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockReady || 'Ready to Set PIN';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockReady || 'Hold phone near card to lock with your PIN.';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             setIconIfChanged(nfcSvgIcon, `
                 <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
             `);
+        } else if (state === 'pwd_unlock_ready') {
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('success', 'theme-lock', 'theme-perm-lock');
+                nfcModalBox.classList.add('theme-unlock');
+            }
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockReady || 'Ready to Unlock';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockReady || 'Hold phone near card to remove PIN protection.';
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            setIconIfChanged(nfcSvgIcon, `
+                <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
+            `);
         } else if (state === 'success') {
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('morph-to-ready');
-                nfcModalBox.classList.remove('error');
+                nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
                 nfcModalBox.classList.add('success');
             }
             if (detail === 'PWD_UNLOCK') {
@@ -136,8 +153,7 @@
             `);
         } else if (state === 'error') {
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('morph-to-ready');
-                nfcModalBox.classList.remove('success');
+                nfcModalBox.classList.remove('morph-to-ready', 'success', 'theme-unlock');
                 nfcModalBox.classList.add('error');
             }
             if (nfcTitle) {
@@ -184,6 +200,10 @@
             clearTimeout(nfcResetTimer);
             nfcResetTimer = null;
         }
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (nfcModalBox) {
+            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error');
+        }
         setNfcModalState('ready');
         const nfcOverlay = document.getElementById('nfcOverlay');
         if (nfcOverlay) nfcOverlay.classList.add('active');
@@ -197,6 +217,10 @@
         }
         const nfcOverlay = document.getElementById('nfcOverlay');
         if (nfcOverlay) nfcOverlay.classList.remove('active');
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (nfcModalBox) {
+            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'morph-to-ready');
+        }
 
         if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
             window.AndroidNative.cancelNfcWrite();
