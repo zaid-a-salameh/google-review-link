@@ -128,7 +128,6 @@
             }
         }
     }
-    }
 
     function openNfcModal() {
         nfcBatchCount = 0;
