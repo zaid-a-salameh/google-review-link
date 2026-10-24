@@ -678,7 +678,36 @@
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 3px;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
+        }
+
+        .pwd-icon-circle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 4px auto 14px;
+        }
+        .pwd-icon-circle {
+            position: relative;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pwd-icon-circle svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+            transition: transform 0.25s ease;
+        }
+        .pwd-icon-circle.unlock-mode {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
         }
         .pwd-tab {
             flex: 1;
@@ -765,14 +794,31 @@
             fill: currentColor;
         }
 
+        .btn-pwd-info {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sub);
+            transition: color 0.2s ease, transform 0.15s ease;
+            flex-shrink: 0;
+        }
+        .btn-pwd-info:hover,
+        .btn-pwd-info:active {
+            color: #a78bfa;
+            transform: scale(1.12);
+        }
+        .btn-pwd-info svg {
+            width: 19px;
+            height: 19px;
+            fill: currentColor;
+        }
+
         .pwd-hint {
-            font-size: 11px;
-            color: #a8a29e;
-            margin-top: -6px;
-            margin-bottom: 6px;
-            text-align: center;
-            line-height: 1.35;
-            padding: 0 4px;
+            display: none;
         }
 
         .pwd-actions,

@@ -2527,7 +2527,36 @@
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 3px;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
+        }
+
+        .pwd-icon-circle-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 4px auto 14px;
+        }
+        .pwd-icon-circle {
+            position: relative;
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pwd-icon-circle svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+            transition: transform 0.25s ease;
+        }
+        .pwd-icon-circle.unlock-mode {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
         }
         .pwd-tab {
             flex: 1;
@@ -2614,14 +2643,31 @@
             fill: currentColor;
         }
 
+        .btn-pwd-info {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-sub);
+            transition: color 0.2s ease, transform 0.15s ease;
+            flex-shrink: 0;
+        }
+        .btn-pwd-info:hover,
+        .btn-pwd-info:active {
+            color: #a78bfa;
+            transform: scale(1.12);
+        }
+        .btn-pwd-info svg {
+            width: 19px;
+            height: 19px;
+            fill: currentColor;
+        }
+
         .pwd-hint {
-            font-size: 11px;
-            color: #a8a29e;
-            margin-top: -6px;
-            margin-bottom: 6px;
-            text-align: center;
-            line-height: 1.35;
-            padding: 0 4px;
+            display: none;
         }
 
         .pwd-actions,
@@ -3021,7 +3067,17 @@ body {
                 <button type="button" class="pwd-tab active" id="pwdTabLock" data-action="lock">Lock Card</button>
                 <button type="button" class="pwd-tab" id="pwdTabUnlock" data-action="unlock">Unlock Card</button>
             </div>
-            <div class="qr-title" id="pwdModalTitle">Card Password Protection</div>
+
+            <!-- NFC-Style Glowing Circle Icon -->
+            <div class="pwd-icon-circle-wrapper">
+                <div class="pwd-icon-circle" id="pwdIconCircle">
+                    <svg id="pwdStatusIcon" viewBox="0 0 24 24">
+                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="qr-title" id="pwdModalTitle">Lock Card</div>
             <div class="qr-desc" id="pwdModalDesc">Set a password or PIN to prevent unauthorized modifications</div>
             
             <div class="pwd-input-group">
@@ -3033,8 +3089,10 @@ body {
                     <svg id="eyeIconOpen" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
                     <svg id="eyeIconClosed" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
                 </button>
+                <button type="button" class="btn-pwd-info" id="btnPwdInfo" title="Compatibility Info">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                </button>
             </div>
-            <div class="pwd-hint" id="pwdHintText">4 characters recommended for standard NFC compatibility</div>
 
             <div class="pwd-actions">
                 <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">Set PIN & Touch Card</button>
@@ -3224,8 +3282,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitlePwdUnlockReady: "Ready to Unlock",
                 nfcDescPwdUnlockReady: "Hold phone near NFC card to remove PIN protection.",
                 pwdModalTitle: "Card Password Protection",
+                pwdModalTitleLock: "Lock Card",
+                pwdModalTitleUnlock: "Unlock Card",
                 pwdModalDesc: "Set a password or PIN to prevent unauthorized modifications",
+                pwdModalDescLock: "Set a password or PIN to prevent unauthorized modifications",
+                pwdModalDescUnlock: "Enter current PIN to remove protection and allow editing",
                 pwdHintText: "4 characters recommended for standard NFC compatibility",
+                pwdInfoToast: "4 characters recommended for 100% universal compatibility across all NFC tools",
                 pwdPlaceholder: "Enter password or PIN...",
                 pwdTabLock: "Lock Card",
                 pwdTabUnlock: "Unlock Card",
@@ -3399,8 +3462,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitlePwdUnlockReady: "جاهز لفك القفل",
                 nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
                 pwdModalTitle: "حماية البطاقة بكلمة مرور",
+                pwdModalTitleLock: "قفل البطاقة",
+                pwdModalTitleUnlock: "فك قفل البطاقة",
                 pwdModalDesc: "عيّن كلمة مرور أو رمز PIN لحماية البطاقة من التعديل",
+                pwdModalDescLock: "عيّن رمز PIN أو كلمة مرور لحماية البطاقة من التعديل",
+                pwdModalDescUnlock: "أدخل رمز PIN الحالي لإلغاء حماية البطاقة والسماح بالتعديل",
                 pwdHintText: "يُفضّل استخدام 4 خانات للتوافق الكامل مع كافة أجهزة وقارئات NFC",
+                pwdInfoToast: "يُفضّل استخدام 4 خانات للتوافق العالمي الكامل مع كافة أجهزة وقارئات NFC مثل NFC Tools",
                 pwdPlaceholder: "أدخل كلمة المرور أو رمز PIN...",
                 pwdTabLock: "قفل البطاقة",
                 pwdTabUnlock: "فك القفل",
@@ -3774,7 +3842,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         paste: '<svg viewBox="0 0 24 24" fill="#a78bfa"><path d="M19 2h-4.18C14.4.84 13.3 0 12 0c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm7 18H5V4h2v3h10V4h2v16z"/></svg>',
         copy: '<svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>',
         download: '<svg viewBox="0 0 24 24" fill="#38bdf8"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>',
-        trash: '<svg viewBox="0 0 24 24" fill="#f87171"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>'
+        trash: '<svg viewBox="0 0 24 24" fill="#f87171"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>',
+        info: '<svg viewBox="0 0 24 24" fill="#a78bfa"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>'
     };
 
     let toastTimer = null;
@@ -5374,21 +5443,57 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         let pwdCurrentAction = 'lock';
+        const pwdIconCircle = $('pwdIconCircle');
+        const pwdStatusIcon = $('pwdStatusIcon');
+        const pwdModalTitle = $('pwdModalTitle');
+        const pwdModalDesc = $('pwdModalDesc');
+        const btnPwdInfo = $('btnPwdInfo');
 
         function syncPwdModalText() {
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            const isLock = pwdCurrentAction === 'lock';
             if (btnPwdSubmit) {
-                btnPwdSubmit.textContent = (pwdCurrentAction === 'lock') 
+                btnPwdSubmit.textContent = isLock 
                     ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
                     : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+            }
+            if (pwdModalTitle) {
+                pwdModalTitle.textContent = isLock 
+                    ? (dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card')
+                    : (dict.pwdModalTitleUnlock || 'Unlock Card');
+            }
+            if (pwdModalDesc) {
+                pwdModalDesc.textContent = isLock 
+                    ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
+                    : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;
             }
-            const pwdHintText = $('pwdHintText');
-            if (pwdHintText && dict.pwdHintText) {
-                pwdHintText.textContent = dict.pwdHintText;
+            if (pwdIconCircle) {
+                if (isLock) {
+                    pwdIconCircle.classList.remove('unlock-mode');
+                } else {
+                    pwdIconCircle.classList.add('unlock-mode');
+                }
             }
+            if (pwdStatusIcon) {
+                pwdStatusIcon.innerHTML = isLock
+                    ? '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>'
+                    : '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>';
+            }
+        }
+        window.syncPwdModalText = syncPwdModalText;
+
+        if (btnPwdInfo) {
+            btnPwdInfo.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                if (window.showToast) {
+                    window.showToast(dict.pwdInfoToast || '4 characters recommended for standard NFC compatibility', 'info');
+                }
+            });
         }
 
         if (btnPwdLockTag) {
