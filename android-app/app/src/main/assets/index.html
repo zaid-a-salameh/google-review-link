@@ -256,23 +256,17 @@
         }
 
 
-        /* Seamless Morphing Language Transition */
+        /* Pure Hardware-Accelerated Seamless Language Transition */
         .lang-fade-node {
-            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-                        filter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
+            transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity;
             backface-visibility: hidden;
             transform: translateZ(0);
         }
         body.is-lang-switching .lang-fade-node {
             opacity: 0;
-            transform: translateY(4px) scale(0.996);
-            filter: blur(2.5px);
             pointer-events: none;
-            transition: opacity 0.14s cubic-bezier(0.4, 0, 1, 1), 
-                        transform 0.14s cubic-bezier(0.4, 0, 1, 1), 
-                        filter 0.14s cubic-bezier(0.4, 0, 1, 1);
+            transition: opacity 0.1s cubic-bezier(0.4, 0, 1, 1);
         }
 
 
@@ -826,26 +820,68 @@
             flex-shrink: 0;
         }
 
-        .mode-content {
-            display: none;
+        /* Mode Stage & Hardware-Accelerated Sliding Content */
+        .mode-stage {
             position: relative;
+            display: grid;
+            grid-template-columns: 100%;
+            grid-template-rows: auto;
+            width: 100%;
             z-index: 50;
+        }
+        .mode-stage:has(.places-dropdown.show),
+        .mode-stage:has(.has-dropdown-open),
+        .mode-stage.has-dropdown-open {
+            z-index: 2001;
+        }
+
+        .mode-content {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            position: relative;
+            width: 100%;
             opacity: 0;
-            transform: translate3d(0, 4px, 0);
-            transition: opacity 0.18s ease, transform 0.18s ease;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0.24s;
+            will-change: transform, opacity;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
+
+        /* LTR Slide Offsets */
+        #modeLinkContent {
+            transform: translate3d(-24px, 0, 0);
+        }
+        #modeSearchContent {
+            transform: translate3d(24px, 0, 0);
+        }
+
+        /* RTL Slide Offsets (Arabic Mode) */
+        html[lang="ar"] #modeLinkContent,
+        [dir="rtl"] #modeLinkContent {
+            transform: translate3d(24px, 0, 0);
+        }
+        html[lang="ar"] #modeSearchContent,
+        [dir="rtl"] #modeSearchContent {
+            transform: translate3d(-24px, 0, 0);
+        }
+
+        /* Active State */
         .mode-content.active {
-            display: block;
             opacity: 1;
-            transform: translate3d(0, 0, 0);
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0) !important;
+            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .mode-content:has(.places-dropdown.show),
         .mode-content.has-dropdown-open {
             z-index: 2001;
-        }
-        @keyframes fadeInMode {
-            from { opacity: 0; transform: translateY(3px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
 
@@ -3277,8 +3313,10 @@ body {
                 </div>
             </div>
 
-            <!-- MODE 1: Direct Link Mode Content -->
-            <div class="mode-content active" id="modeLinkContent">
+            <!-- Mode Stage Viewport -->
+            <div class="mode-stage" id="modeStage">
+                <!-- MODE 1: Direct Link Mode Content -->
+                <div class="mode-content active" id="modeLinkContent">
                 <div class="input-row">
                     <button type="button" class="tool-btn btn-trash" id="clearBtn" title="Clear text">
                         <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
@@ -3328,6 +3366,7 @@ body {
                     <!-- Floating Places Autocomplete Dropdown -->
                     <div class="places-dropdown" id="placesDropdown" role="listbox"></div>
                 </div>
+            </div>
             </div>
 
             <!-- Standalone Card Action Tools Row (Permanent in both modes) -->
@@ -4253,20 +4292,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
                 if (window.updatePwdTabSlider) window.updatePwdTabSlider();
-                void document.documentElement.offsetHeight;
             } catch (e) {
                 console.error('Error during language switch:', e);
             } finally {
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
-                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
-                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 50);
+                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
+                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
                     setTimeout(() => {
                         isLangSwitching = false;
-                    }, 240);
+                    }, 200);
                 });
             }
-        }, 140);
+        }, 110);
     }
 
     function switchLanguage(lang) {
@@ -4769,6 +4807,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const appContainer = document.getElementById('appContainer');
         const modeSearchContent = document.getElementById('modeSearchContent');
         const searchFieldWrapper = document.getElementById('searchFieldWrapper');
+        const modeStage = document.getElementById('modeStage');
 
         if (placesDropdown) {
             placesDropdown.classList.remove('show');
@@ -4778,6 +4817,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (appContainer) appContainer.classList.remove('has-dropdown-open');
         if (modeSearchContent) modeSearchContent.classList.remove('has-dropdown-open');
         if (searchFieldWrapper) searchFieldWrapper.classList.remove('has-dropdown-open');
+        if (modeStage) modeStage.classList.remove('has-dropdown-open');
         highlightedSuggestionIndex = -1;
         currentSuggestions = [];
     }
@@ -4924,6 +4964,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (appContainer) appContainer.classList.add('has-dropdown-open');
         if (modeSearchContent) modeSearchContent.classList.add('has-dropdown-open');
         if (searchFieldWrapper) searchFieldWrapper.classList.add('has-dropdown-open');
+        const modeStage = document.getElementById('modeStage');
+        if (modeStage) modeStage.classList.add('has-dropdown-open');
     }
 
     async function selectSuggestion(suggestion) {
@@ -4977,6 +5019,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function switchMode(mode) {
+        if (window.AppModes && window.AppModes.activeMode === mode) return;
+
         const tabLinkMode = document.getElementById('tabLinkMode');
         const tabSearchMode = document.getElementById('tabSearchMode');
         const modeLinkContent = document.getElementById('modeLinkContent');

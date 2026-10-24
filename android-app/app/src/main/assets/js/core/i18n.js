@@ -658,20 +658,19 @@
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
                 if (window.updatePwdTabSlider) window.updatePwdTabSlider();
-                void document.documentElement.offsetHeight;
             } catch (e) {
                 console.error('Error during language switch:', e);
             } finally {
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
-                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
-                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 50);
+                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
+                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
                     setTimeout(() => {
                         isLangSwitching = false;
-                    }, 240);
+                    }, 200);
                 });
             }
-        }, 140);
+        }, 110);
     }
 
     function switchLanguage(lang) {

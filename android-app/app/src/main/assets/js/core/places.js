@@ -144,6 +144,7 @@
         const appContainer = document.getElementById('appContainer');
         const modeSearchContent = document.getElementById('modeSearchContent');
         const searchFieldWrapper = document.getElementById('searchFieldWrapper');
+        const modeStage = document.getElementById('modeStage');
 
         if (placesDropdown) {
             placesDropdown.classList.remove('show');
@@ -153,6 +154,7 @@
         if (appContainer) appContainer.classList.remove('has-dropdown-open');
         if (modeSearchContent) modeSearchContent.classList.remove('has-dropdown-open');
         if (searchFieldWrapper) searchFieldWrapper.classList.remove('has-dropdown-open');
+        if (modeStage) modeStage.classList.remove('has-dropdown-open');
         highlightedSuggestionIndex = -1;
         currentSuggestions = [];
     }
@@ -299,6 +301,8 @@
         if (appContainer) appContainer.classList.add('has-dropdown-open');
         if (modeSearchContent) modeSearchContent.classList.add('has-dropdown-open');
         if (searchFieldWrapper) searchFieldWrapper.classList.add('has-dropdown-open');
+        const modeStage = document.getElementById('modeStage');
+        if (modeStage) modeStage.classList.add('has-dropdown-open');
     }
 
     async function selectSuggestion(suggestion) {
@@ -352,6 +356,8 @@
     }
 
     function switchMode(mode) {
+        if (window.AppModes && window.AppModes.activeMode === mode) return;
+
         const tabLinkMode = document.getElementById('tabLinkMode');
         const tabSearchMode = document.getElementById('tabSearchMode');
         const modeLinkContent = document.getElementById('modeLinkContent');

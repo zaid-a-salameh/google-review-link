@@ -100,23 +100,17 @@
         }
 
 
-        /* Seamless Morphing Language Transition */
+        /* Pure Hardware-Accelerated Seamless Language Transition */
         .lang-fade-node {
-            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-                        filter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
+            transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity;
             backface-visibility: hidden;
             transform: translateZ(0);
         }
         body.is-lang-switching .lang-fade-node {
             opacity: 0;
-            transform: translateY(4px) scale(0.996);
-            filter: blur(2.5px);
             pointer-events: none;
-            transition: opacity 0.14s cubic-bezier(0.4, 0, 1, 1), 
-                        transform 0.14s cubic-bezier(0.4, 0, 1, 1), 
-                        filter 0.14s cubic-bezier(0.4, 0, 1, 1);
+            transition: opacity 0.1s cubic-bezier(0.4, 0, 1, 1);
         }
 
 
