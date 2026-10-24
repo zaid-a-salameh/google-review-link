@@ -649,27 +649,36 @@
             return;
         }
 
-        // 2. Coordinated cross-dissolve with layout lock
+        if (isLangSwitching) return;
+
+        // 2. Coordinated continuous vertical roll (mirrors lock/unlock modal)
         isLangSwitching = true;
         document.body.classList.add('is-lang-switching');
 
         setTimeout(() => {
             try {
+                // Phase 2: Instantly set incoming text BELOW (+9px) with opacity 0
+                document.body.classList.remove('is-lang-switching');
+                document.body.classList.add('is-lang-entering');
+
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
                 if (window.updatePwdTabSlider) window.updatePwdTabSlider();
             } catch (e) {
                 console.error('Error during language switch:', e);
-            } finally {
+            }
+
+            // Phase 3: Release to glide smoothly up from below to 0
+            requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    document.body.classList.remove('is-lang-switching');
+                    document.body.classList.remove('is-lang-entering');
                     if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
                     if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
                     setTimeout(() => {
                         isLangSwitching = false;
-                    }, 200);
+                    }, 260);
                 });
-            }
+            });
         }, 110);
     }
 

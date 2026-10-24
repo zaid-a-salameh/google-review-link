@@ -860,8 +860,8 @@
 
         .morph-collapsing > * {
             opacity: 0 !important;
-            transform: scale(0.92) !important;
-            transition: opacity 0.12s ease !important;
+            transform: scale(0.95) !important;
+            transition: opacity 0.14s ease, transform 0.14s ease !important;
         }
 
         .pwd-modal.unlock-mode {

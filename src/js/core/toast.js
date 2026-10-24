@@ -126,14 +126,20 @@
 
         if (modalBox && deltaX !== null && deltaY !== null && scaleX && scaleY) {
             modalBox.classList.add('morph-collapsing');
-            modalBox.style.transition = 'transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease';
+            modalBox.style.transition = 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s cubic-bezier(0.4, 0, 1, 1)';
             modalBox.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`;
             modalBox.style.borderRadius = '14px';
             modalBox.style.opacity = '0';
             overlay.classList.remove('active');
 
+            if (triggerBtn) {
+                setTimeout(() => {
+                    triggerBtn.classList.remove('morph-active-btn');
+                }, 180);
+            }
+
             setTimeout(() => {
-                modalBox.classList.remove('morph-collapsing');
+                modalBox.classList.remove('morph-active', 'morph-collapsing');
                 modalBox.style.transition = '';
                 modalBox.style.transform = '';
                 modalBox.style.borderRadius = '';
@@ -147,7 +153,7 @@
                     modalBox._morphTriggerBtn = null;
                 }
                 if (typeof callback === 'function') callback();
-            }, 260);
+            }, 300);
         } else {
             overlay.classList.remove('active');
             if (triggerBtn) {

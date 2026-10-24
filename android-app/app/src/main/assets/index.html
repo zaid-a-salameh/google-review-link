@@ -256,17 +256,116 @@
         }
 
 
-        /* Pure Hardware-Accelerated Seamless Language Transition */
-        .lang-fade-node {
-            transition: opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity;
+        /* ======================================================== */
+        /* Language Text Continuous Vertical Roll Animation        */
+        /* (Mirrors Lock/Unlock Modal Text Slide Effect)            */
+        /* ======================================================== */
+        .lang-slide-text,
+        #appTitle,
+        #appSubtitle,
+        .mode-tab span,
+        .btn-card-tool span,
+        .result-label,
+        .btn-action span,
+        .tool-btn span,
+        .qr-title,
+        .qr-desc,
+        .nfc-title,
+        .nfc-desc,
+        .perm-lock-modal .qr-title,
+        .perm-lock-modal .qr-desc,
+        .perm-lock-actions button,
+        .btn-qr-download span,
+        .btn-qr-close,
+        .update-title,
+        .update-desc,
+        .update-actions button,
+        .hero-title,
+        .hero-subtitle,
+        .feature-card h3,
+        .feature-card p,
+        .faq-question span,
+        .faq-answer p {
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
             backface-visibility: hidden;
-            transform: translateZ(0);
+            transform: translate3d(0, 0, 0);
         }
-        body.is-lang-switching .lang-fade-node {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.1s cubic-bezier(0.4, 0, 1, 1);
+
+        /* Phase 1 (Exit): Outgoing text slides UP and fades out */
+        body.is-lang-switching .lang-slide-text,
+        body.is-lang-switching #appTitle,
+        body.is-lang-switching #appSubtitle,
+        body.is-lang-switching .mode-tab span,
+        body.is-lang-switching .btn-card-tool span,
+        body.is-lang-switching .result-label,
+        body.is-lang-switching .btn-action span,
+        body.is-lang-switching .tool-btn span,
+        body.is-lang-switching .qr-title,
+        body.is-lang-switching .qr-desc,
+        body.is-lang-switching .nfc-title,
+        body.is-lang-switching .nfc-desc,
+        body.is-lang-switching .perm-lock-modal .qr-title,
+        body.is-lang-switching .perm-lock-modal .qr-desc,
+        body.is-lang-switching .perm-lock-actions button,
+        body.is-lang-switching .btn-qr-download span,
+        body.is-lang-switching .btn-qr-close,
+        body.is-lang-switching .update-title,
+        body.is-lang-switching .update-desc,
+        body.is-lang-switching .update-actions button,
+        body.is-lang-switching .hero-title,
+        body.is-lang-switching .hero-subtitle,
+        body.is-lang-switching .feature-card h3,
+        body.is-lang-switching .feature-card p,
+        body.is-lang-switching .faq-question span,
+        body.is-lang-switching .faq-answer p {
+            opacity: 0 !important;
+            transform: translate3d(0, -9px, 0) !important;
+            transition: transform 0.11s cubic-bezier(0.4, 0, 1, 1), 
+                        opacity 0.11s cubic-bezier(0.4, 0, 1, 1) !important;
+        }
+
+        /* Phase 2 (Prepare Incoming): New text positioned BELOW without transition */
+        body.is-lang-entering .lang-slide-text,
+        body.is-lang-entering #appTitle,
+        body.is-lang-entering #appSubtitle,
+        body.is-lang-entering .mode-tab span,
+        body.is-lang-entering .btn-card-tool span,
+        body.is-lang-entering .result-label,
+        body.is-lang-entering .btn-action span,
+        body.is-lang-entering .tool-btn span,
+        body.is-lang-entering .qr-title,
+        body.is-lang-entering .qr-desc,
+        body.is-lang-entering .nfc-title,
+        body.is-lang-entering .nfc-desc,
+        body.is-lang-entering .perm-lock-modal .qr-title,
+        body.is-lang-entering .perm-lock-modal .qr-desc,
+        body.is-lang-entering .perm-lock-actions button,
+        body.is-lang-entering .btn-qr-download span,
+        body.is-lang-entering .btn-qr-close,
+        body.is-lang-entering .update-title,
+        body.is-lang-entering .update-desc,
+        body.is-lang-entering .update-actions button,
+        body.is-lang-entering .hero-title,
+        body.is-lang-entering .hero-subtitle,
+        body.is-lang-entering .feature-card h3,
+        body.is-lang-entering .feature-card p,
+        body.is-lang-entering .faq-question span,
+        body.is-lang-entering .faq-answer p {
+            opacity: 0 !important;
+            transform: translate3d(0, 9px, 0) !important;
+            transition: none !important;
+        }
+
+        /* Input Placeholders Transition */
+        input::placeholder {
+            transition: opacity 0.2s ease;
+        }
+        body.is-lang-switching input::placeholder,
+        body.is-lang-entering input::placeholder {
+            opacity: 0 !important;
+            transition: opacity 0.1s ease !important;
         }
 
 
@@ -1284,9 +1383,10 @@
             fill: #F5277D;
         }
         .btn-card-tool.morph-active-btn {
-            transform: scale(0.94) !important;
-            opacity: 0.65 !important;
+            transform: scale(0.95) !important;
+            opacity: 0.7 !important;
             border-color: rgba(249, 115, 22, 0.6) !important;
+            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.26s ease, border-color 0.26s ease;
         }
 
 /* == search-dropdown.css == */
@@ -2750,8 +2850,8 @@
 
         .morph-collapsing > * {
             opacity: 0 !important;
-            transform: scale(0.92) !important;
-            transition: opacity 0.12s ease !important;
+            transform: scale(0.95) !important;
+            transition: opacity 0.14s ease, transform 0.14s ease !important;
         }
 
         .pwd-modal.unlock-mode {
@@ -3298,7 +3398,7 @@ body {
 
 
     <!-- Main Content Wrapper -->
-    <main class="main-wrapper lang-fade-node" id="mainWrapper">
+    <main class="main-wrapper" id="mainWrapper">
         <div class="app-container" id="appContainer">
         
         <!-- Top Bar with APK Download & Language Toggle -->
@@ -4316,27 +4416,36 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             return;
         }
 
-        // 2. Coordinated cross-dissolve with layout lock
+        if (isLangSwitching) return;
+
+        // 2. Coordinated continuous vertical roll (mirrors lock/unlock modal)
         isLangSwitching = true;
         document.body.classList.add('is-lang-switching');
 
         setTimeout(() => {
             try {
+                // Phase 2: Instantly set incoming text BELOW (+9px) with opacity 0
+                document.body.classList.remove('is-lang-switching');
+                document.body.classList.add('is-lang-entering');
+
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
                 if (window.updatePwdTabSlider) window.updatePwdTabSlider();
             } catch (e) {
                 console.error('Error during language switch:', e);
-            } finally {
+            }
+
+            // Phase 3: Release to glide smoothly up from below to 0
+            requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
-                    document.body.classList.remove('is-lang-switching');
+                    document.body.classList.remove('is-lang-entering');
                     if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
                     if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
                     setTimeout(() => {
                         isLangSwitching = false;
-                    }, 200);
+                    }, 260);
                 });
-            }
+            });
         }, 110);
     }
 
@@ -4495,14 +4604,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (modalBox && deltaX !== null && deltaY !== null && scaleX && scaleY) {
             modalBox.classList.add('morph-collapsing');
-            modalBox.style.transition = 'transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease';
+            modalBox.style.transition = 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s cubic-bezier(0.4, 0, 1, 1)';
             modalBox.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`;
             modalBox.style.borderRadius = '14px';
             modalBox.style.opacity = '0';
             overlay.classList.remove('active');
 
+            if (triggerBtn) {
+                setTimeout(() => {
+                    triggerBtn.classList.remove('morph-active-btn');
+                }, 180);
+            }
+
             setTimeout(() => {
-                modalBox.classList.remove('morph-collapsing');
+                modalBox.classList.remove('morph-active', 'morph-collapsing');
                 modalBox.style.transition = '';
                 modalBox.style.transform = '';
                 modalBox.style.borderRadius = '';
@@ -4516,7 +4631,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     modalBox._morphTriggerBtn = null;
                 }
                 if (typeof callback === 'function') callback();
-            }, 260);
+            }, 300);
         } else {
             overlay.classList.remove('active');
             if (triggerBtn) {
