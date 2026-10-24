@@ -54,12 +54,8 @@
         let highlightedSuggestionIndex = -1;
 
         function syncToolsVisibility() {
-            const activeMode = window.AppModes ? window.AppModes.activeMode : 'link';
-            const hasResult = resultCard && resultCard.classList.contains('active');
-            if (activeMode === 'link') {
-                if (cardToolsRow) cardToolsRow.style.display = hasResult ? 'none' : 'grid';
-            } else {
-                if (cardToolsRow) cardToolsRow.style.display = 'none';
+            if (cardToolsRow) {
+                cardToolsRow.style.display = 'grid';
             }
         }
         window.syncToolsVisibility = syncToolsVisibility;

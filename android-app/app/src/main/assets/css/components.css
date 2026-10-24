@@ -434,7 +434,8 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 8px;
-            margin-top: 12px;
+            margin-top: 2px;
+            margin-bottom: 2px;
             width: 100%;
             transition: opacity 0.2s ease, transform 0.2s ease;
         }

@@ -266,6 +266,9 @@
     window.onNfcTagRead = function(url) {
         if (!url) return;
         const dict = getDict();
+        if (window.switchMode) {
+            window.switchMode('link');
+        }
         const urlInput = document.getElementById('urlInput');
         if (urlInput) {
             urlInput.value = url;
