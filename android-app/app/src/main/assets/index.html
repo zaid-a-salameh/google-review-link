@@ -1283,6 +1283,11 @@
         .btn-card-tool.btn-tool-danger svg {
             fill: #F5277D;
         }
+        .btn-card-tool.morph-active-btn {
+            transform: scale(0.94) !important;
+            opacity: 0.65 !important;
+            border-color: rgba(249, 115, 22, 0.6) !important;
+        }
 
 /* == search-dropdown.css == */
 /* Places Autocomplete & Search Mode */
@@ -2721,6 +2726,34 @@
             opacity: 1;
             transform: scale(1) translateY(0) translateZ(0);
         }
+
+        /* Morphing Container Transform System */
+        .pwd-modal,
+        .perm-lock-modal,
+        .nfc-modal {
+            transform-origin: center center;
+            will-change: transform, opacity, border-radius;
+        }
+
+        .pwd-modal > *,
+        .perm-lock-modal > *,
+        .nfc-modal > * {
+            transition: opacity 0.22s ease 0.06s, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.06s;
+            will-change: opacity, transform;
+        }
+
+        .morph-expanding > * {
+            opacity: 0 !important;
+            transform: scale(0.92) !important;
+            transition: none !important;
+        }
+
+        .morph-collapsing > * {
+            opacity: 0 !important;
+            transform: scale(0.92) !important;
+            transition: opacity 0.12s ease !important;
+        }
+
         .pwd-modal.unlock-mode {
             border-color: rgba(16, 185, 129, 0.45);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.22);
@@ -4386,7 +4419,117 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }, duration);
     }
 
+    // ========================================================
+    // Morphing Container Transform Engine (Button-to-Modal)
+    // ========================================================
+    function openMorphModal(overlay, modalBox, triggerBtn) {
+        if (!overlay || !modalBox) return;
+
+        // Dismiss virtual keyboard to avoid viewport shifts
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
+
+        if (!triggerBtn || typeof triggerBtn.getBoundingClientRect !== 'function') {
+            overlay.classList.add('active');
+            return;
+        }
+
+        const btnRect = triggerBtn.getBoundingClientRect();
+        const modalRect = modalBox.getBoundingClientRect();
+
+        // Calculate center offsets between the button and the centered modal
+        const modalCenterX = modalRect.left + (modalRect.width / 2);
+        const modalCenterY = modalRect.top + (modalRect.height / 2);
+        const btnCenterX = btnRect.left + (btnRect.width / 2);
+        const btnCenterY = btnRect.top + (btnRect.height / 2);
+
+        const deltaX = btnCenterX - modalCenterX;
+        const deltaY = btnCenterY - modalCenterY;
+        const scaleX = modalRect.width > 0 ? (btnRect.width / modalRect.width) : 0.3;
+        const scaleY = modalRect.height > 0 ? (btnRect.height / modalRect.height) : 0.2;
+
+        // Save origin parameters for collapse animation
+        modalBox.dataset.morphDeltaX = deltaX.toFixed(2);
+        modalBox.dataset.morphDeltaY = deltaY.toFixed(2);
+        modalBox.dataset.morphScaleX = scaleX.toFixed(3);
+        modalBox.dataset.morphScaleY = scaleY.toFixed(3);
+        modalBox._morphTriggerBtn = triggerBtn;
+
+        // Mark trigger button as active
+        triggerBtn.classList.add('morph-active-btn');
+
+        // Set initial state: collapsed down to button bounds
+        modalBox.classList.add('morph-expanding');
+        modalBox.style.transition = 'none';
+        modalBox.style.transform = `translate3d(${deltaX.toFixed(2)}px, ${deltaY.toFixed(2)}px, 0) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
+        modalBox.style.borderRadius = '14px';
+        modalBox.style.opacity = '0.45';
+
+        // Show overlay backdrop
+        overlay.classList.add('active');
+
+        // Next paint frames: expand smoothly to center
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                modalBox.style.transition = 'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease';
+                modalBox.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+                modalBox.style.borderRadius = '28px';
+                modalBox.style.opacity = '1';
+                modalBox.classList.remove('morph-expanding');
+            });
+        });
+    }
+
+    function closeMorphModal(overlay, modalBox, callback) {
+        if (!overlay || !overlay.classList.contains('active')) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        const deltaX = modalBox ? modalBox.dataset.morphDeltaX : null;
+        const deltaY = modalBox ? modalBox.dataset.morphDeltaY : null;
+        const scaleX = modalBox ? modalBox.dataset.morphScaleX : null;
+        const scaleY = modalBox ? modalBox.dataset.morphScaleY : null;
+        const triggerBtn = modalBox ? modalBox._morphTriggerBtn : null;
+
+        if (modalBox && deltaX !== null && deltaY !== null && scaleX && scaleY) {
+            modalBox.classList.add('morph-collapsing');
+            modalBox.style.transition = 'transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.18s ease';
+            modalBox.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`;
+            modalBox.style.borderRadius = '14px';
+            modalBox.style.opacity = '0';
+            overlay.classList.remove('active');
+
+            setTimeout(() => {
+                modalBox.classList.remove('morph-collapsing');
+                modalBox.style.transition = '';
+                modalBox.style.transform = '';
+                modalBox.style.borderRadius = '';
+                modalBox.style.opacity = '';
+                delete modalBox.dataset.morphDeltaX;
+                delete modalBox.dataset.morphDeltaY;
+                delete modalBox.dataset.morphScaleX;
+                delete modalBox.dataset.morphScaleY;
+                if (triggerBtn) {
+                    triggerBtn.classList.remove('morph-active-btn');
+                    modalBox._morphTriggerBtn = null;
+                }
+                if (typeof callback === 'function') callback();
+            }, 260);
+        } else {
+            overlay.classList.remove('active');
+            if (triggerBtn) {
+                triggerBtn.classList.remove('morph-active-btn');
+                if (modalBox) modalBox._morphTriggerBtn = null;
+            }
+            if (typeof callback === 'function') callback();
+        }
+    }
+
     window.showToast = showToast;
+    window.openMorphModal = openMorphModal;
+    window.closeMorphModal = closeMorphModal;
 })();
 
 /* == core/converter.js == */
@@ -5411,7 +5554,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
         setNfcModalState('ready');
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.add('active');
+        const btn = triggerBtn || document.getElementById('btnNfc');
+        if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+            window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+        } else if (nfcOverlay) {
+            nfcOverlay.classList.add('active');
+        }
     }
 
     function closeNfcModal() {
@@ -5421,10 +5569,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             nfcResetTimer = null;
         }
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+            window.closeMorphModal(nfcOverlay, nfcModalBox);
+        } else if (nfcOverlay) {
+            nfcOverlay.classList.remove('active');
+        }
         const nfcNextBtn = document.getElementById('nfcNextBtn');
         if (nfcNextBtn) nfcNextBtn.style.display = 'none';
-        const nfcModalBox = document.getElementById('nfcModalBox');
         if (nfcModalBox) {
             nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'morph-to-ready', 'has-next-btn');
         }
@@ -5465,35 +5617,47 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
-    function startNfcRead() {
+    function startNfcRead(triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'read';
         if (window.AndroidNative && window.AndroidNative.startNfcRead) {
             setNfcModalState('read_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnReadTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcRead();
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPermanentLock() {
+    function startNfcPermanentLock(triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'perm_lock';
         if (window.AndroidNative && window.AndroidNative.startNfcPermanentLock) {
             setNfcModalState('perm_lock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnPermLockTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcPermanentLock();
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPasswordLock(pin) {
+    function startNfcPasswordLock(pin, triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
@@ -5503,14 +5667,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnPwdLockTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcPasswordLock(pin);
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPasswordUnlock(pin) {
+    function startNfcPasswordUnlock(pin, triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
@@ -5520,7 +5690,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnPwdLockTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcPasswordUnlock(pin);
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
@@ -5562,7 +5738,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+            window.closeMorphModal(nfcOverlay, nfcModalBox);
+        } else if (nfcOverlay) {
+            nfcOverlay.classList.remove('active');
+        }
 
         if (window.handleDirectUrlInput) {
             window.handleDirectUrlInput(url);
@@ -6018,6 +6199,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const btnPwdSubmit = $('btnPwdSubmit');
         const btnPwdCancel = $('btnPwdCancel');
         const permLockOverlay = $('permLockOverlay');
+        const permLockBox = $('permLockBox');
         const btnPermLockConfirm = $('btnPermLockConfirm');
         const btnPermLockCancel = $('btnPermLockCancel');
 
@@ -6102,7 +6284,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         // ── Standalone NFC Card Tool Handlers ──
         if (btnReadTag) {
             btnReadTag.addEventListener('click', () => {
-                if (window.startNfcRead) window.startNfcRead();
+                if (window.startNfcRead) window.startNfcRead(btnReadTag);
             });
         }
 
@@ -6220,7 +6402,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     try { document.activeElement.blur(); } catch (e) {}
                 }
                 if (pwdModalOverlay) {
-                    pwdModalOverlay.classList.add('active');
+                    if (window.openMorphModal && pwdModalBox) {
+                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
+                    } else {
+                        pwdModalOverlay.classList.add('active');
+                    }
                     syncPwdModalText(false);
                     setTimeout(updatePwdTabSlider, 25);
                     setTimeout(updatePwdTabSlider, 80);
@@ -6237,7 +6423,24 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (btnPwdCancel && pwdModalOverlay) {
             btnPwdCancel.addEventListener('click', () => {
                 if (nfcPinInput) nfcPinInput.blur();
-                pwdModalOverlay.classList.remove('active');
+                if (window.closeMorphModal && pwdModalBox) {
+                    window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                } else {
+                    pwdModalOverlay.classList.remove('active');
+                }
+            });
+        }
+
+        if (pwdModalOverlay) {
+            pwdModalOverlay.addEventListener('click', e => {
+                if (e.target === pwdModalOverlay) {
+                    if (nfcPinInput) nfcPinInput.blur();
+                    if (window.closeMorphModal && pwdModalBox) {
+                        window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                    } else {
+                        pwdModalOverlay.classList.remove('active');
+                    }
+                }
             });
         }
 
@@ -6276,11 +6479,22 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     return;
                 }
                 if (nfcPinInput) nfcPinInput.blur();
-                if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
-                if (pwdCurrentAction === 'lock') {
-                    if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin);
+                const action = pwdCurrentAction;
+                if (window.closeMorphModal && pwdModalBox) {
+                    window.closeMorphModal(pwdModalOverlay, pwdModalBox, () => {
+                        if (action === 'lock') {
+                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
+                        } else {
+                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
+                        }
+                    });
                 } else {
-                    if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin);
+                    if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
+                    if (action === 'lock') {
+                        if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
+                    } else {
+                        if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
+                    }
                 }
             });
         }
@@ -6290,20 +6504,48 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     try { document.activeElement.blur(); } catch (e) {}
                 }
-                if (permLockOverlay) permLockOverlay.classList.add('active');
+                if (permLockOverlay) {
+                    if (window.openMorphModal && permLockBox) {
+                        window.openMorphModal(permLockOverlay, permLockBox, btnPermLockTag);
+                    } else {
+                        permLockOverlay.classList.add('active');
+                    }
+                }
             });
         }
 
         if (btnPermLockCancel && permLockOverlay) {
             btnPermLockCancel.addEventListener('click', () => {
-                permLockOverlay.classList.remove('active');
+                if (window.closeMorphModal && permLockBox) {
+                    window.closeMorphModal(permLockOverlay, permLockBox);
+                } else {
+                    permLockOverlay.classList.remove('active');
+                }
+            });
+        }
+
+        if (permLockOverlay) {
+            permLockOverlay.addEventListener('click', e => {
+                if (e.target === permLockOverlay) {
+                    if (window.closeMorphModal && permLockBox) {
+                        window.closeMorphModal(permLockOverlay, permLockBox);
+                    } else {
+                        permLockOverlay.classList.remove('active');
+                    }
+                }
             });
         }
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                if (permLockOverlay) permLockOverlay.classList.remove('active');
-                if (window.startNfcPermanentLock) window.startNfcPermanentLock();
+                if (window.closeMorphModal && permLockBox) {
+                    window.closeMorphModal(permLockOverlay, permLockBox, () => {
+                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                    });
+                } else {
+                    if (permLockOverlay) permLockOverlay.classList.remove('active');
+                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                }
             });
         }
 
@@ -6443,6 +6685,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         // ── NFC Button & Modal Handlers ──
         if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
         if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
+        const nfcOverlay = $('nfcOverlay');
+        if (nfcOverlay) {
+            nfcOverlay.addEventListener('click', e => {
+                if (e.target === nfcOverlay && window.closeNfcModal) window.closeNfcModal();
+            });
+        }
 
         // ── In-App Update Handlers ──
         if (btnCheckUpdate) {

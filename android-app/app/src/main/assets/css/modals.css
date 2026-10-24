@@ -836,6 +836,34 @@
             opacity: 1;
             transform: scale(1) translateY(0) translateZ(0);
         }
+
+        /* Morphing Container Transform System */
+        .pwd-modal,
+        .perm-lock-modal,
+        .nfc-modal {
+            transform-origin: center center;
+            will-change: transform, opacity, border-radius;
+        }
+
+        .pwd-modal > *,
+        .perm-lock-modal > *,
+        .nfc-modal > * {
+            transition: opacity 0.22s ease 0.06s, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.06s;
+            will-change: opacity, transform;
+        }
+
+        .morph-expanding > * {
+            opacity: 0 !important;
+            transform: scale(0.92) !important;
+            transition: none !important;
+        }
+
+        .morph-collapsing > * {
+            opacity: 0 !important;
+            transform: scale(0.92) !important;
+            transition: opacity 0.12s ease !important;
+        }
+
         .pwd-modal.unlock-mode {
             border-color: rgba(16, 185, 129, 0.45);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(16, 185, 129, 0.22);

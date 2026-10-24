@@ -47,6 +47,7 @@
         const btnPwdSubmit = $('btnPwdSubmit');
         const btnPwdCancel = $('btnPwdCancel');
         const permLockOverlay = $('permLockOverlay');
+        const permLockBox = $('permLockBox');
         const btnPermLockConfirm = $('btnPermLockConfirm');
         const btnPermLockCancel = $('btnPermLockCancel');
 
@@ -131,7 +132,7 @@
         // ── Standalone NFC Card Tool Handlers ──
         if (btnReadTag) {
             btnReadTag.addEventListener('click', () => {
-                if (window.startNfcRead) window.startNfcRead();
+                if (window.startNfcRead) window.startNfcRead(btnReadTag);
             });
         }
 
@@ -249,7 +250,11 @@
                     try { document.activeElement.blur(); } catch (e) {}
                 }
                 if (pwdModalOverlay) {
-                    pwdModalOverlay.classList.add('active');
+                    if (window.openMorphModal && pwdModalBox) {
+                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
+                    } else {
+                        pwdModalOverlay.classList.add('active');
+                    }
                     syncPwdModalText(false);
                     setTimeout(updatePwdTabSlider, 25);
                     setTimeout(updatePwdTabSlider, 80);
@@ -266,7 +271,24 @@
         if (btnPwdCancel && pwdModalOverlay) {
             btnPwdCancel.addEventListener('click', () => {
                 if (nfcPinInput) nfcPinInput.blur();
-                pwdModalOverlay.classList.remove('active');
+                if (window.closeMorphModal && pwdModalBox) {
+                    window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                } else {
+                    pwdModalOverlay.classList.remove('active');
+                }
+            });
+        }
+
+        if (pwdModalOverlay) {
+            pwdModalOverlay.addEventListener('click', e => {
+                if (e.target === pwdModalOverlay) {
+                    if (nfcPinInput) nfcPinInput.blur();
+                    if (window.closeMorphModal && pwdModalBox) {
+                        window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                    } else {
+                        pwdModalOverlay.classList.remove('active');
+                    }
+                }
             });
         }
 
@@ -305,11 +327,22 @@
                     return;
                 }
                 if (nfcPinInput) nfcPinInput.blur();
-                if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
-                if (pwdCurrentAction === 'lock') {
-                    if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin);
+                const action = pwdCurrentAction;
+                if (window.closeMorphModal && pwdModalBox) {
+                    window.closeMorphModal(pwdModalOverlay, pwdModalBox, () => {
+                        if (action === 'lock') {
+                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
+                        } else {
+                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
+                        }
+                    });
                 } else {
-                    if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin);
+                    if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
+                    if (action === 'lock') {
+                        if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
+                    } else {
+                        if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
+                    }
                 }
             });
         }
@@ -319,20 +352,48 @@
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     try { document.activeElement.blur(); } catch (e) {}
                 }
-                if (permLockOverlay) permLockOverlay.classList.add('active');
+                if (permLockOverlay) {
+                    if (window.openMorphModal && permLockBox) {
+                        window.openMorphModal(permLockOverlay, permLockBox, btnPermLockTag);
+                    } else {
+                        permLockOverlay.classList.add('active');
+                    }
+                }
             });
         }
 
         if (btnPermLockCancel && permLockOverlay) {
             btnPermLockCancel.addEventListener('click', () => {
-                permLockOverlay.classList.remove('active');
+                if (window.closeMorphModal && permLockBox) {
+                    window.closeMorphModal(permLockOverlay, permLockBox);
+                } else {
+                    permLockOverlay.classList.remove('active');
+                }
+            });
+        }
+
+        if (permLockOverlay) {
+            permLockOverlay.addEventListener('click', e => {
+                if (e.target === permLockOverlay) {
+                    if (window.closeMorphModal && permLockBox) {
+                        window.closeMorphModal(permLockOverlay, permLockBox);
+                    } else {
+                        permLockOverlay.classList.remove('active');
+                    }
+                }
             });
         }
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                if (permLockOverlay) permLockOverlay.classList.remove('active');
-                if (window.startNfcPermanentLock) window.startNfcPermanentLock();
+                if (window.closeMorphModal && permLockBox) {
+                    window.closeMorphModal(permLockOverlay, permLockBox, () => {
+                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                    });
+                } else {
+                    if (permLockOverlay) permLockOverlay.classList.remove('active');
+                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                }
             });
         }
 
@@ -472,6 +533,12 @@
         // ── NFC Button & Modal Handlers ──
         if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
         if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
+        const nfcOverlay = $('nfcOverlay');
+        if (nfcOverlay) {
+            nfcOverlay.addEventListener('click', e => {
+                if (e.target === nfcOverlay && window.closeNfcModal) window.closeNfcModal();
+            });
+        }
 
         // ── In-App Update Handlers ──
         if (btnCheckUpdate) {

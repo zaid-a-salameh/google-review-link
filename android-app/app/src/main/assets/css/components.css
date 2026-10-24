@@ -532,3 +532,8 @@
         .btn-card-tool.btn-tool-danger svg {
             fill: #F5277D;
         }
+        .btn-card-tool.morph-active-btn {
+            transform: scale(0.94) !important;
+            opacity: 0.65 !important;
+            border-color: rgba(249, 115, 22, 0.6) !important;
+        }

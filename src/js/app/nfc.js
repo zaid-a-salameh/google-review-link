@@ -240,7 +240,12 @@
         }
         setNfcModalState('ready');
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.add('active');
+        const btn = triggerBtn || document.getElementById('btnNfc');
+        if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+            window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+        } else if (nfcOverlay) {
+            nfcOverlay.classList.add('active');
+        }
     }
 
     function closeNfcModal() {
@@ -250,10 +255,14 @@
             nfcResetTimer = null;
         }
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+            window.closeMorphModal(nfcOverlay, nfcModalBox);
+        } else if (nfcOverlay) {
+            nfcOverlay.classList.remove('active');
+        }
         const nfcNextBtn = document.getElementById('nfcNextBtn');
         if (nfcNextBtn) nfcNextBtn.style.display = 'none';
-        const nfcModalBox = document.getElementById('nfcModalBox');
         if (nfcModalBox) {
             nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'morph-to-ready', 'has-next-btn');
         }
@@ -294,35 +303,47 @@
         }
     }
 
-    function startNfcRead() {
+    function startNfcRead(triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'read';
         if (window.AndroidNative && window.AndroidNative.startNfcRead) {
             setNfcModalState('read_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnReadTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcRead();
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPermanentLock() {
+    function startNfcPermanentLock(triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'perm_lock';
         if (window.AndroidNative && window.AndroidNative.startNfcPermanentLock) {
             setNfcModalState('perm_lock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnPermLockTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcPermanentLock();
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPasswordLock(pin) {
+    function startNfcPasswordLock(pin, triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
@@ -332,14 +353,20 @@
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnPwdLockTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcPasswordLock(pin);
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPasswordUnlock(pin) {
+    function startNfcPasswordUnlock(pin, triggerBtn) {
         blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
@@ -349,7 +376,13 @@
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
             const nfcOverlay = document.getElementById('nfcOverlay');
-            if (nfcOverlay) nfcOverlay.classList.add('active');
+            const nfcModalBox = document.getElementById('nfcModalBox');
+            const btn = triggerBtn || document.getElementById('btnPwdLockTag');
+            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
+                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
+            } else if (nfcOverlay) {
+                nfcOverlay.classList.add('active');
+            }
             window.AndroidNative.startNfcPasswordUnlock(pin);
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
@@ -391,7 +424,12 @@
         }
 
         const nfcOverlay = document.getElementById('nfcOverlay');
-        if (nfcOverlay) nfcOverlay.classList.remove('active');
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+            window.closeMorphModal(nfcOverlay, nfcModalBox);
+        } else if (nfcOverlay) {
+            nfcOverlay.classList.remove('active');
+        }
 
         if (window.handleDirectUrlInput) {
             window.handleDirectUrlInput(url);
