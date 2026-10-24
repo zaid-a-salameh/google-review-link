@@ -179,8 +179,8 @@
                 }
                 if (!pwdSubmitLockLabelEl) {
                     btnPwdSubmit.textContent = isLock 
-                        ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
-                        : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+                        ? (dict.pwdSubmitLock || 'Lock Card') 
+                        : (dict.pwdSubmitUnlock || 'Unlock Card');
                 }
             }
             if (pwdModalBox) {
@@ -197,8 +197,8 @@
             }
             if (pwdModalDesc) {
                 pwdModalDesc.textContent = isLock 
-                    ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
-                    : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
+                    ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a PIN to protect card from modifications')
+                    : (dict.pwdModalDescUnlock || 'Enter PIN to remove card protection');
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;

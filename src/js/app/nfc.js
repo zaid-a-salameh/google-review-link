@@ -94,8 +94,8 @@
                 nfcModalBox.classList.remove('success', 'theme-unlock', 'theme-perm-lock');
                 nfcModalBox.classList.add('theme-lock');
             }
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockReady || 'Ready to Set PIN';
-            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockReady || 'Hold phone near card to lock with your PIN.';
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockReady || 'Ready to Lock';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockReady || 'Hold phone near card to lock with PIN...';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             setIconIfChanged(nfcSvgIcon, `
@@ -107,7 +107,7 @@
                 nfcModalBox.classList.add('theme-unlock');
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockReady || 'Ready to Unlock';
-            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockReady || 'Hold phone near card to remove PIN protection.';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockReady || 'Hold phone near card to remove protection...';
             if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             setIconIfChanged(nfcSvgIcon, `
@@ -119,8 +119,8 @@
                 nfcModalBox.classList.add('success');
             }
             if (detail === 'PWD_LOCK') {
-                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked Successfully';
-                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'PIN protection enabled. Card modifications are locked.';
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'Card is now locked against modifications.';
                 if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone || dict.nfcOk || 'Done';
                 if (nfcNextBtn) {
                     nfcNextBtn.className = 'btn-nfc-next theme-lock';
@@ -133,11 +133,11 @@
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
             } else if (detail === 'PWD_UNLOCK' || detail === 'ALREADY_UNLOCKED') {
                 if (detail === 'ALREADY_UNLOCKED') {
-                    if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Is Not Locked';
-                    if (nfcDesc) nfcDesc.textContent = dict.nfcDescAlreadyUnlocked || 'This card does not have password protection enabled.';
+                    if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Not Locked';
+                    if (nfcDesc) nfcDesc.textContent = dict.nfcDescAlreadyUnlocked || 'This card is already unlocked and writable.';
                 } else {
-                    if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked Successfully';
-                    if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card protection removed. You can now write or edit the card.';
+                    if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked';
+                    if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card is now unlocked and ready for editing.';
                 }
                 if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone || dict.nfcOk || 'Done';
                 if (nfcNextBtn) {
