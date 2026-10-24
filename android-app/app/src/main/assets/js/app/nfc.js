@@ -266,7 +266,7 @@
         else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
         else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
         else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
-        else if (errorType === 'PWD_UNSUPPORTED') msg = 'NTAG security not supported on this tag';
+        else if (errorType === 'PWD_UNSUPPORTED') msg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
         else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = 'Locking failed on this tag';
 
         const nfcOverlay = document.getElementById('nfcOverlay');

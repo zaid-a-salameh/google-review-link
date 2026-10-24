@@ -203,28 +203,15 @@
         <!-- Main Input Card -->
         <div class="glass-card main-input-card" id="mainInputCard">
             
-            <!-- Google Maps Mode Toggle -->
-            <div class="gmaps-toggle-container">
-                <button type="button" class="btn-gmaps-toggle" id="btnGmapsToggle">
-                    <span class="gmaps-toggle-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
-                    </span>
-                    <span class="gmaps-toggle-label" id="lblGmapsToggle">Google Maps Reviews Mode</span>
-                    <span class="gmaps-toggle-switch" id="gmapsToggleSwitch">
-                        <span class="gmaps-switch-knob"></span>
-                    </span>
-                </button>
-            </div>
-
-            <!-- Mode Switcher Tabs (Visible ONLY when Google Maps mode is ON) -->
-            <div class="mode-switcher-container" id="modeSwitcherContainer" style="display: none;">
+            <!-- Mode Switcher Tabs (Direct Link & Find Business) -->
+            <div class="mode-switcher-container" id="modeSwitcherContainer">
                 <div class="mode-tabs">
                     <div class="mode-tab-slider" id="modeTabSlider"></div>
-                    <button type="button" class="mode-tab" id="tabLinkMode" data-mode="link">
+                    <button type="button" class="mode-tab active" id="tabLinkMode" data-mode="link">
                         <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
                         <span id="tabLinkLabel">Direct Link</span>
                     </button>
-                    <button type="button" class="mode-tab active" id="tabSearchMode" data-mode="search">
+                    <button type="button" class="mode-tab" id="tabSearchMode" data-mode="search">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         <span id="tabSearchLabel">Find Business</span>
                     </button>

@@ -74,7 +74,6 @@
                 qrDownloadBtn: "Download QR Image",
                 qrCloseBtn: "Close",
                 qrDownloaded: "QR Code downloaded",
-                lblGmapsToggle: "Google Maps Reviews Mode",
                 lblReadTag: "Read Card to Copy",
                 lblPwdLockTag: "PIN Lock / Unlock",
                 lblPermLockTag: "Permanent Lock",
@@ -102,10 +101,11 @@
                 permLockCancelBtn: "Cancel",
                 toastNfcReadSuccess: "Link read and loaded successfully",
                 toastNfcReadEmpty: "No valid URL found on this card",
-                toastNfcPermLockSuccess: "NFC card permanently locked to Read-Only",
-                toastNfcPwdLockSuccess: "NFC card locked with PIN successfully",
-                toastNfcPwdUnlockSuccess: "NFC card unlocked successfully",
+                toastNfcPermLockSuccess: "Card permanently locked to Read-Only",
+                toastNfcPwdLockSuccess: "Card locked with PIN successfully",
+                toastNfcPwdUnlockSuccess: "Card unlocked successfully",
                 toastNfcWrongPwd: "Incorrect PIN or unlocking failed",
+                toastNfcPwdUnsupported: "PIN protection is not supported on this card",
                 nfcTitleSuccess: "Write Successful!",
                 nfcDescSuccess: "The review link was successfully programmed onto the card.",
                 nfcTitleNext: "Ready to Write",
@@ -239,7 +239,6 @@
                 qrDownloadBtn: "تنزيل صورة الـ QR",
                 qrCloseBtn: "إغلاق",
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
-                lblGmapsToggle: "وضع تقييمات Google Maps",
                 lblReadTag: "قراءة كارت للنسخ",
                 lblPwdLockTag: "قفل / فك برمز",
                 lblPermLockTag: "إقفال نهائي",
@@ -255,7 +254,7 @@
                 nfcTitlePwdUnlockReady: "جاهز لفك القفل",
                 nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
                 pwdModalTitle: "حماية بطاقة NFC برمز",
-                pwdModalDesc: "عيّن رمز PIN من 4 أرقام لحماية البطاقة من التعديل العبثي",
+                pwdModalDesc: "عيّن رمز PIN من 4 أرقام لحماية البطاقة من التعديل",
                 pwdTabLock: "قفل البطاقة",
                 pwdTabUnlock: "فك القفل",
                 pwdSubmitLock: "تفعيل الرمز وتقريب البطاقة",
@@ -271,6 +270,7 @@
                 toastNfcPwdLockSuccess: "تم قفل البطاقة برمز PIN بنجاح",
                 toastNfcPwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
                 toastNfcWrongPwd: "رمز PIN غير صحيح أو تعذر فك القفل",
+                toastNfcPwdUnsupported: "ميزة القفل برمز غير مدعومة على هذه البطاقة",
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
                 nfcDescSuccess: "تمت برمجة بطاقة التقييم بنجاح.",
                 nfcTitleNext: "جاهز للكتابة",
@@ -440,7 +440,6 @@
         setTxt('nfcBtnLabel', dict.nfcBtn);
 
         // NFC Card Tools & Security
-        setTxt('lblGmapsToggle', dict.lblGmapsToggle);
         setTxt('lblReadTag', dict.lblReadTag);
         setTxt('lblPwdLockTag', dict.lblPwdLockTag);
         setTxt('lblPermLockTag', dict.lblPermLockTag);

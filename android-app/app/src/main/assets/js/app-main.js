@@ -36,8 +36,6 @@
         const btnUpdateLater = $('btnUpdateLater');
         const updateOverlay = $('updateOverlay');
 
-        const btnGmapsToggle = $('btnGmapsToggle');
-        const modeSwitcherContainer = $('modeSwitcherContainer');
         const cardToolsRow = $('cardToolsRow');
         const btnReadTag = $('btnReadTag');
         const btnPwdLockTag = $('btnPwdLockTag');
@@ -54,39 +52,19 @@
 
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
-        let isGmapsModeActive = false;
-        window.isGmapsModeActive = () => isGmapsModeActive;
 
         function syncToolsVisibility() {
-            if (isGmapsModeActive) {
-                if (cardToolsRow) cardToolsRow.style.display = 'none';
-                if (convertBtn) convertBtn.style.display = 'flex';
-                if (modeSwitcherContainer) modeSwitcherContainer.style.display = 'flex';
-            } else {
-                if (convertBtn) convertBtn.style.display = 'none';
-                if (modeSwitcherContainer) modeSwitcherContainer.style.display = 'none';
-                const hasResult = resultCard && resultCard.classList.contains('active');
+            const activeMode = window.AppModes ? window.AppModes.activeMode : 'link';
+            const hasResult = resultCard && resultCard.classList.contains('active');
+            if (activeMode === 'link') {
                 if (cardToolsRow) cardToolsRow.style.display = hasResult ? 'none' : 'grid';
+            } else {
+                if (cardToolsRow) cardToolsRow.style.display = 'none';
             }
         }
+        window.syncToolsVisibility = syncToolsVisibility;
 
-        // ── Google Maps Mode Toggle ──
-        if (btnGmapsToggle) {
-            btnGmapsToggle.addEventListener('click', () => {
-                isGmapsModeActive = !isGmapsModeActive;
-                btnGmapsToggle.classList.toggle('active', isGmapsModeActive);
-                syncToolsVisibility();
-                if (isGmapsModeActive) {
-                    if (window.switchMode) window.switchMode('search');
-                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
-                    if (window.initGoogleMapsPlaces) window.initGoogleMapsPlaces();
-                } else {
-                    if (window.switchMode) window.switchMode('link');
-                }
-            });
-        }
-
-        // ── Direct URL Handler ──
+        // ── Direct URL Handler with Smart Auto-Detect ──
         function handleDirectUrlInput(raw) {
             const text = (raw || '').trim();
             if (!text) {
@@ -99,7 +77,24 @@
                 return;
             }
 
-            // Auto-detect Google Maps links
+            // 1. If it's already a 5-star Google review link (writereview?placeid=...)
+            // Preserve it exactly as-is without re-converting or breaking it
+            if (/writereview\?placeid=/i.test(text)) {
+                if (window.AppModes) {
+                    window.AppModes.setModeResult('link', text);
+                } else {
+                    const resultLinkText = $('resultLinkText');
+                    if (resultLinkText) resultLinkText.textContent = text;
+                    if (resultCard) resultCard.classList.add('active');
+                }
+                syncToolsVisibility();
+                if (resultCard) {
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                return;
+            }
+
+            // 2. If it's a raw Google Maps share link, auto-convert it to a 5-star review link
             if (/maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(text)) {
                 if (window.handleConvert) {
                     window.handleConvert();
@@ -108,7 +103,7 @@
                 }
             }
 
-            // Normal or direct link
+            // 3. Any other direct URL (website, menu, instagram, whatsapp, etc.)
             if (window.AppModes) {
                 window.AppModes.setModeResult('link', text);
             } else {
@@ -206,29 +201,36 @@
         if (tabSearchMode) tabSearchMode.addEventListener('click', () => window.switchMode('search'));
 
         // ── Input & Convert Listeners ──
-        if (convertBtn) convertBtn.addEventListener('click', window.handleConvert);
+        if (convertBtn) convertBtn.addEventListener('click', () => {
+            if (urlInput) handleDirectUrlInput(urlInput.value);
+        });
         if (urlInput) {
+            let directInputTimer = null;
             urlInput.addEventListener('keydown', e => {
                 if (e.key === 'Enter') {
-                    if (isGmapsModeActive && window.handleConvert) {
-                        window.handleConvert();
-                    } else {
-                        handleDirectUrlInput(urlInput.value);
-                    }
+                    if (directInputTimer) clearTimeout(directInputTimer);
+                    handleDirectUrlInput(urlInput.value);
                 }
             });
             urlInput.addEventListener('input', () => {
                 const val = urlInput.value.trim();
-                if (!isGmapsModeActive) {
-                    handleDirectUrlInput(val);
-                } else {
-                    if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
-                        window.switchMode('search');
-                        if (businessSearchInput) {
-                            businessSearchInput.value = val;
-                            businessSearchInput.dispatchEvent(new Event('input'));
-                        }
-                    }
+                if (directInputTimer) clearTimeout(directInputTimer);
+                if (!val) {
+                    handleDirectUrlInput('');
+                } else if (/maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(val)) {
+                    directInputTimer = setTimeout(() => {
+                        handleDirectUrlInput(val);
+                    }, 350);
+                } else if (/^https?:\/\//i.test(val) || val.includes('.')) {
+                    directInputTimer = setTimeout(() => {
+                        handleDirectUrlInput(val);
+                    }, 250);
+                }
+            });
+            urlInput.addEventListener('blur', () => {
+                if (directInputTimer) clearTimeout(directInputTimer);
+                if (urlInput.value.trim()) {
+                    handleDirectUrlInput(urlInput.value);
                 }
             });
         }
@@ -463,6 +465,7 @@
         // ── Initialize Language & Places ──
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
+        syncToolsVisibility();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
         window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
 

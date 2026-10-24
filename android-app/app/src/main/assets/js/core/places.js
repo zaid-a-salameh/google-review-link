@@ -385,6 +385,8 @@
 
         if (window.AppModes) {
             window.AppModes.syncResultCard();
+        } else if (window.syncToolsVisibility) {
+            window.syncToolsVisibility();
         }
     }
 

@@ -5,7 +5,7 @@
     'use strict';
 
     const AppModes = {
-        activeMode: 'search',
+        activeMode: 'link',
         link: {
             reviewUrl: null,
             isResultActive: false
@@ -39,6 +39,9 @@
                 if (resultCard) resultCard.classList.add('active');
             } else {
                 if (resultCard) resultCard.classList.remove('active');
+            }
+            if (window.syncToolsVisibility) {
+                window.syncToolsVisibility();
             }
         }
     };
