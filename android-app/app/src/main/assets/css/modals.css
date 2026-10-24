@@ -129,8 +129,8 @@
         /* Error state animation inside NFC modal */
         .nfc-modal.error {
             animation: modalErrorShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
-            border-color: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(239, 68, 68, 0.2);
+            border-color: rgba(245, 39, 125, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.25);
         }
         @keyframes modalErrorShake {
             0%, 100% { transform: scale(1) translateX(0); }
@@ -141,8 +141,8 @@
             display: none;
         }
         .nfc-modal.error .nfc-icon-circle {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            box-shadow: 0 10px 30px rgba(239, 68, 68, 0.55), 0 0 25px rgba(239, 68, 68, 0.35);
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 10px 30px rgba(245, 39, 125, 0.55), 0 0 25px rgba(245, 39, 125, 0.35);
             animation: iconErrorPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform: scale(1.08);
         }
@@ -687,19 +687,42 @@
             visibility: visible;
             pointer-events: auto;
         }
-        .pwd-modal,
+        .pwd-modal {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(28, 25, 23, 0.96);
+            border: 1px solid rgba(245, 39, 125, 0.4);
+            border-radius: 28px;
+            padding: 26px 22px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.22);
+            opacity: 0;
+            transform: scale(0.92) translateY(14px) translateZ(0);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.24s ease, 
+                        border-color 0.32s ease, 
+                        box-shadow 0.32s ease;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+            will-change: transform, opacity;
+            contain: layout style;
+        }
         .perm-lock-modal {
             width: 100%;
             max-width: 340px;
             background: rgba(28, 25, 23, 0.96);
-            border: 1px solid rgba(139, 92, 246, 0.4);
+            border: 1px solid rgba(245, 39, 125, 0.45);
             border-radius: 28px;
             padding: 26px 22px;
             text-align: center;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(124, 58, 237, 0.2);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.25);
             opacity: 0;
             transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.24s ease, 
+                        border-color 0.32s ease, 
+                        box-shadow 0.32s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             transform-style: preserve-3d;
@@ -732,8 +755,8 @@
             bottom: 4px;
             left: 0;
             border-radius: 50px;
-            background: var(--primary-gradient);
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 4px 14px rgba(245, 39, 125, 0.45);
             transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
                         width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
                         background 0.28s ease,
@@ -778,21 +801,6 @@
             box-shadow: none !important;
         }
 
-        .pwd-content-fade {
-            animation: pwdContentGlide 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform;
-        }
-        @keyframes pwdContentGlide {
-            0% {
-                opacity: 0;
-                transform: translate3d(0, 5px, 0);
-            }
-            100% {
-                opacity: 1;
-                transform: translate3d(0, 0, 0);
-            }
-        }
-
         .pwd-icon-circle-wrapper {
             display: flex;
             align-items: center;
@@ -804,51 +812,131 @@
             width: 68px;
             height: 68px;
             border-radius: 50%;
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
-            transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 8px 24px rgba(245, 39, 125, 0.45);
+            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform: translateZ(0);
+            transform: translate3d(0, 0, 0);
             will-change: transform, box-shadow;
-        }
-        .pwd-icon-circle svg {
-            width: 32px;
-            height: 32px;
-            fill: #ffffff;
-            transition: transform 0.25s ease, opacity 0.2s ease;
         }
         .pwd-icon-circle.unlock-mode {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             box-shadow: 0 10px 28px rgba(16, 185, 129, 0.55), 0 0 20px rgba(16, 185, 129, 0.3);
-            transform: scale(1.05) translateZ(0);
+            transform: scale(1.05) translate3d(0, 0, 0);
         }
-        @keyframes pwdIconPopLock {
-            0% { transform: scale(0.9) rotate(-10deg); }
-            55% { transform: scale(1.1) rotate(4deg); }
-            100% { transform: scale(1) rotate(0deg); }
+        .pwd-svg-icon {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
         }
-        @keyframes pwdIconPopUnlock {
-            0% { transform: scale(0.9) rotate(10deg); }
-            55% { transform: scale(1.14) rotate(-4deg); }
-            100% { transform: scale(1.05) rotate(0deg); }
+        .pwd-icon-circle:not(.unlock-mode) .icon-lock {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
-        .pwd-icon-circle.mode-switch-lock {
-            animation: pwdIconPopLock 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .pwd-icon-circle:not(.unlock-mode) .icon-unlock {
+            opacity: 0;
+            transform: scale(0.6) rotate(-35deg);
+            pointer-events: none;
         }
-        .pwd-icon-circle.mode-switch-unlock {
-            animation: pwdIconPopUnlock 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+        .pwd-icon-circle.unlock-mode .icon-lock {
+            opacity: 0;
+            transform: scale(0.6) rotate(35deg);
+            pointer-events: none;
+        }
+        .pwd-icon-circle.unlock-mode .icon-unlock {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
         }
 
-        .pwd-text-fade {
-            animation: pwdTextSlide 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        /* Continuous Sliding Title */
+        .pwd-title-wrapper {
+            position: relative;
+            height: 26px;
+            margin-bottom: 2px;
+            overflow: hidden;
         }
-        @keyframes pwdTextSlide {
-            0% { opacity: 0; transform: translateY(4px); }
-            100% { opacity: 1; transform: translateY(0); }
+        .pwd-mode-title {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 800;
+            color: #ffffff;
+            margin: 0;
+            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .pwd-modal:not(.unlock-mode) .mode-lock-title {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+        .pwd-modal:not(.unlock-mode) .mode-unlock-title {
+            opacity: 0;
+            transform: translate3d(0, 14px, 0);
+            pointer-events: none;
+        }
+        .pwd-modal.unlock-mode .mode-lock-title {
+            opacity: 0;
+            transform: translate3d(0, -14px, 0);
+            pointer-events: none;
+        }
+        .pwd-modal.unlock-mode .mode-unlock-title {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+
+        /* Continuous Sliding Description */
+        .pwd-desc-wrapper {
+            position: relative;
+            min-height: 38px;
+            margin-bottom: 14px;
+            padding: 0 4px;
+        }
+        .pwd-mode-desc {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11.5px;
+            line-height: 1.4;
+            color: var(--text-sub);
+            text-align: center;
+            margin: 0;
+            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+        }
+        .pwd-modal:not(.unlock-mode) .mode-lock-desc {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+        .pwd-modal:not(.unlock-mode) .mode-unlock-desc {
+            opacity: 0;
+            transform: translate3d(0, 10px, 0);
+            pointer-events: none;
+        }
+        .pwd-modal.unlock-mode .mode-lock-desc {
+            opacity: 0;
+            transform: translate3d(0, -10px, 0);
+            pointer-events: none;
+        }
+        .pwd-modal.unlock-mode .mode-unlock-desc {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
         }
 
         .pwd-input-group {
@@ -860,19 +948,15 @@
             padding: 4px 12px;
             margin: 14px 0 10px 0;
             gap: 10px;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
         .pwd-input-group:focus-within {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+            border-color: #F5277D;
+            box-shadow: 0 0 0 3px rgba(245, 39, 125, 0.25);
         }
-
-        #pwdModalDesc {
-            font-size: 11.5px;
-            line-height: 1.4;
-            color: var(--text-sub);
-            margin-bottom: 14px;
-            padding: 0 4px;
+        .pwd-modal.unlock-mode .pwd-input-group:focus-within {
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
         }
         .pwd-input-icon {
             display: inline-flex;
@@ -883,7 +967,11 @@
         .pwd-input-icon svg {
             width: 18px;
             height: 18px;
-            fill: #a78bfa;
+            fill: #F5277D;
+            transition: fill 0.25s ease;
+        }
+        .pwd-modal.unlock-mode .pwd-input-icon svg {
+            fill: #10b981;
         }
         .pwd-text-input {
             flex: 1;
@@ -939,8 +1027,12 @@
         }
         .btn-pwd-info:hover,
         .btn-pwd-info:active {
-            color: #a78bfa;
+            color: #F5277D;
             transform: scale(1.12);
+        }
+        .pwd-modal.unlock-mode .btn-pwd-info:hover,
+        .pwd-modal.unlock-mode .btn-pwd-info:active {
+            color: #10b981;
         }
         .btn-pwd-info svg {
             width: 19px;
@@ -958,11 +1050,12 @@
             gap: 8px;
             margin-top: 18px;
         }
-        .btn-pwd-submit,
-        .btn-perm-lock-confirm {
+        .btn-pwd-submit {
+            position: relative;
             flex: 1;
             height: 42px;
-            background: var(--primary-gradient);
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 4px 15px rgba(245, 39, 125, 0.4);
             border: none;
             border-radius: 12px;
             color: #ffffff;
@@ -970,20 +1063,65 @@
             font-weight: 700;
             font-family: inherit;
             cursor: pointer;
-            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.15s ease, opacity 0.2s ease;
-            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
+            overflow: hidden;
+            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                        transform 0.15s ease;
         }
         .btn-pwd-submit.unlock-mode {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
             box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
         }
-        .btn-pwd-submit:active,
-        .btn-perm-lock-confirm:active {
+        .btn-pwd-submit:active {
             transform: scale(0.98);
         }
+        .pwd-btn-label {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), 
+                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform, opacity;
+            padding: 0 8px;
+            white-space: nowrap;
+        }
+        .btn-pwd-submit:not(.unlock-mode) .mode-lock-btn-label {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+        .btn-pwd-submit:not(.unlock-mode) .mode-unlock-btn-label {
+            opacity: 0;
+            transform: translate3d(0, 12px, 0);
+            pointer-events: none;
+        }
+        .btn-pwd-submit.unlock-mode .mode-lock-btn-label {
+            opacity: 0;
+            transform: translate3d(0, -12px, 0);
+            pointer-events: none;
+        }
+        .btn-pwd-submit.unlock-mode .mode-unlock-btn-label {
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+
         .btn-perm-lock-confirm {
-            background: linear-gradient(135deg, #dc2626, #ef4444);
-            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+            flex: 1;
+            height: 42px;
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 4px 14px rgba(245, 39, 125, 0.4);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 12.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s ease, transform 0.15s ease;
+        }
+        .btn-perm-lock-confirm:active {
+            transform: scale(0.98);
         }
         .btn-pwd-cancel,
         .btn-perm-lock-cancel {
@@ -1009,8 +1147,8 @@
             height: 48px;
             margin: 0 auto 12px;
             border-radius: 50%;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(245, 39, 125, 0.15);
+            border: 1px solid rgba(245, 39, 125, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -1018,5 +1156,5 @@
         .perm-lock-icon svg {
             width: 24px;
             height: 24px;
-            fill: #ef4444;
+            fill: #F5277D;
         }

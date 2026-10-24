@@ -479,14 +479,14 @@
             transform: scale(1.1);
         }
         .btn-card-tool.btn-tool-danger {
-            border-color: rgba(239, 68, 68, 0.22);
+            border-color: rgba(245, 39, 125, 0.25);
         }
         .btn-card-tool.btn-tool-danger:hover,
         .btn-card-tool.btn-tool-danger:active {
-            background: rgba(239, 68, 68, 0.14);
-            border-color: rgba(239, 68, 68, 0.5);
+            background: rgba(245, 39, 125, 0.14);
+            border-color: rgba(245, 39, 125, 0.55);
             color: #ffffff;
         }
         .btn-card-tool.btn-tool-danger svg {
-            fill: #f87171;
+            fill: #F5277D;
         }

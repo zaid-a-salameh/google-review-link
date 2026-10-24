@@ -397,13 +397,20 @@
             <!-- NFC-Style Glowing Circle Icon -->
             <div class="pwd-icon-circle-wrapper">
                 <div class="pwd-icon-circle" id="pwdIconCircle">
-                    <svg id="pwdStatusIcon" viewBox="0 0 24 24">
+                    <svg class="pwd-svg-icon icon-lock" viewBox="0 0 24 24">
                         <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                    </svg>
+                    <svg class="pwd-svg-icon icon-unlock" viewBox="0 0 24 24">
+                        <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
                     </svg>
                 </div>
             </div>
 
-            <div class="qr-title" id="pwdModalTitle">Lock Card</div>
+            <!-- Animated Sliding Title -->
+            <div class="pwd-title-wrapper">
+                <div class="qr-title pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
+                <div class="qr-title pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
+            </div>
             
             <div class="pwd-input-group">
                 <span class="pwd-input-icon">
@@ -419,10 +426,17 @@
                 </button>
             </div>
 
-            <div class="qr-desc" id="pwdModalDesc">Set a password or PIN to prevent unauthorized modifications</div>
+            <!-- Animated Sliding Description -->
+            <div class="pwd-desc-wrapper">
+                <div class="qr-desc pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a password or PIN to prevent unauthorized modifications</div>
+                <div class="qr-desc pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter current PIN to remove protection and allow editing</div>
+            </div>
 
             <div class="pwd-actions">
-                <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">Set PIN & Touch Card</button>
+                <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">
+                    <span class="pwd-btn-label mode-lock-btn-label" id="pwdSubmitLockLabel">Lock Card & Touch Phone</span>
+                    <span class="pwd-btn-label mode-unlock-btn-label" id="pwdSubmitUnlockLabel">Unlock & Touch Phone</span>
+                </button>
                 <button type="button" class="btn-pwd-cancel" id="btnPwdCancel">Cancel</button>
             </div>
         </div>

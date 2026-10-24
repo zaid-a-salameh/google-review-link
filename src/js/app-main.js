@@ -170,19 +170,17 @@
         function syncPwdModalText(isSwitch = false) {
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
+            const pwdSubmitLockLabelEl = $('pwdSubmitLockLabel');
             if (btnPwdSubmit) {
-                btnPwdSubmit.textContent = isLock 
-                    ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
-                    : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
                 if (isLock) {
                     btnPwdSubmit.classList.remove('unlock-mode');
                 } else {
                     btnPwdSubmit.classList.add('unlock-mode');
                 }
-                if (isSwitch) {
-                    btnPwdSubmit.classList.remove('pwd-content-fade');
-                    void btnPwdSubmit.offsetWidth;
-                    btnPwdSubmit.classList.add('pwd-content-fade');
+                if (!pwdSubmitLockLabelEl) {
+                    btnPwdSubmit.textContent = isLock 
+                        ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') 
+                        : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
                 }
             }
             if (pwdModalBox) {
@@ -196,21 +194,11 @@
                 pwdModalTitle.textContent = isLock 
                     ? (dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card')
                     : (dict.pwdModalTitleUnlock || 'Unlock Card');
-                if (isSwitch) {
-                    pwdModalTitle.classList.remove('pwd-content-fade');
-                    void pwdModalTitle.offsetWidth;
-                    pwdModalTitle.classList.add('pwd-content-fade');
-                }
             }
             if (pwdModalDesc) {
                 pwdModalDesc.textContent = isLock 
                     ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
                     : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
-                if (isSwitch) {
-                    pwdModalDesc.classList.remove('pwd-content-fade');
-                    void pwdModalDesc.offsetWidth;
-                    pwdModalDesc.classList.add('pwd-content-fade');
-                }
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
                 nfcPinInput.placeholder = dict.pwdPlaceholder;
@@ -220,11 +208,6 @@
                     pwdIconCircle.classList.remove('unlock-mode');
                 } else {
                     pwdIconCircle.classList.add('unlock-mode');
-                }
-                if (isSwitch) {
-                    pwdIconCircle.classList.remove('pwd-content-fade');
-                    void pwdIconCircle.offsetWidth;
-                    pwdIconCircle.classList.add('pwd-content-fade');
                 }
             }
             if (pwdStatusIcon) {
@@ -255,7 +238,7 @@
                 e.stopPropagation();
                 const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
                 if (window.showToast) {
-                    window.showToast(dict.pwdInfoToast || '4 characters recommended for standard NFC compatibility', 'info');
+                    window.showToast(dict.pwdInfoToast || '4 characters recommended for optimal NFC compatibility', 'info', 4500);
                 }
             });
         }

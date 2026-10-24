@@ -97,7 +97,7 @@
                 pwdModalDescLock: "Set a password or PIN to prevent unauthorized modifications",
                 pwdModalDescUnlock: "Enter current PIN to remove protection and allow editing",
                 pwdHintText: "4 characters recommended for standard NFC compatibility",
-                pwdInfoToast: "4 characters recommended for 100% universal compatibility across all NFC tools",
+                pwdInfoToast: "4 characters recommended for optimal NFC compatibility",
                 pwdPlaceholder: "Enter password or PIN...",
                 pwdTabLock: "Lock Card",
                 pwdTabUnlock: "Unlock Card",
@@ -297,7 +297,7 @@
                 pwdModalDescLock: "عيّن رمز PIN أو كلمة مرور لحماية البطاقة من التعديل",
                 pwdModalDescUnlock: "أدخل رمز PIN الحالي لإلغاء حماية البطاقة والسماح بالتعديل",
                 pwdHintText: "يُفضّل استخدام 4 خانات للتوافق الكامل مع كافة أجهزة وقارئات NFC",
-                pwdInfoToast: "يُفضّل استخدام 4 خانات للتوافق العالمي الكامل مع كافة أجهزة وقارئات NFC مثل NFC Tools",
+                pwdInfoToast: "يُفضّل 4 خانات لتوافق مثالي مع كافة الأجهزة والقارئات",
                 pwdPlaceholder: "أدخل كلمة المرور أو رمز PIN...",
                 pwdTabLock: "قفل البطاقة",
                 pwdTabUnlock: "فك القفل",
@@ -517,14 +517,21 @@
         setTxt('lblPwdLockTag', dict.lblPwdLockTag);
         setTxt('lblPermLockTag', dict.lblPermLockTag);
         setTxt('pwdModalTitle', dict.pwdModalTitle);
+        setTxt('pwdModalTitleLock', dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card');
+        setTxt('pwdModalTitleUnlock', dict.pwdModalTitleUnlock || 'Unlock Card');
         setTxt('pwdModalDesc', dict.pwdModalDesc);
+        setTxt('pwdModalDescLock', dict.pwdModalDescLock || dict.pwdModalDesc);
+        setTxt('pwdModalDescUnlock', dict.pwdModalDescUnlock);
+        setTxt('pwdSubmitLockLabel', dict.pwdSubmitLock || 'Lock Card & Touch Phone');
+        setTxt('pwdSubmitUnlockLabel', dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
         setTxt('pwdHintText', dict.pwdHintText);
         setTxt('pwdTabLock', dict.pwdTabLock);
         setTxt('pwdTabUnlock', dict.pwdTabUnlock);
         setTxt('btnPwdCancel', dict.pwdCancel);
-        const pwdTabLockEl = document.getElementById('pwdTabLock');
+        const pwdSubmitLockLabelEl = document.getElementById('pwdSubmitLockLabel');
         const btnPwdSubmitEl = document.getElementById('btnPwdSubmit');
-        if (btnPwdSubmitEl) {
+        if (btnPwdSubmitEl && !pwdSubmitLockLabelEl) {
+            const pwdTabLockEl = document.getElementById('pwdTabLock');
             const isLockActive = !pwdTabLockEl || pwdTabLockEl.classList.contains('active');
             btnPwdSubmitEl.textContent = isLockActive ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
         }

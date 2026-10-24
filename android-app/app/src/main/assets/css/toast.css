@@ -33,6 +33,10 @@
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
+        .toast.error {
+            border-color: rgba(245, 39, 125, 0.45);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 22px rgba(245, 39, 125, 0.3);
+        }
         .toast-icon {
             display: inline-flex;
             align-items: center;
