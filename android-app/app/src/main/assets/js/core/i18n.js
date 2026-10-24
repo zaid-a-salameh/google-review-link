@@ -126,6 +126,8 @@
                 nfcCancel: "Cancel",
                 nfcDone: "Done & Close",
                 nfcOk: "OK",
+                nfcBtnLockAnother: "Lock Another Card",
+                nfcBtnUnlockAnother: "Unlock Another Card",
                 nfcTitlePwdLockSuccess: "Card Locked Successfully",
                 nfcDescPwdLockSuccess: "PIN protection enabled. Card modifications are locked.",
                 nfcTitlePwdUnlockSuccess: "Card Unlocked Successfully",
@@ -326,6 +328,8 @@
                 nfcCancel: "إلغاء",
                 nfcDone: "إنهاء وإغلاق",
                 nfcOk: "موافق",
+                nfcBtnLockAnother: "قفل بطاقة أخرى",
+                nfcBtnUnlockAnother: "فك قفل بطاقة أخرى",
                 nfcTitlePwdLockSuccess: "تم قفل البطاقة بنجاح",
                 nfcDescPwdLockSuccess: "تم تفعيل رمز الحماية وقفل التعديل على البطاقة.",
                 nfcTitlePwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
@@ -558,6 +562,15 @@
         if (nfcCancelBtn) {
             nfcCancelBtn.textContent = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
         }
+        const nfcNextBtnLabel = document.getElementById('nfcNextBtnLabel');
+        if (nfcNextBtnLabel && window.lastNfcOperation) {
+            if (window.lastNfcOperation === 'pwd_lock') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnLockAnother || 'Lock Another Card';
+            } else if (window.lastNfcOperation === 'pwd_unlock') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
+            }
+        }
+        setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');
 
         // Desktop Marketing (Web)
         setTxt('tagHowItWorks', dict.tagHowItWorks);

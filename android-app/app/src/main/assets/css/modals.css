@@ -228,6 +228,64 @@
             transform: translateY(-1px);
             box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55);
         }
+        .btn-nfc-next {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            flex: 1.35;
+            height: 44px;
+            border: none;
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-size: 12.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            white-space: nowrap;
+            padding: 0 10px;
+        }
+        .btn-nfc-next.theme-lock {
+            background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+            box-shadow: 0 4px 15px rgba(245, 39, 125, 0.45);
+        }
+        .btn-nfc-next.theme-lock:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(245, 39, 125, 0.6);
+        }
+        .btn-nfc-next.theme-unlock {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.45);
+        }
+        .btn-nfc-next.theme-unlock:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+        }
+        .btn-nfc-next:active {
+            transform: scale(0.98);
+        }
+        .btn-nfc-next svg {
+            width: 16px;
+            height: 16px;
+            fill: #ffffff;
+            flex-shrink: 0;
+        }
+
+        .nfc-modal.has-next-btn.success .btn-nfc-cancel {
+            background: rgba(255, 255, 255, 0.08) !important;
+            border-color: rgba(255, 255, 255, 0.18) !important;
+            color: var(--text-sub) !important;
+            box-shadow: none !important;
+            flex: 0.85;
+        }
+        .nfc-modal.has-next-btn.success .btn-nfc-cancel:hover,
+        .nfc-modal.has-next-btn.success .btn-nfc-cancel:active {
+            background: rgba(255, 255, 255, 0.15) !important;
+            color: #ffffff !important;
+            border-color: rgba(255, 255, 255, 0.3) !important;
+            transform: translateY(-1px);
+        }
         .btn-nfc-cancel {
             flex: 1;
             width: 100%;

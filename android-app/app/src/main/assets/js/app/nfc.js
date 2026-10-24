@@ -38,6 +38,9 @@
         const nfcDesc = document.getElementById('nfcDesc');
         const nfcCancelBtn = document.getElementById('nfcCancelBtn');
         const nfcRetryBtn = document.getElementById('nfcRetryBtn');
+        const nfcNextBtn = document.getElementById('nfcNextBtn');
+        const nfcNextBtnLabel = document.getElementById('nfcNextBtnLabel');
+        const nfcNextBtnIcon = document.getElementById('nfcNextBtnIcon');
         const nfcCounterBadge = document.getElementById('nfcCounterBadge');
         const nfcCounterText = document.getElementById('nfcCounterText');
         const nfcSvgIcon = document.getElementById('nfcSvgIcon');
@@ -47,6 +50,12 @@
         }
         if (nfcRetryBtn && state !== 'error') {
             nfcRetryBtn.style.display = 'none';
+        }
+        if (nfcNextBtn && state !== 'success') {
+            nfcNextBtn.style.display = 'none';
+        }
+        if (nfcModalBox && state !== 'success') {
+            nfcModalBox.classList.remove('has-next-btn');
         }
 
         if (state === 'ready') {
@@ -109,26 +118,49 @@
                 nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
                 nfcModalBox.classList.add('success');
             }
-            if (detail === 'PWD_UNLOCK') {
-                if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked Successfully';
-                if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card protection removed. You can now write or edit the card.';
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
-            } else if (detail === 'ALREADY_UNLOCKED') {
-                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Is Not Locked';
-                if (nfcDesc) nfcDesc.textContent = dict.nfcDescAlreadyUnlocked || 'This card does not have password protection enabled.';
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
-            } else if (detail === 'PWD_LOCK') {
+            if (detail === 'PWD_LOCK') {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked Successfully';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'PIN protection enabled. Card modifications are locked.';
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone || dict.nfcOk || 'Done';
+                if (nfcNextBtn) {
+                    nfcNextBtn.className = 'btn-nfc-next theme-lock';
+                    nfcNextBtn.style.display = 'inline-flex';
+                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnLockAnother || 'Lock Another Card';
+                    if (nfcNextBtnIcon) {
+                        nfcNextBtnIcon.innerHTML = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>';
+                    }
+                }
+                if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
+            } else if (detail === 'PWD_UNLOCK' || detail === 'ALREADY_UNLOCKED') {
+                if (detail === 'ALREADY_UNLOCKED') {
+                    if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Is Not Locked';
+                    if (nfcDesc) nfcDesc.textContent = dict.nfcDescAlreadyUnlocked || 'This card does not have password protection enabled.';
+                } else {
+                    if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked Successfully';
+                    if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card protection removed. You can now write or edit the card.';
+                }
+                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone || dict.nfcOk || 'Done';
+                if (nfcNextBtn) {
+                    nfcNextBtn.className = 'btn-nfc-next theme-unlock';
+                    nfcNextBtn.style.display = 'inline-flex';
+                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
+                    if (nfcNextBtnIcon) {
+                        nfcNextBtnIcon.innerHTML = '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>';
+                    }
+                }
+                if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
             } else if (detail === 'PERM_LOCK') {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockSuccess || 'Card Permanently Locked';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockSuccess || 'Card permanently locked to Read-Only mode.';
                 if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
             } else {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
                 if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
             }
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
@@ -200,9 +232,11 @@
             clearTimeout(nfcResetTimer);
             nfcResetTimer = null;
         }
+        const nfcNextBtn = document.getElementById('nfcNextBtn');
+        if (nfcNextBtn) nfcNextBtn.style.display = 'none';
         const nfcModalBox = document.getElementById('nfcModalBox');
         if (nfcModalBox) {
-            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error');
+            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'has-next-btn');
         }
         setNfcModalState('ready');
         const nfcOverlay = document.getElementById('nfcOverlay');
@@ -217,9 +251,11 @@
         }
         const nfcOverlay = document.getElementById('nfcOverlay');
         if (nfcOverlay) nfcOverlay.classList.remove('active');
+        const nfcNextBtn = document.getElementById('nfcNextBtn');
+        if (nfcNextBtn) nfcNextBtn.style.display = 'none';
         const nfcModalBox = document.getElementById('nfcModalBox');
         if (nfcModalBox) {
-            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'morph-to-ready');
+            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'morph-to-ready', 'has-next-btn');
         }
 
         if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
@@ -291,6 +327,7 @@
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_lock';
+        window.lastNfcOperation = 'pwd_lock';
         lastNfcPin = pin;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
@@ -307,6 +344,7 @@
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_unlock';
+        window.lastNfcOperation = 'pwd_unlock';
         lastNfcPin = pin;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
@@ -442,6 +480,17 @@
                     startNfcPasswordUnlock(lastNfcPin);
                 } else {
                     startNfcWrite();
+                }
+            });
+        }
+
+        const nfcNextBtn = document.getElementById('nfcNextBtn');
+        if (nfcNextBtn) {
+            nfcNextBtn.addEventListener('click', () => {
+                if (lastNfcOperation === 'pwd_lock') {
+                    if (lastNfcPin) startNfcPasswordLock(lastNfcPin);
+                } else if (lastNfcOperation === 'pwd_unlock') {
+                    if (lastNfcPin) startNfcPasswordUnlock(lastNfcPin);
                 }
             });
         }
