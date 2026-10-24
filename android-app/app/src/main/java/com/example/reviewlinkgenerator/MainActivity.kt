@@ -249,6 +249,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun isTagLost(e: Exception): Boolean {
+        if (e is android.nfc.TagLostException) return true
+        val msg = e.message?.lowercase() ?: ""
+        return msg.contains("tag was lost") || msg.contains("tag lost") || msg.contains("connection lost") || msg.contains("broken pipe") || (msg.contains("transceive failed") && !msg.contains("auth"))
+    }
+
     private fun handleWriteTag(tag: Tag) {
         val targetUrl = pendingNfcUrl
         if (targetUrl.isNullOrEmpty()) return
@@ -296,7 +302,31 @@ class MainActivity : ComponentActivity() {
                 }
             }
         } catch (e: Exception) {
-            notifyNfcError("WRITE_FAILED")
+            if (isTagLost(e)) {
+                notifyNfcError("TAG_LOST")
+            } else {
+                // Check if write failed because tag is password-protected or read-only
+                var isLocked = false
+                val nfca = try { NfcA.get(tag) } catch (ex: Exception) { null }
+                if (nfca != null) {
+                    try {
+                        nfca.connect()
+                        val cfg = getNtagConfig(tag, nfca)
+                        val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                        if (readResp != null && readResp.size >= 4 && (readResp[3].toInt() and 0xFF) != 0xFF) {
+                            isLocked = true
+                        }
+                        nfca.close()
+                    } catch (ex: Exception) {
+                        isLocked = true
+                    }
+                }
+                if (isLocked) {
+                    notifyNfcError("LOCKED")
+                } else {
+                    notifyNfcError("WRITE_FAILED")
+                }
+            }
         }
     }
 
@@ -340,7 +370,11 @@ class MainActivity : ComponentActivity() {
                 notifyNfcError("UNSUPPORTED")
             }
         } catch (e: Exception) {
-            notifyNfcError("READ_FAILED")
+            if (isTagLost(e)) {
+                notifyNfcError("TAG_LOST")
+            } else {
+                notifyNfcError("READ_LOCKED")
+            }
         }
     }
 
@@ -369,7 +403,11 @@ class MainActivity : ComponentActivity() {
                 notifyNfcError("UNSUPPORTED")
             }
         } catch (e: Exception) {
-            notifyNfcError("LOCK_FAILED")
+            if (isTagLost(e)) {
+                notifyNfcError("TAG_LOST")
+            } else {
+                notifyNfcError("LOCK_FAILED")
+            }
         }
     }
 
@@ -433,21 +471,46 @@ class MainActivity : ComponentActivity() {
             val cfg = getNtagConfig(tag, nfca)
             val pwdBytes = deriveNfcToolsPasswordBytes(pin)
 
-            // If tag is already locked, authenticate first before updating
-            val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
+            // Check if tag is already locked
+            var isAlreadyLocked = false
             try {
-                nfca.transceive(authCmd)
+                val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                if (readResp != null && readResp.size >= 4) {
+                    val currentAuth0 = readResp[3].toInt() and 0xFF
+                    if (currentAuth0 != 0xFF) {
+                        isAlreadyLocked = true
+                    }
+                }
             } catch (e: Exception) {
-                // Try legacy password authentication if user is re-locking an older card
-                val legacyPwd = deriveLegacyPasswordBytes(pin)
+                isAlreadyLocked = true
+            }
+
+            if (isAlreadyLocked) {
+                // If tag is already locked, authenticate first before updating
+                var authSuccess = false
+                val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
                 try {
+                    val resp = nfca.transceive(authCmd)
+                    if (resp != null && resp.size >= 2) authSuccess = true
+                } catch (e: Exception) { }
+
+                if (!authSuccess) {
+                    // Try legacy password authentication if user is re-locking an older card
+                    val legacyPwd = deriveLegacyPasswordBytes(pin)
+                    try {
+                        nfca.close()
+                        nfca.connect()
+                        nfca.timeout = 3000
+                        val authCmdLegacy = byteArrayOf(0x1B.toByte(), legacyPwd[0], legacyPwd[1], legacyPwd[2], legacyPwd[3])
+                        val resp = nfca.transceive(authCmdLegacy)
+                        if (resp != null && resp.size >= 2) authSuccess = true
+                    } catch (e2: Exception) { }
+                }
+
+                if (!authSuccess) {
                     nfca.close()
-                    nfca.connect()
-                    nfca.timeout = 3000
-                    val authCmdLegacy = byteArrayOf(0x1B.toByte(), legacyPwd[0], legacyPwd[1], legacyPwd[2], legacyPwd[3])
-                    nfca.transceive(authCmdLegacy)
-                } catch (e2: Exception) {
-                    // might not be locked, continue with write
+                    notifyNfcError("ALREADY_LOCKED")
+                    return
                 }
             }
 
@@ -470,7 +533,11 @@ class MainActivity : ComponentActivity() {
             }
             stopNfcSession()
         } catch (e: Exception) {
-            notifyNfcError("PWD_FAILED")
+            if (isTagLost(e)) {
+                notifyNfcError("TAG_LOST")
+            } else {
+                notifyNfcError("PWD_FAILED")
+            }
         }
     }
 
@@ -485,6 +552,33 @@ class MainActivity : ComponentActivity() {
             nfca.timeout = 3000
             val cfg = getNtagConfig(tag, nfca)
 
+            // 1. Check if the card is already unlocked (AUTH0 == 0xFF)
+            var isLocked = false
+            try {
+                val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                if (readResp != null && readResp.size >= 4) {
+                    val currentAuth0 = readResp[3].toInt() and 0xFF
+                    if (currentAuth0 != 0xFF) {
+                        isLocked = true
+                    }
+                }
+            } catch (e: Exception) {
+                // If read failed (e.g. read protection active), card is locked
+                isLocked = true
+            }
+
+            if (!isLocked) {
+                // Card is already completely unlocked!
+                nfca.close()
+                triggerSuccessVibration()
+                runOnUiThread {
+                    webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('ALREADY_UNLOCKED');", null)
+                }
+                stopNfcSession()
+                return
+            }
+
+            // 2. Card IS locked. We must authenticate with the PIN!
             val md5Pwd = deriveNfcToolsPasswordBytes(pin)
             val legacyPwd = deriveLegacyPasswordBytes(pin)
 
@@ -551,34 +645,15 @@ class MainActivity : ComponentActivity() {
                 }
                 stopNfcSession()
             } else {
-                // Authentication failed for both. Check if the card is already unlocked!
-                var alreadyUnlocked = false
-                try {
-                    nfca.close()
-                    nfca.connect()
-                    nfca.timeout = 3000
-                    val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
-                    if (readResp != null && readResp.size >= 4) {
-                        val currentAuth0 = readResp[3].toInt() and 0xFF
-                        if (currentAuth0 == 0xFF) {
-                            alreadyUnlocked = true
-                        }
-                    }
-                } catch (e: Exception) { }
-
                 nfca.close()
-                if (alreadyUnlocked) {
-                    triggerSuccessVibration()
-                    runOnUiThread {
-                        webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('ALREADY_UNLOCKED');", null)
-                    }
-                    stopNfcSession()
-                } else {
-                    notifyNfcError("WRONG_PWD")
-                }
+                notifyNfcError("WRONG_PWD")
             }
         } catch (e: Exception) {
-            notifyNfcError("WRONG_PWD")
+            if (isTagLost(e)) {
+                notifyNfcError("TAG_LOST")
+            } else {
+                notifyNfcError("WRONG_PWD")
+            }
         }
     }
 

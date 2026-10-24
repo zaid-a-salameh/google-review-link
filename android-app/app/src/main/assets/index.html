@@ -3342,11 +3342,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitlePwdUnlockSuccess: "Card Unlocked Successfully",
                 nfcDescPwdUnlockSuccess: "Protection removed. You can now write or modify the card freely.",
                 nfcTitleAlreadyUnlocked: "Card Is Not Locked",
-                nfcDescAlreadyUnlocked: "This card does not have password protection enabled and is fully writable.",
+                nfcDescAlreadyUnlocked: "This card does not have password protection enabled and is already fully writable.",
+                nfcTitleTagLost: "Connection Dropped / Weak Signal",
+                nfcDescTagLost: "Communication lost due to phone movement or weak NFC signal. Please hold the phone steadily over the card without moving it.",
+                nfcTitleLocked: "Card Is Protected",
+                nfcTitleReadLocked: "Card is Read-Protected",
+                nfcDescReadLocked: "Cannot read card data because it is password protected against reading.",
+                nfcTitleWrongPwd: "Incorrect PIN",
+                nfcTitleAlreadyLocked: "Card Already Locked",
+                nfcTitleCapacity: "Memory Capacity Exceeded",
+                nfcTitleEmptyTag: "Empty Card",
                 nfcTitlePermLockSuccess: "Card Permanently Locked",
                 nfcDescPermLockSuccess: "Card has been permanently set to Read-Only mode.",
                 nfcTitleError: "Write Failed",
-                nfcDescLocked: "This card is locked or read-only and cannot be modified.",
+                nfcDescLocked: "Operation failed because this card is password-protected or read-only. Please unlock it first.",
                 nfcDescCapacity: "Link size exceeds this card's memory capacity.",
                 nfcDescUnsupported: "This card type is not supported for writing.",
                 nfcDescGenericError: "Write operation failed. Ensure the phone is held steady near the card.",
@@ -3533,11 +3542,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitlePwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
                 nfcDescPwdUnlockSuccess: "تمت إزالة الحماية بنجاح، ويمكنك الآن الكتابة والتعديل على البطاقة.",
                 nfcTitleAlreadyUnlocked: "البطاقة غير مقفلة",
-                nfcDescAlreadyUnlocked: "هذه البطاقة مفتوحة بالفعل ولا توجد عليها أي حماية بكلمة مرور.",
+                nfcDescAlreadyUnlocked: "هذه البطاقة لا تحتوي على أي رمز قفل، وهي مفتوحة بالفعل وقابلة للكتابة والتعديل بالكامل.",
+                nfcTitleTagLost: "ضعف في إشارة الاتصال",
+                nfcDescTagLost: "انقطع الاتصال بالبطاقة بسبب تحريك الهاتف أو ضعف التماس (NFC). يرجى تثبيت الهاتف جيداً وثباته فوق منتصف البطاقة دون تحريكه حتى تكتمل العملية.",
+                nfcTitleLocked: "البطاقة محمية برمز قفل",
+                nfcTitleReadLocked: "البطاقة محمية من القراءة",
+                nfcDescReadLocked: "تعذرت قراءة البطاقة لأنها محمية برمز قفل يمنع قراءة البيانات.",
+                nfcTitleWrongPwd: "رمز الحماية غير صحيح",
+                nfcTitleAlreadyLocked: "البطاقة مقفلة مسبقاً",
+                nfcTitleCapacity: "سعة الذاكرة غير كافية",
+                nfcTitleEmptyTag: "البطاقة فارغة",
                 nfcTitlePermLockSuccess: "تم الإقفال النهائي بنجاح",
                 nfcDescPermLockSuccess: "تم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم.",
                 nfcTitleError: "فشلت عملية الكتابة",
-                nfcDescLocked: "البطاقة مقفلة أو للقراءة فقط، ولا يمكن الكتابة عليها.",
+                nfcDescLocked: "تعذرت العملية لأن هذه البطاقة محمية بكلمة مرور أو للقراءة فقط. يرجى فك قفلها أولاً قبل المتابعة.",
                 nfcDescCapacity: "حجم الرابط أكبر من سعة ذاكرة البطاقة.",
                 nfcDescUnsupported: "نوع هذه البطاقة غير مدعوم للكتابة.",
                 nfcDescGenericError: "تعذرت الكتابة على البطاقة. تأكد من ثبات الهاتف فوق البطاقة.",
@@ -4809,16 +4827,27 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcModalBox.classList.remove('success');
                 nfcModalBox.classList.add('error');
             }
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleError || 'Write Failed';
+            if (nfcTitle) {
+                if (detail === 'TAG_LOST') nfcTitle.textContent = dict.nfcTitleTagLost || 'Connection Dropped';
+                else if (detail === 'LOCKED') nfcTitle.textContent = dict.nfcTitleLocked || 'Card is Protected';
+                else if (detail === 'READ_LOCKED') nfcTitle.textContent = dict.nfcTitleReadLocked || 'Card is Read-Protected';
+                else if (detail === 'WRONG_PWD') nfcTitle.textContent = dict.nfcTitleWrongPwd || 'Incorrect PIN';
+                else if (detail === 'ALREADY_LOCKED') nfcTitle.textContent = dict.nfcTitleAlreadyLocked || 'Card Already Locked';
+                else if (detail === 'CAPACITY') nfcTitle.textContent = dict.nfcTitleCapacity || 'Capacity Exceeded';
+                else if (detail === 'EMPTY_TAG') nfcTitle.textContent = dict.nfcTitleEmptyTag || 'Empty Card';
+                else nfcTitle.textContent = dict.nfcTitleError || 'Operation Failed';
+            }
 
-            let detailMsg = dict.nfcDescGenericError || 'Write operation failed. Ensure the phone is held steady near the card.';
-            if (detail === 'LOCKED') detailMsg = dict.nfcDescLocked || 'This card is locked or read-only and cannot be modified.';
+            let detailMsg = dict.nfcDescGenericError || 'Operation failed. Ensure the phone is held steady near the card.';
+            if (detail === 'TAG_LOST') detailMsg = dict.nfcDescTagLost || 'Connection lost due to phone movement or weak NFC signal. Please hold the phone steadily over the card without moving it.';
+            else if (detail === 'LOCKED') detailMsg = dict.nfcDescLocked || 'This card is locked with a password or read-only and cannot be modified. Please unlock it first.';
+            else if (detail === 'READ_LOCKED') detailMsg = dict.nfcDescReadLocked || 'Cannot read card data because it is password-protected.';
             else if (detail === 'CAPACITY') detailMsg = dict.nfcDescCapacity || 'Link size exceeds this card\'s memory capacity.';
             else if (detail === 'UNSUPPORTED') detailMsg = dict.nfcDescUnsupported || 'This card type is not supported for writing.';
-            else if (detail === 'EMPTY_TAG') detailMsg = dict.toastNfcReadEmpty || 'No valid URL found on this card';
-            else if (detail === 'WRONG_PWD') detailMsg = dict.toastNfcWrongPwd || 'Incorrect PIN or password';
-            else if (detail === 'PWD_UNSUPPORTED') detailMsg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
-            else if (detail === 'ALREADY_LOCKED') detailMsg = dict.toastNfcAlreadyLocked || 'This card is already locked with a PIN. Unlock it first.';
+            else if (detail === 'EMPTY_TAG') detailMsg = dict.toastNfcReadEmpty || 'No valid URL found on this card.';
+            else if (detail === 'WRONG_PWD') detailMsg = dict.toastNfcWrongPwd || 'Incorrect PIN. The card is protected with a different password.';
+            else if (detail === 'PWD_UNSUPPORTED') detailMsg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card.';
+            else if (detail === 'ALREADY_LOCKED') detailMsg = dict.toastNfcAlreadyLocked || 'This card is already locked with a different PIN. Unlock it first.';
 
             if (nfcDesc) nfcDesc.textContent = detailMsg;
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
@@ -5041,14 +5070,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             let msg = dict.nfcWriteFailed || 'Operation failed';
             if (errorType === 'NOT_SUPPORTED') msg = dict.nfcNoHardware;
             else if (errorType === 'DISABLED') msg = dict.nfcDisabled;
-            else if (errorType === 'LOCKED') msg = dict.nfcLocked;
+            else if (errorType === 'TAG_LOST') msg = dict.nfcDescTagLost;
+            else if (errorType === 'LOCKED') msg = dict.nfcDescLocked;
+            else if (errorType === 'READ_LOCKED') msg = dict.nfcDescReadLocked;
             else if (errorType === 'CAPACITY') msg = dict.nfcCapacity;
             else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
             else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
             else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
             else if (errorType === 'PWD_UNSUPPORTED') msg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
             else if (errorType === 'ALREADY_LOCKED') msg = dict.toastNfcAlreadyLocked || 'Card is already locked with a PIN';
-            else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = 'Locking failed on this tag';
+            else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = dict.nfcDescLocked || 'Locking failed on this tag';
             if (window.showToast) window.showToast(msg, 'error');
         }
     };
