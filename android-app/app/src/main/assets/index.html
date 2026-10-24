@@ -1186,6 +1186,157 @@
             background: rgba(20, 18, 16, 0.98);
         }
 
+        /* Google Maps Mode Toggle */
+        .gmaps-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .btn-gmaps-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(18, 16, 15, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px 14px 6px 12px;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            max-width: 100%;
+        }
+        .btn-gmaps-toggle:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #ffffff;
+        }
+        .btn-gmaps-toggle.active {
+            background: rgba(124, 58, 237, 0.15);
+            border-color: rgba(139, 92, 246, 0.5);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+        }
+        .gmaps-toggle-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+        }
+        .gmaps-toggle-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: #a78bfa;
+            transition: fill 0.25s ease;
+        }
+        .btn-gmaps-toggle.active .gmaps-toggle-icon svg {
+            fill: #c4b5fd;
+        }
+        .gmaps-toggle-label {
+            white-space: nowrap;
+        }
+        .gmaps-toggle-switch {
+            width: 32px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            position: relative;
+            transition: background 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+        .gmaps-switch-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        [dir="rtl"] .gmaps-switch-knob,
+        html[lang="ar"] .gmaps-switch-knob {
+            left: auto;
+            right: 2px;
+        }
+        .btn-gmaps-toggle.active .gmaps-toggle-switch {
+            background: var(--primary-gradient);
+        }
+        .btn-gmaps-toggle.active .gmaps-switch-knob {
+            transform: translateX(14px);
+        }
+        [dir="rtl"] .btn-gmaps-toggle.active .gmaps-switch-knob,
+        html[lang="ar"] .btn-gmaps-toggle.active .gmaps-switch-knob {
+            transform: translateX(-14px);
+        }
+
+        /* Standalone NFC Card Action Tools */
+        .card-tools-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            width: 100%;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .btn-card-tool {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 4px;
+            color: var(--text-sub);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            line-height: 1.25;
+            min-height: 66px;
+            user-select: none;
+        }
+        .btn-card-tool:hover,
+        .btn-card-tool:active {
+            background: rgba(124, 58, 237, 0.16);
+            border-color: rgba(139, 92, 246, 0.45);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-card-tool svg {
+            width: 18px;
+            height: 18px;
+            fill: #a78bfa;
+            transition: transform 0.2s ease, fill 0.2s ease;
+            flex-shrink: 0;
+        }
+        .btn-card-tool:hover svg {
+            fill: #ffffff;
+            transform: scale(1.1);
+        }
+        .btn-card-tool.btn-tool-danger {
+            border-color: rgba(239, 68, 68, 0.22);
+        }
+        .btn-card-tool.btn-tool-danger:hover,
+        .btn-card-tool.btn-tool-danger:active {
+            background: rgba(239, 68, 68, 0.14);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #ffffff;
+        }
+        .btn-card-tool.btn-tool-danger svg {
+            fill: #f87171;
+        }
+
 /* == search-dropdown.css == */
 /* Places Autocomplete & Search Mode */
         /* Mode 2: Search Business Field & Helper */
@@ -2354,6 +2505,155 @@
             color: #ffffff;
         }
 
+        /* Password & Security Modal */
+        .pwd-overlay,
+        .perm-lock-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pwd-overlay.active,
+        .perm-lock-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .pwd-modal,
+        .perm-lock-modal {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(28, 25, 23, 0.96);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 28px;
+            padding: 26px 22px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(124, 58, 237, 0.2);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pwd-overlay.active .pwd-modal,
+        .perm-lock-overlay.active .perm-lock-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .pwd-tabs {
+            display: flex;
+            background: rgba(18, 16, 15, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 3px;
+            margin-bottom: 18px;
+        }
+        .pwd-tab {
+            flex: 1;
+            padding: 7px 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pwd-tab.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
+        }
+
+        .pwd-input-wrapper {
+            margin: 16px 0;
+        }
+        .pwd-pin-input {
+            width: 140px;
+            height: 48px;
+            background: rgba(18, 16, 15, 0.9);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .pwd-pin-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+        }
+
+        .pwd-actions,
+        .perm-lock-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .btn-pwd-submit,
+        .btn-perm-lock-confirm {
+            flex: 1;
+            height: 42px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 12.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        .btn-perm-lock-confirm {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+        }
+        .btn-pwd-cancel,
+        .btn-perm-lock-cancel {
+            height: 42px;
+            padding: 0 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-pwd-cancel:hover,
+        .btn-perm-lock-cancel:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .perm-lock-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .perm-lock-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #ef4444;
+        }
+
 /* == toast.css == */
 /* Toast Notification */
         /* Toast Message */
@@ -2502,8 +2802,21 @@ body {
         <!-- Main Input Card -->
         <div class="glass-card main-input-card" id="mainInputCard">
             
-            <!-- Mode Switcher Tabs -->
-            <div class="mode-switcher-container">
+            <!-- Google Maps Mode Toggle -->
+            <div class="gmaps-toggle-container">
+                <button type="button" class="btn-gmaps-toggle" id="btnGmapsToggle">
+                    <span class="gmaps-toggle-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"/></svg>
+                    </span>
+                    <span class="gmaps-toggle-label" id="lblGmapsToggle">Google Maps Reviews Mode</span>
+                    <span class="gmaps-toggle-switch" id="gmapsToggleSwitch">
+                        <span class="gmaps-switch-knob"></span>
+                    </span>
+                </button>
+            </div>
+
+            <!-- Mode Switcher Tabs (Visible ONLY when Google Maps mode is ON) -->
+            <div class="mode-switcher-container" id="modeSwitcherContainer" style="display: none;">
                 <div class="mode-tabs">
                     <div class="mode-tab-slider" id="modeTabSlider"></div>
                     <button type="button" class="mode-tab" id="tabLinkMode" data-mode="link">
@@ -2518,7 +2831,7 @@ body {
             </div>
 
             <!-- MODE 1: Direct Link Mode Content -->
-            <div class="mode-content" id="modeLinkContent">
+            <div class="mode-content active" id="modeLinkContent">
                 <div class="input-row">
                     <button type="button" class="tool-btn btn-trash" id="clearBtn" title="Clear text">
                         <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
@@ -2541,16 +2854,32 @@ body {
                     </button>
                 </div>
 
-                <!-- Convert Button -->
-                <button type="button" class="btn-convert" id="convertBtn">
+                <!-- Convert Button (Shown ONLY when Google Maps mode is ON) -->
+                <button type="button" class="btn-convert" id="convertBtn" style="display: none;">
                     <div class="spinner" id="btnSpinner"></div>
                     <svg id="btnIcon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     <span id="btnText">Convert Link</span>
                 </button>
+
+                <!-- Standalone Card Action Tools Row (When Google Maps is OFF & no link active) -->
+                <div class="card-tools-row" id="cardToolsRow">
+                    <button type="button" class="btn-card-tool" id="btnReadTag">
+                        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                        <span id="lblReadTag">Read Card</span>
+                    </button>
+                    <button type="button" class="btn-card-tool" id="btnPwdLockTag">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                        <span id="lblPwdLockTag">PIN Lock / Unlock</span>
+                    </button>
+                    <button type="button" class="btn-card-tool btn-tool-danger" id="btnPermLockTag">
+                        <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                        <span id="lblPermLockTag">Permanent Lock</span>
+                    </button>
+                </div>
             </div>
 
             <!-- MODE 2: Search Business Mode Content -->
-            <div class="mode-content active" id="modeSearchContent">
+            <div class="mode-content" id="modeSearchContent">
                 <div class="search-field-wrapper" id="searchFieldWrapper">
                     <svg class="search-field-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     <input 
@@ -2659,6 +2988,40 @@ body {
             <div class="nfc-title" id="nfcTitle">Ready to Write</div>
             <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near an NFC card or sticker to write the review link.</div>
             <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Password Security Modal -->
+    <div class="pwd-overlay" id="pwdModalOverlay">
+        <div class="pwd-modal" id="pwdModalBox">
+            <div class="pwd-tabs">
+                <button type="button" class="pwd-tab active" id="pwdTabLock" data-action="lock">Lock Card</button>
+                <button type="button" class="pwd-tab" id="pwdTabUnlock" data-action="unlock">Unlock Card</button>
+            </div>
+            <div class="qr-title" id="pwdModalTitle">PIN Protection</div>
+            <div class="qr-desc" id="pwdModalDesc">Set a 4-digit PIN to prevent unauthorized modifications</div>
+            <div class="pwd-input-wrapper">
+                <input type="password" id="nfcPinInput" class="pwd-pin-input" maxlength="4" placeholder="••••" inputmode="numeric">
+            </div>
+            <div class="pwd-actions">
+                <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">Set PIN & Touch Card</button>
+                <button type="button" class="btn-pwd-cancel" id="btnPwdCancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Permanent Lock Modal -->
+    <div class="perm-lock-overlay" id="permLockOverlay">
+        <div class="perm-lock-modal" id="permLockBox">
+            <div class="perm-lock-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+            </div>
+            <div class="qr-title" id="permLockTitle">Permanent Hardware Lock</div>
+            <div class="qr-desc" id="permLockDesc" style="color: #fca5a5; line-height: 1.45;">Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.</div>
+            <div class="perm-lock-actions">
+                <button type="button" class="btn-perm-lock-confirm" id="btnPermLockConfirm">Confirm Permanent Lock</button>
+                <button type="button" class="btn-perm-lock-cancel" id="btnPermLockCancel">Cancel</button>
+            </div>
         </div>
     </div>
 
@@ -2811,9 +3174,38 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 qrDownloadBtn: "Download QR Image",
                 qrCloseBtn: "Close",
                 qrDownloaded: "QR Code downloaded",
+                lblGmapsToggle: "Google Maps Reviews Mode",
+                lblReadTag: "Read Card to Copy",
+                lblPwdLockTag: "PIN Lock / Unlock",
+                lblPermLockTag: "Permanent Lock",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
+                nfcTitleReadReady: "Ready to Read Card",
+                nfcDescReadReady: "Hold phone near NFC card or sticker to read its link.",
+                nfcTitlePermLockReady: "Ready to Permanently Lock",
+                nfcDescPermLockReady: "Hold phone near NFC card to apply permanent read-only lock.",
+                nfcTitlePwdLockReady: "Ready to Set PIN",
+                nfcDescPwdLockReady: "Hold phone near NFC card to lock with your PIN.",
+                nfcTitlePwdUnlockReady: "Ready to Unlock",
+                nfcDescPwdUnlockReady: "Hold phone near NFC card to remove PIN protection.",
+                pwdModalTitle: "PIN Protection",
+                pwdModalDesc: "Set a 4-digit PIN to prevent unauthorized modifications",
+                pwdTabLock: "Lock Card",
+                pwdTabUnlock: "Unlock Card",
+                pwdSubmitLock: "Set PIN & Touch Card",
+                pwdSubmitUnlock: "Unlock & Touch Card",
+                pwdCancel: "Cancel",
+                permLockTitle: "Permanent Hardware Lock",
+                permLockDesc: "Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.",
+                permLockConfirmBtn: "Confirm Permanent Lock",
+                permLockCancelBtn: "Cancel",
+                toastNfcReadSuccess: "Link read and loaded successfully",
+                toastNfcReadEmpty: "No valid URL found on this card",
+                toastNfcPermLockSuccess: "NFC card permanently locked to Read-Only",
+                toastNfcPwdLockSuccess: "NFC card locked with PIN successfully",
+                toastNfcPwdUnlockSuccess: "NFC card unlocked successfully",
+                toastNfcWrongPwd: "Incorrect PIN or unlocking failed",
                 nfcTitleSuccess: "Write Successful!",
                 nfcDescSuccess: "The review link was successfully programmed onto the card.",
                 nfcTitleNext: "Ready to Write",
@@ -2947,9 +3339,38 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 qrDownloadBtn: "تنزيل صورة الـ QR",
                 qrCloseBtn: "إغلاق",
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
+                lblGmapsToggle: "وضع تقييمات Google Maps",
+                lblReadTag: "قراءة كارت للنسخ",
+                lblPwdLockTag: "قفل / فك برمز",
+                lblPermLockTag: "إقفال نهائي",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
+                nfcTitleReadReady: "جاهز لقراءة البطاقة",
+                nfcDescReadReady: "قرّب ظهر الهاتف من بطاقة NFC لقراءة الرابط المخزن...",
+                nfcTitlePermLockReady: "جاهز للإقفال النهائي",
+                nfcDescPermLockReady: "قرّب ظهر الهاتف من البطاقة لتطبيق القفل العتادي الدائم...",
+                nfcTitlePwdLockReady: "جاهز للقفل برمز PIN",
+                nfcDescPwdLockReady: "قرّب ظهر الهاتف من البطاقة لتفعيل القفل بالرمز...",
+                nfcTitlePwdUnlockReady: "جاهز لفك القفل",
+                nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
+                pwdModalTitle: "حماية بطاقة NFC برمز",
+                pwdModalDesc: "عيّن رمز PIN من 4 أرقام لحماية البطاقة من التعديل العبثي",
+                pwdTabLock: "قفل البطاقة",
+                pwdTabUnlock: "فك القفل",
+                pwdSubmitLock: "تفعيل الرمز وتقريب البطاقة",
+                pwdSubmitUnlock: "فك القفل وتقريب البطاقة",
+                pwdCancel: "إلغاء",
+                permLockTitle: "الإقفال النهائي للبطاقة",
+                permLockDesc: "تحذير: سيتم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم وغير قابل للتراجع. لن يمكن تعديلها أو مسحها أبداً.",
+                permLockConfirmBtn: "تأكيد وقفل البطاقة نهائياً",
+                permLockCancelBtn: "إلغاء",
+                toastNfcReadSuccess: "تمت قراءة الرابط واستيراده بنجاح",
+                toastNfcReadEmpty: "لا يوجد رابط صالح على هذه البطاقة",
+                toastNfcPermLockSuccess: "تم إقفال البطاقة عتادياً نهائياً بنجاح",
+                toastNfcPwdLockSuccess: "تم قفل البطاقة برمز PIN بنجاح",
+                toastNfcPwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
+                toastNfcWrongPwd: "رمز PIN غير صحيح أو تعذر فك القفل",
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
                 nfcDescSuccess: "تمت برمجة بطاقة التقييم بنجاح.",
                 nfcTitleNext: "جاهز للكتابة",
@@ -3117,6 +3538,21 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         setTxt('shareBtnLabel', dict.shareBtn);
         setTxt('qrBtnLabel', dict.qrBtn);
         setTxt('nfcBtnLabel', dict.nfcBtn);
+
+        // NFC Card Tools & Security
+        setTxt('lblGmapsToggle', dict.lblGmapsToggle);
+        setTxt('lblReadTag', dict.lblReadTag);
+        setTxt('lblPwdLockTag', dict.lblPwdLockTag);
+        setTxt('lblPermLockTag', dict.lblPermLockTag);
+        setTxt('pwdModalTitle', dict.pwdModalTitle);
+        setTxt('pwdModalDesc', dict.pwdModalDesc);
+        setTxt('pwdTabLock', dict.pwdTabLock);
+        setTxt('pwdTabUnlock', dict.pwdTabUnlock);
+        setTxt('btnPwdCancel', dict.pwdCancel);
+        setTxt('permLockTitle', dict.permLockTitle);
+        setTxt('permLockDesc', dict.permLockDesc);
+        setTxt('btnPermLockConfirm', dict.permLockConfirmBtn);
+        setTxt('btnPermLockCancel', dict.permLockCancelBtn);
 
         // QR Modal
         setTxt('qrModalTitle', dict.qrModalTitle);
@@ -4091,6 +4527,33 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
             `;
+        } else if (state === 'read_ready') {
+            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReadReady || 'Ready to Read Card';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescReadReady || 'Hold phone near NFC card to read its content...';
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+            `;
+        } else if (state === 'perm_lock_ready') {
+            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockReady || 'Ready to Lock';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockReady || 'Hold phone near NFC card to apply permanent lock...';
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+            `;
+        } else if (state === 'pwd_lock_ready' || state === 'pwd_unlock_ready') {
+            if (nfcModalBox) nfcModalBox.classList.remove('success');
+            if (nfcTitle) nfcTitle.textContent = state === 'pwd_lock_ready' ? (dict.nfcTitlePwdLockReady || 'Ready to Set PIN') : (dict.nfcTitlePwdUnlockReady || 'Ready to Unlock');
+            if (nfcDesc) nfcDesc.textContent = state === 'pwd_lock_ready' ? (dict.nfcDescPwdLockReady || 'Hold phone near card to lock...') : (dict.nfcDescPwdUnlockReady || 'Hold phone near card to unlock...');
+            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcSvgIcon) nfcSvgIcon.innerHTML = `
+                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+            `;
         } else if (state === 'success') {
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('morph-to-ready');
@@ -4176,6 +4639,56 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
+    function startNfcRead() {
+        const dict = getDict();
+        if (window.AndroidNative && window.AndroidNative.startNfcRead) {
+            setNfcModalState('read_ready');
+            const nfcOverlay = document.getElementById('nfcOverlay');
+            if (nfcOverlay) nfcOverlay.classList.add('active');
+            window.AndroidNative.startNfcRead();
+        } else {
+            if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
+        }
+    }
+
+    function startNfcPermanentLock() {
+        const dict = getDict();
+        if (window.AndroidNative && window.AndroidNative.startNfcPermanentLock) {
+            setNfcModalState('perm_lock_ready');
+            const nfcOverlay = document.getElementById('nfcOverlay');
+            if (nfcOverlay) nfcOverlay.classList.add('active');
+            window.AndroidNative.startNfcPermanentLock();
+        } else {
+            if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
+        }
+    }
+
+    function startNfcPasswordLock(pin) {
+        const dict = getDict();
+        if (!pin || pin.length < 4) return;
+        if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
+            setNfcModalState('pwd_lock_ready');
+            const nfcOverlay = document.getElementById('nfcOverlay');
+            if (nfcOverlay) nfcOverlay.classList.add('active');
+            window.AndroidNative.startNfcPasswordLock(pin);
+        } else {
+            if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
+        }
+    }
+
+    function startNfcPasswordUnlock(pin) {
+        const dict = getDict();
+        if (!pin || pin.length < 4) return;
+        if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
+            setNfcModalState('pwd_unlock_ready');
+            const nfcOverlay = document.getElementById('nfcOverlay');
+            if (nfcOverlay) nfcOverlay.classList.add('active');
+            window.AndroidNative.startNfcPasswordUnlock(pin);
+        } else {
+            if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
+        }
+    }
+
     // Bridge Callbacks from Android Native
     window.onNfcSuccess = function(count) {
         nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
@@ -4199,14 +4712,60 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }, 1500);
     };
 
+    window.onNfcTagRead = function(url) {
+        if (!url) return;
+        const dict = getDict();
+        const urlInput = document.getElementById('urlInput');
+        if (urlInput) {
+            urlInput.value = url;
+        }
+
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay) nfcOverlay.classList.remove('active');
+
+        if (window.handleDirectUrlInput) {
+            window.handleDirectUrlInput(url);
+        }
+
+        if (window.showToast) {
+            window.showToast(dict.toastNfcReadSuccess || 'Link copied from card successfully', 'success');
+        }
+    };
+
+    window.onNfcLockSuccess = function() {
+        const dict = getDict();
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay) nfcOverlay.classList.remove('active');
+        if (window.showToast) {
+            window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+        }
+    };
+
+    window.onNfcPasswordSuccess = function(action) {
+        const dict = getDict();
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay) nfcOverlay.classList.remove('active');
+        if (window.showToast) {
+            const msg = action === 'LOCKED' ? (dict.toastNfcPwdLockSuccess || 'Card locked with PIN') : (dict.toastNfcPwdUnlockSuccess || 'Card unlocked successfully');
+            window.showToast(msg, 'success');
+        }
+    };
+
     window.onNfcError = function(errorType) {
         const dict = getDict();
-        let msg = dict.nfcWriteFailed || 'Write failed';
+        let msg = dict.nfcWriteFailed || 'Operation failed';
         if (errorType === 'NOT_SUPPORTED') msg = dict.nfcNoHardware;
         else if (errorType === 'DISABLED') msg = dict.nfcDisabled;
         else if (errorType === 'LOCKED') msg = dict.nfcLocked;
         else if (errorType === 'CAPACITY') msg = dict.nfcCapacity;
         else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
+        else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
+        else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
+        else if (errorType === 'PWD_UNSUPPORTED') msg = 'NTAG security not supported on this tag';
+        else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = 'Locking failed on this tag';
+
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay) nfcOverlay.classList.remove('active');
 
         if (window.showToast) window.showToast(msg, 'error');
     };
@@ -4214,6 +4773,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.openNfcModal = openNfcModal;
     window.closeNfcModal = closeNfcModal;
     window.startNfcWrite = startNfcWrite;
+    window.startNfcRead = startNfcRead;
+    window.startNfcPermanentLock = startNfcPermanentLock;
+    window.startNfcPasswordLock = startNfcPasswordLock;
+    window.startNfcPasswordUnlock = startNfcPasswordUnlock;
     window.setNfcModalState = setNfcModalState;
 })();
 
@@ -4482,13 +5045,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const dict = getDict();
         const urlInput = document.getElementById('urlInput');
         if (text) {
-            if (window.switchMode) window.switchMode('link');
             if (urlInput) {
                 urlInput.value = text;
                 urlInput.blur();
             }
             if (window.showToast) window.showToast(dict.toastPasted || 'Pasted', 'paste');
-            if (window.handleConvert) window.handleConvert();
+            if (window.handleDirectUrlInput) {
+                window.handleDirectUrlInput(text);
+            } else if (window.handleConvert) {
+                window.handleConvert();
+            }
         } else {
             if (window.showToast) window.showToast(dict.toastEmptyClip || 'Clipboard is empty', 'warn');
         }
@@ -4544,8 +5110,170 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const btnUpdateLater = $('btnUpdateLater');
         const updateOverlay = $('updateOverlay');
 
+        const btnGmapsToggle = $('btnGmapsToggle');
+        const modeSwitcherContainer = $('modeSwitcherContainer');
+        const cardToolsRow = $('cardToolsRow');
+        const btnReadTag = $('btnReadTag');
+        const btnPwdLockTag = $('btnPwdLockTag');
+        const btnPermLockTag = $('btnPermLockTag');
+        const pwdModalOverlay = $('pwdModalOverlay');
+        const pwdTabLock = $('pwdTabLock');
+        const pwdTabUnlock = $('pwdTabUnlock');
+        const nfcPinInput = $('nfcPinInput');
+        const btnPwdSubmit = $('btnPwdSubmit');
+        const btnPwdCancel = $('btnPwdCancel');
+        const permLockOverlay = $('permLockOverlay');
+        const btnPermLockConfirm = $('btnPermLockConfirm');
+        const btnPermLockCancel = $('btnPermLockCancel');
+
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
+        let isGmapsModeActive = false;
+        window.isGmapsModeActive = () => isGmapsModeActive;
+
+        function syncToolsVisibility() {
+            if (isGmapsModeActive) {
+                if (cardToolsRow) cardToolsRow.style.display = 'none';
+                if (convertBtn) convertBtn.style.display = 'flex';
+                if (modeSwitcherContainer) modeSwitcherContainer.style.display = 'flex';
+            } else {
+                if (convertBtn) convertBtn.style.display = 'none';
+                if (modeSwitcherContainer) modeSwitcherContainer.style.display = 'none';
+                const hasResult = resultCard && resultCard.classList.contains('active');
+                if (cardToolsRow) cardToolsRow.style.display = hasResult ? 'none' : 'grid';
+            }
+        }
+
+        // ── Google Maps Mode Toggle ──
+        if (btnGmapsToggle) {
+            btnGmapsToggle.addEventListener('click', () => {
+                isGmapsModeActive = !isGmapsModeActive;
+                btnGmapsToggle.classList.toggle('active', isGmapsModeActive);
+                syncToolsVisibility();
+                if (isGmapsModeActive) {
+                    if (window.switchMode) window.switchMode('search');
+                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
+                    if (window.initGoogleMapsPlaces) window.initGoogleMapsPlaces();
+                } else {
+                    if (window.switchMode) window.switchMode('link');
+                }
+            });
+        }
+
+        // ── Direct URL Handler ──
+        function handleDirectUrlInput(raw) {
+            const text = (raw || '').trim();
+            if (!text) {
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('link');
+                } else if (resultCard) {
+                    resultCard.classList.remove('active');
+                }
+                syncToolsVisibility();
+                return;
+            }
+
+            // Auto-detect Google Maps links
+            if (/maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(text)) {
+                if (window.handleConvert) {
+                    window.handleConvert();
+                    syncToolsVisibility();
+                    return;
+                }
+            }
+
+            // Normal or direct link
+            if (window.AppModes) {
+                window.AppModes.setModeResult('link', text);
+            } else {
+                const resultLinkText = $('resultLinkText');
+                if (resultLinkText) resultLinkText.textContent = text;
+                if (resultCard) resultCard.classList.add('active');
+            }
+            syncToolsVisibility();
+            if (resultCard) {
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        window.handleDirectUrlInput = handleDirectUrlInput;
+
+        // ── Standalone NFC Card Tool Handlers ──
+        if (btnReadTag) {
+            btnReadTag.addEventListener('click', () => {
+                if (window.startNfcRead) window.startNfcRead();
+            });
+        }
+
+        if (btnPwdLockTag) {
+            btnPwdLockTag.addEventListener('click', () => {
+                if (pwdModalOverlay) {
+                    pwdModalOverlay.classList.add('active');
+                    if (nfcPinInput) {
+                        nfcPinInput.value = '';
+                        setTimeout(() => nfcPinInput.focus(), 150);
+                    }
+                }
+            });
+        }
+
+        if (btnPwdCancel && pwdModalOverlay) {
+            btnPwdCancel.addEventListener('click', () => {
+                pwdModalOverlay.classList.remove('active');
+            });
+        }
+
+        let pwdCurrentAction = 'lock';
+        if (pwdTabLock && pwdTabUnlock) {
+            pwdTabLock.addEventListener('click', () => {
+                pwdCurrentAction = 'lock';
+                pwdTabLock.classList.add('active');
+                pwdTabUnlock.classList.remove('active');
+                const dict = window.I18N[window.getCurrentLang()];
+                if (btnPwdSubmit) btnPwdSubmit.textContent = dict.pwdSubmitLock || 'Set PIN & Touch Card';
+            });
+            pwdTabUnlock.addEventListener('click', () => {
+                pwdCurrentAction = 'unlock';
+                pwdTabUnlock.classList.add('active');
+                pwdTabLock.classList.remove('active');
+                const dict = window.I18N[window.getCurrentLang()];
+                if (btnPwdSubmit) btnPwdSubmit.textContent = dict.pwdSubmitUnlock || 'Unlock & Touch Card';
+            });
+        }
+
+        if (btnPwdSubmit) {
+            btnPwdSubmit.addEventListener('click', () => {
+                const pin = nfcPinInput ? nfcPinInput.value.trim() : '';
+                if (!pin || pin.length < 4) {
+                    if (window.showToast) window.showToast('Please enter a 4-digit PIN', 'warn');
+                    return;
+                }
+                if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
+                if (pwdCurrentAction === 'lock') {
+                    if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin);
+                } else {
+                    if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin);
+                }
+            });
+        }
+
+        if (btnPermLockTag) {
+            btnPermLockTag.addEventListener('click', () => {
+                if (permLockOverlay) permLockOverlay.classList.add('active');
+            });
+        }
+
+        if (btnPermLockCancel && permLockOverlay) {
+            btnPermLockCancel.addEventListener('click', () => {
+                permLockOverlay.classList.remove('active');
+            });
+        }
+
+        if (btnPermLockConfirm) {
+            btnPermLockConfirm.addEventListener('click', () => {
+                if (permLockOverlay) permLockOverlay.classList.remove('active');
+                if (window.startNfcPermanentLock) window.startNfcPermanentLock();
+            });
+        }
 
         // ── Mode Switcher ──
         if (tabLinkMode) tabLinkMode.addEventListener('click', () => window.switchMode('link'));
@@ -4555,15 +5283,25 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (convertBtn) convertBtn.addEventListener('click', window.handleConvert);
         if (urlInput) {
             urlInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') window.handleConvert();
+                if (e.key === 'Enter') {
+                    if (isGmapsModeActive && window.handleConvert) {
+                        window.handleConvert();
+                    } else {
+                        handleDirectUrlInput(urlInput.value);
+                    }
+                }
             });
             urlInput.addEventListener('input', () => {
                 const val = urlInput.value.trim();
-                if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
-                    window.switchMode('search');
-                    if (businessSearchInput) {
-                        businessSearchInput.value = val;
-                        businessSearchInput.dispatchEvent(new Event('input'));
+                if (!isGmapsModeActive) {
+                    handleDirectUrlInput(val);
+                } else {
+                    if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
+                        window.switchMode('search');
+                        if (businessSearchInput) {
+                            businessSearchInput.value = val;
+                            businessSearchInput.dispatchEvent(new Event('input'));
+                        }
                     }
                 }
             });
@@ -4582,6 +5320,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 } else if (resultCard) {
                     resultCard.classList.remove('active');
                 }
+                syncToolsVisibility();
                 if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }

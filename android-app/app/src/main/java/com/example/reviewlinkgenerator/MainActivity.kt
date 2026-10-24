@@ -15,6 +15,8 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.nfc.tech.NdefFormatable
+import android.nfc.tech.MifareUltralight
+import android.nfc.tech.NfcA
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -43,9 +45,20 @@ import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
 
+    enum class NfcOp {
+        IDLE,
+        WRITE,
+        READ,
+        PERM_LOCK,
+        PWD_LOCK,
+        PWD_UNLOCK
+    }
+
     private lateinit var webView: WebView
     private var nfcAdapter: NfcAdapter? = null
     private var pendingNfcUrl: String? = null
+    private var pendingPassword: String? = null
+    private var currentNfcOp: NfcOp = NfcOp.IDLE
     private var isNfcModeActive: Boolean = false
     private var lastWriteTimestamp: Long = 0
     private var writtenTagsCount: Int = 0
@@ -146,22 +159,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun startNfcWriting(url: String) {
+    private fun checkNfcReady(): Boolean {
         if (nfcAdapter == null) {
             notifyNfcError("NO_HARDWARE")
-            return
+            return false
         }
-
         if (!nfcAdapter!!.isEnabled) {
             notifyNfcError("DISABLED")
-            return
+            return false
         }
+        return true
+    }
 
-        pendingNfcUrl = url
-        isNfcModeActive = true
-        lastWriteTimestamp = 0
-        writtenTagsCount = 0
-
+    private fun enableReaderModeSafe() {
         val flags = NfcAdapter.FLAG_READER_NFC_A or
                 NfcAdapter.FLAG_READER_NFC_B or
                 NfcAdapter.FLAG_READER_NFC_F or
@@ -173,9 +183,51 @@ class MainActivity : ComponentActivity() {
         }, flags, null)
     }
 
+    fun startNfcWriting(url: String) {
+        if (!checkNfcReady()) return
+        currentNfcOp = NfcOp.WRITE
+        pendingNfcUrl = url
+        isNfcModeActive = true
+        lastWriteTimestamp = 0
+        writtenTagsCount = 0
+        enableReaderModeSafe()
+    }
+
+    fun startNfcReading() {
+        if (!checkNfcReady()) return
+        currentNfcOp = NfcOp.READ
+        isNfcModeActive = true
+        enableReaderModeSafe()
+    }
+
+    fun startNfcPermanentLocking() {
+        if (!checkNfcReady()) return
+        currentNfcOp = NfcOp.PERM_LOCK
+        isNfcModeActive = true
+        enableReaderModeSafe()
+    }
+
+    fun startNfcPasswordLocking(pin: String) {
+        if (!checkNfcReady()) return
+        currentNfcOp = NfcOp.PWD_LOCK
+        pendingPassword = pin
+        isNfcModeActive = true
+        enableReaderModeSafe()
+    }
+
+    fun startNfcPasswordUnlocking(pin: String) {
+        if (!checkNfcReady()) return
+        currentNfcOp = NfcOp.PWD_UNLOCK
+        pendingPassword = pin
+        isNfcModeActive = true
+        enableReaderModeSafe()
+    }
+
     fun stopNfcSession() {
         isNfcModeActive = false
+        currentNfcOp = NfcOp.IDLE
         pendingNfcUrl = null
+        pendingPassword = null
         lastWriteTimestamp = 0
         try {
             nfcAdapter?.disableReaderMode(this)
@@ -185,12 +237,24 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun handleTagDiscovered(tag: Tag) {
+        if (!isNfcModeActive) return
+
+        when (currentNfcOp) {
+            NfcOp.WRITE -> handleWriteTag(tag)
+            NfcOp.READ -> handleReadTag(tag)
+            NfcOp.PERM_LOCK -> handlePermLockTag(tag)
+            NfcOp.PWD_LOCK -> handlePwdLockTag(tag, pendingPassword ?: "1234")
+            NfcOp.PWD_UNLOCK -> handlePwdUnlockTag(tag, pendingPassword ?: "1234")
+            NfcOp.IDLE -> {}
+        }
+    }
+
+    private fun handleWriteTag(tag: Tag) {
         val targetUrl = pendingNfcUrl
-        if (targetUrl.isNullOrEmpty() || !isNfcModeActive) return
+        if (targetUrl.isNullOrEmpty()) return
 
         val now = System.currentTimeMillis()
         if (now - lastWriteTimestamp < 2200) {
-            // Debounce cooldown to prevent re-triggering the same card in field
             return
         }
 
@@ -211,16 +275,13 @@ class MainActivity : ComponentActivity() {
                     notifyNfcError("CAPACITY")
                     return
                 }
-                // Write will overwrite whatever records were previously stored
                 ndef.writeNdefMessage(message)
                 ndef.close()
                 lastWriteTimestamp = System.currentTimeMillis()
                 writtenTagsCount++
                 triggerSuccessVibration()
                 notifyNfcSuccess(writtenTagsCount)
-                // Reader mode stays active so the user can tap the next card!
             } else {
-                // Try formatable tag
                 val formatable = NdefFormatable.get(tag)
                 if (formatable != null) {
                     formatable.connect()
@@ -230,13 +291,176 @@ class MainActivity : ComponentActivity() {
                     writtenTagsCount++
                     triggerSuccessVibration()
                     notifyNfcSuccess(writtenTagsCount)
-                    // Reader mode stays active so the user can tap the next card!
                 } else {
                     notifyNfcError("UNSUPPORTED")
                 }
             }
         } catch (e: Exception) {
             notifyNfcError("WRITE_FAILED")
+        }
+    }
+
+    private fun handleReadTag(tag: Tag) {
+        try {
+            val ndef = Ndef.get(tag)
+            if (ndef != null) {
+                ndef.connect()
+                val msg = ndef.ndefMessage
+                ndef.close()
+                var extractedUrl: String? = null
+                if (msg != null && msg.records.isNotEmpty()) {
+                    for (record in msg.records) {
+                        val uri = record.toUri()
+                        if (uri != null) {
+                            extractedUrl = uri.toString()
+                            break
+                        }
+                        val payload = record.payload
+                        if (payload != null && payload.isNotEmpty()) {
+                            val text = String(payload, Charsets.UTF_8).trim()
+                            val httpIdx = text.indexOf("http")
+                            if (httpIdx >= 0) {
+                                extractedUrl = text.substring(httpIdx)
+                                break
+                            }
+                        }
+                    }
+                }
+                if (!extractedUrl.isNullOrEmpty()) {
+                    triggerSuccessVibration()
+                    runOnUiThread {
+                        val escaped = JSONObject.quote(extractedUrl)
+                        webView.evaluateJavascript("window.onNfcTagRead && window.onNfcTagRead($escaped);", null)
+                    }
+                    stopNfcSession()
+                } else {
+                    notifyNfcError("EMPTY_TAG")
+                }
+            } else {
+                notifyNfcError("UNSUPPORTED")
+            }
+        } catch (e: Exception) {
+            notifyNfcError("READ_FAILED")
+        }
+    }
+
+    private fun handlePermLockTag(tag: Tag) {
+        try {
+            val ndef = Ndef.get(tag)
+            if (ndef != null) {
+                ndef.connect()
+                if (!ndef.canMakeReadOnly()) {
+                    ndef.close()
+                    notifyNfcError("CANNOT_LOCK")
+                    return
+                }
+                val success = ndef.makeReadOnly()
+                ndef.close()
+                if (success) {
+                    triggerSuccessVibration()
+                    runOnUiThread {
+                        webView.evaluateJavascript("window.onNfcLockSuccess && window.onNfcLockSuccess();", null)
+                    }
+                    stopNfcSession()
+                } else {
+                    notifyNfcError("LOCK_FAILED")
+                }
+            } else {
+                notifyNfcError("UNSUPPORTED")
+            }
+        } catch (e: Exception) {
+            notifyNfcError("LOCK_FAILED")
+        }
+    }
+
+    private fun detectNtagType(ultralight: MifareUltralight): Int {
+        return try {
+            ultralight.readPages(130)
+            try {
+                ultralight.readPages(226)
+                216
+            } catch (e: Exception) {
+                215
+            }
+        } catch (e: Exception) {
+            213
+        }
+    }
+
+    private fun handlePwdLockTag(tag: Tag, pin: String) {
+        try {
+            val ultralight = MifareUltralight.get(tag)
+            if (ultralight != null) {
+                ultralight.connect()
+                val pwdBytes = ByteArray(4)
+                val pinBytes = pin.toByteArray(Charsets.UTF_8)
+                System.arraycopy(pinBytes, 0, pwdBytes, 0, minOf(4, pinBytes.size))
+                val packBytes = byteArrayOf(0x12.toByte(), 0x34.toByte(), 0x00, 0x00)
+
+                val ntagType = detectNtagType(ultralight)
+                val (auth0Page, pwdPage, packPage) = when (ntagType) {
+                    213 -> Triple(41, 43, 44)
+                    215 -> Triple(131, 133, 134)
+                    216 -> Triple(227, 229, 230)
+                    else -> Triple(41, 43, 44)
+                }
+
+                ultralight.writePage(pwdPage, pwdBytes)
+                ultralight.writePage(packPage, packBytes)
+                val auth0Bytes = byteArrayOf(0x04.toByte(), 0x00, 0x00, 0x00)
+                ultralight.writePage(auth0Page, auth0Bytes)
+
+                ultralight.close()
+                triggerSuccessVibration()
+                runOnUiThread {
+                    webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('LOCKED');", null)
+                }
+                stopNfcSession()
+            } else {
+                notifyNfcError("PWD_UNSUPPORTED")
+            }
+        } catch (e: Exception) {
+            notifyNfcError("PWD_FAILED")
+        }
+    }
+
+    private fun handlePwdUnlockTag(tag: Tag, pin: String) {
+        try {
+            val nfca = NfcA.get(tag)
+            val ultralight = MifareUltralight.get(tag)
+            if (nfca != null && ultralight != null) {
+                nfca.connect()
+                val pwdBytes = ByteArray(4)
+                val pinBytes = pin.toByteArray(Charsets.UTF_8)
+                System.arraycopy(pinBytes, 0, pwdBytes, 0, minOf(4, pinBytes.size))
+
+                val authCmd = byteArrayOf(0x1B.toByte(), pwdBytes[0], pwdBytes[1], pwdBytes[2], pwdBytes[3])
+                val resp = nfca.transceive(authCmd)
+                if (resp != null && resp.size >= 2) {
+                    val ntagType = detectNtagType(ultralight)
+                    val auth0Page = when (ntagType) {
+                        213 -> 41
+                        215 -> 131
+                        216 -> 227
+                        else -> 41
+                    }
+                    val disableCmd = byteArrayOf(0xA2.toByte(), auth0Page.toByte(), 0xFF.toByte(), 0x00, 0x00, 0x00)
+                    nfca.transceive(disableCmd)
+                    nfca.close()
+                    triggerSuccessVibration()
+                    runOnUiThread {
+                        webView.evaluateJavascript("window.onNfcPasswordSuccess && window.onNfcPasswordSuccess('UNLOCKED');", null)
+                    }
+                    stopNfcSession()
+                } else {
+                    nfca.close()
+                    notifyNfcError("WRONG_PWD")
+                }
+            } else {
+                notifyNfcError("PWD_UNSUPPORTED")
+            }
+        } catch (e: Exception) {
+            notifyNfcError("WRONG_PWD")
         }
     }
 
@@ -438,6 +662,34 @@ class MainActivity : ComponentActivity() {
         fun startNfcWrite(url: String) {
             activity.runOnUiThread {
                 activity.startNfcWriting(url)
+            }
+        }
+
+        @JavascriptInterface
+        fun startNfcRead() {
+            activity.runOnUiThread {
+                activity.startNfcReading()
+            }
+        }
+
+        @JavascriptInterface
+        fun startNfcPermanentLock() {
+            activity.runOnUiThread {
+                activity.startNfcPermanentLocking()
+            }
+        }
+
+        @JavascriptInterface
+        fun startNfcPasswordLock(pin: String) {
+            activity.runOnUiThread {
+                activity.startNfcPasswordLocking(pin)
+            }
+        }
+
+        @JavascriptInterface
+        fun startNfcPasswordUnlock(pin: String) {
+            activity.runOnUiThread {
+                activity.startNfcPasswordUnlocking(pin)
             }
         }
 

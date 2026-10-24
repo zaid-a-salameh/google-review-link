@@ -566,3 +566,152 @@
             background: rgba(255, 255, 255, 0.04);
             color: #ffffff;
         }
+
+        /* Password & Security Modal */
+        .pwd-overlay,
+        .perm-lock-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pwd-overlay.active,
+        .perm-lock-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .pwd-modal,
+        .perm-lock-modal {
+            width: 100%;
+            max-width: 340px;
+            background: rgba(28, 25, 23, 0.96);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 28px;
+            padding: 26px 22px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(124, 58, 237, 0.2);
+            transform: scale(0.92) translateY(16px);
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .pwd-overlay.active .pwd-modal,
+        .perm-lock-overlay.active .perm-lock-modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .pwd-tabs {
+            display: flex;
+            background: rgba(18, 16, 15, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 3px;
+            margin-bottom: 18px;
+        }
+        .pwd-tab {
+            flex: 1;
+            padding: 7px 10px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .pwd-tab.active {
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.35);
+        }
+
+        .pwd-input-wrapper {
+            margin: 16px 0;
+        }
+        .pwd-pin-input {
+            width: 140px;
+            height: 48px;
+            background: rgba(18, 16, 15, 0.9);
+            border: 2px solid var(--border);
+            border-radius: 14px;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        .pwd-pin-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+        }
+
+        .pwd-actions,
+        .perm-lock-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .btn-pwd-submit,
+        .btn-perm-lock-confirm {
+            flex: 1;
+            height: 42px;
+            background: var(--primary-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 12.5px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+        .btn-perm-lock-confirm {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+        }
+        .btn-pwd-cancel,
+        .btn-perm-lock-cancel {
+            height: 42px;
+            padding: 0 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-pwd-cancel:hover,
+        .btn-perm-lock-cancel:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+        }
+        .perm-lock-icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .perm-lock-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #ef4444;
+        }

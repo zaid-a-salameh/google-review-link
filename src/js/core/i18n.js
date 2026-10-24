@@ -74,9 +74,38 @@
                 qrDownloadBtn: "Download QR Image",
                 qrCloseBtn: "Close",
                 qrDownloaded: "QR Code downloaded",
+                lblGmapsToggle: "Google Maps Reviews Mode",
+                lblReadTag: "Read Card to Copy",
+                lblPwdLockTag: "PIN Lock / Unlock",
+                lblPermLockTag: "Permanent Lock",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
+                nfcTitleReadReady: "Ready to Read Card",
+                nfcDescReadReady: "Hold phone near NFC card or sticker to read its link.",
+                nfcTitlePermLockReady: "Ready to Permanently Lock",
+                nfcDescPermLockReady: "Hold phone near NFC card to apply permanent read-only lock.",
+                nfcTitlePwdLockReady: "Ready to Set PIN",
+                nfcDescPwdLockReady: "Hold phone near NFC card to lock with your PIN.",
+                nfcTitlePwdUnlockReady: "Ready to Unlock",
+                nfcDescPwdUnlockReady: "Hold phone near NFC card to remove PIN protection.",
+                pwdModalTitle: "PIN Protection",
+                pwdModalDesc: "Set a 4-digit PIN to prevent unauthorized modifications",
+                pwdTabLock: "Lock Card",
+                pwdTabUnlock: "Unlock Card",
+                pwdSubmitLock: "Set PIN & Touch Card",
+                pwdSubmitUnlock: "Unlock & Touch Card",
+                pwdCancel: "Cancel",
+                permLockTitle: "Permanent Hardware Lock",
+                permLockDesc: "Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.",
+                permLockConfirmBtn: "Confirm Permanent Lock",
+                permLockCancelBtn: "Cancel",
+                toastNfcReadSuccess: "Link read and loaded successfully",
+                toastNfcReadEmpty: "No valid URL found on this card",
+                toastNfcPermLockSuccess: "NFC card permanently locked to Read-Only",
+                toastNfcPwdLockSuccess: "NFC card locked with PIN successfully",
+                toastNfcPwdUnlockSuccess: "NFC card unlocked successfully",
+                toastNfcWrongPwd: "Incorrect PIN or unlocking failed",
                 nfcTitleSuccess: "Write Successful!",
                 nfcDescSuccess: "The review link was successfully programmed onto the card.",
                 nfcTitleNext: "Ready to Write",
@@ -210,9 +239,38 @@
                 qrDownloadBtn: "تنزيل صورة الـ QR",
                 qrCloseBtn: "إغلاق",
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
+                lblGmapsToggle: "وضع تقييمات Google Maps",
+                lblReadTag: "قراءة كارت للنسخ",
+                lblPwdLockTag: "قفل / فك برمز",
+                lblPermLockTag: "إقفال نهائي",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
+                nfcTitleReadReady: "جاهز لقراءة البطاقة",
+                nfcDescReadReady: "قرّب ظهر الهاتف من بطاقة NFC لقراءة الرابط المخزن...",
+                nfcTitlePermLockReady: "جاهز للإقفال النهائي",
+                nfcDescPermLockReady: "قرّب ظهر الهاتف من البطاقة لتطبيق القفل العتادي الدائم...",
+                nfcTitlePwdLockReady: "جاهز للقفل برمز PIN",
+                nfcDescPwdLockReady: "قرّب ظهر الهاتف من البطاقة لتفعيل القفل بالرمز...",
+                nfcTitlePwdUnlockReady: "جاهز لفك القفل",
+                nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لإزالة رمز الحماية...",
+                pwdModalTitle: "حماية بطاقة NFC برمز",
+                pwdModalDesc: "عيّن رمز PIN من 4 أرقام لحماية البطاقة من التعديل العبثي",
+                pwdTabLock: "قفل البطاقة",
+                pwdTabUnlock: "فك القفل",
+                pwdSubmitLock: "تفعيل الرمز وتقريب البطاقة",
+                pwdSubmitUnlock: "فك القفل وتقريب البطاقة",
+                pwdCancel: "إلغاء",
+                permLockTitle: "الإقفال النهائي للبطاقة",
+                permLockDesc: "تحذير: سيتم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم وغير قابل للتراجع. لن يمكن تعديلها أو مسحها أبداً.",
+                permLockConfirmBtn: "تأكيد وقفل البطاقة نهائياً",
+                permLockCancelBtn: "إلغاء",
+                toastNfcReadSuccess: "تمت قراءة الرابط واستيراده بنجاح",
+                toastNfcReadEmpty: "لا يوجد رابط صالح على هذه البطاقة",
+                toastNfcPermLockSuccess: "تم إقفال البطاقة عتادياً نهائياً بنجاح",
+                toastNfcPwdLockSuccess: "تم قفل البطاقة برمز PIN بنجاح",
+                toastNfcPwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
+                toastNfcWrongPwd: "رمز PIN غير صحيح أو تعذر فك القفل",
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
                 nfcDescSuccess: "تمت برمجة بطاقة التقييم بنجاح.",
                 nfcTitleNext: "جاهز للكتابة",
@@ -380,6 +438,21 @@
         setTxt('shareBtnLabel', dict.shareBtn);
         setTxt('qrBtnLabel', dict.qrBtn);
         setTxt('nfcBtnLabel', dict.nfcBtn);
+
+        // NFC Card Tools & Security
+        setTxt('lblGmapsToggle', dict.lblGmapsToggle);
+        setTxt('lblReadTag', dict.lblReadTag);
+        setTxt('lblPwdLockTag', dict.lblPwdLockTag);
+        setTxt('lblPermLockTag', dict.lblPermLockTag);
+        setTxt('pwdModalTitle', dict.pwdModalTitle);
+        setTxt('pwdModalDesc', dict.pwdModalDesc);
+        setTxt('pwdTabLock', dict.pwdTabLock);
+        setTxt('pwdTabUnlock', dict.pwdTabUnlock);
+        setTxt('btnPwdCancel', dict.pwdCancel);
+        setTxt('permLockTitle', dict.permLockTitle);
+        setTxt('permLockDesc', dict.permLockDesc);
+        setTxt('btnPermLockConfirm', dict.permLockConfirmBtn);
+        setTxt('btnPermLockCancel', dict.permLockCancelBtn);
 
         // QR Modal
         setTxt('qrModalTitle', dict.qrModalTitle);

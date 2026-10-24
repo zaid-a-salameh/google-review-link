@@ -36,8 +36,170 @@
         const btnUpdateLater = $('btnUpdateLater');
         const updateOverlay = $('updateOverlay');
 
+        const btnGmapsToggle = $('btnGmapsToggle');
+        const modeSwitcherContainer = $('modeSwitcherContainer');
+        const cardToolsRow = $('cardToolsRow');
+        const btnReadTag = $('btnReadTag');
+        const btnPwdLockTag = $('btnPwdLockTag');
+        const btnPermLockTag = $('btnPermLockTag');
+        const pwdModalOverlay = $('pwdModalOverlay');
+        const pwdTabLock = $('pwdTabLock');
+        const pwdTabUnlock = $('pwdTabUnlock');
+        const nfcPinInput = $('nfcPinInput');
+        const btnPwdSubmit = $('btnPwdSubmit');
+        const btnPwdCancel = $('btnPwdCancel');
+        const permLockOverlay = $('permLockOverlay');
+        const btnPermLockConfirm = $('btnPermLockConfirm');
+        const btnPermLockCancel = $('btnPermLockCancel');
+
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
+        let isGmapsModeActive = false;
+        window.isGmapsModeActive = () => isGmapsModeActive;
+
+        function syncToolsVisibility() {
+            if (isGmapsModeActive) {
+                if (cardToolsRow) cardToolsRow.style.display = 'none';
+                if (convertBtn) convertBtn.style.display = 'flex';
+                if (modeSwitcherContainer) modeSwitcherContainer.style.display = 'flex';
+            } else {
+                if (convertBtn) convertBtn.style.display = 'none';
+                if (modeSwitcherContainer) modeSwitcherContainer.style.display = 'none';
+                const hasResult = resultCard && resultCard.classList.contains('active');
+                if (cardToolsRow) cardToolsRow.style.display = hasResult ? 'none' : 'grid';
+            }
+        }
+
+        // ── Google Maps Mode Toggle ──
+        if (btnGmapsToggle) {
+            btnGmapsToggle.addEventListener('click', () => {
+                isGmapsModeActive = !isGmapsModeActive;
+                btnGmapsToggle.classList.toggle('active', isGmapsModeActive);
+                syncToolsVisibility();
+                if (isGmapsModeActive) {
+                    if (window.switchMode) window.switchMode('search');
+                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
+                    if (window.initGoogleMapsPlaces) window.initGoogleMapsPlaces();
+                } else {
+                    if (window.switchMode) window.switchMode('link');
+                }
+            });
+        }
+
+        // ── Direct URL Handler ──
+        function handleDirectUrlInput(raw) {
+            const text = (raw || '').trim();
+            if (!text) {
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('link');
+                } else if (resultCard) {
+                    resultCard.classList.remove('active');
+                }
+                syncToolsVisibility();
+                return;
+            }
+
+            // Auto-detect Google Maps links
+            if (/maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(text)) {
+                if (window.handleConvert) {
+                    window.handleConvert();
+                    syncToolsVisibility();
+                    return;
+                }
+            }
+
+            // Normal or direct link
+            if (window.AppModes) {
+                window.AppModes.setModeResult('link', text);
+            } else {
+                const resultLinkText = $('resultLinkText');
+                if (resultLinkText) resultLinkText.textContent = text;
+                if (resultCard) resultCard.classList.add('active');
+            }
+            syncToolsVisibility();
+            if (resultCard) {
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        window.handleDirectUrlInput = handleDirectUrlInput;
+
+        // ── Standalone NFC Card Tool Handlers ──
+        if (btnReadTag) {
+            btnReadTag.addEventListener('click', () => {
+                if (window.startNfcRead) window.startNfcRead();
+            });
+        }
+
+        if (btnPwdLockTag) {
+            btnPwdLockTag.addEventListener('click', () => {
+                if (pwdModalOverlay) {
+                    pwdModalOverlay.classList.add('active');
+                    if (nfcPinInput) {
+                        nfcPinInput.value = '';
+                        setTimeout(() => nfcPinInput.focus(), 150);
+                    }
+                }
+            });
+        }
+
+        if (btnPwdCancel && pwdModalOverlay) {
+            btnPwdCancel.addEventListener('click', () => {
+                pwdModalOverlay.classList.remove('active');
+            });
+        }
+
+        let pwdCurrentAction = 'lock';
+        if (pwdTabLock && pwdTabUnlock) {
+            pwdTabLock.addEventListener('click', () => {
+                pwdCurrentAction = 'lock';
+                pwdTabLock.classList.add('active');
+                pwdTabUnlock.classList.remove('active');
+                const dict = window.I18N[window.getCurrentLang()];
+                if (btnPwdSubmit) btnPwdSubmit.textContent = dict.pwdSubmitLock || 'Set PIN & Touch Card';
+            });
+            pwdTabUnlock.addEventListener('click', () => {
+                pwdCurrentAction = 'unlock';
+                pwdTabUnlock.classList.add('active');
+                pwdTabLock.classList.remove('active');
+                const dict = window.I18N[window.getCurrentLang()];
+                if (btnPwdSubmit) btnPwdSubmit.textContent = dict.pwdSubmitUnlock || 'Unlock & Touch Card';
+            });
+        }
+
+        if (btnPwdSubmit) {
+            btnPwdSubmit.addEventListener('click', () => {
+                const pin = nfcPinInput ? nfcPinInput.value.trim() : '';
+                if (!pin || pin.length < 4) {
+                    if (window.showToast) window.showToast('Please enter a 4-digit PIN', 'warn');
+                    return;
+                }
+                if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
+                if (pwdCurrentAction === 'lock') {
+                    if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin);
+                } else {
+                    if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin);
+                }
+            });
+        }
+
+        if (btnPermLockTag) {
+            btnPermLockTag.addEventListener('click', () => {
+                if (permLockOverlay) permLockOverlay.classList.add('active');
+            });
+        }
+
+        if (btnPermLockCancel && permLockOverlay) {
+            btnPermLockCancel.addEventListener('click', () => {
+                permLockOverlay.classList.remove('active');
+            });
+        }
+
+        if (btnPermLockConfirm) {
+            btnPermLockConfirm.addEventListener('click', () => {
+                if (permLockOverlay) permLockOverlay.classList.remove('active');
+                if (window.startNfcPermanentLock) window.startNfcPermanentLock();
+            });
+        }
 
         // ── Mode Switcher ──
         if (tabLinkMode) tabLinkMode.addEventListener('click', () => window.switchMode('link'));
@@ -47,15 +209,25 @@
         if (convertBtn) convertBtn.addEventListener('click', window.handleConvert);
         if (urlInput) {
             urlInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') window.handleConvert();
+                if (e.key === 'Enter') {
+                    if (isGmapsModeActive && window.handleConvert) {
+                        window.handleConvert();
+                    } else {
+                        handleDirectUrlInput(urlInput.value);
+                    }
+                }
             });
             urlInput.addEventListener('input', () => {
                 const val = urlInput.value.trim();
-                if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
-                    window.switchMode('search');
-                    if (businessSearchInput) {
-                        businessSearchInput.value = val;
-                        businessSearchInput.dispatchEvent(new Event('input'));
+                if (!isGmapsModeActive) {
+                    handleDirectUrlInput(val);
+                } else {
+                    if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
+                        window.switchMode('search');
+                        if (businessSearchInput) {
+                            businessSearchInput.value = val;
+                            businessSearchInput.dispatchEvent(new Event('input'));
+                        }
                     }
                 }
             });
@@ -74,6 +246,7 @@
                 } else if (resultCard) {
                     resultCard.classList.remove('active');
                 }
+                syncToolsVisibility();
                 if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }

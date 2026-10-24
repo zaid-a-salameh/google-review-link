@@ -428,3 +428,154 @@
             transform: scale(0.92);
             background: rgba(20, 18, 16, 0.98);
         }
+
+        /* Google Maps Mode Toggle */
+        .gmaps-toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 12px;
+        }
+        .btn-gmaps-toggle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            background: rgba(18, 16, 15, 0.7);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 6px 14px 6px 12px;
+            color: var(--text-sub);
+            font-size: 12px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            max-width: 100%;
+        }
+        .btn-gmaps-toggle:hover {
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #ffffff;
+        }
+        .btn-gmaps-toggle.active {
+            background: rgba(124, 58, 237, 0.15);
+            border-color: rgba(139, 92, 246, 0.5);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+        }
+        .gmaps-toggle-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 18px;
+            height: 18px;
+        }
+        .gmaps-toggle-icon svg {
+            width: 16px;
+            height: 16px;
+            fill: #a78bfa;
+            transition: fill 0.25s ease;
+        }
+        .btn-gmaps-toggle.active .gmaps-toggle-icon svg {
+            fill: #c4b5fd;
+        }
+        .gmaps-toggle-label {
+            white-space: nowrap;
+        }
+        .gmaps-toggle-switch {
+            width: 32px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            position: relative;
+            transition: background 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+        .gmaps-switch-knob {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffffff;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        [dir="rtl"] .gmaps-switch-knob,
+        html[lang="ar"] .gmaps-switch-knob {
+            left: auto;
+            right: 2px;
+        }
+        .btn-gmaps-toggle.active .gmaps-toggle-switch {
+            background: var(--primary-gradient);
+        }
+        .btn-gmaps-toggle.active .gmaps-switch-knob {
+            transform: translateX(14px);
+        }
+        [dir="rtl"] .btn-gmaps-toggle.active .gmaps-switch-knob,
+        html[lang="ar"] .btn-gmaps-toggle.active .gmaps-switch-knob {
+            transform: translateX(-14px);
+        }
+
+        /* Standalone NFC Card Action Tools */
+        .card-tools-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            width: 100%;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .btn-card-tool {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: rgba(18, 16, 15, 0.85);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 10px 4px;
+            color: var(--text-sub);
+            font-size: 11px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-align: center;
+            line-height: 1.25;
+            min-height: 66px;
+            user-select: none;
+        }
+        .btn-card-tool:hover,
+        .btn-card-tool:active {
+            background: rgba(124, 58, 237, 0.16);
+            border-color: rgba(139, 92, 246, 0.45);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-card-tool svg {
+            width: 18px;
+            height: 18px;
+            fill: #a78bfa;
+            transition: transform 0.2s ease, fill 0.2s ease;
+            flex-shrink: 0;
+        }
+        .btn-card-tool:hover svg {
+            fill: #ffffff;
+            transform: scale(1.1);
+        }
+        .btn-card-tool.btn-tool-danger {
+            border-color: rgba(239, 68, 68, 0.22);
+        }
+        .btn-card-tool.btn-tool-danger:hover,
+        .btn-card-tool.btn-tool-danger:active {
+            background: rgba(239, 68, 68, 0.14);
+            border-color: rgba(239, 68, 68, 0.5);
+            color: #ffffff;
+        }
+        .btn-card-tool.btn-tool-danger svg {
+            fill: #f87171;
+        }
