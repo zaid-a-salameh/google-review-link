@@ -155,6 +155,18 @@
         const pwdModalDesc = $('pwdModalDesc');
         const btnPwdInfo = $('btnPwdInfo');
 
+        function updatePwdTabSlider() {
+            const slider = $('pwdTabSlider');
+            const activeTab = document.querySelector('.pwd-tab.active');
+            if (!slider || !activeTab) return;
+
+            slider.style.left = '0px';
+            slider.style.right = 'auto';
+            slider.style.width = `${activeTab.offsetWidth}px`;
+            slider.style.transform = `translate3d(${activeTab.offsetLeft}px, 0, 0)`;
+        }
+        window.updatePwdTabSlider = updatePwdTabSlider;
+
         function syncPwdModalText(isSwitch = false) {
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
@@ -166,6 +178,11 @@
                     btnPwdSubmit.classList.remove('unlock-mode');
                 } else {
                     btnPwdSubmit.classList.add('unlock-mode');
+                }
+                if (isSwitch) {
+                    btnPwdSubmit.classList.remove('pwd-content-fade');
+                    void btnPwdSubmit.offsetWidth;
+                    btnPwdSubmit.classList.add('pwd-content-fade');
                 }
             }
             if (pwdModalBox) {
@@ -180,9 +197,9 @@
                     ? (dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card')
                     : (dict.pwdModalTitleUnlock || 'Unlock Card');
                 if (isSwitch) {
-                    pwdModalTitle.classList.remove('pwd-text-fade');
+                    pwdModalTitle.classList.remove('pwd-content-fade');
                     void pwdModalTitle.offsetWidth;
-                    pwdModalTitle.classList.add('pwd-text-fade');
+                    pwdModalTitle.classList.add('pwd-content-fade');
                 }
             }
             if (pwdModalDesc) {
@@ -190,9 +207,9 @@
                     ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
                     : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
                 if (isSwitch) {
-                    pwdModalDesc.classList.remove('pwd-text-fade');
+                    pwdModalDesc.classList.remove('pwd-content-fade');
                     void pwdModalDesc.offsetWidth;
-                    pwdModalDesc.classList.add('pwd-text-fade');
+                    pwdModalDesc.classList.add('pwd-content-fade');
                 }
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
@@ -205,12 +222,9 @@
                     pwdIconCircle.classList.add('unlock-mode');
                 }
                 if (isSwitch) {
-                    pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
+                    pwdIconCircle.classList.remove('pwd-content-fade');
                     void pwdIconCircle.offsetWidth;
-                    pwdIconCircle.classList.add(isLock ? 'mode-switch-lock' : 'mode-switch-unlock');
-                    setTimeout(() => {
-                        pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
-                    }, 400);
+                    pwdIconCircle.classList.add('pwd-content-fade');
                 }
             }
             if (pwdStatusIcon) {
@@ -221,6 +235,17 @@
                     pwdStatusIcon.innerHTML = targetSvg;
                 }
             }
+
+            const slider = $('pwdTabSlider');
+            if (slider) {
+                if (isLock) {
+                    slider.classList.remove('unlock-mode');
+                } else {
+                    slider.classList.add('unlock-mode');
+                }
+            }
+            updatePwdTabSlider();
+            requestAnimationFrame(() => updatePwdTabSlider());
         }
         window.syncPwdModalText = syncPwdModalText;
 
@@ -243,6 +268,8 @@
                 if (pwdModalOverlay) {
                     pwdModalOverlay.classList.add('active');
                     syncPwdModalText(false);
+                    setTimeout(updatePwdTabSlider, 25);
+                    setTimeout(updatePwdTabSlider, 80);
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
@@ -265,13 +292,13 @@
                 if (pwdCurrentAction === 'lock') return;
                 pwdCurrentAction = 'lock';
                 pwdTabLock.classList.add('active');
-                pwdTabUnlock.classList.remove('active', 'tab-unlock');
+                pwdTabUnlock.classList.remove('active');
                 syncPwdModalText(true);
             });
             pwdTabUnlock.addEventListener('click', () => {
                 if (pwdCurrentAction === 'unlock') return;
                 pwdCurrentAction = 'unlock';
-                pwdTabUnlock.classList.add('active', 'tab-unlock');
+                pwdTabUnlock.classList.add('active');
                 pwdTabLock.classList.remove('active');
                 syncPwdModalText(true);
             });
@@ -597,7 +624,10 @@
         window.initGoogleMapsPlaces();
         syncToolsVisibility();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
-        window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
+        window.addEventListener('resize', () => { 
+            if (window.updateModeTabSlider) window.updateModeTabSlider(); 
+            if (window.updatePwdTabSlider) window.updatePwdTabSlider();
+        });
 
         // ── Auto Update Check when Idle ──
         if ('requestIdleCallback' in window) {

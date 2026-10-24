@@ -2566,13 +2566,80 @@
         }
 
         .pwd-tabs {
+            position: relative;
             display: flex;
-            background: rgba(18, 16, 15, 0.9);
+            background: rgba(18, 16, 15, 0.95);
             border: 1px solid var(--border);
             border-radius: 50px;
-            padding: 3px;
-            margin-bottom: 14px;
+            padding: 4px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .pwd-tab-slider {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            left: 0;
+            border-radius: 50px;
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.45);
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
+                        width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                        background 0.28s ease,
+                        box-shadow 0.28s ease;
+            z-index: 1;
+            pointer-events: none;
+            will-change: transform, width;
+            transform: translate3d(0, 0, 0);
+        }
+        .pwd-tab-slider.unlock-mode {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+        }
+
+        .pwd-tab {
             position: relative;
+            z-index: 2;
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 12px;
+            border-radius: 50px;
+            background: transparent !important;
+            border: none;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: color 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            white-space: nowrap;
+        }
+        .pwd-tab:hover {
+            color: #ffffff;
+        }
+        .pwd-tab.active {
+            color: #ffffff;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+
+        .pwd-content-fade {
+            animation: pwdContentGlide 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        @keyframes pwdContentGlide {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 5px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
         }
 
         .pwd-icon-circle-wrapper {
@@ -2631,31 +2698,6 @@
         @keyframes pwdTextSlide {
             0% { opacity: 0; transform: translateY(4px); }
             100% { opacity: 1; transform: translateY(0); }
-        }
-
-        .pwd-tab {
-            flex: 1;
-            padding: 7px 10px;
-            border: none;
-            background: transparent;
-            color: var(--text-sub);
-            font-size: 12px;
-            font-weight: 700;
-            font-family: inherit;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            z-index: 2;
-        }
-        .pwd-tab.active {
-            background: var(--primary-gradient);
-            color: #ffffff;
-            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
-        }
-        .pwd-tab.active.tab-unlock {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 3px 12px rgba(16, 185, 129, 0.45);
         }
 
         .pwd-input-group {
@@ -3161,7 +3203,8 @@ body {
     <!-- Password Security Modal -->
     <div class="pwd-overlay" id="pwdModalOverlay">
         <div class="pwd-modal" id="pwdModalBox">
-            <div class="pwd-tabs">
+            <div class="pwd-tabs" id="pwdTabs">
+                <div class="pwd-tab-slider" id="pwdTabSlider"></div>
                 <button type="button" class="pwd-tab active" id="pwdTabLock" data-action="lock">Lock Card</button>
                 <button type="button" class="pwd-tab" id="pwdTabUnlock" data-action="unlock">Unlock Card</button>
             </div>
@@ -3912,6 +3955,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             try {
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
             } catch (e) {
                 console.error('Error applying language strings:', e);
             }
@@ -3926,6 +3970,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             try {
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
                 void document.documentElement.offsetHeight;
             } catch (e) {
                 console.error('Error during language switch:', e);
@@ -3933,6 +3978,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
                     if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
+                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 50);
                     setTimeout(() => {
                         isLangSwitching = false;
                     }, 240);
@@ -5668,6 +5714,18 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const pwdModalDesc = $('pwdModalDesc');
         const btnPwdInfo = $('btnPwdInfo');
 
+        function updatePwdTabSlider() {
+            const slider = $('pwdTabSlider');
+            const activeTab = document.querySelector('.pwd-tab.active');
+            if (!slider || !activeTab) return;
+
+            slider.style.left = '0px';
+            slider.style.right = 'auto';
+            slider.style.width = `${activeTab.offsetWidth}px`;
+            slider.style.transform = `translate3d(${activeTab.offsetLeft}px, 0, 0)`;
+        }
+        window.updatePwdTabSlider = updatePwdTabSlider;
+
         function syncPwdModalText(isSwitch = false) {
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
@@ -5679,6 +5737,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     btnPwdSubmit.classList.remove('unlock-mode');
                 } else {
                     btnPwdSubmit.classList.add('unlock-mode');
+                }
+                if (isSwitch) {
+                    btnPwdSubmit.classList.remove('pwd-content-fade');
+                    void btnPwdSubmit.offsetWidth;
+                    btnPwdSubmit.classList.add('pwd-content-fade');
                 }
             }
             if (pwdModalBox) {
@@ -5693,9 +5756,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     ? (dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card')
                     : (dict.pwdModalTitleUnlock || 'Unlock Card');
                 if (isSwitch) {
-                    pwdModalTitle.classList.remove('pwd-text-fade');
+                    pwdModalTitle.classList.remove('pwd-content-fade');
                     void pwdModalTitle.offsetWidth;
-                    pwdModalTitle.classList.add('pwd-text-fade');
+                    pwdModalTitle.classList.add('pwd-content-fade');
                 }
             }
             if (pwdModalDesc) {
@@ -5703,9 +5766,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     ? (dict.pwdModalDescLock || dict.pwdModalDesc || 'Set a password or PIN to prevent unauthorized modifications')
                     : (dict.pwdModalDescUnlock || 'Enter the current PIN to remove protection');
                 if (isSwitch) {
-                    pwdModalDesc.classList.remove('pwd-text-fade');
+                    pwdModalDesc.classList.remove('pwd-content-fade');
                     void pwdModalDesc.offsetWidth;
-                    pwdModalDesc.classList.add('pwd-text-fade');
+                    pwdModalDesc.classList.add('pwd-content-fade');
                 }
             }
             if (nfcPinInput && dict.pwdPlaceholder) {
@@ -5718,12 +5781,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     pwdIconCircle.classList.add('unlock-mode');
                 }
                 if (isSwitch) {
-                    pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
+                    pwdIconCircle.classList.remove('pwd-content-fade');
                     void pwdIconCircle.offsetWidth;
-                    pwdIconCircle.classList.add(isLock ? 'mode-switch-lock' : 'mode-switch-unlock');
-                    setTimeout(() => {
-                        pwdIconCircle.classList.remove('mode-switch-lock', 'mode-switch-unlock');
-                    }, 400);
+                    pwdIconCircle.classList.add('pwd-content-fade');
                 }
             }
             if (pwdStatusIcon) {
@@ -5734,6 +5794,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     pwdStatusIcon.innerHTML = targetSvg;
                 }
             }
+
+            const slider = $('pwdTabSlider');
+            if (slider) {
+                if (isLock) {
+                    slider.classList.remove('unlock-mode');
+                } else {
+                    slider.classList.add('unlock-mode');
+                }
+            }
+            updatePwdTabSlider();
+            requestAnimationFrame(() => updatePwdTabSlider());
         }
         window.syncPwdModalText = syncPwdModalText;
 
@@ -5756,6 +5827,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (pwdModalOverlay) {
                     pwdModalOverlay.classList.add('active');
                     syncPwdModalText(false);
+                    setTimeout(updatePwdTabSlider, 25);
+                    setTimeout(updatePwdTabSlider, 80);
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
@@ -5778,13 +5851,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (pwdCurrentAction === 'lock') return;
                 pwdCurrentAction = 'lock';
                 pwdTabLock.classList.add('active');
-                pwdTabUnlock.classList.remove('active', 'tab-unlock');
+                pwdTabUnlock.classList.remove('active');
                 syncPwdModalText(true);
             });
             pwdTabUnlock.addEventListener('click', () => {
                 if (pwdCurrentAction === 'unlock') return;
                 pwdCurrentAction = 'unlock';
-                pwdTabUnlock.classList.add('active', 'tab-unlock');
+                pwdTabUnlock.classList.add('active');
                 pwdTabLock.classList.remove('active');
                 syncPwdModalText(true);
             });
@@ -6110,7 +6183,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         window.initGoogleMapsPlaces();
         syncToolsVisibility();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
-        window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
+        window.addEventListener('resize', () => { 
+            if (window.updateModeTabSlider) window.updateModeTabSlider(); 
+            if (window.updatePwdTabSlider) window.updatePwdTabSlider();
+        });
 
         // ── Auto Update Check when Idle ──
         if ('requestIdleCallback' in window) {

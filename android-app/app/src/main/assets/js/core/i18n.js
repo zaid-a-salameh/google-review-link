@@ -622,6 +622,7 @@
             try {
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
             } catch (e) {
                 console.error('Error applying language strings:', e);
             }
@@ -636,6 +637,7 @@
             try {
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
                 void document.documentElement.offsetHeight;
             } catch (e) {
                 console.error('Error during language switch:', e);
@@ -643,6 +645,7 @@
                 requestAnimationFrame(() => {
                     document.body.classList.remove('is-lang-switching');
                     if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
+                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 50);
                     setTimeout(() => {
                         isLangSwitching = false;
                     }, 240);
