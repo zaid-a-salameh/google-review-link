@@ -122,19 +122,18 @@
             modalBox._morphTriggerBtn = null;
         }
 
-        modalBox.classList.add('modal-no-inner-transition');
         modalBox.style.transition = 'none';
         modalBox.style.opacity = '0';
         modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.92, 0.92, 1)`;
 
         overlay.classList.add('active');
-        void modalBox.offsetWidth;
-        modalBox.classList.remove('modal-no-inner-transition');
 
         requestAnimationFrame(() => {
-            modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
-            modalBox.style.opacity = '1';
-            modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
+            requestAnimationFrame(() => {
+                modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
+                modalBox.style.opacity = '1';
+                modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
+            });
         });
 
         modalBox._modalTimer = setTimeout(() => {
@@ -195,22 +194,6 @@
         clearModalTimers(fromOverlay, fromBox);
         clearModalTimers(toOverlay, toBox);
 
-        const wasFromActive = Boolean(fromOverlay && fromOverlay.classList.contains('active'));
-
-        // Freeze inner child transitions on toBox while configuring its state/theme
-        toBox.classList.add('modal-no-inner-transition');
-        toBox.style.transition = 'none';
-        toBox.style.opacity = '0';
-        toBox.style.transform = 'translate3d(0, 8px, 0) scale3d(0.96, 0.96, 1)';
-
-        // Keep a single steady backdrop on toOverlay (z-index: 1000) and make fromOverlay (z-index: 1001)
-        // a transparent wrapper above it so fromBox is never darkened by a second backdrop
-        toOverlay.style.zIndex = '1000';
-        if (fromOverlay) {
-            fromOverlay.style.zIndex = '1001';
-            fromOverlay.style.pointerEvents = 'none';
-        }
-
         if (fromBox && toBox) {
             if (fromBox.dataset.originDx && !toBox.dataset.originDx) {
                 toBox.dataset.originDx = fromBox.dataset.originDx;
@@ -228,47 +211,44 @@
             onBeforeEnter();
         }
 
-        toOverlay.classList.remove('handoff-exit');
-        toOverlay.classList.add('handoff-enter', 'active');
+        const wasFromActive = fromOverlay && fromOverlay.classList.contains('active');
 
         if (wasFromActive && fromOverlay && fromBox) {
             fromOverlay.classList.remove('handoff-enter');
             fromOverlay.classList.add('handoff-exit');
-        } else if (fromOverlay) {
-            fromOverlay.classList.remove('active', 'handoff-exit', 'handoff-enter');
-            fromOverlay.style.zIndex = '';
-            fromOverlay.style.pointerEvents = '';
-            resetModalInlineStyles(fromBox);
-        }
+            fromBox.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.14s ease';
+            fromBox.style.opacity = '0';
+            fromBox.style.transform = 'translate3d(0, -6px, 0) scale3d(0.94, 0.94, 1)';
 
-        // Flush layout synchronously so toBox and all its inner elements commit their initial state
-        void toBox.offsetWidth;
-        toBox.classList.remove('modal-no-inner-transition');
-
-        requestAnimationFrame(() => {
-            if (wasFromActive && fromOverlay && fromBox) {
-                fromBox.style.transition = 'transform 0.17s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s cubic-bezier(0.55, 0, 1, 0.45)';
-                fromBox.style.opacity = '0';
-                fromBox.style.transform = 'translate3d(0, -6px, 0) scale3d(0.95, 0.95, 1)';
-            }
-            toBox.style.transition = 'transform 0.21s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.17s cubic-bezier(0.16, 1, 0.3, 1)';
-            toBox.style.opacity = '1';
-            toBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
-        });
-
-        if (wasFromActive && fromOverlay && fromBox) {
             fromOverlay._modalTimer = setTimeout(() => {
                 fromOverlay._modalTimer = null;
                 fromOverlay.classList.remove('active', 'handoff-exit');
-                fromOverlay.style.zIndex = '';
-                fromOverlay.style.pointerEvents = '';
                 resetModalInlineStyles(fromBox);
-            }, 185);
+            }, 175);
+        } else if (fromOverlay) {
+            fromOverlay.classList.remove('active', 'handoff-enter', 'handoff-exit');
+            resetModalInlineStyles(fromBox);
         }
+
+        toOverlay.classList.remove('handoff-exit');
+        if (wasFromActive) {
+            toOverlay.classList.add('handoff-enter');
+        }
+        toBox.style.transition = 'none';
+        toBox.style.opacity = '0';
+        toBox.style.transform = 'translate3d(0, 10px, 0) scale3d(0.94, 0.94, 1)';
+        toOverlay.classList.add('active');
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                toBox.style.transition = 'transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1)';
+                toBox.style.opacity = '1';
+                toBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
+            });
+        });
 
         toBox._modalTimer = setTimeout(() => {
             toBox._modalTimer = null;
-            toOverlay.style.zIndex = '';
             toOverlay.classList.remove('handoff-enter');
             if (toOverlay.classList.contains('active')) {
                 resetModalInlineStyles(toBox);
@@ -312,6 +292,7 @@
         const allViews = modalBox.querySelectorAll('.nfc-view');
 
         if (!animate || !currentView) {
+            modalBox.classList.add('modal-no-inner-transition');
             allViews.forEach(v => {
                 v.classList.remove('active', 'view-exit');
                 if (v._exitTimer) {
@@ -320,6 +301,8 @@
                 }
             });
             targetEl.classList.add('active');
+            void modalBox.offsetWidth;
+            modalBox.classList.remove('modal-no-inner-transition');
             if (typeof callback === 'function') callback();
             return;
         }
@@ -334,9 +317,14 @@
             }
         });
 
+        if (targetEl._exitTimer) {
+            clearTimeout(targetEl._exitTimer);
+            targetEl._exitTimer = null;
+        }
+        targetEl.classList.remove('view-exit');
+
         currentView.classList.remove('active');
         currentView.classList.add('view-exit');
-
         targetEl.classList.add('active');
 
         if (currentView._exitTimer) clearTimeout(currentView._exitTimer);
@@ -344,7 +332,7 @@
             currentView.classList.remove('view-exit');
             currentView._exitTimer = null;
             if (typeof callback === 'function') callback();
-        }, 190);
+        }, 240);
     }
 
     window.showToast = showToast;

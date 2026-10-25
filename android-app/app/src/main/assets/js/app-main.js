@@ -349,16 +349,14 @@
                     nfcPinInput.select();
                 }
             };
+            syncPwdModalText(false);
             if (window.showNfcView) {
-                syncPwdModalText(false);
-                window.showNfcView('pwd', () => {
-                    focusAndSelectPin();
-                    updatePwdTabSlider();
-                });
+                window.showNfcView('pwd', true);
+                updatePwdTabSlider();
                 setTimeout(() => {
                     updatePwdTabSlider();
                     focusAndSelectPin();
-                }, 50);
+                }, 60);
             }
         }
         window.returnToPasswordModal = returnToPasswordModal;
@@ -374,20 +372,10 @@
                 if (nfcPinInput) nfcPinInput.blur();
                 const action = pwdCurrentAction;
 
-                if (window.showNfcView) {
-                    window.showNfcView('sensor', () => {
-                        if (action === 'lock') {
-                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag, { skipOpenAnimation: true });
-                        } else {
-                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag, { skipOpenAnimation: true });
-                        }
-                    });
+                if (action === 'lock') {
+                    if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                 } else {
-                    if (action === 'lock') {
-                        if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
-                    } else {
-                        if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
-                    }
+                    if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                 }
             });
         }
@@ -444,12 +432,8 @@
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                if (window.showNfcView) {
-                    window.showNfcView('sensor', () => {
-                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
-                    });
-                } else {
-                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { resetCount: true });
+                if (window.startNfcPermanentLock) {
+                    window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                 }
             });
         }

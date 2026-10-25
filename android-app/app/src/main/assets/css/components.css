@@ -74,6 +74,9 @@
         /* Mode Stage & Hardware-Accelerated Sliding Content */
         .mode-stage {
             position: relative;
+            display: grid;
+            grid-template-columns: 100%;
+            grid-template-rows: auto;
             width: 100%;
             z-index: 50;
         }
@@ -84,31 +87,54 @@
         }
 
         .mode-content {
-            display: none;
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            position: relative;
             width: 100%;
             opacity: 0;
-            transform: translate3d(0, 6px, 0);
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0.22s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
 
-        /* Active State */
-        .mode-content.active {
-            display: block;
-            opacity: 1;
-            transform: translate3d(0, 0, 0);
-            animation: modeFadeIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .mode-content:not(.active) {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
         }
 
-        @keyframes modeFadeIn {
-            0% {
-                opacity: 0;
-                transform: translate3d(0, 6px, 0);
-            }
-            100% {
-                opacity: 1;
-                transform: translate3d(0, 0, 0);
-            }
+        /* LTR Slide Offsets */
+        #modeLinkContent {
+            transform: translate3d(-16px, 0, 0);
+        }
+        #modeSearchContent {
+            transform: translate3d(16px, 0, 0);
+        }
+
+        /* RTL Slide Offsets (Arabic Mode) */
+        html[lang="ar"] #modeLinkContent,
+        [dir="rtl"] #modeLinkContent {
+            transform: translate3d(16px, 0, 0);
+        }
+        html[lang="ar"] #modeSearchContent,
+        [dir="rtl"] #modeSearchContent {
+            transform: translate3d(-16px, 0, 0);
+        }
+
+        /* Active State */
+        .mode-content.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0) !important;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0s;
         }
 
         .mode-content:has(.places-dropdown.show),
