@@ -872,16 +872,11 @@
         .perm-lock-overlay.handoff-enter {
             opacity: 1 !important;
             visibility: visible !important;
-            transition: none !important;
         }
         .nfc-overlay.handoff-exit,
         .pwd-overlay.handoff-exit,
         .perm-lock-overlay.handoff-exit {
-            background: transparent !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
             pointer-events: none !important;
-            transition: none !important;
         }
 
         .pwd-modal {

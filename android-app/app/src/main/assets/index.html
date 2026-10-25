@@ -2946,16 +2946,11 @@
         .perm-lock-overlay.handoff-enter {
             opacity: 1 !important;
             visibility: visible !important;
-            transition: none !important;
         }
         .nfc-overlay.handoff-exit,
         .pwd-overlay.handoff-exit,
         .perm-lock-overlay.handoff-exit {
-            background: transparent !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
             pointer-events: none !important;
-            transition: none !important;
         }
 
         .pwd-modal {
@@ -4868,6 +4863,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         clearModalTimers(fromOverlay, fromBox);
         clearModalTimers(toOverlay, toBox);
 
+        // Pre-hide toBox immediately before onBeforeEnter runs
+        // so any .active class applied to toOverlay inside onBeforeEnter cannot flash toBox visible
+        toBox.style.transition = 'none';
+        toBox.style.opacity = '0';
+        toBox.style.transform = 'translate3d(0, 10px, 0) scale3d(0.95, 0.95, 1)';
+
+        // Elevate toOverlay above fromOverlay so the entering modal sits cleanly on top
+        toOverlay.style.zIndex = '1005';
+        if (fromOverlay) {
+            fromOverlay.style.zIndex = '1000';
+            fromOverlay.style.pointerEvents = 'none';
+        }
+
         if (fromBox && toBox) {
             if (fromBox.dataset.originDx && !toBox.dataset.originDx) {
                 toBox.dataset.originDx = fromBox.dataset.originDx;
@@ -4887,31 +4895,28 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         const wasFromActive = fromOverlay && fromOverlay.classList.contains('active');
 
+        // toOverlay becomes active smoothly without altering the existing dark backdrop
+        toOverlay.classList.remove('handoff-exit');
+        toOverlay.classList.add('handoff-enter', 'active');
+
         if (wasFromActive && fromOverlay && fromBox) {
-            fromOverlay.classList.remove('handoff-enter');
-            fromOverlay.classList.add('handoff-exit');
             fromBox.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.14s ease';
             fromBox.style.opacity = '0';
-            fromBox.style.transform = 'translate3d(0, -6px, 0) scale3d(0.94, 0.94, 1)';
+            fromBox.style.transform = 'translate3d(0, -8px, 0) scale3d(0.95, 0.95, 1)';
 
             fromOverlay._modalTimer = setTimeout(() => {
                 fromOverlay._modalTimer = null;
                 fromOverlay.classList.remove('active', 'handoff-exit');
+                fromOverlay.style.zIndex = '';
+                fromOverlay.style.pointerEvents = '';
                 resetModalInlineStyles(fromBox);
-            }, 175);
+            }, 180);
         } else if (fromOverlay) {
-            fromOverlay.classList.remove('active', 'handoff-enter', 'handoff-exit');
+            fromOverlay.classList.remove('active', 'handoff-exit', 'handoff-enter');
+            fromOverlay.style.zIndex = '';
+            fromOverlay.style.pointerEvents = '';
             resetModalInlineStyles(fromBox);
         }
-
-        toOverlay.classList.remove('handoff-exit');
-        if (wasFromActive) {
-            toOverlay.classList.add('handoff-enter');
-        }
-        toBox.style.transition = 'none';
-        toBox.style.opacity = '0';
-        toBox.style.transform = 'translate3d(0, 10px, 0) scale3d(0.94, 0.94, 1)';
-        toOverlay.classList.add('active');
 
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
@@ -4923,11 +4928,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         toBox._modalTimer = setTimeout(() => {
             toBox._modalTimer = null;
+            toOverlay.style.zIndex = '';
             toOverlay.classList.remove('handoff-enter');
             if (toOverlay.classList.contains('active')) {
                 resetModalInlineStyles(toBox);
             }
-        }, 235);
+        }, 240);
     }
 
     window.showToast = showToast;
