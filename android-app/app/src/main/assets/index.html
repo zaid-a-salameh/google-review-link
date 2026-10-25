@@ -2076,7 +2076,10 @@
         /* NFC Modal / Overlay */
         .nfc-overlay {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: -260px;
             background: rgba(8, 7, 6, 0.82);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -2084,11 +2087,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 24px 24px 284px;
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
+            transform: translate3d(0, var(--kb-shift, 0px), 0);
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
@@ -2097,15 +2101,15 @@
         body.is-native-app .update-overlay,
         body.is-native-app .pwd-overlay,
         body.is-native-app .perm-lock-overlay {
-            background: rgba(8, 7, 6, 0.85);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
+            background: rgba(8, 7, 6, 0.88);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
         }
         .nfc-overlay.active {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
-            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .nfc-modal {
             width: 100%;
@@ -2167,7 +2171,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
-            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
             outline: none;
             -webkit-tap-highlight-color: transparent;
         }
@@ -2915,7 +2919,10 @@
         .pwd-overlay,
         .perm-lock-overlay {
             position: fixed;
-            inset: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: -260px;
             background: rgba(8, 7, 6, 0.82);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -2923,11 +2930,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 24px 24px 284px;
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
+            transform: translate3d(0, var(--kb-shift, 0px), 0);
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             overscroll-behavior: contain;
@@ -2937,7 +2945,7 @@
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
-            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
         /* Seamless Zero-Gap Modal-to-Modal Handoff States */
@@ -2946,11 +2954,22 @@
         .perm-lock-overlay.handoff-enter {
             opacity: 1 !important;
             visibility: visible !important;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1) !important;
         }
         .nfc-overlay.handoff-exit,
         .pwd-overlay.handoff-exit,
         .perm-lock-overlay.handoff-exit {
+            opacity: 1 !important;
+            visibility: visible !important;
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
             pointer-events: none !important;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1) !important;
+        }
+        .modal-no-inner-transition,
+        .modal-no-inner-transition * {
+            transition: none !important;
         }
 
         .pwd-modal {
@@ -2959,7 +2978,7 @@
             background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(245, 39, 125, 0.4);
             border-radius: 28px;
-            padding: 26px 22px;
+            padding: 22px 20px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.22);
             opacity: 0;
@@ -3018,7 +3037,7 @@
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 4px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
         .pwd-tab-slider {
@@ -3077,20 +3096,19 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 4px auto 14px;
+            margin: 2px auto 10px;
         }
         .pwd-icon-circle {
             position: relative;
-            width: 68px;
-            height: 68px;
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
             background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(245, 39, 125, 0.45);
-            transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
-                        box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+            transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
                         transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
@@ -3173,8 +3191,8 @@
         /* Continuous Sliding Description */
         .pwd-desc-wrapper {
             position: relative;
-            min-height: 38px;
-            margin-bottom: 14px;
+            min-height: 34px;
+            margin-bottom: 10px;
             padding: 0 4px;
         }
         .pwd-mode-desc {
@@ -3218,7 +3236,7 @@
             border: 1.5px solid var(--border);
             border-radius: 16px;
             padding: 4px 12px;
-            margin: 14px 0 10px 0;
+            margin: 10px 0 8px 0;
             gap: 10px;
             transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
@@ -3320,7 +3338,7 @@
         .perm-lock-actions {
             display: flex;
             gap: 8px;
-            margin-top: 18px;
+            margin-top: 14px;
         }
         .btn-pwd-submit {
             position: relative;
@@ -4791,18 +4809,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             modalBox._morphTriggerBtn = null;
         }
 
+        modalBox.classList.add('modal-no-inner-transition');
         modalBox.style.transition = 'none';
         modalBox.style.opacity = '0';
         modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.92, 0.92, 1)`;
 
         overlay.classList.add('active');
+        void modalBox.offsetWidth;
+        modalBox.classList.remove('modal-no-inner-transition');
 
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
-                modalBox.style.opacity = '1';
-                modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
-            });
+            modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
+            modalBox.style.opacity = '1';
+            modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
         });
 
         modalBox._modalTimer = setTimeout(() => {
@@ -4863,16 +4882,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         clearModalTimers(fromOverlay, fromBox);
         clearModalTimers(toOverlay, toBox);
 
-        // Pre-hide toBox immediately before onBeforeEnter runs
-        // so any .active class applied to toOverlay inside onBeforeEnter cannot flash toBox visible
+        const wasFromActive = Boolean(fromOverlay && fromOverlay.classList.contains('active'));
+
+        // Freeze inner child transitions on toBox while configuring its state/theme
+        toBox.classList.add('modal-no-inner-transition');
         toBox.style.transition = 'none';
         toBox.style.opacity = '0';
-        toBox.style.transform = 'translate3d(0, 10px, 0) scale3d(0.95, 0.95, 1)';
+        toBox.style.transform = 'translate3d(0, 8px, 0) scale3d(0.96, 0.96, 1)';
 
-        // Elevate toOverlay above fromOverlay so the entering modal sits cleanly on top
-        toOverlay.style.zIndex = '1005';
+        // Keep a single steady backdrop on toOverlay (z-index: 1000) and make fromOverlay (z-index: 1001)
+        // a transparent wrapper above it so fromBox is never darkened by a second backdrop
+        toOverlay.style.zIndex = '1000';
         if (fromOverlay) {
-            fromOverlay.style.zIndex = '1000';
+            fromOverlay.style.zIndex = '1001';
             fromOverlay.style.pointerEvents = 'none';
         }
 
@@ -4893,24 +4915,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             onBeforeEnter();
         }
 
-        const wasFromActive = fromOverlay && fromOverlay.classList.contains('active');
-
-        // toOverlay becomes active smoothly without altering the existing dark backdrop
         toOverlay.classList.remove('handoff-exit');
         toOverlay.classList.add('handoff-enter', 'active');
 
         if (wasFromActive && fromOverlay && fromBox) {
-            fromBox.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.14s ease';
-            fromBox.style.opacity = '0';
-            fromBox.style.transform = 'translate3d(0, -8px, 0) scale3d(0.95, 0.95, 1)';
-
-            fromOverlay._modalTimer = setTimeout(() => {
-                fromOverlay._modalTimer = null;
-                fromOverlay.classList.remove('active', 'handoff-exit');
-                fromOverlay.style.zIndex = '';
-                fromOverlay.style.pointerEvents = '';
-                resetModalInlineStyles(fromBox);
-            }, 180);
+            fromOverlay.classList.remove('handoff-enter');
+            fromOverlay.classList.add('handoff-exit');
         } else if (fromOverlay) {
             fromOverlay.classList.remove('active', 'handoff-exit', 'handoff-enter');
             fromOverlay.style.zIndex = '';
@@ -4918,13 +4928,30 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             resetModalInlineStyles(fromBox);
         }
 
+        // Flush layout synchronously so toBox and all its inner elements commit their initial state
+        void toBox.offsetWidth;
+        toBox.classList.remove('modal-no-inner-transition');
+
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                toBox.style.transition = 'transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1)';
-                toBox.style.opacity = '1';
-                toBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
-            });
+            if (wasFromActive && fromOverlay && fromBox) {
+                fromBox.style.transition = 'transform 0.17s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s cubic-bezier(0.55, 0, 1, 0.45)';
+                fromBox.style.opacity = '0';
+                fromBox.style.transform = 'translate3d(0, -6px, 0) scale3d(0.95, 0.95, 1)';
+            }
+            toBox.style.transition = 'transform 0.21s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.17s cubic-bezier(0.16, 1, 0.3, 1)';
+            toBox.style.opacity = '1';
+            toBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
         });
+
+        if (wasFromActive && fromOverlay && fromBox) {
+            fromOverlay._modalTimer = setTimeout(() => {
+                fromOverlay._modalTimer = null;
+                fromOverlay.classList.remove('active', 'handoff-exit');
+                fromOverlay.style.zIndex = '';
+                fromOverlay.style.pointerEvents = '';
+                resetModalInlineStyles(fromBox);
+            }, 185);
+        }
 
         toBox._modalTimer = setTimeout(() => {
             toBox._modalTimer = null;
@@ -4933,7 +4960,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (toOverlay.classList.contains('active')) {
                 resetModalInlineStyles(toBox);
             }
-        }, 240);
+        }, 235);
     }
 
     window.showToast = showToast;
@@ -7105,20 +7132,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     try { document.activeElement.blur(); } catch (e) {}
                 }
                 if (pwdModalOverlay) {
-                    if (window.openMorphModal && pwdModalBox) {
-                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
-                    } else {
-                        pwdModalOverlay.classList.add('active');
-                    }
-                    syncPwdModalText(false);
-                    setTimeout(updatePwdTabSlider, 25);
-                    setTimeout(updatePwdTabSlider, 80);
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
                         if (eyeIconOpen) eyeIconOpen.style.display = 'block';
                         if (eyeIconClosed) eyeIconClosed.style.display = 'none';
                     }
+                    syncPwdModalText(false);
+                    if (window.openMorphModal && pwdModalBox) {
+                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
+                    } else {
+                        pwdModalOverlay.classList.add('active');
+                    }
+                    setTimeout(updatePwdTabSlider, 25);
+                    setTimeout(updatePwdTabSlider, 80);
                 }
             });
         }
@@ -7604,8 +7631,60 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
-        // ── Soft Keyboard Dock Avoidance on Mobile/Native ──
+        // ── Soft Keyboard Dock & Modal Avoidance on Mobile/Native ──
         let keyboardBlurTimer = null;
+        let lastKnownImeHeight = Math.round(Math.min(310, Math.max(250, window.innerHeight * 0.39)));
+
+        function computeModalKbShift(imeHeightPx) {
+            const vh = window.innerHeight || 780;
+            const kbH = Math.max(220, imeHeightPx || lastKnownImeHeight);
+            const modalH = (pwdModalBox && pwdModalBox.offsetHeight > 100) ? pwdModalBox.offsetHeight : 344;
+            const centeredTop = (vh - modalH) * 0.5;
+            const minShift = Math.min(0, 12 - centeredTop);
+            const bottomClearanceShift = centeredTop - kbH - 14;
+            const rawShift = Math.min(-kbH * 0.5, bottomClearanceShift);
+            return Math.round(Math.max(-240, minShift, Math.min(0, rawShift)));
+        }
+
+        function setModalKeyboardShift(active, imeHeightPx) {
+            if (!active) {
+                document.documentElement.style.setProperty('--kb-shift', '0px');
+                return;
+            }
+            const isPwdModalOpen = Boolean(pwdModalOverlay && pwdModalOverlay.classList.contains('active'));
+            if (!isPwdModalOpen) {
+                document.documentElement.style.setProperty('--kb-shift', '0px');
+                return;
+            }
+            const shift = computeModalKbShift(imeHeightPx);
+            document.documentElement.style.setProperty('--kb-shift', `${shift}px`);
+        }
+
+        window.__onNativeKeyboardInset = function(imeBottomDp, imeVisible) {
+            if (imeBottomDp >= 120) {
+                lastKnownImeHeight = imeBottomDp;
+            }
+            if (!imeVisible || imeBottomDp <= 20) {
+                document.body.classList.remove('keyboard-open');
+                setModalKeyboardShift(false, 0);
+            } else {
+                document.body.classList.add('keyboard-open');
+                const activeEl = document.activeElement;
+                const isModalInput = Boolean(activeEl && pwdModalOverlay && pwdModalOverlay.contains(activeEl));
+                if (isModalInput || (pwdModalOverlay && pwdModalOverlay.classList.contains('active'))) {
+                    setModalKeyboardShift(true, imeBottomDp >= 120 ? imeBottomDp : lastKnownImeHeight);
+                }
+            }
+        };
+
+        if (nfcPinInput) {
+            nfcPinInput.addEventListener('click', () => {
+                if (pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                    setModalKeyboardShift(true, lastKnownImeHeight);
+                }
+            });
+        }
+
         document.addEventListener('focusin', e => {
             const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
@@ -7614,11 +7693,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     keyboardBlurTimer = null;
                 }
                 document.body.classList.add('keyboard-open');
+                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                    setModalKeyboardShift(true, lastKnownImeHeight);
+                }
             }
         });
         document.addEventListener('focusout', e => {
             const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                    setModalKeyboardShift(false, 0);
+                }
                 if (keyboardBlurTimer) clearTimeout(keyboardBlurTimer);
                 keyboardBlurTimer = setTimeout(() => {
                     const activeTag = document.activeElement && document.activeElement.tagName
@@ -7626,6 +7711,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         : '';
                     if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
                         document.body.classList.remove('keyboard-open');
+                        setModalKeyboardShift(false, 0);
                     }
                 }, 120);
             }

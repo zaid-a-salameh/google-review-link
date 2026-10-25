@@ -252,20 +252,20 @@
                     try { document.activeElement.blur(); } catch (e) {}
                 }
                 if (pwdModalOverlay) {
-                    if (window.openMorphModal && pwdModalBox) {
-                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
-                    } else {
-                        pwdModalOverlay.classList.add('active');
-                    }
-                    syncPwdModalText(false);
-                    setTimeout(updatePwdTabSlider, 25);
-                    setTimeout(updatePwdTabSlider, 80);
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
                         if (eyeIconOpen) eyeIconOpen.style.display = 'block';
                         if (eyeIconClosed) eyeIconClosed.style.display = 'none';
                     }
+                    syncPwdModalText(false);
+                    if (window.openMorphModal && pwdModalBox) {
+                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
+                    } else {
+                        pwdModalOverlay.classList.add('active');
+                    }
+                    setTimeout(updatePwdTabSlider, 25);
+                    setTimeout(updatePwdTabSlider, 80);
                 }
             });
         }
@@ -751,8 +751,60 @@
             });
         }
 
-        // ── Soft Keyboard Dock Avoidance on Mobile/Native ──
+        // ── Soft Keyboard Dock & Modal Avoidance on Mobile/Native ──
         let keyboardBlurTimer = null;
+        let lastKnownImeHeight = Math.round(Math.min(310, Math.max(250, window.innerHeight * 0.39)));
+
+        function computeModalKbShift(imeHeightPx) {
+            const vh = window.innerHeight || 780;
+            const kbH = Math.max(220, imeHeightPx || lastKnownImeHeight);
+            const modalH = (pwdModalBox && pwdModalBox.offsetHeight > 100) ? pwdModalBox.offsetHeight : 344;
+            const centeredTop = (vh - modalH) * 0.5;
+            const minShift = Math.min(0, 12 - centeredTop);
+            const bottomClearanceShift = centeredTop - kbH - 14;
+            const rawShift = Math.min(-kbH * 0.5, bottomClearanceShift);
+            return Math.round(Math.max(-240, minShift, Math.min(0, rawShift)));
+        }
+
+        function setModalKeyboardShift(active, imeHeightPx) {
+            if (!active) {
+                document.documentElement.style.setProperty('--kb-shift', '0px');
+                return;
+            }
+            const isPwdModalOpen = Boolean(pwdModalOverlay && pwdModalOverlay.classList.contains('active'));
+            if (!isPwdModalOpen) {
+                document.documentElement.style.setProperty('--kb-shift', '0px');
+                return;
+            }
+            const shift = computeModalKbShift(imeHeightPx);
+            document.documentElement.style.setProperty('--kb-shift', `${shift}px`);
+        }
+
+        window.__onNativeKeyboardInset = function(imeBottomDp, imeVisible) {
+            if (imeBottomDp >= 120) {
+                lastKnownImeHeight = imeBottomDp;
+            }
+            if (!imeVisible || imeBottomDp <= 20) {
+                document.body.classList.remove('keyboard-open');
+                setModalKeyboardShift(false, 0);
+            } else {
+                document.body.classList.add('keyboard-open');
+                const activeEl = document.activeElement;
+                const isModalInput = Boolean(activeEl && pwdModalOverlay && pwdModalOverlay.contains(activeEl));
+                if (isModalInput || (pwdModalOverlay && pwdModalOverlay.classList.contains('active'))) {
+                    setModalKeyboardShift(true, imeBottomDp >= 120 ? imeBottomDp : lastKnownImeHeight);
+                }
+            }
+        };
+
+        if (nfcPinInput) {
+            nfcPinInput.addEventListener('click', () => {
+                if (pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                    setModalKeyboardShift(true, lastKnownImeHeight);
+                }
+            });
+        }
+
         document.addEventListener('focusin', e => {
             const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
@@ -761,11 +813,17 @@
                     keyboardBlurTimer = null;
                 }
                 document.body.classList.add('keyboard-open');
+                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                    setModalKeyboardShift(true, lastKnownImeHeight);
+                }
             }
         });
         document.addEventListener('focusout', e => {
             const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                    setModalKeyboardShift(false, 0);
+                }
                 if (keyboardBlurTimer) clearTimeout(keyboardBlurTimer);
                 keyboardBlurTimer = setTimeout(() => {
                     const activeTag = document.activeElement && document.activeElement.tagName
@@ -773,6 +831,7 @@
                         : '';
                     if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
                         document.body.classList.remove('keyboard-open');
+                        setModalKeyboardShift(false, 0);
                     }
                 }, 120);
             }

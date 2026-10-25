@@ -46,6 +46,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import org.json.JSONObject
@@ -168,11 +169,21 @@ class MainActivity : ComponentActivity() {
             )
         }
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { v, windowInsets ->
-            val insets = windowInsets.getInsets(
+            val bars = windowInsets.getInsets(
                 WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
             )
-            v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            val ime = windowInsets.getInsets(WindowInsetsCompat.Type.ime())
+            val imeVisible = windowInsets.isVisible(WindowInsetsCompat.Type.ime())
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            val imeBottomPx = if (imeVisible) (ime.bottom - bars.bottom).coerceAtLeast(0) else 0
+            val density = v.resources.displayMetrics.density
+            val imeBottomDp = (imeBottomPx / density).toInt()
+            webView.evaluateJavascript(
+                "window.__onNativeKeyboardInset && window.__onNativeKeyboardInset($imeBottomDp, $imeVisible);",
+                null
+            )
             WindowInsetsCompat.CONSUMED
         }
 
