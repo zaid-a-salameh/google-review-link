@@ -274,8 +274,9 @@
             </div>
             </div>
 
-            <!-- Standalone Card Action Tools Row (Permanent in both modes) -->
+            <!-- Standalone Card Action Tools Row (Permanent in both modes - 2x2 Grid) -->
             <div class="card-tools-row" id="cardToolsRow">
+                <!-- Top Row: 1. Read Card, 2. Wi-Fi Card -->
                 <button type="button" class="btn-card-tool" id="btnReadTag">
                     <svg viewBox="0 0 24 24">
                         <path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/>
@@ -283,6 +284,14 @@
                     </svg>
                     <span id="lblReadTag">Read Card</span>
                 </button>
+                <button type="button" class="btn-card-tool btn-tool-wifi" id="btnWifiTag">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/>
+                    </svg>
+                    <span id="lblWifiTag">Wi-Fi Card</span>
+                </button>
+
+                <!-- Bottom Row: 3. PIN Lock / Unlock, 4. Permanent Lock -->
                 <button type="button" class="btn-card-tool" id="btnPwdLockTag">
                     <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                     <span id="lblPwdLockTag">PIN Lock / Unlock</span>
@@ -473,6 +482,135 @@
                 <div class="perm-lock-actions">
                     <button type="button" class="btn-perm-lock-confirm" id="btnPermLockConfirm">Confirm Permanent Lock</button>
                     <button type="button" class="btn-perm-lock-cancel" id="btnPermLockCancel">Cancel</button>
+                </div>
+            </div>
+
+            <!-- View 4: Wi-Fi Card Setup Wizard View -->
+            <div class="nfc-view" id="nfcWifiView">
+                <!-- Glowing Amber Icon Circle -->
+                <div class="wifi-icon-circle-wrapper">
+                    <div class="wifi-icon-circle" id="wifiIconCircle">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Wizard Progress Indicator -->
+                <div class="wifi-steps-indicator" id="wifiStepsIndicator">
+                    <div class="wifi-step-item active" data-step="1">
+                        <span class="wifi-step-dot"></span>
+                        <span class="wifi-step-lbl" id="wifiStepDot1">1</span>
+                    </div>
+                    <div class="wifi-step-line"></div>
+                    <div class="wifi-step-item" data-step="2">
+                        <span class="wifi-step-dot"></span>
+                        <span class="wifi-step-lbl" id="wifiStepDot2">2</span>
+                    </div>
+                    <div class="wifi-step-line"></div>
+                    <div class="wifi-step-item" data-step="3">
+                        <span class="wifi-step-dot"></span>
+                        <span class="wifi-step-lbl" id="wifiStepDot3">3</span>
+                    </div>
+                </div>
+
+                <!-- Step Title and Description -->
+                <div class="wifi-title" id="wifiStepTitle">Wi-Fi Card Setup</div>
+                <div class="wifi-desc" id="wifiStepDesc">Enter the Wi-Fi network name (SSID)</div>
+
+                <!-- Step Content Container -->
+                <div class="wifi-steps-container" id="wifiStepsContainer">
+                    <!-- Step 1 Pane: SSID Input -->
+                    <div class="wifi-step-pane active" id="wifiStep1Pane">
+                        <div class="wifi-input-group">
+                            <span class="wifi-input-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/></svg>
+                            </span>
+                            <input type="text" id="wifiSsidInput" class="wifi-text-input" placeholder="Network Name (SSID)..." autocomplete="off" spellcheck="false" maxlength="32">
+                            <button type="button" class="btn-wifi-clear" id="btnWifiSsidClear" title="Clear">
+                                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 Pane: Security Type Dropdown -->
+                    <div class="wifi-step-pane" id="wifiStep2Pane">
+                        <div class="wifi-dropdown-wrapper" id="wifiDropdownWrapper">
+                            <button type="button" class="wifi-select-trigger" id="wifiSelectTrigger" aria-haspopup="listbox" aria-expanded="false">
+                                <div class="wifi-select-val">
+                                    <div class="wifi-select-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                    </div>
+                                    <div class="wifi-select-texts">
+                                        <span class="wifi-select-main" id="wifiSelectedLabel">WPA / WPA2 / WPA3 Personal</span>
+                                        <span class="wifi-select-sub" id="wifiSelectedSub">Most common (Home & Office)</span>
+                                    </div>
+                                </div>
+                                <svg class="wifi-dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                            </button>
+
+                            <!-- Dropdown Menu (Places search dropdown style) -->
+                            <div class="wifi-dropdown-menu" id="wifiDropdownMenu" role="listbox">
+                                <div class="wifi-dropdown-item selected" data-enc="WPA" role="option">
+                                    <div class="wifi-dropdown-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                    </div>
+                                    <div class="wifi-dropdown-text">
+                                        <span class="wifi-dropdown-main" id="lblEncWpa">WPA / WPA2 / WPA3 Personal</span>
+                                        <span class="wifi-dropdown-sub" id="lblEncWpaSub">Most common (Home & Office)</span>
+                                    </div>
+                                    <svg class="wifi-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                                </div>
+
+                                <div class="wifi-dropdown-item" data-enc="WEP" role="option">
+                                    <div class="wifi-dropdown-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                                    </div>
+                                    <div class="wifi-dropdown-text">
+                                        <span class="wifi-dropdown-main" id="lblEncWep">WEP</span>
+                                        <span class="wifi-dropdown-sub" id="lblEncWepSub">Legacy networks</span>
+                                    </div>
+                                    <svg class="wifi-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                                </div>
+
+                                <div class="wifi-dropdown-item" data-enc="OPEN" role="option">
+                                    <div class="wifi-dropdown-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>
+                                    </div>
+                                    <div class="wifi-dropdown-text">
+                                        <span class="wifi-dropdown-main" id="lblEncOpen">Open Network</span>
+                                        <span class="wifi-dropdown-sub" id="lblEncOpenSub">No password (Public / Guest)</span>
+                                    </div>
+                                    <svg class="wifi-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Pane: Password Input -->
+                    <div class="wifi-step-pane" id="wifiStep3Pane">
+                        <div class="wifi-input-group">
+                            <span class="wifi-input-icon">
+                                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                            </span>
+                            <input type="password" id="wifiPasswordInput" class="wifi-text-input" placeholder="Enter Wi-Fi password..." autocomplete="off" spellcheck="false" maxlength="64">
+                            <button type="button" class="btn-wifi-eye" id="btnWifiToggleShow" title="Show/Hide">
+                                <svg id="wifiEyeOpen" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                <svg id="wifiEyeClosed" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Actions Row -->
+                <div class="wifi-actions">
+                    <button type="button" class="btn-wifi-next" id="btnWifiNext">
+                        <span id="wifiNextBtnLabel">Next</span>
+                        <svg viewBox="0 0 24 24" id="wifiNextBtnArrow" class="wifi-next-arrow"><path d="M5 13h11.83l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.83 11H5v2z"/></svg>
+                    </button>
+                    <button type="button" class="btn-wifi-back" id="btnWifiBack">
+                        <span id="wifiBackBtnLabel">Cancel</span>
+                    </button>
                 </div>
             </div>
         </div>

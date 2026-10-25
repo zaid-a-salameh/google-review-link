@@ -1430,8 +1430,8 @@
         /* Standalone NFC Card Action Tools */
         .card-tools-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
             margin-top: 14px;
             margin-bottom: 2px;
             width: 100%;
@@ -1446,16 +1446,16 @@
             background: rgba(18, 16, 15, 0.88);
             border: 1px solid var(--border);
             border-radius: 14px;
-            padding: 10px 4px;
+            padding: 10px 8px;
             color: var(--text-sub);
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             font-family: inherit;
             cursor: pointer;
             transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             text-align: center;
             line-height: 1.25;
-            min-height: 66px;
+            min-height: 62px;
             user-select: none;
         }
         @media (hover: hover) and (pointer: fine) {
@@ -1474,6 +1474,14 @@
                 border-color: rgba(245, 39, 125, 0.55);
                 color: #ffffff;
             }
+            .btn-card-tool.btn-tool-wifi:hover {
+                background: rgba(245, 158, 11, 0.14);
+                border-color: rgba(245, 158, 11, 0.55);
+                color: #ffffff;
+            }
+            .btn-card-tool.btn-tool-wifi:hover svg {
+                fill: #fbbf24;
+            }
         }
         .btn-card-tool:active {
             background: rgba(124, 58, 237, 0.18);
@@ -1487,6 +1495,17 @@
             fill: #a78bfa;
             transition: transform 0.18s ease, fill 0.18s ease;
             flex-shrink: 0;
+        }
+        .btn-card-tool.btn-tool-wifi {
+            border-color: rgba(245, 158, 11, 0.28);
+        }
+        .btn-card-tool.btn-tool-wifi:active {
+            background: rgba(245, 158, 11, 0.22);
+            border-color: rgba(245, 158, 11, 0.65);
+            color: #ffffff;
+        }
+        .btn-card-tool.btn-tool-wifi svg {
+            fill: #f59e0b;
         }
         .btn-card-tool.btn-tool-danger {
             border-color: rgba(245, 39, 125, 0.25);
@@ -3630,6 +3649,442 @@
             fill: #F5277D;
         }
 
+        /* == Distinctive Amber / Yellow Wi-Fi Theme == */
+        .nfc-modal.theme-wifi {
+            border-color: rgba(245, 158, 11, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.22);
+        }
+        .nfc-modal.theme-wifi .nfc-wave-ring {
+            border-color: rgba(245, 158, 11, 0.38);
+        }
+        .nfc-modal.theme-wifi .nfc-icon-circle {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.45);
+        }
+        .nfc-modal.theme-wifi .nfc-icon-circle svg {
+            fill: #fbbf24;
+        }
+        .nfc-modal.theme-wifi .btn-nfc-cancel:hover,
+        .nfc-modal.theme-wifi .btn-nfc-cancel:active {
+            border-color: rgba(245, 158, 11, 0.55);
+            color: #fbbf24;
+        }
+        .nfc-modal.theme-wifi input::selection,
+        #nfcWifiView input::selection {
+            background-color: #f59e0b;
+            color: #0c0a09;
+        }
+
+        /* Wi-Fi Setup Wizard Modal Styles */
+        .wifi-icon-circle-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .wifi-icon-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.38);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 24px rgba(245, 158, 11, 0.18);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
+        }
+        .wifi-icon-circle svg {
+            width: 26px;
+            height: 26px;
+            fill: #fbbf24;
+        }
+        .wifi-steps-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .wifi-step-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(41, 37, 36, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            transition: all 0.24s ease;
+        }
+        .wifi-step-item.active {
+            background: #f59e0b;
+            border-color: #fbbf24;
+            color: #0c0a09;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+            transform: scale(1.08);
+        }
+        .wifi-step-item.completed {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: rgba(245, 158, 11, 0.55);
+            color: #fbbf24;
+        }
+        .wifi-step-line {
+            width: 20px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: background 0.24s ease;
+        }
+        .wifi-step-line.active {
+            background: rgba(245, 158, 11, 0.65);
+        }
+        .wifi-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .wifi-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.4;
+            min-height: 32px;
+        }
+        .wifi-steps-container {
+            position: relative;
+            width: 100%;
+            min-height: 56px;
+            margin-bottom: 14px;
+        }
+        .wifi-step-pane {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transform: translate3d(0, 6px, 0);
+            transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .wifi-step-pane.active {
+            display: block;
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+        .wifi-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 0 12px;
+            height: 52px;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .wifi-input-group:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+        }
+        .wifi-input-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        html[lang="ar"] .wifi-input-icon {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        .wifi-input-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: #f59e0b;
+        }
+        .wifi-text-input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+        .wifi-text-input::placeholder {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+        .btn-wifi-clear,
+        .btn-wifi-eye {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            border-radius: 8px;
+            transition: color 0.2s ease, background 0.2s ease;
+            flex-shrink: 0;
+        }
+        .btn-wifi-clear:hover,
+        .btn-wifi-eye:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .btn-wifi-clear svg,
+        .btn-wifi-eye svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+        }
+
+        /* Wi-Fi Security Dropdown (Places Autocomplete Style) */
+        .wifi-dropdown-wrapper {
+            position: relative;
+            width: 100%;
+            z-index: 50;
+        }
+        .wifi-select-trigger {
+            width: 100%;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            text-align: left;
+        }
+        html[lang="ar"] .wifi-select-trigger {
+            text-align: right;
+        }
+        .wifi-dropdown-wrapper.open .wifi-select-trigger,
+        .wifi-select-trigger:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+            outline: none;
+        }
+        .wifi-select-val {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+        .wifi-select-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .wifi-select-icon svg {
+            width: 15px;
+            height: 15px;
+            fill: #fbbf24;
+        }
+        .wifi-select-texts {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            gap: 1px;
+        }
+        .wifi-select-main {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-select-sub {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-dropdown-arrow {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-muted);
+            flex-shrink: 0;
+            transition: transform 0.22s ease, fill 0.2s ease;
+        }
+        .wifi-dropdown-wrapper.open .wifi-dropdown-arrow {
+            transform: rotate(180deg);
+            fill: #fbbf24;
+        }
+        .wifi-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            background: #181412;
+            border: 1px solid rgba(245, 158, 11, 0.38);
+            border-radius: var(--radius-btn);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.16);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transform-origin: top center;
+        }
+        .wifi-dropdown-wrapper.open .wifi-dropdown-menu {
+            display: flex;
+            animation: dropdownExpandAnim 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .wifi-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.15s ease;
+            text-align: left;
+        }
+        html[lang="ar"] .wifi-dropdown-item {
+            text-align: right;
+        }
+        .wifi-dropdown-item:last-of-type {
+            border-bottom: none;
+        }
+        .wifi-dropdown-item:hover,
+        .wifi-dropdown-item.selected {
+            background: rgba(245, 158, 11, 0.16);
+        }
+        .wifi-dropdown-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .wifi-dropdown-icon svg {
+            width: 15px;
+            height: 15px;
+            fill: #fbbf24;
+        }
+        .wifi-dropdown-text {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .wifi-dropdown-main {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-dropdown-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-check-icon {
+            width: 18px;
+            height: 18px;
+            fill: #fbbf24;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            flex-shrink: 0;
+        }
+        .wifi-dropdown-item.selected .wifi-check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Wi-Fi Wizard Action Buttons */
+        .wifi-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-top: 4px;
+        }
+        .btn-wifi-next {
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: var(--radius-btn);
+            color: #0c0a09;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+        .btn-wifi-next:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        .wifi-next-arrow {
+            width: 18px;
+            height: 18px;
+            fill: #0c0a09;
+            transition: transform 0.18s ease;
+        }
+        html[lang="ar"] .wifi-next-arrow {
+            transform: rotate(180deg);
+        }
+        .btn-wifi-back {
+            width: 100%;
+            height: 38px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-btn);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .btn-wifi-back:hover,
+        .btn-wifi-back:active {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
 /* == toast.css == */
 /* Toast Notification */
         /* Toast Message */
@@ -3849,8 +4304,9 @@ body {
             </div>
             </div>
 
-            <!-- Standalone Card Action Tools Row (Permanent in both modes) -->
+            <!-- Standalone Card Action Tools Row (Permanent in both modes - 2x2 Grid) -->
             <div class="card-tools-row" id="cardToolsRow">
+                <!-- Top Row: 1. Read Card, 2. Wi-Fi Card -->
                 <button type="button" class="btn-card-tool" id="btnReadTag">
                     <svg viewBox="0 0 24 24">
                         <path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/>
@@ -3858,6 +4314,14 @@ body {
                     </svg>
                     <span id="lblReadTag">Read Card</span>
                 </button>
+                <button type="button" class="btn-card-tool btn-tool-wifi" id="btnWifiTag">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/>
+                    </svg>
+                    <span id="lblWifiTag">Wi-Fi Card</span>
+                </button>
+
+                <!-- Bottom Row: 3. PIN Lock / Unlock, 4. Permanent Lock -->
                 <button type="button" class="btn-card-tool" id="btnPwdLockTag">
                     <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                     <span id="lblPwdLockTag">PIN Lock / Unlock</span>
@@ -4050,6 +4514,135 @@ body {
                     <button type="button" class="btn-perm-lock-cancel" id="btnPermLockCancel">Cancel</button>
                 </div>
             </div>
+
+            <!-- View 4: Wi-Fi Card Setup Wizard View -->
+            <div class="nfc-view" id="nfcWifiView">
+                <!-- Glowing Amber Icon Circle -->
+                <div class="wifi-icon-circle-wrapper">
+                    <div class="wifi-icon-circle" id="wifiIconCircle">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Wizard Progress Indicator -->
+                <div class="wifi-steps-indicator" id="wifiStepsIndicator">
+                    <div class="wifi-step-item active" data-step="1">
+                        <span class="wifi-step-dot"></span>
+                        <span class="wifi-step-lbl" id="wifiStepDot1">1</span>
+                    </div>
+                    <div class="wifi-step-line"></div>
+                    <div class="wifi-step-item" data-step="2">
+                        <span class="wifi-step-dot"></span>
+                        <span class="wifi-step-lbl" id="wifiStepDot2">2</span>
+                    </div>
+                    <div class="wifi-step-line"></div>
+                    <div class="wifi-step-item" data-step="3">
+                        <span class="wifi-step-dot"></span>
+                        <span class="wifi-step-lbl" id="wifiStepDot3">3</span>
+                    </div>
+                </div>
+
+                <!-- Step Title and Description -->
+                <div class="wifi-title" id="wifiStepTitle">Wi-Fi Card Setup</div>
+                <div class="wifi-desc" id="wifiStepDesc">Enter the Wi-Fi network name (SSID)</div>
+
+                <!-- Step Content Container -->
+                <div class="wifi-steps-container" id="wifiStepsContainer">
+                    <!-- Step 1 Pane: SSID Input -->
+                    <div class="wifi-step-pane active" id="wifiStep1Pane">
+                        <div class="wifi-input-group">
+                            <span class="wifi-input-icon">
+                                <svg viewBox="0 0 24 24"><path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/></svg>
+                            </span>
+                            <input type="text" id="wifiSsidInput" class="wifi-text-input" placeholder="Network Name (SSID)..." autocomplete="off" spellcheck="false" maxlength="32">
+                            <button type="button" class="btn-wifi-clear" id="btnWifiSsidClear" title="Clear">
+                                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2 Pane: Security Type Dropdown -->
+                    <div class="wifi-step-pane" id="wifiStep2Pane">
+                        <div class="wifi-dropdown-wrapper" id="wifiDropdownWrapper">
+                            <button type="button" class="wifi-select-trigger" id="wifiSelectTrigger" aria-haspopup="listbox" aria-expanded="false">
+                                <div class="wifi-select-val">
+                                    <div class="wifi-select-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                    </div>
+                                    <div class="wifi-select-texts">
+                                        <span class="wifi-select-main" id="wifiSelectedLabel">WPA / WPA2 / WPA3 Personal</span>
+                                        <span class="wifi-select-sub" id="wifiSelectedSub">Most common (Home & Office)</span>
+                                    </div>
+                                </div>
+                                <svg class="wifi-dropdown-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                            </button>
+
+                            <!-- Dropdown Menu (Places search dropdown style) -->
+                            <div class="wifi-dropdown-menu" id="wifiDropdownMenu" role="listbox">
+                                <div class="wifi-dropdown-item selected" data-enc="WPA" role="option">
+                                    <div class="wifi-dropdown-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                                    </div>
+                                    <div class="wifi-dropdown-text">
+                                        <span class="wifi-dropdown-main" id="lblEncWpa">WPA / WPA2 / WPA3 Personal</span>
+                                        <span class="wifi-dropdown-sub" id="lblEncWpaSub">Most common (Home & Office)</span>
+                                    </div>
+                                    <svg class="wifi-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                                </div>
+
+                                <div class="wifi-dropdown-item" data-enc="WEP" role="option">
+                                    <div class="wifi-dropdown-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                                    </div>
+                                    <div class="wifi-dropdown-text">
+                                        <span class="wifi-dropdown-main" id="lblEncWep">WEP</span>
+                                        <span class="wifi-dropdown-sub" id="lblEncWepSub">Legacy networks</span>
+                                    </div>
+                                    <svg class="wifi-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                                </div>
+
+                                <div class="wifi-dropdown-item" data-enc="OPEN" role="option">
+                                    <div class="wifi-dropdown-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/></svg>
+                                    </div>
+                                    <div class="wifi-dropdown-text">
+                                        <span class="wifi-dropdown-main" id="lblEncOpen">Open Network</span>
+                                        <span class="wifi-dropdown-sub" id="lblEncOpenSub">No password (Public / Guest)</span>
+                                    </div>
+                                    <svg class="wifi-check-icon" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3 Pane: Password Input -->
+                    <div class="wifi-step-pane" id="wifiStep3Pane">
+                        <div class="wifi-input-group">
+                            <span class="wifi-input-icon">
+                                <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                            </span>
+                            <input type="password" id="wifiPasswordInput" class="wifi-text-input" placeholder="Enter Wi-Fi password..." autocomplete="off" spellcheck="false" maxlength="64">
+                            <button type="button" class="btn-wifi-eye" id="btnWifiToggleShow" title="Show/Hide">
+                                <svg id="wifiEyeOpen" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                <svg id="wifiEyeClosed" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Actions Row -->
+                <div class="wifi-actions">
+                    <button type="button" class="btn-wifi-next" id="btnWifiNext">
+                        <span id="wifiNextBtnLabel">Next</span>
+                        <svg viewBox="0 0 24 24" id="wifiNextBtnArrow" class="wifi-next-arrow"><path d="M5 13h11.83l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.83 11H5v2z"/></svg>
+                    </button>
+                    <button type="button" class="btn-wifi-back" id="btnWifiBack">
+                        <span id="wifiBackBtnLabel">Cancel</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -4207,8 +4800,34 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 qrCloseBtn: "Close",
                 qrDownloaded: "QR Code downloaded",
                 lblReadTag: "Read Card to Copy",
+                lblWifiTag: "Wi-Fi Card",
                 lblPwdLockTag: "PIN Lock / Unlock",
                 lblPermLockTag: "Permanent Lock",
+                wifiModalTitle: "Wi-Fi Card Setup",
+                wifiStep1Title: "Wi-Fi Card Setup",
+                wifiStep1Desc: "Enter the Wi-Fi network name (SSID)",
+                wifiStep2Title: "Security Type",
+                wifiStep2Desc: "Select network encryption standard",
+                wifiStep3Title: "Network Password",
+                wifiStep3Desc: "Enter the Wi-Fi security password",
+                wifiSsidPlaceholder: "Network Name (SSID)...",
+                wifiPasswordPlaceholder: "Enter Wi-Fi password...",
+                wifiEncWpa: "WPA / WPA2 / WPA3 Personal",
+                wifiEncWpaSub: "Most common (Home & Office)",
+                wifiEncWep: "WEP",
+                wifiEncWepSub: "Legacy networks",
+                wifiEncOpen: "Open Network",
+                wifiEncOpenSub: "No password (Public / Guest)",
+                wifiNext: "Next",
+                wifiBack: "Back",
+                wifiWriteTag: "Write to NFC Tag",
+                toastEnterSsid: "Please enter network name (SSID)",
+                toastWifiPassMinLength: "Password must be at least 8 characters",
+                nfcTitleWifiReady: "Ready to Write Wi-Fi",
+                nfcDescWifiReady: "Hold phone near NFC card to write Wi-Fi credentials.",
+                nfcTitleWifiSuccess: "Wi-Fi Card Programmed!",
+                nfcDescWifiSuccess: "Wi-Fi configuration successfully written to NFC card.",
+                toastNfcWifiSuccess: "Wi-Fi card written successfully!",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
@@ -4420,8 +5039,34 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 qrCloseBtn: "إغلاق",
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
                 lblReadTag: "قراءة كارت للنسخ",
+                lblWifiTag: "كرت Wi-Fi",
                 lblPwdLockTag: "قفل / فك برمز",
                 lblPermLockTag: "إقفال نهائي",
+                wifiModalTitle: "إعداد كرت Wi-Fi",
+                wifiStep1Title: "إعداد كرت Wi-Fi",
+                wifiStep1Desc: "أدخل اسم شبكة الواي فاي (SSID)",
+                wifiStep2Title: "نوع التشفير",
+                wifiStep2Desc: "اختر نوع حماية وتشفير الشبكة",
+                wifiStep3Title: "كلمة مرور الشبكة",
+                wifiStep3Desc: "أدخل كلمة المرور الخاصة بالشبكة",
+                wifiSsidPlaceholder: "اسم الشبكة (SSID)...",
+                wifiPasswordPlaceholder: "أدخل كلمة سر الواي فاي...",
+                wifiEncWpa: "WPA / WPA2 / WPA3 شخصي",
+                wifiEncWpaSub: "الأكثر شيوعاً (المنزل والمكتب)",
+                wifiEncWep: "WEP",
+                wifiEncWepSub: "شبكات قديمة",
+                wifiEncOpen: "شبكة مفتوحة",
+                wifiEncOpenSub: "بدون كلمة سر (عامة أو ضيوف)",
+                wifiNext: "التالي",
+                wifiBack: "رجوع",
+                wifiWriteTag: "نسخ على البطاقة",
+                toastEnterSsid: "يرجى إدخال اسم الشبكة (SSID)",
+                toastWifiPassMinLength: "كلمة المرور يجب ألا تقل عن 8 خانات",
+                nfcTitleWifiReady: "جاهز لبرمجة كرت Wi-Fi",
+                nfcDescWifiReady: "قرب الهاتف من بطاقة NFC لبرمجة بيانات شبكة الواي فاي.",
+                nfcTitleWifiSuccess: "تمت برمجة كرت Wi-Fi بنجاح!",
+                nfcDescWifiSuccess: "تم حفظ إعدادات الاتصال التلقائي بالشبكة على البطاقة.",
+                toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
@@ -4672,8 +5317,23 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         // NFC Card Tools & Security
         setTxt('lblReadTag', dict.lblReadTag);
+        setTxt('lblWifiTag', dict.lblWifiTag);
         setTxt('lblPwdLockTag', dict.lblPwdLockTag);
         setTxt('lblPermLockTag', dict.lblPermLockTag);
+        setTxt('lblEncWpa', dict.wifiEncWpa);
+        setTxt('lblEncWpaSub', dict.wifiEncWpaSub);
+        setTxt('lblEncWep', dict.wifiEncWep);
+        setTxt('lblEncWepSub', dict.wifiEncWepSub);
+        setTxt('lblEncOpen', dict.wifiEncOpen);
+        setTxt('lblEncOpenSub', dict.wifiEncOpenSub);
+        const wifiSsidInputEl = document.getElementById('wifiSsidInput');
+        if (wifiSsidInputEl && dict.wifiSsidPlaceholder) {
+            wifiSsidInputEl.placeholder = dict.wifiSsidPlaceholder;
+        }
+        const wifiPasswordInputEl = document.getElementById('wifiPasswordInput');
+        if (wifiPasswordInputEl && dict.wifiPasswordPlaceholder) {
+            wifiPasswordInputEl.placeholder = dict.wifiPasswordPlaceholder;
+        }
         setTxt('pwdModalTitle', dict.pwdModalTitle);
         setTxt('pwdModalTitleLock', dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card');
         setTxt('pwdModalTitleUnlock', dict.pwdModalTitleUnlock || 'Unlock Card');
@@ -5169,6 +5829,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             targetId = 'nfcPwdView';
         } else if (viewName === 'perm' || viewName === 'perm_confirm' || viewName === 'permLock' || viewName === 'perm_lock') {
             targetId = 'nfcPermConfirmView';
+        } else if (viewName === 'wifi' || viewName === 'wifi_config') {
+            targetId = 'nfcWifiView';
         }
 
         const targetEl = document.getElementById(targetId);
@@ -6080,6 +6742,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
     `;
 
+    const ICON_WIFI = `
+        <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/>
+    `;
+
     const ICON_CHECK = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
     const ICON_ERROR_X = `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`;
 
@@ -6254,6 +6920,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             setCancelBtnMode(dict.nfcCancel, false);
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             setIconIfChanged(nfcSvgIcon, ICON_UNLOCK);
+        } else if (state === 'wifi_ready') {
+            isPermLockStandby = false;
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
+                nfcModalBox.classList.add('theme-wifi');
+            }
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiReady || 'Ready to Write Wi-Fi';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiReady || 'Hold phone near NFC card to write Wi-Fi credentials.';
+            setCancelBtnMode(dict.wifiBack || 'Back', true);
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            setIconIfChanged(nfcSvgIcon, ICON_WIFI);
         } else if (state === 'success') {
             isPermLockStandby = false;
             if (nfcModalBox) {
@@ -6296,6 +6973,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (nfcNextBtn) nfcNextBtn.style.display = 'none';
                 if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
                 updatePermLockBadge(dict);
+            } else if (detail === 'WRITE_WIFI' || lastNfcOperation === 'write_wifi') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiSuccess || 'Wi-Fi Card Programmed!';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiSuccess || 'Wi-Fi configuration successfully written to NFC card.';
+                setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
+                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
@@ -6490,6 +7174,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     'theme-lock',
                     'theme-unlock',
                     'theme-perm-lock',
+                    'theme-wifi',
                     'perm-lock-standby',
                     'perm-lock-thump',
                     'success',
@@ -6509,6 +7194,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     'theme-lock',
                     'theme-unlock',
                     'theme-perm-lock',
+                    'theme-wifi',
                     'perm-lock-standby',
                     'perm-lock-thump',
                     'success',
@@ -6535,10 +7221,30 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const activeView = nfcModalBox ? nfcModalBox.querySelector('.nfc-view.active') : null;
         const isPwdView = activeView && activeView.id === 'nfcPwdView';
         const isPermConfirmView = activeView && activeView.id === 'nfcPermConfirmView';
+        const isWifiView = activeView && activeView.id === 'nfcWifiView';
+
+        if (isWifiView) {
+            if (window.handleWifiWizardBack) {
+                window.handleWifiWizardBack();
+                return;
+            }
+            closeNfcModal();
+            return;
+        }
 
         if (isPwdView || isPermConfirmView) {
             closeNfcModal();
             return;
+        }
+
+        if (lastNfcOperation === 'write_wifi') {
+            if (window.returnToWifiWizard) {
+                if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
+                    try { window.AndroidNative.cancelNfcWrite(); } catch (e) {}
+                }
+                window.returnToWifiWizard();
+                return;
+            }
         }
 
         if (shouldReturnToPwdModal && typeof window.returnToPasswordModal === 'function') {
@@ -6689,8 +7395,41 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
+    function startNfcWifiWrite(ssid, password, encType, triggerBtn, options = {}) {
+        blurActiveElement();
+        const dict = getDict();
+        if (!ssid || !ssid.trim()) {
+            if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+            return;
+        }
+
+        lastNfcOperation = 'write_wifi';
+        window.lastNfcOperation = 'write_wifi';
+
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        const alreadyOpen = Boolean(nfcOverlay && nfcOverlay.classList.contains('active'));
+
+        setNfcModalState('wifi_ready');
+        if (window.showNfcView) window.showNfcView('sensor', alreadyOpen);
+        ensureNfcModalVisible(triggerBtn, 'btnWifiTag', options);
+
+        if (window.AndroidNative && window.AndroidNative.startNfcWifiWrite) {
+            window.AndroidNative.startNfcWifiWrite(ssid.trim(), password || '', encType || 'WPA');
+        }
+    }
+
     // Bridge Callbacks from Android Native
     window.onNfcSuccess = function(count) {
+        if (lastNfcOperation === 'write_wifi') {
+            if (!window.AndroidNative && navigator.vibrate) {
+                try { navigator.vibrate([140, 70, 180]); } catch (e) {}
+            }
+            setNfcModalState('success', 'WRITE_WIFI');
+            const dict = getDict();
+            if (window.showToast) window.showToast(dict.toastNfcWifiSuccess || 'Wi-Fi card written successfully!', 'success');
+            return;
+        }
+
         nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
         window.nfcBatchCount = nfcBatchCount;
 
@@ -6849,6 +7588,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     startNfcPasswordLock(lastNfcPin, null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'pwd_unlock') {
                     startNfcPasswordUnlock(lastNfcPin, null, { skipOpenAnimation: true });
+                } else if (lastNfcOperation === 'write_wifi') {
+                    if (window.retryNfcWifiWrite) {
+                        window.retryNfcWifiWrite();
+                    }
                 } else {
                     startNfcWrite(null, { skipOpenAnimation: true });
                 }
@@ -6893,6 +7636,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.handleNfcCancelOrBack = handleNfcCancelOrBack;
     window.isNfcBackToPinActive = function() { return shouldReturnToPwdModal; };
     window.startNfcWrite = startNfcWrite;
+    window.startNfcWifiWrite = startNfcWifiWrite;
     window.startNfcRead = startNfcRead;
     window.startNfcPermanentLock = startNfcPermanentLock;
     window.startNfcPasswordLock = startNfcPasswordLock;
@@ -7239,8 +7983,32 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         const cardToolsRow = $('cardToolsRow');
         const btnReadTag = $('btnReadTag');
+        const btnWifiTag = $('btnWifiTag');
         const btnPwdLockTag = $('btnPwdLockTag');
         const btnPermLockTag = $('btnPermLockTag');
+        const nfcWifiView = $('nfcWifiView');
+        const wifiStepsIndicator = $('wifiStepsIndicator');
+        const wifiStepTitle = $('wifiStepTitle');
+        const wifiStepDesc = $('wifiStepDesc');
+        const wifiStep1Pane = $('wifiStep1Pane');
+        const wifiStep2Pane = $('wifiStep2Pane');
+        const wifiStep3Pane = $('wifiStep3Pane');
+        const wifiSsidInput = $('wifiSsidInput');
+        const btnWifiSsidClear = $('btnWifiSsidClear');
+        const wifiDropdownWrapper = $('wifiDropdownWrapper');
+        const wifiSelectTrigger = $('wifiSelectTrigger');
+        const wifiSelectedLabel = $('wifiSelectedLabel');
+        const wifiSelectedSub = $('wifiSelectedSub');
+        const wifiDropdownMenu = $('wifiDropdownMenu');
+        const wifiPasswordInput = $('wifiPasswordInput');
+        const btnWifiToggleShow = $('btnWifiToggleShow');
+        const wifiEyeOpen = $('wifiEyeOpen');
+        const wifiEyeClosed = $('wifiEyeClosed');
+        const btnWifiNext = $('btnWifiNext');
+        const wifiNextBtnLabel = $('wifiNextBtnLabel');
+        const wifiNextBtnArrow = $('wifiNextBtnArrow');
+        const btnWifiBack = $('btnWifiBack');
+        const wifiBackBtnLabel = $('wifiBackBtnLabel');
         const pwdModalOverlay = $('pwdModalOverlay');
         const pwdTabLock = $('pwdTabLock');
         const pwdTabUnlock = $('pwdTabUnlock');
@@ -7633,6 +8401,227 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (window.startNfcPermanentLock) {
                     window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                 }
+            });
+        }
+
+        // ── Wi-Fi Card Wizard Engine ──
+        let wifiCurrentStep = 1;
+        let wifiSelectedEnc = 'WPA';
+        let wifiSavedSsid = '';
+        let wifiSavedPassword = '';
+
+        function updateWifiWizardUi() {
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            
+            const stepItems = wifiStepsIndicator ? wifiStepsIndicator.querySelectorAll('.wifi-step-item') : [];
+            const stepLines = wifiStepsIndicator ? wifiStepsIndicator.querySelectorAll('.wifi-step-line') : [];
+            stepItems.forEach((item, idx) => {
+                const stepNum = idx + 1;
+                item.classList.remove('active', 'completed');
+                if (stepNum === wifiCurrentStep) {
+                    item.classList.add('active');
+                } else if (stepNum < wifiCurrentStep) {
+                    item.classList.add('completed');
+                }
+            });
+            stepLines.forEach((line, idx) => {
+                line.classList.toggle('active', (idx + 1) < wifiCurrentStep);
+            });
+
+            if (wifiStep1Pane) wifiStep1Pane.classList.toggle('active', wifiCurrentStep === 1);
+            if (wifiStep2Pane) wifiStep2Pane.classList.toggle('active', wifiCurrentStep === 2);
+            if (wifiStep3Pane) wifiStep3Pane.classList.toggle('active', wifiCurrentStep === 3);
+
+            if (wifiCurrentStep !== 2 && wifiDropdownWrapper) {
+                wifiDropdownWrapper.classList.remove('open');
+            }
+
+            if (wifiCurrentStep === 1) {
+                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep1Title || 'Wi-Fi Card Setup';
+                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep1Desc || 'Enter the Wi-Fi network name (SSID)';
+                if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
+                if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.pwdCancel || 'Cancel';
+                if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+            } else if (wifiCurrentStep === 2) {
+                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep2Title || 'Security Type';
+                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep2Desc || 'Select network encryption standard';
+                if (wifiSelectedEnc === 'OPEN') {
+                    if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
+                    if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+                } else {
+                    if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
+                    if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+                }
+                if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
+            } else if (wifiCurrentStep === 3) {
+                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep3Title || 'Network Password';
+                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep3Desc || 'Enter the Wi-Fi security password';
+                if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
+                if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
+                if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+            }
+        }
+
+        function openWifiModal(triggerBtn) {
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                try { document.activeElement.blur(); } catch (e) {}
+            }
+            wifiCurrentStep = 1;
+            wifiSelectedEnc = 'WPA';
+            if (wifiSsidInput) wifiSsidInput.value = '';
+            if (wifiPasswordInput) wifiPasswordInput.value = '';
+
+            const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+            items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'WPA'));
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncWpa || 'WPA / WPA2 / WPA3 Personal';
+            if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncWpaSub || 'Most common (Home & Office)';
+
+            updateWifiWizardUi();
+
+            const nfcOverlay = $('nfcOverlay');
+            const nfcModalBox = $('nfcModalBox');
+            if (nfcOverlay && nfcModalBox) {
+                if (window.showNfcView) {
+                    window.showNfcView('wifi', false);
+                }
+                nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'perm-lock-standby');
+                nfcModalBox.classList.add('theme-wifi');
+                if (window.openMorphModal) {
+                    window.openMorphModal(nfcOverlay, nfcModalBox, triggerBtn);
+                } else {
+                    nfcOverlay.classList.add('active');
+                }
+            }
+        }
+
+        function handleWifiWizardBack() {
+            if (wifiCurrentStep === 1) {
+                if (window.closeNfcModal) window.closeNfcModal();
+            } else if (wifiCurrentStep === 2) {
+                wifiCurrentStep = 1;
+                updateWifiWizardUi();
+            } else if (wifiCurrentStep === 3) {
+                wifiCurrentStep = 2;
+                updateWifiWizardUi();
+            }
+        }
+        window.handleWifiWizardBack = handleWifiWizardBack;
+
+        window.returnToWifiWizard = function() {
+            const stepToReturn = (wifiSelectedEnc === 'OPEN') ? 2 : 3;
+            wifiCurrentStep = stepToReturn;
+            updateWifiWizardUi();
+            const nfcModalBox = $('nfcModalBox');
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error');
+                nfcModalBox.classList.add('theme-wifi');
+            }
+            if (window.showNfcView) {
+                window.showNfcView('wifi', true);
+            }
+        };
+
+        window.retryNfcWifiWrite = function() {
+            if (window.startNfcWifiWrite) {
+                window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+            }
+        };
+
+        if (btnWifiTag) {
+            btnWifiTag.addEventListener('click', () => openWifiModal(btnWifiTag));
+        }
+
+        if (btnWifiNext) {
+            btnWifiNext.addEventListener('click', () => {
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+
+                if (wifiCurrentStep === 1) {
+                    const ssidVal = (wifiSsidInput ? wifiSsidInput.value : '').trim();
+                    if (!ssidVal) {
+                        if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+                        if (wifiSsidInput) wifiSsidInput.focus();
+                        return;
+                    }
+                    wifiSavedSsid = ssidVal;
+                    wifiCurrentStep = 2;
+                    updateWifiWizardUi();
+                } else if (wifiCurrentStep === 2) {
+                    if (wifiSelectedEnc === 'OPEN') {
+                        wifiSavedPassword = '';
+                        if (window.startNfcWifiWrite) {
+                            window.startNfcWifiWrite(wifiSavedSsid, '', 'OPEN', btnWifiTag, { skipOpenAnimation: true });
+                        }
+                    } else {
+                        wifiCurrentStep = 3;
+                        updateWifiWizardUi();
+                    }
+                } else if (wifiCurrentStep === 3) {
+                    const passVal = (wifiPasswordInput ? wifiPasswordInput.value : '').trim();
+                    if (wifiSelectedEnc === 'WPA' && passVal.length < 8) {
+                        if (window.showToast) window.showToast(dict.toastWifiPassMinLength || 'Password must be at least 8 characters', 'warn');
+                        if (wifiPasswordInput) wifiPasswordInput.focus();
+                        return;
+                    }
+                    wifiSavedPassword = passVal;
+                    if (window.startNfcWifiWrite) {
+                        window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+                    }
+                }
+            });
+        }
+
+        if (btnWifiBack) {
+            btnWifiBack.addEventListener('click', handleWifiWizardBack);
+        }
+
+        if (wifiSelectTrigger) {
+            wifiSelectTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (wifiDropdownWrapper) {
+                    wifiDropdownWrapper.classList.toggle('open');
+                }
+            });
+        }
+
+        const wifiDropItems = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+        wifiDropItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const enc = item.getAttribute('data-enc');
+                wifiSelectedEnc = enc;
+                wifiDropItems.forEach(it => it.classList.toggle('selected', it === item));
+
+                const mainText = item.querySelector('.wifi-dropdown-main')?.textContent || '';
+                const subText = item.querySelector('.wifi-dropdown-sub')?.textContent || '';
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = mainText;
+                if (wifiSelectedSub) wifiSelectedSub.textContent = subText;
+
+                if (wifiDropdownWrapper) wifiDropdownWrapper.classList.remove('open');
+                updateWifiWizardUi();
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (wifiDropdownWrapper && wifiDropdownWrapper.classList.contains('open')) {
+                if (!wifiDropdownWrapper.contains(e.target)) {
+                    wifiDropdownWrapper.classList.remove('open');
+                }
+            }
+        });
+
+        if (btnWifiToggleShow && wifiPasswordInput) {
+            btnWifiToggleShow.addEventListener('click', () => {
+                const isPassword = wifiPasswordInput.type === 'password';
+                wifiPasswordInput.type = isPassword ? 'text' : 'password';
+                if (wifiEyeOpen) wifiEyeOpen.style.display = isPassword ? 'none' : 'block';
+                if (wifiEyeClosed) wifiEyeClosed.style.display = isPassword ? 'block' : 'none';
+            });
+        }
+
+        if (btnWifiSsidClear && wifiSsidInput) {
+            btnWifiSsidClear.addEventListener('click', () => {
+                wifiSsidInput.value = '';
+                wifiSsidInput.focus();
             });
         }
 

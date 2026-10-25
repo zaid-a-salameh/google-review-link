@@ -78,8 +78,34 @@
                 qrCloseBtn: "Close",
                 qrDownloaded: "QR Code downloaded",
                 lblReadTag: "Read Card to Copy",
+                lblWifiTag: "Wi-Fi Card",
                 lblPwdLockTag: "PIN Lock / Unlock",
                 lblPermLockTag: "Permanent Lock",
+                wifiModalTitle: "Wi-Fi Card Setup",
+                wifiStep1Title: "Wi-Fi Card Setup",
+                wifiStep1Desc: "Enter the Wi-Fi network name (SSID)",
+                wifiStep2Title: "Security Type",
+                wifiStep2Desc: "Select network encryption standard",
+                wifiStep3Title: "Network Password",
+                wifiStep3Desc: "Enter the Wi-Fi security password",
+                wifiSsidPlaceholder: "Network Name (SSID)...",
+                wifiPasswordPlaceholder: "Enter Wi-Fi password...",
+                wifiEncWpa: "WPA / WPA2 / WPA3 Personal",
+                wifiEncWpaSub: "Most common (Home & Office)",
+                wifiEncWep: "WEP",
+                wifiEncWepSub: "Legacy networks",
+                wifiEncOpen: "Open Network",
+                wifiEncOpenSub: "No password (Public / Guest)",
+                wifiNext: "Next",
+                wifiBack: "Back",
+                wifiWriteTag: "Write to NFC Tag",
+                toastEnterSsid: "Please enter network name (SSID)",
+                toastWifiPassMinLength: "Password must be at least 8 characters",
+                nfcTitleWifiReady: "Ready to Write Wi-Fi",
+                nfcDescWifiReady: "Hold phone near NFC card to write Wi-Fi credentials.",
+                nfcTitleWifiSuccess: "Wi-Fi Card Programmed!",
+                nfcDescWifiSuccess: "Wi-Fi configuration successfully written to NFC card.",
+                toastNfcWifiSuccess: "Wi-Fi card written successfully!",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
@@ -291,8 +317,34 @@
                 qrCloseBtn: "إغلاق",
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
                 lblReadTag: "قراءة كارت للنسخ",
+                lblWifiTag: "كرت Wi-Fi",
                 lblPwdLockTag: "قفل / فك برمز",
                 lblPermLockTag: "إقفال نهائي",
+                wifiModalTitle: "إعداد كرت Wi-Fi",
+                wifiStep1Title: "إعداد كرت Wi-Fi",
+                wifiStep1Desc: "أدخل اسم شبكة الواي فاي (SSID)",
+                wifiStep2Title: "نوع التشفير",
+                wifiStep2Desc: "اختر نوع حماية وتشفير الشبكة",
+                wifiStep3Title: "كلمة مرور الشبكة",
+                wifiStep3Desc: "أدخل كلمة المرور الخاصة بالشبكة",
+                wifiSsidPlaceholder: "اسم الشبكة (SSID)...",
+                wifiPasswordPlaceholder: "أدخل كلمة سر الواي فاي...",
+                wifiEncWpa: "WPA / WPA2 / WPA3 شخصي",
+                wifiEncWpaSub: "الأكثر شيوعاً (المنزل والمكتب)",
+                wifiEncWep: "WEP",
+                wifiEncWepSub: "شبكات قديمة",
+                wifiEncOpen: "شبكة مفتوحة",
+                wifiEncOpenSub: "بدون كلمة سر (عامة أو ضيوف)",
+                wifiNext: "التالي",
+                wifiBack: "رجوع",
+                wifiWriteTag: "نسخ على البطاقة",
+                toastEnterSsid: "يرجى إدخال اسم الشبكة (SSID)",
+                toastWifiPassMinLength: "كلمة المرور يجب ألا تقل عن 8 خانات",
+                nfcTitleWifiReady: "جاهز لبرمجة كرت Wi-Fi",
+                nfcDescWifiReady: "قرب الهاتف من بطاقة NFC لبرمجة بيانات شبكة الواي فاي.",
+                nfcTitleWifiSuccess: "تمت برمجة كرت Wi-Fi بنجاح!",
+                nfcDescWifiSuccess: "تم حفظ إعدادات الاتصال التلقائي بالشبكة على البطاقة.",
+                toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
@@ -543,8 +595,23 @@
 
         // NFC Card Tools & Security
         setTxt('lblReadTag', dict.lblReadTag);
+        setTxt('lblWifiTag', dict.lblWifiTag);
         setTxt('lblPwdLockTag', dict.lblPwdLockTag);
         setTxt('lblPermLockTag', dict.lblPermLockTag);
+        setTxt('lblEncWpa', dict.wifiEncWpa);
+        setTxt('lblEncWpaSub', dict.wifiEncWpaSub);
+        setTxt('lblEncWep', dict.wifiEncWep);
+        setTxt('lblEncWepSub', dict.wifiEncWepSub);
+        setTxt('lblEncOpen', dict.wifiEncOpen);
+        setTxt('lblEncOpenSub', dict.wifiEncOpenSub);
+        const wifiSsidInputEl = document.getElementById('wifiSsidInput');
+        if (wifiSsidInputEl && dict.wifiSsidPlaceholder) {
+            wifiSsidInputEl.placeholder = dict.wifiSsidPlaceholder;
+        }
+        const wifiPasswordInputEl = document.getElementById('wifiPasswordInput');
+        if (wifiPasswordInputEl && dict.wifiPasswordPlaceholder) {
+            wifiPasswordInputEl.placeholder = dict.wifiPasswordPlaceholder;
+        }
         setTxt('pwdModalTitle', dict.pwdModalTitle);
         setTxt('pwdModalTitleLock', dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card');
         setTxt('pwdModalTitleUnlock', dict.pwdModalTitleUnlock || 'Unlock Card');

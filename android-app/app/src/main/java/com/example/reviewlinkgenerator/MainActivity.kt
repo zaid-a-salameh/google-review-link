@@ -59,13 +59,17 @@ class MainActivity : ComponentActivity() {
         READ,
         PERM_LOCK,
         PWD_LOCK,
-        PWD_UNLOCK
+        PWD_UNLOCK,
+        WRITE_WIFI
     }
 
     private lateinit var webView: WebView
     private var nfcAdapter: NfcAdapter? = null
     private var pendingNfcUrl: String? = null
     private var pendingPassword: String? = null
+    private var pendingWifiSsid: String? = null
+    private var pendingWifiPassword: String? = null
+    private var pendingWifiEncType: String? = null
     private var currentNfcOp: NfcOp = NfcOp.IDLE
     private var isNfcModeActive: Boolean = false
     private var lastWriteTimestamp: Long = 0
@@ -323,11 +327,32 @@ class MainActivity : ComponentActivity() {
         enableReaderModeSafe()
     }
 
+    fun startNfcWifiWriting(ssid: String, password: String, encType: String) {
+        if (!checkNfcReady()) return
+        if (ssid.isBlank()) {
+            stopNfcSession()
+            notifyNfcError("MISSING_SSID")
+            return
+        }
+        currentNfcOp = NfcOp.WRITE_WIFI
+        pendingWifiSsid = ssid
+        pendingWifiPassword = password
+        pendingWifiEncType = encType
+        isNfcModeActive = true
+        lastWriteTimestamp = 0
+        lastWrittenTagId = null
+        writtenTagsCount = 0
+        enableReaderModeSafe()
+    }
+
     fun stopNfcSession() {
         isNfcModeActive = false
         currentNfcOp = NfcOp.IDLE
         pendingNfcUrl = null
         pendingPassword = null
+        pendingWifiSsid = null
+        pendingWifiPassword = null
+        pendingWifiEncType = null
         lastWriteTimestamp = 0
         lastWrittenTagId = null
     }
@@ -341,6 +366,7 @@ class MainActivity : ComponentActivity() {
 
         when (currentNfcOp) {
             NfcOp.WRITE -> handleWriteTag(tag)
+            NfcOp.WRITE_WIFI -> handleWriteWifiTag(tag)
             NfcOp.READ -> handleReadTag(tag)
             NfcOp.PERM_LOCK -> handlePermLockTag(tag)
             NfcOp.PWD_LOCK -> {
@@ -410,6 +436,158 @@ class MainActivity : ComponentActivity() {
                 if (formatable != null) {
                     formatable.connect()
                     formatable.format(message)
+                    formatable.close()
+                    lastWriteTimestamp = System.currentTimeMillis()
+                    lastWrittenTagId = tagId?.clone()
+                    writtenTagsCount++
+                    triggerSuccessVibration()
+                    notifyNfcSuccess(writtenTagsCount)
+                } else {
+                    notifyNfcError("UNSUPPORTED")
+                }
+            }
+        } catch (e: Exception) {
+            if (isTagLost(e)) {
+                notifyNfcError("TAG_LOST")
+            } else {
+                // Check if write failed because tag is password-protected or read-only
+                var isLocked = false
+                val nfca = try { NfcA.get(tag) } catch (ex: Exception) { null }
+                if (nfca != null) {
+                    try {
+                        nfca.connect()
+                        val cfg = getNtagConfig(tag, nfca)
+                        val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                        if (readResp != null && readResp.size >= 4 && (readResp[3].toInt() and 0xFF) != 0xFF) {
+                            isLocked = true
+                        }
+                        nfca.close()
+                    } catch (ex: Exception) {
+                        isLocked = true
+                    }
+                }
+                if (isLocked) {
+                    notifyNfcError("LOCKED")
+                } else {
+                    notifyNfcError("WRITE_FAILED")
+                }
+            }
+        }
+    }
+
+    private fun buildWscPayload(ssid: String, password: String, encType: String): ByteArray {
+        val stream = java.io.ByteArrayOutputStream()
+        val credStream = java.io.ByteArrayOutputStream()
+
+        fun writeTlv(out: java.io.ByteArrayOutputStream, id: Int, value: ByteArray) {
+            out.write((id shr 8) and 0xFF)
+            out.write(id and 0xFF)
+            out.write((value.size shr 8) and 0xFF)
+            out.write(value.size and 0xFF)
+            out.write(value)
+        }
+
+        // 1. Network Index: 1
+        writeTlv(credStream, 0x1026, byteArrayOf(0x01))
+
+        // 2. SSID
+        writeTlv(credStream, 0x1045, ssid.toByteArray(Charsets.UTF_8))
+
+        // 3. Auth Type & 4. Encryption Type
+        val authVal: Short
+        val encVal: Short
+        when (encType.uppercase()) {
+            "OPEN", "NONE" -> {
+                authVal = 0x0001
+                encVal = 0x0001
+            }
+            "WEP" -> {
+                authVal = 0x0002
+                encVal = 0x0002
+            }
+            else -> { // WPA / WPA2 / WPA3
+                authVal = 0x0022
+                encVal = 0x000C
+            }
+        }
+
+        val authBytes = byteArrayOf(((authVal.toInt() shr 8) and 0xFF).toByte(), (authVal.toInt() and 0xFF).toByte())
+        writeTlv(credStream, 0x1003, authBytes)
+
+        val encBytes = byteArrayOf(((encVal.toInt() shr 8) and 0xFF).toByte(), (encVal.toInt() and 0xFF).toByte())
+        writeTlv(credStream, 0x100F, encBytes)
+
+        // 5. Network Key (Password)
+        if (encType.uppercase() != "OPEN" && encType.uppercase() != "NONE" && password.isNotEmpty()) {
+            writeTlv(credStream, 0x1027, password.toByteArray(Charsets.UTF_8))
+        }
+
+        // 6. MAC Address (broadcast wildcard FF:FF:FF:FF:FF:FF)
+        writeTlv(credStream, 0x1020, byteArrayOf(
+            0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte(),
+            0xFF.toByte(), 0xFF.toByte(), 0xFF.toByte()
+        ))
+
+        val credBytes = credStream.toByteArray()
+        // Wrap inside Credential container 0x100E
+        writeTlv(stream, 0x100E, credBytes)
+        return stream.toByteArray()
+    }
+
+    private fun handleWriteWifiTag(tag: Tag) {
+        val ssid = pendingWifiSsid
+        val password = pendingWifiPassword ?: ""
+        val encType = pendingWifiEncType ?: "WPA"
+        if (ssid.isNullOrEmpty()) return
+
+        val tagId = tag.id
+        val now = System.currentTimeMillis()
+        if (tagId != null && lastWrittenTagId?.contentEquals(tagId) == true && now - lastWriteTimestamp < 1500L) {
+            return
+        }
+
+        try {
+            val wscPayload = buildWscPayload(ssid, password, encType)
+            val wscRecord = NdefRecord.createMime("application/vnd.wfa.wsc", wscPayload)
+
+            // Also prepare standard URI record for universal scanner & iOS compatibility
+            val uriAuth = when (encType.uppercase()) {
+                "OPEN", "NONE" -> "nopass"
+                "WEP" -> "WEP"
+                else -> "WPA"
+            }
+            val uriRecord = NdefRecord.createUri("WIFI:S:$ssid;T:$uriAuth;P:$password;;")
+
+            // Prefer dual-record message if card capacity allows; fallback to WSC record
+            val dualMessage = NdefMessage(arrayOf(wscRecord, uriRecord))
+            val singleMessage = NdefMessage(arrayOf(wscRecord))
+
+            val ndef = Ndef.get(tag)
+            if (ndef != null) {
+                ndef.connect()
+                if (!ndef.isWritable) {
+                    ndef.close()
+                    notifyNfcError("LOCKED")
+                    return
+                }
+                val msgToWrite = if (ndef.maxSize >= dualMessage.byteArrayLength) dualMessage else singleMessage
+                if (ndef.maxSize < msgToWrite.byteArrayLength) {
+                    ndef.close()
+                    notifyNfcError("CAPACITY")
+                    return
+                }
+                ndef.writeNdefMessage(msgToWrite)
+                ndef.close()
+                lastWriteTimestamp = System.currentTimeMillis()
+                lastWrittenTagId = tagId?.clone()
+                writtenTagsCount++
+                triggerSuccessVibration()
+                notifyNfcSuccess(writtenTagsCount)
+            } else {
+                val formatable = NdefFormatable.get(tag)
+                if (formatable != null) {
+                    formatable.connect()
+                    formatable.format(dualMessage)
                     formatable.close()
                     lastWriteTimestamp = System.currentTimeMillis()
                     lastWrittenTagId = tagId?.clone()
@@ -1029,6 +1207,13 @@ class MainActivity : ComponentActivity() {
         fun startNfcWrite(url: String) {
             activity.runOnUiThread {
                 activity.startNfcWriting(url)
+            }
+        }
+
+        @JavascriptInterface
+        fun startNfcWifiWrite(ssid: String, password: String, encType: String) {
+            activity.runOnUiThread {
+                activity.startNfcWifiWriting(ssid, password, encType)
             }
         }
 

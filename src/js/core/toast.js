@@ -280,6 +280,8 @@
             targetId = 'nfcPwdView';
         } else if (viewName === 'perm' || viewName === 'perm_confirm' || viewName === 'permLock' || viewName === 'perm_lock') {
             targetId = 'nfcPermConfirmView';
+        } else if (viewName === 'wifi' || viewName === 'wifi_config') {
+            targetId = 'nfcWifiView';
         }
 
         const targetEl = document.getElementById(targetId);

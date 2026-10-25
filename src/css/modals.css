@@ -1483,3 +1483,439 @@
             height: 24px;
             fill: #F5277D;
         }
+
+        /* == Distinctive Amber / Yellow Wi-Fi Theme == */
+        .nfc-modal.theme-wifi {
+            border-color: rgba(245, 158, 11, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.22);
+        }
+        .nfc-modal.theme-wifi .nfc-wave-ring {
+            border-color: rgba(245, 158, 11, 0.38);
+        }
+        .nfc-modal.theme-wifi .nfc-icon-circle {
+            background: rgba(245, 158, 11, 0.15);
+            border-color: rgba(245, 158, 11, 0.45);
+        }
+        .nfc-modal.theme-wifi .nfc-icon-circle svg {
+            fill: #fbbf24;
+        }
+        .nfc-modal.theme-wifi .btn-nfc-cancel:hover,
+        .nfc-modal.theme-wifi .btn-nfc-cancel:active {
+            border-color: rgba(245, 158, 11, 0.55);
+            color: #fbbf24;
+        }
+        .nfc-modal.theme-wifi input::selection,
+        #nfcWifiView input::selection {
+            background-color: #f59e0b;
+            color: #0c0a09;
+        }
+
+        /* Wi-Fi Setup Wizard Modal Styles */
+        .wifi-icon-circle-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .wifi-icon-circle {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.38);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 24px rgba(245, 158, 11, 0.18);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease;
+        }
+        .wifi-icon-circle svg {
+            width: 26px;
+            height: 26px;
+            fill: #fbbf24;
+        }
+        .wifi-steps-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .wifi-step-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(41, 37, 36, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            transition: all 0.24s ease;
+        }
+        .wifi-step-item.active {
+            background: #f59e0b;
+            border-color: #fbbf24;
+            color: #0c0a09;
+            box-shadow: 0 0 14px rgba(245, 158, 11, 0.45);
+            transform: scale(1.08);
+        }
+        .wifi-step-item.completed {
+            background: rgba(245, 158, 11, 0.25);
+            border-color: rgba(245, 158, 11, 0.55);
+            color: #fbbf24;
+        }
+        .wifi-step-line {
+            width: 20px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: background 0.24s ease;
+        }
+        .wifi-step-line.active {
+            background: rgba(245, 158, 11, 0.65);
+        }
+        .wifi-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+        .wifi-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.4;
+            min-height: 32px;
+        }
+        .wifi-steps-container {
+            position: relative;
+            width: 100%;
+            min-height: 56px;
+            margin-bottom: 14px;
+        }
+        .wifi-step-pane {
+            display: none;
+            width: 100%;
+            opacity: 0;
+            transform: translate3d(0, 6px, 0);
+            transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .wifi-step-pane.active {
+            display: block;
+            opacity: 1;
+            transform: translate3d(0, 0, 0);
+        }
+        .wifi-input-group {
+            display: flex;
+            align-items: center;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 0 12px;
+            height: 52px;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .wifi-input-group:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+        }
+        .wifi-input-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        html[lang="ar"] .wifi-input-icon {
+            margin-right: 0;
+            margin-left: 10px;
+        }
+        .wifi-input-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: #f59e0b;
+        }
+        .wifi-text-input {
+            flex: 1;
+            min-width: 0;
+            height: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+        .wifi-text-input::placeholder {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 500;
+            opacity: 0.85;
+        }
+        .btn-wifi-clear,
+        .btn-wifi-eye {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px;
+            border-radius: 8px;
+            transition: color 0.2s ease, background 0.2s ease;
+            flex-shrink: 0;
+        }
+        .btn-wifi-clear:hover,
+        .btn-wifi-eye:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .btn-wifi-clear svg,
+        .btn-wifi-eye svg {
+            width: 17px;
+            height: 17px;
+            fill: currentColor;
+        }
+
+        /* Wi-Fi Security Dropdown (Places Autocomplete Style) */
+        .wifi-dropdown-wrapper {
+            position: relative;
+            width: 100%;
+            z-index: 50;
+        }
+        .wifi-select-trigger {
+            width: 100%;
+            height: 52px;
+            background: rgba(18, 16, 15, 0.95);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-input);
+            padding: 0 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            text-align: left;
+        }
+        html[lang="ar"] .wifi-select-trigger {
+            text-align: right;
+        }
+        .wifi-dropdown-wrapper.open .wifi-select-trigger,
+        .wifi-select-trigger:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.22);
+            outline: none;
+        }
+        .wifi-select-val {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+        .wifi-select-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .wifi-select-icon svg {
+            width: 15px;
+            height: 15px;
+            fill: #fbbf24;
+        }
+        .wifi-select-texts {
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            gap: 1px;
+        }
+        .wifi-select-main {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-select-sub {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-dropdown-arrow {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-muted);
+            flex-shrink: 0;
+            transition: transform 0.22s ease, fill 0.2s ease;
+        }
+        .wifi-dropdown-wrapper.open .wifi-dropdown-arrow {
+            transform: rotate(180deg);
+            fill: #fbbf24;
+        }
+        .wifi-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            z-index: 99999;
+            background: #181412;
+            border: 1px solid rgba(245, 158, 11, 0.38);
+            border-radius: var(--radius-btn);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(245, 158, 11, 0.16);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            transform-origin: top center;
+        }
+        .wifi-dropdown-wrapper.open .wifi-dropdown-menu {
+            display: flex;
+            animation: dropdownExpandAnim 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .wifi-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 13px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.15s ease;
+            text-align: left;
+        }
+        html[lang="ar"] .wifi-dropdown-item {
+            text-align: right;
+        }
+        .wifi-dropdown-item:last-of-type {
+            border-bottom: none;
+        }
+        .wifi-dropdown-item:hover,
+        .wifi-dropdown-item.selected {
+            background: rgba(245, 158, 11, 0.16);
+        }
+        .wifi-dropdown-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .wifi-dropdown-icon svg {
+            width: 15px;
+            height: 15px;
+            fill: #fbbf24;
+        }
+        .wifi-dropdown-text {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .wifi-dropdown-main {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-dropdown-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .wifi-check-icon {
+            width: 18px;
+            height: 18px;
+            fill: #fbbf24;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            flex-shrink: 0;
+        }
+        .wifi-dropdown-item.selected .wifi-check-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Wi-Fi Wizard Action Buttons */
+        .wifi-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            margin-top: 4px;
+        }
+        .btn-wifi-next {
+            width: 100%;
+            height: 46px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            border-radius: var(--radius-btn);
+            color: #0c0a09;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, opacity 0.2s ease;
+        }
+        .btn-wifi-next:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        .wifi-next-arrow {
+            width: 18px;
+            height: 18px;
+            fill: #0c0a09;
+            transition: transform 0.18s ease;
+        }
+        html[lang="ar"] .wifi-next-arrow {
+            transform: rotate(180deg);
+        }
+        .btn-wifi-back {
+            width: 100%;
+            height: 38px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-btn);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+        }
+        .btn-wifi-back:hover,
+        .btn-wifi-back:active {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.04);
+        }

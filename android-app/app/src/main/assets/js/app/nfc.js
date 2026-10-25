@@ -37,6 +37,10 @@
         <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
     `;
 
+    const ICON_WIFI = `
+        <path d="M12 4C7.31 4 3.07 5.9 0 8.98L12 21 24 8.98A16.88 16.88 0 0 0 12 4zm0 2.9c3.8 0 7.27 1.41 9.94 3.73L12 18.59 2.06 10.63A14.88 14.88 0 0 1 12 6.9zM12 10c-2.48 0-4.73.91-6.47 2.41L12 19.58l6.47-7.17A9.87 9.87 0 0 0 12 10z"/>
+    `;
+
     const ICON_CHECK = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
     const ICON_ERROR_X = `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`;
 
@@ -211,6 +215,17 @@
             setCancelBtnMode(dict.nfcCancel, false);
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             setIconIfChanged(nfcSvgIcon, ICON_UNLOCK);
+        } else if (state === 'wifi_ready') {
+            isPermLockStandby = false;
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
+                nfcModalBox.classList.add('theme-wifi');
+            }
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiReady || 'Ready to Write Wi-Fi';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiReady || 'Hold phone near NFC card to write Wi-Fi credentials.';
+            setCancelBtnMode(dict.wifiBack || 'Back', true);
+            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            setIconIfChanged(nfcSvgIcon, ICON_WIFI);
         } else if (state === 'success') {
             isPermLockStandby = false;
             if (nfcModalBox) {
@@ -253,6 +268,13 @@
                 if (nfcNextBtn) nfcNextBtn.style.display = 'none';
                 if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
                 updatePermLockBadge(dict);
+            } else if (detail === 'WRITE_WIFI' || lastNfcOperation === 'write_wifi') {
+                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiSuccess || 'Wi-Fi Card Programmed!';
+                if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiSuccess || 'Wi-Fi configuration successfully written to NFC card.';
+                setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
+                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
@@ -447,6 +469,7 @@
                     'theme-lock',
                     'theme-unlock',
                     'theme-perm-lock',
+                    'theme-wifi',
                     'perm-lock-standby',
                     'perm-lock-thump',
                     'success',
@@ -466,6 +489,7 @@
                     'theme-lock',
                     'theme-unlock',
                     'theme-perm-lock',
+                    'theme-wifi',
                     'perm-lock-standby',
                     'perm-lock-thump',
                     'success',
@@ -492,10 +516,30 @@
         const activeView = nfcModalBox ? nfcModalBox.querySelector('.nfc-view.active') : null;
         const isPwdView = activeView && activeView.id === 'nfcPwdView';
         const isPermConfirmView = activeView && activeView.id === 'nfcPermConfirmView';
+        const isWifiView = activeView && activeView.id === 'nfcWifiView';
+
+        if (isWifiView) {
+            if (window.handleWifiWizardBack) {
+                window.handleWifiWizardBack();
+                return;
+            }
+            closeNfcModal();
+            return;
+        }
 
         if (isPwdView || isPermConfirmView) {
             closeNfcModal();
             return;
+        }
+
+        if (lastNfcOperation === 'write_wifi') {
+            if (window.returnToWifiWizard) {
+                if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
+                    try { window.AndroidNative.cancelNfcWrite(); } catch (e) {}
+                }
+                window.returnToWifiWizard();
+                return;
+            }
         }
 
         if (shouldReturnToPwdModal && typeof window.returnToPasswordModal === 'function') {
@@ -646,8 +690,41 @@
         }
     }
 
+    function startNfcWifiWrite(ssid, password, encType, triggerBtn, options = {}) {
+        blurActiveElement();
+        const dict = getDict();
+        if (!ssid || !ssid.trim()) {
+            if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+            return;
+        }
+
+        lastNfcOperation = 'write_wifi';
+        window.lastNfcOperation = 'write_wifi';
+
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        const alreadyOpen = Boolean(nfcOverlay && nfcOverlay.classList.contains('active'));
+
+        setNfcModalState('wifi_ready');
+        if (window.showNfcView) window.showNfcView('sensor', alreadyOpen);
+        ensureNfcModalVisible(triggerBtn, 'btnWifiTag', options);
+
+        if (window.AndroidNative && window.AndroidNative.startNfcWifiWrite) {
+            window.AndroidNative.startNfcWifiWrite(ssid.trim(), password || '', encType || 'WPA');
+        }
+    }
+
     // Bridge Callbacks from Android Native
     window.onNfcSuccess = function(count) {
+        if (lastNfcOperation === 'write_wifi') {
+            if (!window.AndroidNative && navigator.vibrate) {
+                try { navigator.vibrate([140, 70, 180]); } catch (e) {}
+            }
+            setNfcModalState('success', 'WRITE_WIFI');
+            const dict = getDict();
+            if (window.showToast) window.showToast(dict.toastNfcWifiSuccess || 'Wi-Fi card written successfully!', 'success');
+            return;
+        }
+
         nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
         window.nfcBatchCount = nfcBatchCount;
 
@@ -806,6 +883,10 @@
                     startNfcPasswordLock(lastNfcPin, null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'pwd_unlock') {
                     startNfcPasswordUnlock(lastNfcPin, null, { skipOpenAnimation: true });
+                } else if (lastNfcOperation === 'write_wifi') {
+                    if (window.retryNfcWifiWrite) {
+                        window.retryNfcWifiWrite();
+                    }
                 } else {
                     startNfcWrite(null, { skipOpenAnimation: true });
                 }
@@ -850,6 +931,7 @@
     window.handleNfcCancelOrBack = handleNfcCancelOrBack;
     window.isNfcBackToPinActive = function() { return shouldReturnToPwdModal; };
     window.startNfcWrite = startNfcWrite;
+    window.startNfcWifiWrite = startNfcWifiWrite;
     window.startNfcRead = startNfcRead;
     window.startNfcPermanentLock = startNfcPermanentLock;
     window.startNfcPasswordLock = startNfcPasswordLock;

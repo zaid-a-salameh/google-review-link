@@ -38,8 +38,32 @@
 
         const cardToolsRow = $('cardToolsRow');
         const btnReadTag = $('btnReadTag');
+        const btnWifiTag = $('btnWifiTag');
         const btnPwdLockTag = $('btnPwdLockTag');
         const btnPermLockTag = $('btnPermLockTag');
+        const nfcWifiView = $('nfcWifiView');
+        const wifiStepsIndicator = $('wifiStepsIndicator');
+        const wifiStepTitle = $('wifiStepTitle');
+        const wifiStepDesc = $('wifiStepDesc');
+        const wifiStep1Pane = $('wifiStep1Pane');
+        const wifiStep2Pane = $('wifiStep2Pane');
+        const wifiStep3Pane = $('wifiStep3Pane');
+        const wifiSsidInput = $('wifiSsidInput');
+        const btnWifiSsidClear = $('btnWifiSsidClear');
+        const wifiDropdownWrapper = $('wifiDropdownWrapper');
+        const wifiSelectTrigger = $('wifiSelectTrigger');
+        const wifiSelectedLabel = $('wifiSelectedLabel');
+        const wifiSelectedSub = $('wifiSelectedSub');
+        const wifiDropdownMenu = $('wifiDropdownMenu');
+        const wifiPasswordInput = $('wifiPasswordInput');
+        const btnWifiToggleShow = $('btnWifiToggleShow');
+        const wifiEyeOpen = $('wifiEyeOpen');
+        const wifiEyeClosed = $('wifiEyeClosed');
+        const btnWifiNext = $('btnWifiNext');
+        const wifiNextBtnLabel = $('wifiNextBtnLabel');
+        const wifiNextBtnArrow = $('wifiNextBtnArrow');
+        const btnWifiBack = $('btnWifiBack');
+        const wifiBackBtnLabel = $('wifiBackBtnLabel');
         const pwdModalOverlay = $('pwdModalOverlay');
         const pwdTabLock = $('pwdTabLock');
         const pwdTabUnlock = $('pwdTabUnlock');
@@ -432,6 +456,227 @@
                 if (window.startNfcPermanentLock) {
                     window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                 }
+            });
+        }
+
+        // ── Wi-Fi Card Wizard Engine ──
+        let wifiCurrentStep = 1;
+        let wifiSelectedEnc = 'WPA';
+        let wifiSavedSsid = '';
+        let wifiSavedPassword = '';
+
+        function updateWifiWizardUi() {
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            
+            const stepItems = wifiStepsIndicator ? wifiStepsIndicator.querySelectorAll('.wifi-step-item') : [];
+            const stepLines = wifiStepsIndicator ? wifiStepsIndicator.querySelectorAll('.wifi-step-line') : [];
+            stepItems.forEach((item, idx) => {
+                const stepNum = idx + 1;
+                item.classList.remove('active', 'completed');
+                if (stepNum === wifiCurrentStep) {
+                    item.classList.add('active');
+                } else if (stepNum < wifiCurrentStep) {
+                    item.classList.add('completed');
+                }
+            });
+            stepLines.forEach((line, idx) => {
+                line.classList.toggle('active', (idx + 1) < wifiCurrentStep);
+            });
+
+            if (wifiStep1Pane) wifiStep1Pane.classList.toggle('active', wifiCurrentStep === 1);
+            if (wifiStep2Pane) wifiStep2Pane.classList.toggle('active', wifiCurrentStep === 2);
+            if (wifiStep3Pane) wifiStep3Pane.classList.toggle('active', wifiCurrentStep === 3);
+
+            if (wifiCurrentStep !== 2 && wifiDropdownWrapper) {
+                wifiDropdownWrapper.classList.remove('open');
+            }
+
+            if (wifiCurrentStep === 1) {
+                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep1Title || 'Wi-Fi Card Setup';
+                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep1Desc || 'Enter the Wi-Fi network name (SSID)';
+                if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
+                if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.pwdCancel || 'Cancel';
+                if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+            } else if (wifiCurrentStep === 2) {
+                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep2Title || 'Security Type';
+                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep2Desc || 'Select network encryption standard';
+                if (wifiSelectedEnc === 'OPEN') {
+                    if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
+                    if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+                } else {
+                    if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
+                    if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+                }
+                if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
+            } else if (wifiCurrentStep === 3) {
+                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep3Title || 'Network Password';
+                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep3Desc || 'Enter the Wi-Fi security password';
+                if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
+                if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
+                if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+            }
+        }
+
+        function openWifiModal(triggerBtn) {
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                try { document.activeElement.blur(); } catch (e) {}
+            }
+            wifiCurrentStep = 1;
+            wifiSelectedEnc = 'WPA';
+            if (wifiSsidInput) wifiSsidInput.value = '';
+            if (wifiPasswordInput) wifiPasswordInput.value = '';
+
+            const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+            items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'WPA'));
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncWpa || 'WPA / WPA2 / WPA3 Personal';
+            if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncWpaSub || 'Most common (Home & Office)';
+
+            updateWifiWizardUi();
+
+            const nfcOverlay = $('nfcOverlay');
+            const nfcModalBox = $('nfcModalBox');
+            if (nfcOverlay && nfcModalBox) {
+                if (window.showNfcView) {
+                    window.showNfcView('wifi', false);
+                }
+                nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'perm-lock-standby');
+                nfcModalBox.classList.add('theme-wifi');
+                if (window.openMorphModal) {
+                    window.openMorphModal(nfcOverlay, nfcModalBox, triggerBtn);
+                } else {
+                    nfcOverlay.classList.add('active');
+                }
+            }
+        }
+
+        function handleWifiWizardBack() {
+            if (wifiCurrentStep === 1) {
+                if (window.closeNfcModal) window.closeNfcModal();
+            } else if (wifiCurrentStep === 2) {
+                wifiCurrentStep = 1;
+                updateWifiWizardUi();
+            } else if (wifiCurrentStep === 3) {
+                wifiCurrentStep = 2;
+                updateWifiWizardUi();
+            }
+        }
+        window.handleWifiWizardBack = handleWifiWizardBack;
+
+        window.returnToWifiWizard = function() {
+            const stepToReturn = (wifiSelectedEnc === 'OPEN') ? 2 : 3;
+            wifiCurrentStep = stepToReturn;
+            updateWifiWizardUi();
+            const nfcModalBox = $('nfcModalBox');
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error');
+                nfcModalBox.classList.add('theme-wifi');
+            }
+            if (window.showNfcView) {
+                window.showNfcView('wifi', true);
+            }
+        };
+
+        window.retryNfcWifiWrite = function() {
+            if (window.startNfcWifiWrite) {
+                window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+            }
+        };
+
+        if (btnWifiTag) {
+            btnWifiTag.addEventListener('click', () => openWifiModal(btnWifiTag));
+        }
+
+        if (btnWifiNext) {
+            btnWifiNext.addEventListener('click', () => {
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+
+                if (wifiCurrentStep === 1) {
+                    const ssidVal = (wifiSsidInput ? wifiSsidInput.value : '').trim();
+                    if (!ssidVal) {
+                        if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+                        if (wifiSsidInput) wifiSsidInput.focus();
+                        return;
+                    }
+                    wifiSavedSsid = ssidVal;
+                    wifiCurrentStep = 2;
+                    updateWifiWizardUi();
+                } else if (wifiCurrentStep === 2) {
+                    if (wifiSelectedEnc === 'OPEN') {
+                        wifiSavedPassword = '';
+                        if (window.startNfcWifiWrite) {
+                            window.startNfcWifiWrite(wifiSavedSsid, '', 'OPEN', btnWifiTag, { skipOpenAnimation: true });
+                        }
+                    } else {
+                        wifiCurrentStep = 3;
+                        updateWifiWizardUi();
+                    }
+                } else if (wifiCurrentStep === 3) {
+                    const passVal = (wifiPasswordInput ? wifiPasswordInput.value : '').trim();
+                    if (wifiSelectedEnc === 'WPA' && passVal.length < 8) {
+                        if (window.showToast) window.showToast(dict.toastWifiPassMinLength || 'Password must be at least 8 characters', 'warn');
+                        if (wifiPasswordInput) wifiPasswordInput.focus();
+                        return;
+                    }
+                    wifiSavedPassword = passVal;
+                    if (window.startNfcWifiWrite) {
+                        window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+                    }
+                }
+            });
+        }
+
+        if (btnWifiBack) {
+            btnWifiBack.addEventListener('click', handleWifiWizardBack);
+        }
+
+        if (wifiSelectTrigger) {
+            wifiSelectTrigger.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (wifiDropdownWrapper) {
+                    wifiDropdownWrapper.classList.toggle('open');
+                }
+            });
+        }
+
+        const wifiDropItems = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+        wifiDropItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const enc = item.getAttribute('data-enc');
+                wifiSelectedEnc = enc;
+                wifiDropItems.forEach(it => it.classList.toggle('selected', it === item));
+
+                const mainText = item.querySelector('.wifi-dropdown-main')?.textContent || '';
+                const subText = item.querySelector('.wifi-dropdown-sub')?.textContent || '';
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = mainText;
+                if (wifiSelectedSub) wifiSelectedSub.textContent = subText;
+
+                if (wifiDropdownWrapper) wifiDropdownWrapper.classList.remove('open');
+                updateWifiWizardUi();
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (wifiDropdownWrapper && wifiDropdownWrapper.classList.contains('open')) {
+                if (!wifiDropdownWrapper.contains(e.target)) {
+                    wifiDropdownWrapper.classList.remove('open');
+                }
+            }
+        });
+
+        if (btnWifiToggleShow && wifiPasswordInput) {
+            btnWifiToggleShow.addEventListener('click', () => {
+                const isPassword = wifiPasswordInput.type === 'password';
+                wifiPasswordInput.type = isPassword ? 'text' : 'password';
+                if (wifiEyeOpen) wifiEyeOpen.style.display = isPassword ? 'none' : 'block';
+                if (wifiEyeClosed) wifiEyeClosed.style.display = isPassword ? 'block' : 'none';
+            });
+        }
+
+        if (btnWifiSsidClear && wifiSsidInput) {
+            btnWifiSsidClear.addEventListener('click', () => {
+                wifiSsidInput.value = '';
+                wifiSsidInput.focus();
             });
         }
 
