@@ -506,7 +506,11 @@
                             window.switchMode('link');
                             if (urlInput) urlInput.value = text.trim();
                             if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
-                            window.handleConvert();
+                            if (window.handleDirectUrlInput) {
+                                window.handleDirectUrlInput(text.trim());
+                            } else if (window.handleConvert) {
+                                window.handleConvert();
+                            }
                         } else {
                             if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastEmptyClip, 'warn');
                         }

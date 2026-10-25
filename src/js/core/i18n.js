@@ -434,7 +434,9 @@
         };
 
     let currentLang = localStorage.getItem('app_lang') || 'en';
-    let isLangSwitching = false;
+    let langSwitchTimer = null;
+    let langCleanTimer = null;
+    let langRafId = null;
 
     function updateSliderPill(lang) {
         const isAr = lang === 'ar';
@@ -658,7 +660,7 @@
     }
 
     function applyLanguage(lang, animate = true) {
-        if (animate && (lang === currentLang || isLangSwitching)) return;
+        if (animate && lang === currentLang) return;
 
         currentLang = lang;
         try {
@@ -667,10 +669,24 @@
         const dict = I18N[lang];
         if (!dict) return;
 
+        if (langSwitchTimer) {
+            clearTimeout(langSwitchTimer);
+            langSwitchTimer = null;
+        }
+        if (langCleanTimer) {
+            clearTimeout(langCleanTimer);
+            langCleanTimer = null;
+        }
+        if (langRafId) {
+            cancelAnimationFrame(langRafId);
+            langRafId = null;
+        }
+
         // 1. Instant feedback: glide slider pill immediately with spring physics
         updateSliderPill(lang);
 
         if (!animate) {
+            document.body.classList.remove('is-lang-animating', 'is-lang-switching', 'is-lang-entering');
             try {
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
@@ -681,13 +697,12 @@
             return;
         }
 
-        if (isLangSwitching) return;
-
         // 2. Coordinated continuous vertical roll (mirrors lock/unlock modal)
-        isLangSwitching = true;
+        document.body.classList.remove('is-lang-entering');
         document.body.classList.add('is-lang-animating', 'is-lang-switching');
 
-        setTimeout(() => {
+        langSwitchTimer = setTimeout(() => {
+            langSwitchTimer = null;
             try {
                 // Phase 2: Instantly set incoming text BELOW (+9px) with opacity 0
                 document.body.classList.remove('is-lang-switching');
@@ -700,17 +715,18 @@
                 console.error('Error during language switch:', e);
             }
 
+            void document.body.offsetWidth;
+
             // Phase 3: Release to glide smoothly up from below to 0
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    document.body.classList.remove('is-lang-entering');
-                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
-                    if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
-                    setTimeout(() => {
-                        document.body.classList.remove('is-lang-animating');
-                        isLangSwitching = false;
-                    }, 260);
-                });
+            langRafId = requestAnimationFrame(() => {
+                langRafId = null;
+                document.body.classList.remove('is-lang-entering');
+                if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
+                if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
+                langCleanTimer = setTimeout(() => {
+                    langCleanTimer = null;
+                    document.body.classList.remove('is-lang-animating');
+                }, 260);
             });
         }, 110);
     }

@@ -62,6 +62,10 @@
             clearTimeout(modalBox._modalTimer);
             modalBox._modalTimer = null;
         }
+        if (modalBox && modalBox._rafId) {
+            cancelAnimationFrame(modalBox._rafId);
+            modalBox._rafId = null;
+        }
         if (modalBox && modalBox._btnTimer) {
             clearTimeout(modalBox._btnTimer);
             modalBox._btnTimer = null;
@@ -127,13 +131,14 @@
         modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.92, 0.92, 1)`;
 
         overlay.classList.add('active');
+        void modalBox.offsetWidth;
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
-                modalBox.style.opacity = '1';
-                modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
-            });
+        modalBox._rafId = requestAnimationFrame(() => {
+            modalBox._rafId = null;
+            if (!overlay.classList.contains('active')) return;
+            modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
+            modalBox.style.opacity = '1';
+            modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
         });
 
         modalBox._modalTimer = setTimeout(() => {
@@ -273,7 +278,7 @@
         let targetId = 'nfcSensorView';
         if (viewName === 'pwd' || viewName === 'password') {
             targetId = 'nfcPwdView';
-        } else if (viewName === 'perm_confirm' || viewName === 'permLock' || viewName === 'perm_lock') {
+        } else if (viewName === 'perm' || viewName === 'perm_confirm' || viewName === 'permLock' || viewName === 'perm_lock') {
             targetId = 'nfcPermConfirmView';
         }
 

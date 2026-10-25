@@ -3,12 +3,12 @@
 /* ======================================================== */
 
 body {
-    padding: 14px 16px 124px;
+    padding: 14px 16px 0;
     overflow-x: hidden;
 }
 
 .main-wrapper {
-    padding: 0;
+    padding: 0 0 88px;
     max-width: 100%;
 }
 

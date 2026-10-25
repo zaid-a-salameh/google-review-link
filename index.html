@@ -248,11 +248,11 @@
             <div class="mode-switcher-container">
                 <div class="mode-tabs">
                     <div class="mode-tab-slider" id="modeTabSlider"></div>
-                    <button type="button" class="mode-tab" id="tabLinkMode" data-mode="link">
+                    <button type="button" class="mode-tab active" id="tabLinkMode" data-mode="link">
                         <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
                         <span id="tabLinkLabel">Direct Link</span>
                     </button>
-                    <button type="button" class="mode-tab active" id="tabSearchMode" data-mode="search">
+                    <button type="button" class="mode-tab" id="tabSearchMode" data-mode="search">
                         <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                         <span id="tabSearchLabel">Find Business</span>
                     </button>
@@ -262,7 +262,7 @@
             <!-- Mode Stage Viewport -->
             <div class="mode-stage" id="modeStage">
                 <!-- MODE 1: Direct Link Mode Content -->
-                <div class="mode-content" id="modeLinkContent">
+                <div class="mode-content active" id="modeLinkContent">
                 <div class="input-row">
                     <button type="button" class="tool-btn btn-trash" id="clearBtn" title="Clear text">
                         <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
@@ -294,7 +294,7 @@
             </div>
 
             <!-- MODE 2: Search Business Mode Content -->
-            <div class="mode-content active" id="modeSearchContent">
+            <div class="mode-content" id="modeSearchContent">
                 <div class="search-field-wrapper" id="searchFieldWrapper">
                     <svg class="search-field-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
                     <input 
@@ -326,12 +326,12 @@
 
             <div class="result-link-box" id="resultLinkText"></div>
 
-            <!-- The 3 Action Buttons -->
+            <!-- The Action Buttons (Reordered: 1. NFC, 2. Open, 3. Copy, 4. Share, 5. QR) -->
             <div class="actions-stack">
-                <!-- 1. Copy Button -->
-                <button type="button" class="btn-action btn-copy" id="copyBtn">
-                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                    <span id="copyBtnLabel">Copy Link</span>
+                <!-- 1. NFC Write Button -->
+                <button type="button" class="btn-action btn-nfc" id="nfcBtn">
+                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.15c-.47-.09-.97-.15-1.5-.15-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5c3.03 0 5.5-2.47 5.5-5.5V10h3V6zm-8.5 13c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+                    <span id="nfcBtnLabel">Write to NFC Tag</span>
                 </button>
 
                 <!-- 2. Open Button -->
@@ -340,22 +340,22 @@
                     <span id="openBtnLabel">Open Link</span>
                 </button>
 
-                <!-- 3. Share Button -->
+                <!-- 3. Copy Button -->
+                <button type="button" class="btn-action btn-copy" id="copyBtn">
+                    <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                    <span id="copyBtnLabel">Copy Link</span>
+                </button>
+
+                <!-- 4. Share Button -->
                 <button type="button" class="btn-action btn-share" id="shareBtn">
                     <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
                     <span id="shareBtnLabel">Share Link</span>
                 </button>
 
-                <!-- 4. QR Code Button -->
+                <!-- 5. QR Code Button -->
                 <button type="button" class="btn-action btn-qr" id="qrBtn">
                     <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-5 0h2v3h-2v-3zm2 3h3v2h-3v-2zm3 3h3v3h-3v-3zm-3 0h2v3h-2v-3zm-2-3h2v3h-2v-3z"/></svg>
                     <span id="qrBtnLabel">Generate QR Code</span>
-                </button>
-
-                <!-- 5. NFC Write Button -->
-                <button type="button" class="btn-action btn-nfc" id="nfcBtn">
-                    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.15c-.47-.09-.97-.15-1.5-.15-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5c3.03 0 5.5-2.47 5.5-5.5V10h3V6zm-8.5 13c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-                    <span id="nfcBtnLabel">Write to NFC Tag</span>
                 </button>
             </div>
         </div>

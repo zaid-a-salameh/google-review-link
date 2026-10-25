@@ -82,13 +82,32 @@
         }
         .nfc-view.active {
             opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+            visibility: inherit;
+            pointer-events: none;
             transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1) 0.02s,
                         transform 0.26s cubic-bezier(0.22, 1, 0.36, 1) 0.02s,
                         visibility 0s linear 0s;
             z-index: 2;
+        }
+        .nfc-overlay.active .nfc-view.active {
+            pointer-events: auto;
+        }
+        .nfc-view:not(.active),
+        .nfc-view:not(.active) * {
+            pointer-events: none !important;
+        }
+        .nfc-overlay:not(.active),
+        .nfc-overlay:not(.active) *,
+        .qr-overlay:not(.active),
+        .qr-overlay:not(.active) *,
+        .update-overlay:not(.active),
+        .update-overlay:not(.active) *,
+        .pwd-overlay:not(.active),
+        .pwd-overlay:not(.active) *,
+        .perm-lock-overlay:not(.active),
+        .perm-lock-overlay:not(.active) * {
+            pointer-events: none !important;
         }
         .nfc-view.view-exit {
             opacity: 0;
