@@ -66,7 +66,7 @@
         }
 
         body.is-native-app {
-            padding: 14px 16px 96px;
+            padding: 14px 16px 20px;
         }
 
         html[lang="ar"] body,

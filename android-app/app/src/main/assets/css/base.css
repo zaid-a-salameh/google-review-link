@@ -31,7 +31,7 @@
             z-index: 10;
         }
         body.is-native-app .main-wrapper {
-            padding: 0 0 88px;
+            padding: 0;
         }
 
         /* Screen Container */
@@ -322,7 +322,7 @@
                 padding: 12px 10px 92px;
             }
             body.is-native-app {
-                padding: 12px 12px 92px;
+                padding: 12px 12px 20px;
             }
             .glass-card {
                 padding: 16px 12px;

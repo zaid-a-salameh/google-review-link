@@ -445,22 +445,18 @@
         }
         body.is-native-app .bottom-github-dock {
             display: flex !important;
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 85;
+            position: relative;
+            width: 100%;
             justify-content: center;
-            padding: 10px 16px 38px;
-            background: linear-gradient(to top, rgba(12, 10, 9, 0.96) 45%, rgba(12, 10, 9, 0.72) 78%, rgba(12, 10, 9, 0) 100%);
-            pointer-events: none;
-            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
-            transform: translate3d(0, 0, 0);
+            margin: 0 0 20px 0;
+            padding: 0;
+            background: transparent;
+            pointer-events: auto;
+            z-index: 20;
+            transition: opacity 0.2s ease, transform 0.2s ease;
         }
         body.is-native-app.keyboard-open .bottom-github-dock {
-            transform: translate3d(0, 115%, 0);
-            opacity: 0;
-            pointer-events: none !important;
+            display: none !important;
         }
         body.is-native-app.keyboard-open .bottom-github-dock * {
             pointer-events: none !important;
@@ -469,9 +465,9 @@
             pointer-events: auto;
             width: 100%;
             max-width: 450px;
-            height: 50px;
+            height: 48px;
             padding: 0 18px;
-            border-radius: 16px;
+            border-radius: var(--radius-btn);
             background: linear-gradient(135deg, rgba(34, 30, 28, 0.96) 0%, rgba(22, 19, 18, 0.98) 100%);
             border: 1px solid rgba(255, 255, 255, 0.14);
             color: #fafaf9;
@@ -483,7 +479,7 @@
             font-family: inherit;
             font-size: 13.5px;
             font-weight: 700;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
             transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
             user-select: none;
