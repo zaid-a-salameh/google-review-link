@@ -7,11 +7,12 @@
             align-items: center;
             height: 52px;
             background: rgba(18, 16, 15, 0.85);
-            border: 2px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-input);
             padding: 0 14px;
             transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
             margin-bottom: 0;
+            box-sizing: border-box;
         }
         #modeSearchContent .search-field-wrapper {
             margin-bottom: 0;
