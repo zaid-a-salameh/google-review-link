@@ -2545,6 +2545,22 @@
         .btn-nfc-next.theme-wifi svg {
             fill: #0c0a09;
         }
+        .btn-nfc-next.theme-link,
+        .btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45);
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .btn-nfc-next.theme-link:hover,
+        .btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+        }
+        .btn-nfc-next.theme-link svg,
+        .btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) svg {
+            fill: #ffffff;
+        }
         .btn-nfc-next:active {
             transform: scale(0.98);
         }
@@ -3784,18 +3800,53 @@
             width: 100%;
             min-height: 56px;
             margin-bottom: 14px;
+            display: grid;
+            grid-template-columns: 100%;
+            align-items: center;
         }
         .wifi-step-pane {
-            display: none;
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
             width: 100%;
             opacity: 0;
-            transform: translate3d(0, 6px, 0);
-            transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0.25s;
+            will-change: transform, opacity;
+            box-sizing: border-box;
+        }
+        .wifi-step-pane.pane-prev {
+            transform: translate3d(-24px, 0, 0);
+        }
+        .wifi-step-pane.pane-next {
+            transform: translate3d(24px, 0, 0);
+        }
+        html[lang="ar"] .wifi-step-pane.pane-prev,
+        [dir="rtl"] .wifi-step-pane.pane-prev {
+            transform: translate3d(24px, 0, 0);
+        }
+        html[lang="ar"] .wifi-step-pane.pane-next,
+        [dir="rtl"] .wifi-step-pane.pane-next {
+            transform: translate3d(-24px, 0, 0);
         }
         .wifi-step-pane.active {
-            display: block;
             opacity: 1;
-            transform: translate3d(0, 0, 0);
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0) !important;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0s;
+        }
+        @keyframes stepTextFadeIn {
+            0% { opacity: 0; transform: translate3d(0, -6px, 0); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .step-title-animate,
+        .step-desc-animate {
+            animation: stepTextFadeIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         .wifi-input-group {
             display: flex;
@@ -4855,6 +4906,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcBtnWifiAnother: "Write Another Card",
                 toastNfcWifiSuccess: "Wi-Fi card written successfully!",
                 nfcBtn: "Write to NFC Tag",
+                nfcBtnWriteAnother: "Write Another Card",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
                 nfcTitleReadReady: "Ready to Read Card",
@@ -5096,6 +5148,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcBtnWifiAnother: "برمجة بطاقة أخرى",
                 toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
                 nfcBtn: "كتابة على بطاقة NFC",
+                nfcBtnWriteAnother: "نسخ بطاقة أخرى",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
                 nfcTitleReadReady: "جاهز لقراءة البطاقة",
@@ -5424,6 +5477,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
             } else if (window.lastNfcOperation === 'write_wifi') {
                 nfcNextBtnLabel.textContent = dict.nfcBtnWifiAnother || 'Write Another Card';
+            } else if (window.lastNfcOperation === 'write') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnWriteAnother || 'Write Another Card';
             }
         }
         setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');
@@ -6896,10 +6951,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (state === 'ready') {
             isPermLockStandby = false;
             if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReady;
-            if (nfcDesc) nfcDesc.textContent = dict.nfcDescReady;
-            setCancelBtnMode(dict.nfcCancel, false);
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcTitle) nfcTitle.textContent = nfcBatchCount > 0 ? (dict.nfcTitleNext || 'Ready for Next Card') : dict.nfcTitleReady;
+            if (nfcDesc) nfcDesc.textContent = nfcBatchCount > 0 ? (dict.nfcDescNext || 'Hold another NFC card near the phone to write the review link.') : dict.nfcDescReady;
+            setCancelBtnMode(nfcBatchCount > 0 ? dict.nfcDone : dict.nfcCancel, false);
+            if (nfcBatchCount > 0) {
+                updateWriteBatchBadge(dict);
+            } else if (nfcCounterBadge) {
+                nfcCounterBadge.style.display = 'none';
+            }
             setIconIfChanged(nfcSvgIcon, ICON_NFC_WAVES);
         } else if (state === 'read_ready') {
             isPermLockStandby = false;
@@ -7022,8 +7081,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
                 setCancelBtnMode(dict.nfcDone, false);
-                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
-                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                if (nfcNextBtn) {
+                    nfcNextBtn.className = 'btn-nfc-next theme-link';
+                    nfcNextBtn.style.display = 'inline-flex';
+                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnWriteAnother || 'Write Another Card';
+                    if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_NFC_WAVES.trim();
+                }
+                if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
                 updateWriteBatchBadge(dict);
             }
             if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
@@ -7307,6 +7371,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function startNfcWrite(triggerBtn, options = {}) {
         blurActiveElement();
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
         const dict = getDict();
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) {
@@ -7479,15 +7547,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             try { navigator.vibrate([140, 70, 180]); } catch (e) {}
         }
 
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
+
         setNfcModalState('success', nfcBatchCount);
 
         const dict = getDict();
         if (window.showToast) window.showToast(dict.toastNfcWritten || 'NFC Written', 'success');
-
-        if (nfcResetTimer) clearTimeout(nfcResetTimer);
-        nfcResetTimer = setTimeout(() => {
-            setNfcModalState('next', nfcBatchCount);
-        }, 1500);
     };
 
     window.onNfcTagRead = function(url) {
@@ -7651,6 +7719,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     if (window.retryNfcWifiWrite) {
                         window.retryNfcWifiWrite();
                     }
+                } else if (lastNfcOperation === 'write') {
+                    if (nfcResetTimer) {
+                        clearTimeout(nfcResetTimer);
+                        nfcResetTimer = null;
+                    }
+                    startNfcWrite(null, { skipOpenAnimation: true, resetBatch: false });
                 }
             });
         }
@@ -8474,32 +8548,63 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 line.classList.toggle('active', (idx + 1) < wifiCurrentStep);
             });
 
-            if (wifiStep1Pane) wifiStep1Pane.classList.toggle('active', wifiCurrentStep === 1);
-            if (wifiStep2Pane) wifiStep2Pane.classList.toggle('active', wifiCurrentStep === 2);
-            if (wifiStep3Pane) wifiStep3Pane.classList.toggle('active', wifiCurrentStep === 3);
+            const panes = [wifiStep1Pane, wifiStep2Pane, wifiStep3Pane];
+            panes.forEach((pane, idx) => {
+                if (!pane) return;
+                const stepNum = idx + 1;
+                pane.classList.remove('active', 'pane-prev', 'pane-next');
+                if (stepNum === wifiCurrentStep) {
+                    pane.classList.add('active');
+                } else if (stepNum < wifiCurrentStep) {
+                    pane.classList.add('pane-prev');
+                } else {
+                    pane.classList.add('pane-next');
+                }
+            });
 
             if (wifiCurrentStep !== 3 && wifiDropdownWrapper) {
                 wifiDropdownWrapper.classList.remove('open');
             }
 
+            let newTitle = '';
+            let newDesc = '';
             if (wifiCurrentStep === 1) {
-                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep1Title || 'Wi-Fi Card Setup';
-                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep1Desc || 'Enter the Wi-Fi network name (SSID)';
+                newTitle = dict.wifiStep1Title || 'Wi-Fi Card Setup';
+                newDesc = dict.wifiStep1Desc || 'Enter the Wi-Fi network name (SSID)';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.pwdCancel || 'Cancel';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
             } else if (wifiCurrentStep === 2) {
-                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep2Title || 'Network Password';
-                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep2Desc || 'Enter Wi-Fi password (or leave blank for open network)';
+                newTitle = dict.wifiStep2Title || 'Network Password';
+                newDesc = dict.wifiStep2Desc || 'Enter Wi-Fi password (or leave blank for open network)';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
             } else if (wifiCurrentStep === 3) {
-                if (wifiStepTitle) wifiStepTitle.textContent = dict.wifiStep3Title || 'Security Type';
-                if (wifiStepDesc) wifiStepDesc.textContent = dict.wifiStep3Desc || 'Select network encryption standard';
+                newTitle = dict.wifiStep3Title || 'Security Type';
+                newDesc = dict.wifiStep3Desc || 'Select network encryption standard';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+            }
+
+            if (wifiStepTitle) {
+                const titleChanged = wifiStepTitle.textContent !== newTitle;
+                wifiStepTitle.textContent = newTitle;
+                if (titleChanged) {
+                    wifiStepTitle.classList.remove('step-title-animate');
+                    void wifiStepTitle.offsetWidth;
+                    wifiStepTitle.classList.add('step-title-animate');
+                }
+            }
+            if (wifiStepDesc) {
+                const descChanged = wifiStepDesc.textContent !== newDesc;
+                wifiStepDesc.textContent = newDesc;
+                if (descChanged) {
+                    wifiStepDesc.classList.remove('step-desc-animate');
+                    void wifiStepDesc.offsetWidth;
+                    wifiStepDesc.classList.add('step-desc-animate');
+                }
             }
         }
         window.updateWifiWizardUi = updateWifiWizardUi;
@@ -8540,6 +8645,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         function handleWifiWizardBack() {
+            if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                try { document.activeElement.blur(); } catch (e) {}
+            }
             if (wifiCurrentStep === 1) {
                 if (window.closeNfcModal) window.closeNfcModal();
             } else if (wifiCurrentStep === 2) {
@@ -8577,6 +8685,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnWifiNext) {
             btnWifiNext.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
                 const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
 
                 if (wifiCurrentStep === 1) {
@@ -8589,9 +8700,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     wifiSavedSsid = ssidVal;
                     wifiCurrentStep = 2;
                     updateWifiWizardUi();
-                    if (wifiPasswordInput) {
-                        setTimeout(() => { try { wifiPasswordInput.focus(); } catch (e) {} }, 120);
-                    }
                 } else if (wifiCurrentStep === 2) {
                     const passVal = (wifiPasswordInput ? wifiPasswordInput.value : '').trim();
                     if (passVal.length > 0 && passVal.length < 8) {
@@ -8689,6 +8797,24 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             btnWifiSsidClear.addEventListener('click', () => {
                 wifiSsidInput.value = '';
                 wifiSsidInput.focus();
+            });
+        }
+
+        if (wifiSsidInput) {
+            wifiSsidInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (btnWifiNext) btnWifiNext.click();
+                }
+            });
+        }
+
+        if (wifiPasswordInput) {
+            wifiPasswordInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (btnWifiNext) btnWifiNext.click();
+                }
             });
         }
 

@@ -380,6 +380,22 @@
         .btn-nfc-next.theme-wifi svg {
             fill: #0c0a09;
         }
+        .btn-nfc-next.theme-link,
+        .btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) {
+            background: var(--primary-gradient);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45);
+            color: #ffffff;
+            font-weight: 800;
+        }
+        .btn-nfc-next.theme-link:hover,
+        .btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi):hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+        }
+        .btn-nfc-next.theme-link svg,
+        .btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) svg {
+            fill: #ffffff;
+        }
         .btn-nfc-next:active {
             transform: scale(0.98);
         }
@@ -1619,18 +1635,53 @@
             width: 100%;
             min-height: 56px;
             margin-bottom: 14px;
+            display: grid;
+            grid-template-columns: 100%;
+            align-items: center;
         }
         .wifi-step-pane {
-            display: none;
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
             width: 100%;
             opacity: 0;
-            transform: translate3d(0, 6px, 0);
-            transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1), transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0.25s;
+            will-change: transform, opacity;
+            box-sizing: border-box;
+        }
+        .wifi-step-pane.pane-prev {
+            transform: translate3d(-24px, 0, 0);
+        }
+        .wifi-step-pane.pane-next {
+            transform: translate3d(24px, 0, 0);
+        }
+        html[lang="ar"] .wifi-step-pane.pane-prev,
+        [dir="rtl"] .wifi-step-pane.pane-prev {
+            transform: translate3d(24px, 0, 0);
+        }
+        html[lang="ar"] .wifi-step-pane.pane-next,
+        [dir="rtl"] .wifi-step-pane.pane-next {
+            transform: translate3d(-24px, 0, 0);
         }
         .wifi-step-pane.active {
-            display: block;
             opacity: 1;
-            transform: translate3d(0, 0, 0);
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0) !important;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.26s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0s;
+        }
+        @keyframes stepTextFadeIn {
+            0% { opacity: 0; transform: translate3d(0, -6px, 0); }
+            100% { opacity: 1; transform: translate3d(0, 0, 0); }
+        }
+        .step-title-animate,
+        .step-desc-animate {
+            animation: stepTextFadeIn 0.24s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         .wifi-input-group {
             display: flex;

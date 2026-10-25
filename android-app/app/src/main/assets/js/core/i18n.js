@@ -109,6 +109,7 @@
                 nfcBtnWifiAnother: "Write Another Card",
                 toastNfcWifiSuccess: "Wi-Fi card written successfully!",
                 nfcBtn: "Write to NFC Tag",
+                nfcBtnWriteAnother: "Write Another Card",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
                 nfcTitleReadReady: "Ready to Read Card",
@@ -350,6 +351,7 @@
                 nfcBtnWifiAnother: "برمجة بطاقة أخرى",
                 toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
                 nfcBtn: "كتابة على بطاقة NFC",
+                nfcBtnWriteAnother: "نسخ بطاقة أخرى",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
                 nfcTitleReadReady: "جاهز لقراءة البطاقة",
@@ -678,6 +680,8 @@
                 nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
             } else if (window.lastNfcOperation === 'write_wifi') {
                 nfcNextBtnLabel.textContent = dict.nfcBtnWifiAnother || 'Write Another Card';
+            } else if (window.lastNfcOperation === 'write') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnWriteAnother || 'Write Another Card';
             }
         }
         setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');

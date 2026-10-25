@@ -158,10 +158,14 @@
         if (state === 'ready') {
             isPermLockStandby = false;
             if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReady;
-            if (nfcDesc) nfcDesc.textContent = dict.nfcDescReady;
-            setCancelBtnMode(dict.nfcCancel, false);
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+            if (nfcTitle) nfcTitle.textContent = nfcBatchCount > 0 ? (dict.nfcTitleNext || 'Ready for Next Card') : dict.nfcTitleReady;
+            if (nfcDesc) nfcDesc.textContent = nfcBatchCount > 0 ? (dict.nfcDescNext || 'Hold another NFC card near the phone to write the review link.') : dict.nfcDescReady;
+            setCancelBtnMode(nfcBatchCount > 0 ? dict.nfcDone : dict.nfcCancel, false);
+            if (nfcBatchCount > 0) {
+                updateWriteBatchBadge(dict);
+            } else if (nfcCounterBadge) {
+                nfcCounterBadge.style.display = 'none';
+            }
             setIconIfChanged(nfcSvgIcon, ICON_NFC_WAVES);
         } else if (state === 'read_ready') {
             isPermLockStandby = false;
@@ -284,8 +288,13 @@
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
                 setCancelBtnMode(dict.nfcDone, false);
-                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
-                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                if (nfcNextBtn) {
+                    nfcNextBtn.className = 'btn-nfc-next theme-link';
+                    nfcNextBtn.style.display = 'inline-flex';
+                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnWriteAnother || 'Write Another Card';
+                    if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_NFC_WAVES.trim();
+                }
+                if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
                 updateWriteBatchBadge(dict);
             }
             if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
@@ -569,6 +578,10 @@
 
     function startNfcWrite(triggerBtn, options = {}) {
         blurActiveElement();
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
         const dict = getDict();
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) {
@@ -741,15 +754,15 @@
             try { navigator.vibrate([140, 70, 180]); } catch (e) {}
         }
 
+        if (nfcResetTimer) {
+            clearTimeout(nfcResetTimer);
+            nfcResetTimer = null;
+        }
+
         setNfcModalState('success', nfcBatchCount);
 
         const dict = getDict();
         if (window.showToast) window.showToast(dict.toastNfcWritten || 'NFC Written', 'success');
-
-        if (nfcResetTimer) clearTimeout(nfcResetTimer);
-        nfcResetTimer = setTimeout(() => {
-            setNfcModalState('next', nfcBatchCount);
-        }, 1500);
     };
 
     window.onNfcTagRead = function(url) {
@@ -913,6 +926,12 @@
                     if (window.retryNfcWifiWrite) {
                         window.retryNfcWifiWrite();
                     }
+                } else if (lastNfcOperation === 'write') {
+                    if (nfcResetTimer) {
+                        clearTimeout(nfcResetTimer);
+                        nfcResetTimer = null;
+                    }
+                    startNfcWrite(null, { skipOpenAnimation: true, resetBatch: false });
                 }
             });
         }
