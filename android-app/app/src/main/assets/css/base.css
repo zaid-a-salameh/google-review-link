@@ -1,16 +1,37 @@
 /* Base Layout, Containers & Typography */
+        /* Custom Dark Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0d0b0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.4);
+            border-radius: 8px;
+            border: 1px solid rgba(13, 11, 10, 0.8);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.75);
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139, 92, 246, 0.4) #0d0b0a;
+        }
+
         /* Main Page Wrapper */
         .main-wrapper {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 32px 16px 124px;
+            padding: 32px 16px 48px;
             position: relative;
             z-index: 10;
         }
         body.is-native-app .main-wrapper {
-            padding: 0;
+            padding: 0 0 124px;
         }
 
         /* Screen Container */

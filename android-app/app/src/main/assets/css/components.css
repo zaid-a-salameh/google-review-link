@@ -74,9 +74,6 @@
         /* Mode Stage & Hardware-Accelerated Sliding Content */
         .mode-stage {
             position: relative;
-            display: grid;
-            grid-template-columns: 100%;
-            grid-template-rows: auto;
             width: 100%;
             z-index: 50;
         }
@@ -87,47 +84,31 @@
         }
 
         .mode-content {
-            grid-column: 1 / 2;
-            grid-row: 1 / 2;
-            position: relative;
+            display: none;
             width: 100%;
             opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1), 
-                        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
-                        visibility 0s linear 0.22s;
+            transform: translate3d(0, 6px, 0);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
 
-        /* LTR Slide Offsets */
-        #modeLinkContent {
-            transform: translate3d(-16px, 0, 0);
-        }
-        #modeSearchContent {
-            transform: translate3d(16px, 0, 0);
-        }
-
-        /* RTL Slide Offsets (Arabic Mode) */
-        html[lang="ar"] #modeLinkContent,
-        [dir="rtl"] #modeLinkContent {
-            transform: translate3d(16px, 0, 0);
-        }
-        html[lang="ar"] #modeSearchContent,
-        [dir="rtl"] #modeSearchContent {
-            transform: translate3d(-16px, 0, 0);
-        }
-
         /* Active State */
         .mode-content.active {
+            display: block;
             opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-            transform: translate3d(0, 0, 0) !important;
-            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
-                        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
-                        visibility 0s linear 0s;
+            transform: translate3d(0, 0, 0);
+            animation: modeFadeIn 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        @keyframes modeFadeIn {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 6px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
         }
 
         .mode-content:has(.places-dropdown.show),
@@ -429,25 +410,25 @@
             box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
         }
 
-        /* Bottom Docked Rectangular GitHub Button */
+        /* Bottom Docked Rectangular GitHub Button (App Exclusive) */
         .bottom-github-dock {
+            display: none !important;
+        }
+        body.is-native-app .bottom-github-dock {
+            display: flex !important;
             position: fixed;
             left: 0;
             right: 0;
             bottom: 0;
             z-index: 85;
-            display: flex;
             justify-content: center;
-            padding: 12px 16px max(32px, env(safe-area-inset-bottom, 32px));
+            padding: 10px 16px 38px;
             background: linear-gradient(to top, rgba(12, 10, 9, 0.96) 45%, rgba(12, 10, 9, 0.72) 78%, rgba(12, 10, 9, 0) 100%);
             pointer-events: none;
             transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
             transform: translate3d(0, 0, 0);
         }
-        body.is-native-app .bottom-github-dock {
-            padding: 10px 16px 38px;
-        }
-        body.keyboard-open .bottom-github-dock {
+        body.is-native-app.keyboard-open .bottom-github-dock {
             transform: translate3d(0, 115%, 0);
             opacity: 0;
         }

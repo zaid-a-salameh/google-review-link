@@ -11,7 +11,10 @@
             border-radius: var(--radius-input);
             padding: 0 14px;
             transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
-            margin-bottom: 14px;
+            margin-bottom: 0;
+        }
+        #modeSearchContent .search-field-wrapper {
+            margin-bottom: 0;
         }
         .search-field-wrapper:has(.places-dropdown.show),
         .search-field-wrapper.has-dropdown-open,
@@ -219,6 +222,24 @@
             display: none;
             flex-direction: column;
             overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139, 92, 246, 0.45) rgba(18, 16, 15, 0.7);
+        }
+        .places-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .places-dropdown::-webkit-scrollbar-track {
+            background: rgba(18, 16, 15, 0.7);
+            border-radius: 6px;
+            margin: 6px 0;
+        }
+        .places-dropdown::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.45);
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+        .places-dropdown::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.75);
         }
         body.is-native-app .places-dropdown {
             background: #181412;
