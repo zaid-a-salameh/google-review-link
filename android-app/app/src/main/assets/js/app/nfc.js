@@ -521,12 +521,6 @@
                 window.showNfcView('sensor', false);
             }
         }
-
-        const dict = getDict();
-        if (completedWrites > 0 && window.showToast) {
-            const toastMsg = (dict.toastNfcBatchSuccess || '').replace('{count}', completedWrites);
-            window.showToast(toastMsg, 'success');
-        }
     }
 
     function handleNfcCancelOrBack() {
@@ -742,8 +736,6 @@
                 try { navigator.vibrate([140, 70, 180]); } catch (e) {}
             }
             setNfcModalState('success', 'WRITE_WIFI');
-            const dict = getDict();
-            if (window.showToast) window.showToast(dict.toastNfcWifiSuccess || 'Wi-Fi card written successfully!', 'success');
             return;
         }
 
@@ -760,9 +752,6 @@
         }
 
         setNfcModalState('success', nfcBatchCount);
-
-        const dict = getDict();
-        if (window.showToast) window.showToast(dict.toastNfcWritten || 'NFC Written', 'success');
     };
 
     window.onNfcTagRead = function(url) {
@@ -803,10 +792,6 @@
 
         if (!window.AndroidNative && navigator.vibrate) {
             try { navigator.vibrate([140, 70, 180]); } catch (e) {}
-        }
-
-        if (window.showToast) {
-            window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
         }
 
         const nfcOverlay = document.getElementById('nfcOverlay');
