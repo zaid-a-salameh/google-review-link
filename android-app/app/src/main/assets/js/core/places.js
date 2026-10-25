@@ -357,8 +357,6 @@
     }
 
     function switchMode(mode) {
-        if (window.AppModes && window.AppModes.activeMode === mode) return;
-
         const tabLinkMode = document.getElementById('tabLinkMode');
         const tabSearchMode = document.getElementById('tabSearchMode');
         const modeLinkContent = document.getElementById('modeLinkContent');
@@ -367,7 +365,13 @@
         const businessSearchInput = document.getElementById('businessSearchInput');
         const mainInputCard = document.getElementById('mainInputCard');
 
-        
+        const currentTab = mode === 'link' ? tabLinkMode : tabSearchMode;
+        const currentContent = mode === 'link' ? modeLinkContent : modeSearchContent;
+        const isDomActive = Boolean(currentTab && currentTab.classList.contains('active') &&
+                                    currentContent && currentContent.classList.contains('active'));
+
+        if (window.AppModes && window.AppModes.activeMode === mode && isDomActive) return;
+
         if (window.AppModes) {
             window.AppModes.activeMode = mode;
         }

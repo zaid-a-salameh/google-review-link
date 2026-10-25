@@ -5119,8 +5119,18 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 (function() {
     'use strict';
 
+    function getInitialMode() {
+        if (typeof document !== 'undefined') {
+            const searchTab = document.getElementById('tabSearchMode');
+            if (searchTab && searchTab.classList.contains('active')) {
+                return 'search';
+            }
+        }
+        return 'link';
+    }
+
     const AppModes = {
-        activeMode: 'link',
+        activeMode: getInitialMode(),
         link: {
             reviewUrl: null,
             isResultActive: false
@@ -5744,8 +5754,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function switchMode(mode) {
-        if (window.AppModes && window.AppModes.activeMode === mode) return;
-
         const tabLinkMode = document.getElementById('tabLinkMode');
         const tabSearchMode = document.getElementById('tabSearchMode');
         const modeLinkContent = document.getElementById('modeLinkContent');
@@ -5754,7 +5762,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const businessSearchInput = document.getElementById('businessSearchInput');
         const mainInputCard = document.getElementById('mainInputCard');
 
-        
+        const currentTab = mode === 'link' ? tabLinkMode : tabSearchMode;
+        const currentContent = mode === 'link' ? modeLinkContent : modeSearchContent;
+        const isDomActive = Boolean(currentTab && currentTab.classList.contains('active') &&
+                                    currentContent && currentContent.classList.contains('active'));
+
+        if (window.AppModes && window.AppModes.activeMode === mode && isDomActive) return;
+
         if (window.AppModes) {
             window.AppModes.activeMode = mode;
         }

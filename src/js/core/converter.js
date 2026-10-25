@@ -4,8 +4,18 @@
 (function() {
     'use strict';
 
+    function getInitialMode() {
+        if (typeof document !== 'undefined') {
+            const searchTab = document.getElementById('tabSearchMode');
+            if (searchTab && searchTab.classList.contains('active')) {
+                return 'search';
+            }
+        }
+        return 'link';
+    }
+
     const AppModes = {
-        activeMode: 'link',
+        activeMode: getInitialMode(),
         link: {
             reviewUrl: null,
             isResultActive: false
