@@ -547,20 +547,10 @@ class MainActivity : ComponentActivity() {
         }
 
         try {
+            // Standard NFC Forum / Wi-Fi Alliance WSC record matching NFC Tools
             val wscPayload = buildWscPayload(ssid, password, encType)
             val wscRecord = NdefRecord.createMime("application/vnd.wfa.wsc", wscPayload)
-
-            // Also prepare standard URI record for universal scanner & iOS compatibility
-            val uriAuth = when (encType.uppercase()) {
-                "OPEN", "NONE" -> "nopass"
-                "WEP" -> "WEP"
-                else -> "WPA"
-            }
-            val uriRecord = NdefRecord.createUri("WIFI:S:$ssid;T:$uriAuth;P:$password;;")
-
-            // Prefer dual-record message if card capacity allows; fallback to WSC record
-            val dualMessage = NdefMessage(arrayOf(wscRecord, uriRecord))
-            val singleMessage = NdefMessage(arrayOf(wscRecord))
+            val wscMessage = NdefMessage(arrayOf(wscRecord))
 
             val ndef = Ndef.get(tag)
             if (ndef != null) {
@@ -570,13 +560,12 @@ class MainActivity : ComponentActivity() {
                     notifyNfcError("LOCKED")
                     return
                 }
-                val msgToWrite = if (ndef.maxSize >= dualMessage.byteArrayLength) dualMessage else singleMessage
-                if (ndef.maxSize < msgToWrite.byteArrayLength) {
+                if (ndef.maxSize < wscMessage.byteArrayLength) {
                     ndef.close()
                     notifyNfcError("CAPACITY")
                     return
                 }
-                ndef.writeNdefMessage(msgToWrite)
+                ndef.writeNdefMessage(wscMessage)
                 ndef.close()
                 lastWriteTimestamp = System.currentTimeMillis()
                 lastWrittenTagId = tagId?.clone()
@@ -587,7 +576,7 @@ class MainActivity : ComponentActivity() {
                 val formatable = NdefFormatable.get(tag)
                 if (formatable != null) {
                     formatable.connect()
-                    formatable.format(dualMessage)
+                    formatable.format(wscMessage)
                     formatable.close()
                     lastWriteTimestamp = System.currentTimeMillis()
                     lastWrittenTagId = tagId?.clone()

@@ -84,10 +84,10 @@
                 wifiModalTitle: "Wi-Fi Card Setup",
                 wifiStep1Title: "Wi-Fi Card Setup",
                 wifiStep1Desc: "Enter the Wi-Fi network name (SSID)",
-                wifiStep2Title: "Security Type",
-                wifiStep2Desc: "Select network encryption standard",
-                wifiStep3Title: "Network Password",
-                wifiStep3Desc: "Enter the Wi-Fi security password",
+                wifiStep2Title: "Network Password",
+                wifiStep2Desc: "Enter Wi-Fi password (or leave blank for open network)",
+                wifiStep3Title: "Security Type",
+                wifiStep3Desc: "Select network encryption standard",
                 wifiSsidPlaceholder: "Network Name (SSID)...",
                 wifiPasswordPlaceholder: "Enter Wi-Fi password...",
                 wifiEncWpa: "WPA / WPA2 / WPA3 Personal",
@@ -101,10 +101,12 @@
                 wifiWriteTag: "Write to NFC Tag",
                 toastEnterSsid: "Please enter network name (SSID)",
                 toastWifiPassMinLength: "Password must be at least 8 characters",
+                toastWifiWpaRequired: "WPA networks require a password of at least 8 characters",
                 nfcTitleWifiReady: "Ready to Write Wi-Fi",
                 nfcDescWifiReady: "Hold phone near NFC card to write Wi-Fi credentials.",
                 nfcTitleWifiSuccess: "Wi-Fi Card Programmed!",
                 nfcDescWifiSuccess: "Wi-Fi configuration successfully written to NFC card.",
+                nfcBtnWifiAnother: "Write Another Card",
                 toastNfcWifiSuccess: "Wi-Fi card written successfully!",
                 nfcBtn: "Write to NFC Tag",
                 nfcTitleReady: "Ready to Write",
@@ -323,10 +325,10 @@
                 wifiModalTitle: "إعداد كرت Wi-Fi",
                 wifiStep1Title: "إعداد كرت Wi-Fi",
                 wifiStep1Desc: "أدخل اسم شبكة الواي فاي (SSID)",
-                wifiStep2Title: "نوع التشفير",
-                wifiStep2Desc: "اختر نوع حماية وتشفير الشبكة",
-                wifiStep3Title: "كلمة مرور الشبكة",
-                wifiStep3Desc: "أدخل كلمة المرور الخاصة بالشبكة",
+                wifiStep2Title: "كلمة مرور الشبكة",
+                wifiStep2Desc: "أدخل كلمة سر الواي فاي (أو اتركها فارغة إذا كانت شبكة مفتوحة)",
+                wifiStep3Title: "نوع التشفير",
+                wifiStep3Desc: "اختر معيار حماية وتشفير الشبكة",
                 wifiSsidPlaceholder: "اسم الشبكة (SSID)...",
                 wifiPasswordPlaceholder: "أدخل كلمة سر الواي فاي...",
                 wifiEncWpa: "WPA / WPA2 / WPA3 شخصي",
@@ -340,10 +342,12 @@
                 wifiWriteTag: "نسخ على البطاقة",
                 toastEnterSsid: "يرجى إدخال اسم الشبكة (SSID)",
                 toastWifiPassMinLength: "كلمة المرور يجب ألا تقل عن 8 خانات",
+                toastWifiWpaRequired: "شبكات WPA تتطلب كلمة مرور من 8 خانات على الأقل",
                 nfcTitleWifiReady: "جاهز لبرمجة كرت Wi-Fi",
                 nfcDescWifiReady: "قرب الهاتف من بطاقة NFC لبرمجة بيانات شبكة الواي فاي.",
                 nfcTitleWifiSuccess: "تمت برمجة كرت Wi-Fi بنجاح!",
                 nfcDescWifiSuccess: "تم حفظ إعدادات الاتصال التلقائي بالشبكة على البطاقة.",
+                nfcBtnWifiAnother: "برمجة بطاقة أخرى",
                 toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
@@ -612,6 +616,9 @@
         if (wifiPasswordInputEl && dict.wifiPasswordPlaceholder) {
             wifiPasswordInputEl.placeholder = dict.wifiPasswordPlaceholder;
         }
+        if (typeof window.updateWifiWizardUi === 'function') {
+            window.updateWifiWizardUi();
+        }
         setTxt('pwdModalTitle', dict.pwdModalTitle);
         setTxt('pwdModalTitleLock', dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card');
         setTxt('pwdModalTitleUnlock', dict.pwdModalTitleUnlock || 'Unlock Card');
@@ -669,6 +676,8 @@
                 nfcNextBtnLabel.textContent = dict.nfcBtnLockAnother || 'Lock Another Card';
             } else if (window.lastNfcOperation === 'pwd_unlock') {
                 nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
+            } else if (window.lastNfcOperation === 'write_wifi') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnWifiAnother || 'Write Another Card';
             }
         }
         setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');

@@ -229,7 +229,7 @@
         } else if (state === 'success') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
+                nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock', 'theme-wifi');
                 nfcModalBox.classList.add('success');
             }
             if (detail === 'PWD_LOCK') {
@@ -272,8 +272,13 @@
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiSuccess || 'Wi-Fi Card Programmed!';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiSuccess || 'Wi-Fi configuration successfully written to NFC card.';
                 setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
-                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
-                if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                if (nfcNextBtn) {
+                    nfcNextBtn.className = 'btn-nfc-next theme-wifi';
+                    nfcNextBtn.style.display = 'inline-flex';
+                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnWifiAnother || 'Write Another Card';
+                    if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_WIFI.trim();
+                }
+                if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
@@ -304,7 +309,7 @@
         } else if (state === 'error') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('morph-to-ready', 'success', 'theme-unlock', 'perm-lock-standby');
+                nfcModalBox.classList.remove('morph-to-ready', 'success', 'theme-unlock', 'theme-wifi', 'perm-lock-standby');
                 nfcModalBox.classList.add('error');
             }
             if (nfcTitle) {
@@ -358,8 +363,12 @@
                     detail === 'MISSING_PIN'
                 ));
 
+            const isWifiReturnError = (lastNfcOperation === 'write_wifi');
+
             if (isPinReturnError) {
                 setCancelBtnMode(dict.nfcBackToPin || 'Back', true);
+            } else if (isWifiReturnError) {
+                setCancelBtnMode(dict.wifiBack || 'Back', true);
             } else {
                 const fallbackLabel = (lastNfcOperation === 'perm_lock' && permLockBatchCount > 0)
                     ? (dict.nfcDone || 'Done')
@@ -900,6 +909,10 @@
                     if (lastNfcPin) startNfcPasswordLock(lastNfcPin, null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'pwd_unlock') {
                     if (lastNfcPin) startNfcPasswordUnlock(lastNfcPin, null, { skipOpenAnimation: true });
+                } else if (lastNfcOperation === 'write_wifi') {
+                    if (window.retryNfcWifiWrite) {
+                        window.retryNfcWifiWrite();
+                    }
                 }
             });
         }
