@@ -2114,10 +2114,11 @@
         .nfc-modal {
             width: 100%;
             max-width: 340px;
+            min-height: 335px;
             background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 28px;
-            padding: 32px 24px 28px;
+            padding: 24px 22px 22px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.2);
             opacity: 0;
@@ -2126,10 +2127,40 @@
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             contain: layout style;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            box-sizing: border-box;
         }
         .nfc-overlay.active .nfc-modal {
             opacity: 1;
             transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        }
+        /* Internal sub-views for seamless in-place view morphing without overlay blinking */
+        .nfc-view {
+            display: none;
+            opacity: 0;
+            transform: translate3d(0, 8px, 0) scale3d(0.97, 0.97, 1);
+            transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1), transform 0.20s cubic-bezier(0.22, 1, 0.36, 1);
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .nfc-view.active {
+            display: block;
+            opacity: 1;
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+        }
+        .nfc-view.view-exit {
+            display: block;
+            position: absolute;
+            top: 24px;
+            left: 22px;
+            right: 22px;
+            opacity: 0;
+            transform: translate3d(0, -8px, 0) scale3d(0.97, 0.97, 1);
+            pointer-events: none;
+            z-index: 1;
         }
         .nfc-wave-container {
             position: relative;
@@ -3169,21 +3200,25 @@
                         opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
         }
-        .pwd-modal:not(.unlock-mode) .mode-lock-title {
+        .pwd-modal:not(.unlock-mode) .mode-lock-title,
+        .nfc-modal:not(.unlock-mode) .mode-lock-title {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
-        .pwd-modal:not(.unlock-mode) .mode-unlock-title {
+        .pwd-modal:not(.unlock-mode) .mode-unlock-title,
+        .nfc-modal:not(.unlock-mode) .mode-unlock-title {
             opacity: 0;
             transform: translate3d(0, 14px, 0);
             pointer-events: none;
         }
-        .pwd-modal.unlock-mode .mode-lock-title {
+        .pwd-modal.unlock-mode .mode-lock-title,
+        .nfc-modal.unlock-mode .mode-lock-title {
             opacity: 0;
             transform: translate3d(0, -14px, 0);
             pointer-events: none;
         }
-        .pwd-modal.unlock-mode .mode-unlock-title {
+        .pwd-modal.unlock-mode .mode-unlock-title,
+        .nfc-modal.unlock-mode .mode-unlock-title {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
@@ -3210,21 +3245,25 @@
                         opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             will-change: transform, opacity;
         }
-        .pwd-modal:not(.unlock-mode) .mode-lock-desc {
+        .pwd-modal:not(.unlock-mode) .mode-lock-desc,
+        .nfc-modal:not(.unlock-mode) .mode-lock-desc {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
-        .pwd-modal:not(.unlock-mode) .mode-unlock-desc {
+        .pwd-modal:not(.unlock-mode) .mode-unlock-desc,
+        .nfc-modal:not(.unlock-mode) .mode-unlock-desc {
             opacity: 0;
             transform: translate3d(0, 10px, 0);
             pointer-events: none;
         }
-        .pwd-modal.unlock-mode .mode-lock-desc {
+        .pwd-modal.unlock-mode .mode-lock-desc,
+        .nfc-modal.unlock-mode .mode-lock-desc {
             opacity: 0;
             transform: translate3d(0, -10px, 0);
             pointer-events: none;
         }
-        .pwd-modal.unlock-mode .mode-unlock-desc {
+        .pwd-modal.unlock-mode .mode-unlock-desc,
+        .nfc-modal.unlock-mode .mode-unlock-desc {
             opacity: 1;
             transform: translate3d(0, 0, 0);
         }
@@ -3244,7 +3283,8 @@
             border-color: #F5277D;
             box-shadow: 0 0 0 3px rgba(245, 39, 125, 0.25);
         }
-        .pwd-modal.unlock-mode .pwd-input-group:focus-within {
+        .pwd-modal.unlock-mode .pwd-input-group:focus-within,
+        .nfc-modal.unlock-mode .pwd-input-group:focus-within {
             border-color: #10b981;
             box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
         }
@@ -3260,7 +3300,8 @@
             fill: #F5277D;
             transition: fill 0.25s ease;
         }
-        .pwd-modal.unlock-mode .pwd-input-icon svg {
+        .pwd-modal.unlock-mode .pwd-input-icon svg,
+        .nfc-modal.unlock-mode .pwd-input-icon svg {
             fill: #10b981;
         }
         .pwd-text-input {
@@ -3321,7 +3362,9 @@
             transform: scale(1.12);
         }
         .pwd-modal.unlock-mode .btn-pwd-info:hover,
-        .pwd-modal.unlock-mode .btn-pwd-info:active {
+        .pwd-modal.unlock-mode .btn-pwd-info:active,
+        .nfc-modal.unlock-mode .btn-pwd-info:hover,
+        .nfc-modal.unlock-mode .btn-pwd-info:active {
             color: #10b981;
         }
         .btn-pwd-info svg {
@@ -3758,111 +3801,116 @@ body {
     <!-- NFC Writing Overlay Modal -->
     <div class="nfc-overlay" id="nfcOverlay">
         <div class="nfc-modal" id="nfcModalBox">
-            <div class="nfc-wave-container" id="nfcWaveContainer">
-                <div class="nfc-wave-ring"></div>
-                <div class="nfc-wave-ring"></div>
-                <div class="nfc-icon-circle" id="nfcStatusIcon" role="button" tabindex="-1">
-                    <!-- NFC contact-less wave icon -->
-                    <svg id="nfcSvgIcon" viewBox="0 0 24 24">
-                        <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
-                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
-                    </svg>
+            <!-- View 1: Sensor Active View (Ready / Scanning / Success / Error) -->
+            <div class="nfc-view active" id="nfcSensorView">
+                <div class="nfc-wave-container" id="nfcWaveContainer">
+                    <div class="nfc-wave-ring"></div>
+                    <div class="nfc-wave-ring"></div>
+                    <div class="nfc-icon-circle" id="nfcStatusIcon" role="button" tabindex="-1">
+                        <!-- NFC contact-less wave icon -->
+                        <svg id="nfcSvgIcon" viewBox="0 0 24 24">
+                            <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
+                        </svg>
+                    </div>
                 </div>
-            </div>
-            <div class="nfc-counter-badge" id="nfcCounterBadge" style="display: none;">
-                <span class="nfc-counter-dot"></span>
-                <span id="nfcCounterText">0 Cards</span>
-            </div>
-            <div class="nfc-title" id="nfcTitle">Ready to Write</div>
-            <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near an NFC card or sticker to write the review link.</div>
-            <div class="nfc-actions-row" id="nfcActionsRow">
-                <button type="button" class="btn-nfc-retry" id="nfcRetryBtn" style="display: none;">
-                    <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-                    <span id="nfcRetryBtnLabel">Try Again</span>
-                </button>
-                <button type="button" class="btn-nfc-next" id="nfcNextBtn" style="display: none;">
-                    <svg viewBox="0 0 24 24" id="nfcNextBtnIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                    <span id="nfcNextBtnLabel">Another Card</span>
-                </button>
-                <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">
-                    <svg class="nfc-back-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
-                    <span id="nfcCancelBtnLabel">Cancel</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Password Security Modal -->
-    <div class="pwd-overlay" id="pwdModalOverlay">
-        <div class="pwd-modal" id="pwdModalBox">
-            <div class="pwd-tabs" id="pwdTabs">
-                <div class="pwd-tab-slider" id="pwdTabSlider"></div>
-                <button type="button" class="pwd-tab active" id="pwdTabLock" data-action="lock">Lock Card</button>
-                <button type="button" class="pwd-tab" id="pwdTabUnlock" data-action="unlock">Unlock Card</button>
-            </div>
-
-            <!-- NFC-Style Glowing Circle Icon -->
-            <div class="pwd-icon-circle-wrapper">
-                <div class="pwd-icon-circle" id="pwdIconCircle">
-                    <svg class="pwd-svg-icon icon-lock" viewBox="0 0 24 24">
-                        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-                    </svg>
-                    <svg class="pwd-svg-icon icon-unlock" viewBox="0 0 24 24">
-                        <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
-                    </svg>
+                <div class="nfc-counter-badge" id="nfcCounterBadge" style="display: none;">
+                    <span class="nfc-counter-dot"></span>
+                    <span id="nfcCounterText">0 Cards</span>
+                </div>
+                <div class="nfc-title" id="nfcTitle">Ready to Write</div>
+                <div class="nfc-desc" id="nfcDesc">Hold the back of your phone near an NFC card or sticker to write the review link.</div>
+                <div class="nfc-actions-row" id="nfcActionsRow">
+                    <button type="button" class="btn-nfc-retry" id="nfcRetryBtn" style="display: none;">
+                        <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                        <span id="nfcRetryBtnLabel">Try Again</span>
+                    </button>
+                    <button type="button" class="btn-nfc-next" id="nfcNextBtn" style="display: none;">
+                        <svg viewBox="0 0 24 24" id="nfcNextBtnIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                        <span id="nfcNextBtnLabel">Another Card</span>
+                    </button>
+                    <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">
+                        <svg class="nfc-back-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                        <span id="nfcCancelBtnLabel">Cancel</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Animated Sliding Title -->
-            <div class="pwd-title-wrapper">
-                <div class="pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
-                <div class="pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
-            </div>
-            
-            <div class="pwd-input-group">
-                <span class="pwd-input-icon">
-                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-                </span>
-                <input type="password" id="nfcPinInput" class="pwd-text-input" maxlength="32" placeholder="Enter PIN..." autocomplete="off">
-                <button type="button" class="btn-pwd-eye" id="btnPwdToggleShow" title="Show/Hide">
-                    <svg id="eyeIconOpen" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                    <svg id="eyeIconClosed" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
-                </button>
-                <button type="button" class="btn-pwd-info" id="btnPwdInfo" title="Info">
-                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
-                </button>
+            <!-- View 2: PIN Security View (Lock / Unlock Card) -->
+            <div class="nfc-view" id="nfcPwdView">
+                <div class="pwd-tabs" id="pwdTabs">
+                    <div class="pwd-tab-slider" id="pwdTabSlider"></div>
+                    <button type="button" class="pwd-tab active" id="pwdTabLock" data-action="lock">Lock Card</button>
+                    <button type="button" class="pwd-tab" id="pwdTabUnlock" data-action="unlock">Unlock Card</button>
+                </div>
+
+                <!-- NFC-Style Glowing Circle Icon -->
+                <div class="pwd-icon-circle-wrapper">
+                    <div class="pwd-icon-circle" id="pwdIconCircle">
+                        <svg class="pwd-svg-icon icon-lock" viewBox="0 0 24 24">
+                            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+                        </svg>
+                        <svg class="pwd-svg-icon icon-unlock" viewBox="0 0 24 24">
+                            <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Animated Sliding Title -->
+                <div class="pwd-title-wrapper">
+                    <div class="pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
+                    <div class="pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
+                </div>
+                
+                <div class="pwd-input-group">
+                    <span class="pwd-input-icon">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                    </span>
+                    <input type="password" id="nfcPinInput" class="pwd-text-input" maxlength="32" placeholder="Enter PIN..." autocomplete="off">
+                    <button type="button" class="btn-pwd-eye" id="btnPwdToggleShow" title="Show/Hide">
+                        <svg id="eyeIconOpen" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                        <svg id="eyeIconClosed" viewBox="0 0 24 24" style="display: none;"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.44-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>
+                    </button>
+                    <button type="button" class="btn-pwd-info" id="btnPwdInfo" title="Info">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                    </button>
+                </div>
+
+                <!-- Animated Sliding Description -->
+                <div class="pwd-desc-wrapper">
+                    <div class="pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a PIN to protect card from modifications</div>
+                    <div class="pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter PIN to remove card protection</div>
+                </div>
+
+                <div class="pwd-actions">
+                    <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">
+                        <span class="pwd-btn-label mode-lock-btn-label" id="pwdSubmitLockLabel">Lock Card</span>
+                        <span class="pwd-btn-label mode-unlock-btn-label" id="pwdSubmitUnlockLabel">Unlock Card</span>
+                    </button>
+                    <button type="button" class="btn-pwd-cancel" id="btnPwdCancel">Cancel</button>
+                </div>
             </div>
 
-            <!-- Animated Sliding Description -->
-            <div class="pwd-desc-wrapper">
-                <div class="pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a PIN to protect card from modifications</div>
-                <div class="pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter PIN to remove card protection</div>
-            </div>
-
-            <div class="pwd-actions">
-                <button type="button" class="btn-pwd-submit" id="btnPwdSubmit">
-                    <span class="pwd-btn-label mode-lock-btn-label" id="pwdSubmitLockLabel">Lock Card</span>
-                    <span class="pwd-btn-label mode-unlock-btn-label" id="pwdSubmitUnlockLabel">Unlock Card</span>
-                </button>
-                <button type="button" class="btn-pwd-cancel" id="btnPwdCancel">Cancel</button>
+            <!-- View 3: Permanent Hardware Lock Confirmation View -->
+            <div class="nfc-view" id="nfcPermConfirmView">
+                <div class="perm-lock-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                </div>
+                <div class="qr-title" id="permLockTitle">Permanent Hardware Lock</div>
+                <div class="qr-desc" id="permLockDesc" style="color: #fca5a5; line-height: 1.45; margin-bottom: 16px;">Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.</div>
+                <div class="perm-lock-actions">
+                    <button type="button" class="btn-perm-lock-confirm" id="btnPermLockConfirm">Confirm Permanent Lock</button>
+                    <button type="button" class="btn-perm-lock-cancel" id="btnPermLockCancel">Cancel</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Permanent Lock Modal -->
-    <div class="perm-lock-overlay" id="permLockOverlay">
-        <div class="perm-lock-modal" id="permLockBox">
-            <div class="perm-lock-icon">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
-            </div>
-            <div class="qr-title" id="permLockTitle">Permanent Hardware Lock</div>
-            <div class="qr-desc" id="permLockDesc" style="color: #fca5a5; line-height: 1.45;">Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.</div>
-            <div class="perm-lock-actions">
-                <button type="button" class="btn-perm-lock-confirm" id="btnPermLockConfirm">Confirm Permanent Lock</button>
-                <button type="button" class="btn-perm-lock-cancel" id="btnPermLockCancel">Cancel</button>
-            </div>
-        </div>
-    </div>
+    <!-- Hidden compatibility anchors for legacy selectors -->
+    <div id="pwdModalOverlay" style="display:none;" aria-hidden="true"></div>
+    <div id="pwdModalBox" style="display:none;" aria-hidden="true"></div>
+    <div id="permLockOverlay" style="display:none;" aria-hidden="true"></div>
+    <div id="permLockBox" style="display:none;" aria-hidden="true"></div>
 
     <!-- App Update Modal Dialog -->
     <div class="update-overlay" id="updateOverlay">
@@ -4963,10 +5011,82 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }, 235);
     }
 
+    function showNfcView(viewName, animate, callback) {
+        if (typeof animate === 'function') {
+            callback = animate;
+            animate = true;
+        } else if (animate === undefined) {
+            animate = true;
+        }
+
+        const modalBox = document.getElementById('nfcModalBox');
+        if (!modalBox) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        let targetId = 'nfcSensorView';
+        if (viewName === 'pwd' || viewName === 'password') {
+            targetId = 'nfcPwdView';
+        } else if (viewName === 'perm_confirm' || viewName === 'permLock' || viewName === 'perm_lock') {
+            targetId = 'nfcPermConfirmView';
+        }
+
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        const currentView = modalBox.querySelector('.nfc-view.active');
+        if (currentView === targetEl) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        const allViews = modalBox.querySelectorAll('.nfc-view');
+
+        if (!animate || !currentView) {
+            allViews.forEach(v => {
+                v.classList.remove('active', 'view-exit');
+                if (v._exitTimer) {
+                    clearTimeout(v._exitTimer);
+                    v._exitTimer = null;
+                }
+            });
+            targetEl.classList.add('active');
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        allViews.forEach(v => {
+            if (v !== currentView && v !== targetEl) {
+                v.classList.remove('active', 'view-exit');
+                if (v._exitTimer) {
+                    clearTimeout(v._exitTimer);
+                    v._exitTimer = null;
+                }
+            }
+        });
+
+        currentView.classList.remove('active');
+        currentView.classList.add('view-exit');
+
+        targetEl.classList.add('active');
+
+        if (currentView._exitTimer) clearTimeout(currentView._exitTimer);
+        currentView._exitTimer = setTimeout(() => {
+            currentView.classList.remove('view-exit');
+            currentView._exitTimer = null;
+            if (typeof callback === 'function') callback();
+        }, 190);
+    }
+
     window.showToast = showToast;
     window.openMorphModal = openMorphModal;
     window.closeMorphModal = closeMorphModal;
     window.transitionModalToModal = transitionModalToModal;
+    window.showNfcView = showNfcView;
 })();
 
 /* == core/converter.js == */
@@ -6144,6 +6264,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function openNfcModal(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         nfcBatchCount = 0;
         window.nfcBatchCount = 0;
         isPermLockStandby = false;
@@ -6164,7 +6287,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 'perm-lock-thump',
                 'success',
                 'error',
-                'has-next-btn'
+                'has-next-btn',
+                'unlock-mode'
             );
         }
         setNfcModalState('ready');
@@ -6208,8 +6332,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     'success',
                     'error',
                     'morph-to-ready',
-                    'has-next-btn'
+                    'has-next-btn',
+                    'unlock-mode'
                 );
+                if (window.showNfcView) {
+                    window.showNfcView('sensor', false);
+                }
             });
         } else if (nfcOverlay) {
             nfcOverlay.classList.remove('active');
@@ -6223,8 +6351,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     'success',
                     'error',
                     'morph-to-ready',
-                    'has-next-btn'
+                    'has-next-btn',
+                    'unlock-mode'
                 );
+            }
+            if (window.showNfcView) {
+                window.showNfcView('sensor', false);
             }
         }
 
@@ -6236,6 +6368,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function handleNfcCancelOrBack() {
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        const activeView = nfcModalBox ? nfcModalBox.querySelector('.nfc-view.active') : null;
+        const isPwdView = activeView && activeView.id === 'nfcPwdView';
+        const isPermConfirmView = activeView && activeView.id === 'nfcPermConfirmView';
+
+        if (isPwdView || isPermConfirmView) {
+            closeNfcModal();
+            return;
+        }
+
         if (shouldReturnToPwdModal && typeof window.returnToPasswordModal === 'function') {
             shouldReturnToPwdModal = false;
             isPermLockStandby = false;
@@ -6254,6 +6396,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function startNfcWrite(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) {
@@ -6295,6 +6440,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function startNfcRead(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         lastNfcOperation = 'read';
         window.lastNfcOperation = 'read';
@@ -6309,6 +6457,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function startNfcPermanentLock(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         lastNfcOperation = 'perm_lock';
         window.lastNfcOperation = 'perm_lock';
@@ -6338,11 +6489,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function startNfcPasswordLock(pin, triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_lock';
         window.lastNfcOperation = 'pwd_lock';
         lastNfcPin = pin;
+        shouldReturnToPwdModal = true;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
             ensureNfcModalVisible(triggerBtn, 'btnPwdLockTag', options);
@@ -6354,11 +6509,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     function startNfcPasswordUnlock(pin, triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_unlock';
         window.lastNfcOperation = 'pwd_unlock';
         lastNfcPin = pin;
+        shouldReturnToPwdModal = true;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
             ensureNfcModalVisible(triggerBtn, 'btnPwdLockTag', options);
@@ -7054,6 +7213,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
             const pwdSubmitLockLabelEl = $('pwdSubmitLockLabel');
+            const nfcModalBox = $('nfcModalBox');
+
             if (btnPwdSubmit) {
                 if (isLock) {
                     btnPwdSubmit.classList.remove('unlock-mode');
@@ -7066,7 +7227,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         : (dict.pwdSubmitUnlock || 'Unlock Card');
                 }
             }
-            if (pwdModalBox) {
+            if (nfcModalBox) {
+                if (isLock) {
+                    nfcModalBox.classList.remove('unlock-mode', 'theme-unlock');
+                    nfcModalBox.classList.add('theme-lock');
+                } else {
+                    nfcModalBox.classList.remove('theme-lock');
+                    nfcModalBox.classList.add('unlock-mode', 'theme-unlock');
+                }
+            }
+            if (pwdModalBox && pwdModalBox !== nfcModalBox) {
                 if (isLock) {
                     pwdModalBox.classList.remove('unlock-mode');
                 } else {
@@ -7131,18 +7301,23 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     try { document.activeElement.blur(); } catch (e) {}
                 }
-                if (pwdModalOverlay) {
+                const nfcOverlay = $('nfcOverlay');
+                const nfcModalBox = $('nfcModalBox');
+                if (nfcOverlay && nfcModalBox) {
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
                         if (eyeIconOpen) eyeIconOpen.style.display = 'block';
                         if (eyeIconClosed) eyeIconClosed.style.display = 'none';
                     }
+                    if (window.showNfcView) {
+                        window.showNfcView('pwd', false);
+                    }
                     syncPwdModalText(false);
-                    if (window.openMorphModal && pwdModalBox) {
-                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
+                    if (window.openMorphModal) {
+                        window.openMorphModal(nfcOverlay, nfcModalBox, btnPwdLockTag);
                     } else {
-                        pwdModalOverlay.classList.add('active');
+                        nfcOverlay.classList.add('active');
                     }
                     setTimeout(updatePwdTabSlider, 25);
                     setTimeout(updatePwdTabSlider, 80);
@@ -7150,23 +7325,29 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
-        if (btnPwdCancel && pwdModalOverlay) {
+        if (btnPwdCancel) {
             btnPwdCancel.addEventListener('click', () => {
                 if (nfcPinInput) nfcPinInput.blur();
-                if (window.closeMorphModal && pwdModalBox) {
-                    window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                if (window.closeNfcModal) {
+                    window.closeNfcModal();
                 } else {
-                    pwdModalOverlay.classList.remove('active');
+                    const nfcOverlay = $('nfcOverlay');
+                    const nfcModalBox = $('nfcModalBox');
+                    if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+                        window.closeMorphModal(nfcOverlay, nfcModalBox);
+                    } else if (nfcOverlay) {
+                        nfcOverlay.classList.remove('active');
+                    }
                 }
             });
         }
 
-        if (pwdModalOverlay) {
+        if (pwdModalOverlay && pwdModalOverlay !== $('nfcOverlay')) {
             pwdModalOverlay.addEventListener('click', e => {
                 if (e.target === pwdModalOverlay) {
                     if (nfcPinInput) nfcPinInput.blur();
-                    if (window.closeMorphModal && pwdModalBox) {
-                        window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                    if (window.closeNfcModal) {
+                        window.closeNfcModal();
                     } else {
                         pwdModalOverlay.classList.remove('active');
                     }
@@ -7201,33 +7382,22 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         function returnToPasswordModal() {
-            const nfcOverlayEl = $('nfcOverlay');
-            const nfcModalBoxEl = $('nfcModalBox');
             const focusAndSelectPin = () => {
-                if (nfcPinInput && pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                if (nfcPinInput) {
                     nfcPinInput.focus();
                     nfcPinInput.select();
                 }
             };
-            if (window.transitionModalToModal && nfcOverlayEl && nfcModalBoxEl && pwdModalOverlay && pwdModalBox) {
-                window.transitionModalToModal(nfcOverlayEl, nfcModalBoxEl, pwdModalOverlay, pwdModalBox, () => {
-                    syncPwdModalText(false);
-                });
-                focusAndSelectPin();
-                requestAnimationFrame(() => updatePwdTabSlider());
-                setTimeout(() => {
-                    updatePwdTabSlider();
-                    focusAndSelectPin();
-                }, 60);
-            } else if (pwdModalOverlay) {
-                if (nfcOverlayEl) nfcOverlayEl.classList.remove('active');
-                pwdModalOverlay.classList.add('active');
+            if (window.showNfcView) {
                 syncPwdModalText(false);
-                focusAndSelectPin();
+                window.showNfcView('pwd', () => {
+                    focusAndSelectPin();
+                    updatePwdTabSlider();
+                });
                 setTimeout(() => {
                     updatePwdTabSlider();
                     focusAndSelectPin();
-                }, 30);
+                }, 50);
             }
         }
         window.returnToPasswordModal = returnToPasswordModal;
@@ -7242,10 +7412,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 }
                 if (nfcPinInput) nfcPinInput.blur();
                 const action = pwdCurrentAction;
-                const nfcOverlayEl = $('nfcOverlay');
-                const nfcModalBoxEl = $('nfcModalBox');
-                if (window.transitionModalToModal && pwdModalOverlay && pwdModalBox && nfcOverlayEl && nfcModalBoxEl) {
-                    window.transitionModalToModal(pwdModalOverlay, pwdModalBox, nfcOverlayEl, nfcModalBoxEl, () => {
+
+                if (window.showNfcView) {
+                    window.showNfcView('sensor', () => {
                         if (action === 'lock') {
                             if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                         } else {
@@ -7253,7 +7422,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         }
                     });
                 } else {
-                    if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
                     if (action === 'lock') {
                         if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
                     } else {
@@ -7268,31 +7436,44 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     try { document.activeElement.blur(); } catch (e) {}
                 }
-                if (permLockOverlay) {
-                    if (window.openMorphModal && permLockBox) {
-                        window.openMorphModal(permLockOverlay, permLockBox, btnPermLockTag);
+                const nfcOverlay = $('nfcOverlay');
+                const nfcModalBox = $('nfcModalBox');
+                if (nfcOverlay && nfcModalBox) {
+                    if (window.showNfcView) {
+                        window.showNfcView('perm_confirm', false);
+                    }
+                    nfcModalBox.classList.remove('theme-unlock', 'unlock-mode', 'success', 'error', 'perm-lock-standby');
+                    nfcModalBox.classList.add('theme-lock', 'theme-perm-lock');
+                    if (window.openMorphModal) {
+                        window.openMorphModal(nfcOverlay, nfcModalBox, btnPermLockTag);
                     } else {
-                        permLockOverlay.classList.add('active');
+                        nfcOverlay.classList.add('active');
                     }
                 }
             });
         }
 
-        if (btnPermLockCancel && permLockOverlay) {
+        if (btnPermLockCancel) {
             btnPermLockCancel.addEventListener('click', () => {
-                if (window.closeMorphModal && permLockBox) {
-                    window.closeMorphModal(permLockOverlay, permLockBox);
+                if (window.closeNfcModal) {
+                    window.closeNfcModal();
                 } else {
-                    permLockOverlay.classList.remove('active');
+                    const nfcOverlay = $('nfcOverlay');
+                    const nfcModalBox = $('nfcModalBox');
+                    if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+                        window.closeMorphModal(nfcOverlay, nfcModalBox);
+                    } else if (nfcOverlay) {
+                        nfcOverlay.classList.remove('active');
+                    }
                 }
             });
         }
 
-        if (permLockOverlay) {
+        if (permLockOverlay && permLockOverlay !== $('nfcOverlay')) {
             permLockOverlay.addEventListener('click', e => {
                 if (e.target === permLockOverlay) {
-                    if (window.closeMorphModal && permLockBox) {
-                        window.closeMorphModal(permLockOverlay, permLockBox);
+                    if (window.closeNfcModal) {
+                        window.closeNfcModal();
                     } else {
                         permLockOverlay.classList.remove('active');
                     }
@@ -7302,14 +7483,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                const nfcOverlayEl = $('nfcOverlay');
-                const nfcModalBoxEl = $('nfcModalBox');
-                if (window.transitionModalToModal && permLockOverlay && permLockBox && nfcOverlayEl && nfcModalBoxEl) {
-                    window.transitionModalToModal(permLockOverlay, permLockBox, nfcOverlayEl, nfcModalBoxEl, () => {
+                if (window.showNfcView) {
+                    window.showNfcView('sensor', () => {
                         if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                     });
                 } else {
-                    if (permLockOverlay) permLockOverlay.classList.remove('active');
                     if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { resetCount: true });
                 }
             });
@@ -7638,7 +7816,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         function computeModalKbShift(imeHeightPx) {
             const vh = window.innerHeight || 780;
             const kbH = Math.max(220, imeHeightPx || lastKnownImeHeight);
-            const modalH = (pwdModalBox && pwdModalBox.offsetHeight > 100) ? pwdModalBox.offsetHeight : 344;
+            const nfcModalBoxEl = $('nfcModalBox');
+            const modalH = (nfcModalBoxEl && nfcModalBoxEl.offsetHeight > 100) ? nfcModalBoxEl.offsetHeight : 344;
             const centeredTop = (vh - modalH) * 0.5;
             const minShift = Math.min(0, 12 - centeredTop);
             const bottomClearanceShift = centeredTop - kbH - 14;
@@ -7651,8 +7830,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 document.documentElement.style.setProperty('--kb-shift', '0px');
                 return;
             }
-            const isPwdModalOpen = Boolean(pwdModalOverlay && pwdModalOverlay.classList.contains('active'));
-            if (!isPwdModalOpen) {
+            const nfcOverlayEl = $('nfcOverlay');
+            const isModalOpen = Boolean(nfcOverlayEl && nfcOverlayEl.classList.contains('active'));
+            if (!isModalOpen) {
                 document.documentElement.style.setProperty('--kb-shift', '0px');
                 return;
             }
@@ -7670,8 +7850,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             } else {
                 document.body.classList.add('keyboard-open');
                 const activeEl = document.activeElement;
-                const isModalInput = Boolean(activeEl && pwdModalOverlay && pwdModalOverlay.contains(activeEl));
-                if (isModalInput || (pwdModalOverlay && pwdModalOverlay.classList.contains('active'))) {
+                const nfcOverlayEl = $('nfcOverlay');
+                const isModalInput = Boolean(activeEl && nfcOverlayEl && nfcOverlayEl.contains(activeEl));
+                if (isModalInput || (nfcOverlayEl && nfcOverlayEl.classList.contains('active'))) {
                     setModalKeyboardShift(true, imeBottomDp >= 120 ? imeBottomDp : lastKnownImeHeight);
                 }
             }
@@ -7679,7 +7860,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (nfcPinInput) {
             nfcPinInput.addEventListener('click', () => {
-                if (pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.classList.contains('active')) {
+                    setModalKeyboardShift(true, lastKnownImeHeight);
+                }
+            });
+            nfcPinInput.addEventListener('focus', () => {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.classList.contains('active')) {
                     setModalKeyboardShift(true, lastKnownImeHeight);
                 }
             });
@@ -7693,7 +7881,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     keyboardBlurTimer = null;
                 }
                 document.body.classList.add('keyboard-open');
-                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.contains(e.target)) {
                     setModalKeyboardShift(true, lastKnownImeHeight);
                 }
             }
@@ -7701,7 +7890,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         document.addEventListener('focusout', e => {
             const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
-                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.contains(e.target)) {
                     setModalKeyboardShift(false, 0);
                 }
                 if (keyboardBlurTimer) clearTimeout(keyboardBlurTimer);

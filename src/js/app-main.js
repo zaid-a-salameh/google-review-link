@@ -174,6 +174,8 @@
             const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
             const isLock = pwdCurrentAction === 'lock';
             const pwdSubmitLockLabelEl = $('pwdSubmitLockLabel');
+            const nfcModalBox = $('nfcModalBox');
+
             if (btnPwdSubmit) {
                 if (isLock) {
                     btnPwdSubmit.classList.remove('unlock-mode');
@@ -186,7 +188,16 @@
                         : (dict.pwdSubmitUnlock || 'Unlock Card');
                 }
             }
-            if (pwdModalBox) {
+            if (nfcModalBox) {
+                if (isLock) {
+                    nfcModalBox.classList.remove('unlock-mode', 'theme-unlock');
+                    nfcModalBox.classList.add('theme-lock');
+                } else {
+                    nfcModalBox.classList.remove('theme-lock');
+                    nfcModalBox.classList.add('unlock-mode', 'theme-unlock');
+                }
+            }
+            if (pwdModalBox && pwdModalBox !== nfcModalBox) {
                 if (isLock) {
                     pwdModalBox.classList.remove('unlock-mode');
                 } else {
@@ -251,18 +262,23 @@
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     try { document.activeElement.blur(); } catch (e) {}
                 }
-                if (pwdModalOverlay) {
+                const nfcOverlay = $('nfcOverlay');
+                const nfcModalBox = $('nfcModalBox');
+                if (nfcOverlay && nfcModalBox) {
                     if (nfcPinInput) {
                         nfcPinInput.value = '';
                         nfcPinInput.type = 'password';
                         if (eyeIconOpen) eyeIconOpen.style.display = 'block';
                         if (eyeIconClosed) eyeIconClosed.style.display = 'none';
                     }
+                    if (window.showNfcView) {
+                        window.showNfcView('pwd', false);
+                    }
                     syncPwdModalText(false);
-                    if (window.openMorphModal && pwdModalBox) {
-                        window.openMorphModal(pwdModalOverlay, pwdModalBox, btnPwdLockTag);
+                    if (window.openMorphModal) {
+                        window.openMorphModal(nfcOverlay, nfcModalBox, btnPwdLockTag);
                     } else {
-                        pwdModalOverlay.classList.add('active');
+                        nfcOverlay.classList.add('active');
                     }
                     setTimeout(updatePwdTabSlider, 25);
                     setTimeout(updatePwdTabSlider, 80);
@@ -270,23 +286,29 @@
             });
         }
 
-        if (btnPwdCancel && pwdModalOverlay) {
+        if (btnPwdCancel) {
             btnPwdCancel.addEventListener('click', () => {
                 if (nfcPinInput) nfcPinInput.blur();
-                if (window.closeMorphModal && pwdModalBox) {
-                    window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                if (window.closeNfcModal) {
+                    window.closeNfcModal();
                 } else {
-                    pwdModalOverlay.classList.remove('active');
+                    const nfcOverlay = $('nfcOverlay');
+                    const nfcModalBox = $('nfcModalBox');
+                    if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+                        window.closeMorphModal(nfcOverlay, nfcModalBox);
+                    } else if (nfcOverlay) {
+                        nfcOverlay.classList.remove('active');
+                    }
                 }
             });
         }
 
-        if (pwdModalOverlay) {
+        if (pwdModalOverlay && pwdModalOverlay !== $('nfcOverlay')) {
             pwdModalOverlay.addEventListener('click', e => {
                 if (e.target === pwdModalOverlay) {
                     if (nfcPinInput) nfcPinInput.blur();
-                    if (window.closeMorphModal && pwdModalBox) {
-                        window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                    if (window.closeNfcModal) {
+                        window.closeNfcModal();
                     } else {
                         pwdModalOverlay.classList.remove('active');
                     }
@@ -321,33 +343,22 @@
         }
 
         function returnToPasswordModal() {
-            const nfcOverlayEl = $('nfcOverlay');
-            const nfcModalBoxEl = $('nfcModalBox');
             const focusAndSelectPin = () => {
-                if (nfcPinInput && pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                if (nfcPinInput) {
                     nfcPinInput.focus();
                     nfcPinInput.select();
                 }
             };
-            if (window.transitionModalToModal && nfcOverlayEl && nfcModalBoxEl && pwdModalOverlay && pwdModalBox) {
-                window.transitionModalToModal(nfcOverlayEl, nfcModalBoxEl, pwdModalOverlay, pwdModalBox, () => {
-                    syncPwdModalText(false);
-                });
-                focusAndSelectPin();
-                requestAnimationFrame(() => updatePwdTabSlider());
-                setTimeout(() => {
-                    updatePwdTabSlider();
-                    focusAndSelectPin();
-                }, 60);
-            } else if (pwdModalOverlay) {
-                if (nfcOverlayEl) nfcOverlayEl.classList.remove('active');
-                pwdModalOverlay.classList.add('active');
+            if (window.showNfcView) {
                 syncPwdModalText(false);
-                focusAndSelectPin();
+                window.showNfcView('pwd', () => {
+                    focusAndSelectPin();
+                    updatePwdTabSlider();
+                });
                 setTimeout(() => {
                     updatePwdTabSlider();
                     focusAndSelectPin();
-                }, 30);
+                }, 50);
             }
         }
         window.returnToPasswordModal = returnToPasswordModal;
@@ -362,10 +373,9 @@
                 }
                 if (nfcPinInput) nfcPinInput.blur();
                 const action = pwdCurrentAction;
-                const nfcOverlayEl = $('nfcOverlay');
-                const nfcModalBoxEl = $('nfcModalBox');
-                if (window.transitionModalToModal && pwdModalOverlay && pwdModalBox && nfcOverlayEl && nfcModalBoxEl) {
-                    window.transitionModalToModal(pwdModalOverlay, pwdModalBox, nfcOverlayEl, nfcModalBoxEl, () => {
+
+                if (window.showNfcView) {
+                    window.showNfcView('sensor', () => {
                         if (action === 'lock') {
                             if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                         } else {
@@ -373,7 +383,6 @@
                         }
                     });
                 } else {
-                    if (pwdModalOverlay) pwdModalOverlay.classList.remove('active');
                     if (action === 'lock') {
                         if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
                     } else {
@@ -388,31 +397,44 @@
                 if (document.activeElement && typeof document.activeElement.blur === 'function') {
                     try { document.activeElement.blur(); } catch (e) {}
                 }
-                if (permLockOverlay) {
-                    if (window.openMorphModal && permLockBox) {
-                        window.openMorphModal(permLockOverlay, permLockBox, btnPermLockTag);
+                const nfcOverlay = $('nfcOverlay');
+                const nfcModalBox = $('nfcModalBox');
+                if (nfcOverlay && nfcModalBox) {
+                    if (window.showNfcView) {
+                        window.showNfcView('perm_confirm', false);
+                    }
+                    nfcModalBox.classList.remove('theme-unlock', 'unlock-mode', 'success', 'error', 'perm-lock-standby');
+                    nfcModalBox.classList.add('theme-lock', 'theme-perm-lock');
+                    if (window.openMorphModal) {
+                        window.openMorphModal(nfcOverlay, nfcModalBox, btnPermLockTag);
                     } else {
-                        permLockOverlay.classList.add('active');
+                        nfcOverlay.classList.add('active');
                     }
                 }
             });
         }
 
-        if (btnPermLockCancel && permLockOverlay) {
+        if (btnPermLockCancel) {
             btnPermLockCancel.addEventListener('click', () => {
-                if (window.closeMorphModal && permLockBox) {
-                    window.closeMorphModal(permLockOverlay, permLockBox);
+                if (window.closeNfcModal) {
+                    window.closeNfcModal();
                 } else {
-                    permLockOverlay.classList.remove('active');
+                    const nfcOverlay = $('nfcOverlay');
+                    const nfcModalBox = $('nfcModalBox');
+                    if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
+                        window.closeMorphModal(nfcOverlay, nfcModalBox);
+                    } else if (nfcOverlay) {
+                        nfcOverlay.classList.remove('active');
+                    }
                 }
             });
         }
 
-        if (permLockOverlay) {
+        if (permLockOverlay && permLockOverlay !== $('nfcOverlay')) {
             permLockOverlay.addEventListener('click', e => {
                 if (e.target === permLockOverlay) {
-                    if (window.closeMorphModal && permLockBox) {
-                        window.closeMorphModal(permLockOverlay, permLockBox);
+                    if (window.closeNfcModal) {
+                        window.closeNfcModal();
                     } else {
                         permLockOverlay.classList.remove('active');
                     }
@@ -422,14 +444,11 @@
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                const nfcOverlayEl = $('nfcOverlay');
-                const nfcModalBoxEl = $('nfcModalBox');
-                if (window.transitionModalToModal && permLockOverlay && permLockBox && nfcOverlayEl && nfcModalBoxEl) {
-                    window.transitionModalToModal(permLockOverlay, permLockBox, nfcOverlayEl, nfcModalBoxEl, () => {
+                if (window.showNfcView) {
+                    window.showNfcView('sensor', () => {
                         if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                     });
                 } else {
-                    if (permLockOverlay) permLockOverlay.classList.remove('active');
                     if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { resetCount: true });
                 }
             });
@@ -758,7 +777,8 @@
         function computeModalKbShift(imeHeightPx) {
             const vh = window.innerHeight || 780;
             const kbH = Math.max(220, imeHeightPx || lastKnownImeHeight);
-            const modalH = (pwdModalBox && pwdModalBox.offsetHeight > 100) ? pwdModalBox.offsetHeight : 344;
+            const nfcModalBoxEl = $('nfcModalBox');
+            const modalH = (nfcModalBoxEl && nfcModalBoxEl.offsetHeight > 100) ? nfcModalBoxEl.offsetHeight : 344;
             const centeredTop = (vh - modalH) * 0.5;
             const minShift = Math.min(0, 12 - centeredTop);
             const bottomClearanceShift = centeredTop - kbH - 14;
@@ -771,8 +791,9 @@
                 document.documentElement.style.setProperty('--kb-shift', '0px');
                 return;
             }
-            const isPwdModalOpen = Boolean(pwdModalOverlay && pwdModalOverlay.classList.contains('active'));
-            if (!isPwdModalOpen) {
+            const nfcOverlayEl = $('nfcOverlay');
+            const isModalOpen = Boolean(nfcOverlayEl && nfcOverlayEl.classList.contains('active'));
+            if (!isModalOpen) {
                 document.documentElement.style.setProperty('--kb-shift', '0px');
                 return;
             }
@@ -790,8 +811,9 @@
             } else {
                 document.body.classList.add('keyboard-open');
                 const activeEl = document.activeElement;
-                const isModalInput = Boolean(activeEl && pwdModalOverlay && pwdModalOverlay.contains(activeEl));
-                if (isModalInput || (pwdModalOverlay && pwdModalOverlay.classList.contains('active'))) {
+                const nfcOverlayEl = $('nfcOverlay');
+                const isModalInput = Boolean(activeEl && nfcOverlayEl && nfcOverlayEl.contains(activeEl));
+                if (isModalInput || (nfcOverlayEl && nfcOverlayEl.classList.contains('active'))) {
                     setModalKeyboardShift(true, imeBottomDp >= 120 ? imeBottomDp : lastKnownImeHeight);
                 }
             }
@@ -799,7 +821,14 @@
 
         if (nfcPinInput) {
             nfcPinInput.addEventListener('click', () => {
-                if (pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.classList.contains('active')) {
+                    setModalKeyboardShift(true, lastKnownImeHeight);
+                }
+            });
+            nfcPinInput.addEventListener('focus', () => {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.classList.contains('active')) {
                     setModalKeyboardShift(true, lastKnownImeHeight);
                 }
             });
@@ -813,7 +842,8 @@
                     keyboardBlurTimer = null;
                 }
                 document.body.classList.add('keyboard-open');
-                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.contains(e.target)) {
                     setModalKeyboardShift(true, lastKnownImeHeight);
                 }
             }
@@ -821,7 +851,8 @@
         document.addEventListener('focusout', e => {
             const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
             if (tag === 'INPUT' || tag === 'TEXTAREA') {
-                if (pwdModalOverlay && pwdModalOverlay.contains(e.target)) {
+                const nfcOverlayEl = $('nfcOverlay');
+                if (nfcOverlayEl && nfcOverlayEl.contains(e.target)) {
                     setModalKeyboardShift(false, 0);
                 }
                 if (keyboardBlurTimer) clearTimeout(keyboardBlurTimer);

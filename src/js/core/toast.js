@@ -276,8 +276,80 @@
         }, 235);
     }
 
+    function showNfcView(viewName, animate, callback) {
+        if (typeof animate === 'function') {
+            callback = animate;
+            animate = true;
+        } else if (animate === undefined) {
+            animate = true;
+        }
+
+        const modalBox = document.getElementById('nfcModalBox');
+        if (!modalBox) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        let targetId = 'nfcSensorView';
+        if (viewName === 'pwd' || viewName === 'password') {
+            targetId = 'nfcPwdView';
+        } else if (viewName === 'perm_confirm' || viewName === 'permLock' || viewName === 'perm_lock') {
+            targetId = 'nfcPermConfirmView';
+        }
+
+        const targetEl = document.getElementById(targetId);
+        if (!targetEl) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        const currentView = modalBox.querySelector('.nfc-view.active');
+        if (currentView === targetEl) {
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        const allViews = modalBox.querySelectorAll('.nfc-view');
+
+        if (!animate || !currentView) {
+            allViews.forEach(v => {
+                v.classList.remove('active', 'view-exit');
+                if (v._exitTimer) {
+                    clearTimeout(v._exitTimer);
+                    v._exitTimer = null;
+                }
+            });
+            targetEl.classList.add('active');
+            if (typeof callback === 'function') callback();
+            return;
+        }
+
+        allViews.forEach(v => {
+            if (v !== currentView && v !== targetEl) {
+                v.classList.remove('active', 'view-exit');
+                if (v._exitTimer) {
+                    clearTimeout(v._exitTimer);
+                    v._exitTimer = null;
+                }
+            }
+        });
+
+        currentView.classList.remove('active');
+        currentView.classList.add('view-exit');
+
+        targetEl.classList.add('active');
+
+        if (currentView._exitTimer) clearTimeout(currentView._exitTimer);
+        currentView._exitTimer = setTimeout(() => {
+            currentView.classList.remove('view-exit');
+            currentView._exitTimer = null;
+            if (typeof callback === 'function') callback();
+        }, 190);
+    }
+
     window.showToast = showToast;
     window.openMorphModal = openMorphModal;
     window.closeMorphModal = closeMorphModal;
     window.transitionModalToModal = transitionModalToModal;
+    window.showNfcView = showNfcView;
 })();

@@ -382,6 +382,9 @@
 
     function openNfcModal(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         nfcBatchCount = 0;
         window.nfcBatchCount = 0;
         isPermLockStandby = false;
@@ -402,7 +405,8 @@
                 'perm-lock-thump',
                 'success',
                 'error',
-                'has-next-btn'
+                'has-next-btn',
+                'unlock-mode'
             );
         }
         setNfcModalState('ready');
@@ -446,8 +450,12 @@
                     'success',
                     'error',
                     'morph-to-ready',
-                    'has-next-btn'
+                    'has-next-btn',
+                    'unlock-mode'
                 );
+                if (window.showNfcView) {
+                    window.showNfcView('sensor', false);
+                }
             });
         } else if (nfcOverlay) {
             nfcOverlay.classList.remove('active');
@@ -461,8 +469,12 @@
                     'success',
                     'error',
                     'morph-to-ready',
-                    'has-next-btn'
+                    'has-next-btn',
+                    'unlock-mode'
                 );
+            }
+            if (window.showNfcView) {
+                window.showNfcView('sensor', false);
             }
         }
 
@@ -474,6 +486,16 @@
     }
 
     function handleNfcCancelOrBack() {
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        const activeView = nfcModalBox ? nfcModalBox.querySelector('.nfc-view.active') : null;
+        const isPwdView = activeView && activeView.id === 'nfcPwdView';
+        const isPermConfirmView = activeView && activeView.id === 'nfcPermConfirmView';
+
+        if (isPwdView || isPermConfirmView) {
+            closeNfcModal();
+            return;
+        }
+
         if (shouldReturnToPwdModal && typeof window.returnToPasswordModal === 'function') {
             shouldReturnToPwdModal = false;
             isPermLockStandby = false;
@@ -492,6 +514,9 @@
 
     function startNfcWrite(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) {
@@ -533,6 +558,9 @@
 
     function startNfcRead(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         lastNfcOperation = 'read';
         window.lastNfcOperation = 'read';
@@ -547,6 +575,9 @@
 
     function startNfcPermanentLock(triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         lastNfcOperation = 'perm_lock';
         window.lastNfcOperation = 'perm_lock';
@@ -576,11 +607,15 @@
 
     function startNfcPasswordLock(pin, triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_lock';
         window.lastNfcOperation = 'pwd_lock';
         lastNfcPin = pin;
+        shouldReturnToPwdModal = true;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
             ensureNfcModalVisible(triggerBtn, 'btnPwdLockTag', options);
@@ -592,11 +627,15 @@
 
     function startNfcPasswordUnlock(pin, triggerBtn, options = {}) {
         blurActiveElement();
+        if (window.showNfcView) {
+            window.showNfcView('sensor', false);
+        }
         const dict = getDict();
         if (!pin || !pin.trim()) return;
         lastNfcOperation = 'pwd_unlock';
         window.lastNfcOperation = 'pwd_unlock';
         lastNfcPin = pin;
+        shouldReturnToPwdModal = true;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
             ensureNfcModalVisible(triggerBtn, 'btnPwdLockTag', options);
