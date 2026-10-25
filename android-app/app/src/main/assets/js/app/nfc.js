@@ -233,10 +233,11 @@
         } else if (state === 'success') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock', 'theme-wifi');
+                nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock', 'theme-wifi', 'theme-link');
                 nfcModalBox.classList.add('success');
             }
             if (detail === 'PWD_LOCK') {
+                if (nfcModalBox) nfcModalBox.classList.add('theme-lock');
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'Card is now locked against modifications.';
                 setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
@@ -249,6 +250,7 @@
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else if (detail === 'PWD_UNLOCK' || detail === 'ALREADY_UNLOCKED') {
+                if (nfcModalBox) nfcModalBox.classList.add('theme-unlock');
                 if (detail === 'ALREADY_UNLOCKED') {
                     if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Not Locked';
                     if (nfcDesc) nfcDesc.textContent = dict.nfcDescAlreadyUnlocked || 'This card is already unlocked and writable.';
@@ -266,6 +268,7 @@
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else if (detail === 'PERM_LOCK') {
+                if (nfcModalBox) nfcModalBox.classList.add('theme-lock', 'theme-perm-lock');
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockSuccess || 'Card Permanently Locked';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockSuccess || 'Card permanently locked to Read-Only mode.';
                 setCancelBtnMode(dict.nfcOk || 'OK', false);
@@ -273,6 +276,7 @@
                 if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
                 updatePermLockBadge(dict);
             } else if (detail === 'WRITE_WIFI' || lastNfcOperation === 'write_wifi') {
+                if (nfcModalBox) nfcModalBox.classList.add('theme-wifi');
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiSuccess || 'Wi-Fi Card Programmed!';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiSuccess || 'Wi-Fi configuration successfully written to NFC card.';
                 setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
@@ -285,6 +289,7 @@
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else {
+                if (nfcModalBox) nfcModalBox.classList.add('theme-link');
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
                 setCancelBtnMode(dict.nfcDone, false);
