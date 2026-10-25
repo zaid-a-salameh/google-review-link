@@ -1034,7 +1034,7 @@
         /* Input Controls Row */
         .input-row {
             display: flex;
-            align-items: center;
+            align-items: stretch;
             gap: 6px;
             margin-bottom: 14px;
             width: 100%;
@@ -1045,12 +1045,13 @@
             min-width: 0;
             height: 52px;
             background: rgba(18, 16, 15, 0.85);
-            border: 2px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-input);
             display: flex;
             align-items: center;
             transition: all 0.25s ease;
             overflow: hidden;
+            box-sizing: border-box;
         }
         .input-box-wrapper:focus-within {
             border-color: var(--primary);
@@ -1071,6 +1072,7 @@
             font-weight: 500;
             direction: ltr;
             text-align: left;
+            line-height: normal;
         }
         .url-input::placeholder {
             font-family: 'Inter', 'Cairo', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -1082,6 +1084,7 @@
             white-space: nowrap;
             overflow: hidden;
             opacity: 0.85;
+            line-height: normal;
         }
         html[lang="ar"] .url-input::placeholder {
             direction: rtl;
@@ -1108,7 +1111,10 @@
             gap: 5px;
             flex-shrink: 0;
             transition: all 0.2s ease;
-            border: 1px solid var(--border);
+            border: 1.5px solid var(--border);
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
         .tool-btn:active {
             transform: scale(0.94);
@@ -1116,8 +1122,8 @@
 
         /* Trash/Clear Button */
         .btn-trash {
-            width: 40px;
-            min-width: 40px;
+            width: 42px;
+            min-width: 42px;
             background: rgba(239, 68, 68, 0.1);
             border-color: rgba(239, 68, 68, 0.25);
             color: #f87171;
@@ -1129,28 +1135,40 @@
             width: 18px;
             height: 18px;
             fill: currentColor;
+            display: block;
         }
 
         /* Paste Button (Exclusive to Android Native APK) */
         .btn-paste {
             display: none;
-            padding: 0 10px;
+            padding: 0 12px;
             background: rgba(139, 92, 246, 0.14);
-            border-color: rgba(139, 92, 246, 0.35);
+            border: 1.5px solid rgba(139, 92, 246, 0.35);
             color: #c4b5fd;
-            font-size: 12px;
-            gap: 4px;
+            font-size: 12.5px;
+            font-weight: 700;
+            gap: 5px;
+            line-height: 1;
         }
         body.is-native-app .btn-paste {
-            display: flex;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
         .btn-paste:active {
             background: rgba(139, 92, 246, 0.28);
         }
         .btn-paste svg {
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             fill: currentColor;
+            flex-shrink: 0;
+            display: block;
+        }
+        .btn-paste span {
+            display: inline-flex;
+            align-items: center;
+            line-height: 1;
         }
 
         /* Convert Button */
