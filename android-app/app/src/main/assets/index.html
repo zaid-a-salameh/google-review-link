@@ -1277,9 +1277,9 @@
 
         /* Button 1: Copy */
         .btn-copy {
-            background: rgba(139, 92, 246, 0.15);
-            border: 1px solid rgba(139, 92, 246, 0.35);
-            color: #c4b5fd;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            color: #ffffff;
         }
         .btn-copy.copied {
             background: rgba(16, 185, 129, 0.2) !important;
@@ -3399,6 +3399,41 @@
             font-family: inherit;
             min-width: 0;
             text-align: start;
+        }
+        /* Theme-aware Text Selection Highlight for Lock & Unlock Modals */
+        .unlock-mode .pwd-text-input::selection,
+        .nfc-modal.unlock-mode input::selection,
+        .nfc-modal.theme-unlock input::selection,
+        .pwd-modal.unlock-mode input::selection,
+        .unlock-mode ::selection {
+            background-color: #ffffff !important;
+            color: #10b981 !important;
+            text-shadow: none !important;
+        }
+        .unlock-mode .pwd-text-input::-moz-selection,
+        .nfc-modal.unlock-mode input::-moz-selection,
+        .nfc-modal.theme-unlock input::-moz-selection,
+        .pwd-modal.unlock-mode input::-moz-selection,
+        .unlock-mode ::-moz-selection {
+            background-color: #ffffff !important;
+            color: #10b981 !important;
+            text-shadow: none !important;
+        }
+        .nfc-modal:not(.unlock-mode) .pwd-text-input::selection,
+        .nfc-modal.theme-lock input::selection,
+        .pwd-modal:not(.unlock-mode) input::selection,
+        .nfc-modal:not(.unlock-mode) ::selection {
+            background-color: #ffffff !important;
+            color: #F5277D !important;
+            text-shadow: none !important;
+        }
+        .nfc-modal:not(.unlock-mode) .pwd-text-input::-moz-selection,
+        .nfc-modal.theme-lock input::-moz-selection,
+        .pwd-modal:not(.unlock-mode) input::-moz-selection,
+        .nfc-modal:not(.unlock-mode) ::-moz-selection {
+            background-color: #ffffff !important;
+            color: #F5277D !important;
+            text-shadow: none !important;
         }
         .pwd-text-input::placeholder {
             color: #78716c;
@@ -7489,19 +7524,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         function returnToPasswordModal() {
-            const focusAndSelectPin = () => {
-                if (nfcPinInput) {
-                    nfcPinInput.focus();
-                    nfcPinInput.select();
-                }
-            };
             syncPwdModalText(false);
+            if (nfcPinInput) {
+                nfcPinInput.blur();
+            }
             if (window.showNfcView) {
                 window.showNfcView('pwd', true);
                 updatePwdTabSlider();
                 setTimeout(() => {
                     updatePwdTabSlider();
-                    focusAndSelectPin();
+                    if (nfcPinInput) nfcPinInput.blur();
                 }, 60);
             }
         }

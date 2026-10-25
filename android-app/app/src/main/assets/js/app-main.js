@@ -343,19 +343,16 @@
         }
 
         function returnToPasswordModal() {
-            const focusAndSelectPin = () => {
-                if (nfcPinInput) {
-                    nfcPinInput.focus();
-                    nfcPinInput.select();
-                }
-            };
             syncPwdModalText(false);
+            if (nfcPinInput) {
+                nfcPinInput.blur();
+            }
             if (window.showNfcView) {
                 window.showNfcView('pwd', true);
                 updatePwdTabSlider();
                 setTimeout(() => {
                     updatePwdTabSlider();
-                    focusAndSelectPin();
+                    if (nfcPinInput) nfcPinInput.blur();
                 }, 60);
             }
         }

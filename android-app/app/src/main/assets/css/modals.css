@@ -1274,6 +1274,41 @@
             min-width: 0;
             text-align: start;
         }
+        /* Theme-aware Text Selection Highlight for Lock & Unlock Modals */
+        .unlock-mode .pwd-text-input::selection,
+        .nfc-modal.unlock-mode input::selection,
+        .nfc-modal.theme-unlock input::selection,
+        .pwd-modal.unlock-mode input::selection,
+        .unlock-mode ::selection {
+            background-color: #ffffff !important;
+            color: #10b981 !important;
+            text-shadow: none !important;
+        }
+        .unlock-mode .pwd-text-input::-moz-selection,
+        .nfc-modal.unlock-mode input::-moz-selection,
+        .nfc-modal.theme-unlock input::-moz-selection,
+        .pwd-modal.unlock-mode input::-moz-selection,
+        .unlock-mode ::-moz-selection {
+            background-color: #ffffff !important;
+            color: #10b981 !important;
+            text-shadow: none !important;
+        }
+        .nfc-modal:not(.unlock-mode) .pwd-text-input::selection,
+        .nfc-modal.theme-lock input::selection,
+        .pwd-modal:not(.unlock-mode) input::selection,
+        .nfc-modal:not(.unlock-mode) ::selection {
+            background-color: #ffffff !important;
+            color: #F5277D !important;
+            text-shadow: none !important;
+        }
+        .nfc-modal:not(.unlock-mode) .pwd-text-input::-moz-selection,
+        .nfc-modal.theme-lock input::-moz-selection,
+        .pwd-modal:not(.unlock-mode) input::-moz-selection,
+        .nfc-modal:not(.unlock-mode) ::-moz-selection {
+            background-color: #ffffff !important;
+            color: #F5277D !important;
+            text-shadow: none !important;
+        }
         .pwd-text-input::placeholder {
             color: #78716c;
             font-size: 13px;
