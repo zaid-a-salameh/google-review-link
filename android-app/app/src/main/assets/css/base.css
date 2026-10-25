@@ -5,7 +5,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 32px 16px 60px;
+            padding: 32px 16px 96px;
             position: relative;
             z-index: 10;
         }
@@ -53,11 +53,10 @@
             position: relative;
             display: inline-flex;
             align-items: center;
-            background: rgba(28, 25, 23, 0.85);
+            background: rgba(28, 25, 23, 0.92);
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 3px;
-            backdrop-filter: blur(12px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             direction: ltr !important;
             unicode-bidi: isolate;
@@ -98,10 +97,9 @@
             background: var(--primary-gradient);
             border-radius: 50px;
             box-shadow: 0 2px 10px rgba(124, 58, 237, 0.45);
-            transition: transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+            transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
             z-index: 1;
             pointer-events: none;
-            will-change: transform;
         }
 
 
@@ -153,6 +151,11 @@
             box-shadow: var(--shadow-glass);
             margin-bottom: 16px;
         }
+        body.is-native-app .glass-card {
+            background: linear-gradient(180deg, rgba(31, 28, 26, 0.96) 0%, rgba(22, 19, 18, 0.97) 100%);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
 
         .main-input-card {
             z-index: 50;
@@ -169,7 +172,7 @@
             align-items: center;
             gap: 6px;
             padding: 5px 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(28, 25, 23, 0.9);
             border: 1px solid var(--border);
             border-radius: 50px;
             color: var(--text-muted);
@@ -177,18 +180,19 @@
             font-size: 11.5px;
             font-weight: 600;
             cursor: pointer;
-            backdrop-filter: blur(12px);
-            transition: all 0.2s ease;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             user-select: none;
         }
-        .btn-version-pill:hover {
-            background: rgba(139, 92, 246, 0.12);
-            border-color: rgba(139, 92, 246, 0.4);
-            color: #c4b5fd;
-            transform: translateY(-1px);
+        @media (hover: hover) and (pointer: fine) {
+            .btn-version-pill:hover {
+                background: rgba(139, 92, 246, 0.12);
+                border-color: rgba(139, 92, 246, 0.4);
+                color: #c4b5fd;
+                transform: translateY(-1px);
+            }
         }
         .btn-version-pill:active {
-            transform: scale(0.96);
+            transform: scale3d(0.95, 0.95, 1);
         }
         .btn-version-pill.has-update {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 185, 129, 0.35) 100%);
@@ -294,7 +298,10 @@
         /* Responsive adjustments for compact screens */
         @media (max-width: 380px) {
             body {
-                padding: 12px 10px;
+                padding: 12px 10px 92px;
+            }
+            body.is-native-app {
+                padding: 12px 12px 92px;
             }
             .glass-card {
                 padding: 16px 12px;

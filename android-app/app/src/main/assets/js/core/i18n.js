@@ -63,6 +63,7 @@
                 footerGithub: "GitHub Repository",
                 footerBackToTop: "↑ Back to Top",
                 footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
+                fabGithubLabel: "Project on GitHub",
                 resultLabel: "Direct Link:",
                 resultLabelReview: "Direct Review Link:",
                 resultLabelCustom: "Direct Link:",
@@ -145,6 +146,16 @@
                 nfcTitleEmptyTag: "Empty Card",
                 nfcTitlePermLockSuccess: "Card Permanently Locked",
                 nfcDescPermLockSuccess: "Card has been permanently set to Read-Only mode.",
+                nfcTitlePermLockStandby: "Card Permanently Locked!",
+                nfcDescPermLockStandby: "Sensor paused for safety. Tap the icon above to reactivate and lock another card.",
+                nfcPermLockCount: "Locked cards: {count}",
+                nfcTitleCannotLock: "Cannot Permanently Lock",
+                nfcDescCannotLock: "This card is already read-only or does not support permanent hardware locking.",
+                nfcBackToPin: "Back",
+                nfcTitleDisabled: "NFC is Disabled",
+                nfcTitleNoHardware: "NFC Not Supported",
+                nfcTitleOpFailed: "Operation Failed",
+                nfcDescOpFailed: "Operation failed. Hold the phone steadily over the card and try again.",
                 nfcTitleError: "Write Failed",
                 nfcDescLocked: "Operation failed because this card is password-protected or read-only. Please unlock it first.",
                 nfcDescCapacity: "Link size exceeds this card's memory capacity.",
@@ -265,6 +276,7 @@
                 footerGithub: "مستودع GitHub",
                 footerBackToTop: "↑ العودة للأعلى",
                 footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
+                fabGithubLabel: "المشروع على GitHub",
                 resultLabel: "الرابط المباشر:",
                 resultLabelReview: "رابط التقييم المباشر:",
                 resultLabelCustom: "الرابط المباشر:",
@@ -347,6 +359,16 @@
                 nfcTitleEmptyTag: "البطاقة فارغة",
                 nfcTitlePermLockSuccess: "تم الإقفال النهائي بنجاح",
                 nfcDescPermLockSuccess: "تم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم.",
+                nfcTitlePermLockStandby: "تم قفل البطاقة نهائياً!",
+                nfcDescPermLockStandby: "توقفت العملية للأمان. انقر على الشعار أعلاه لإعادة التفعيل وقفل بطاقة أخرى.",
+                nfcPermLockCount: "البطاقات المقفلة: {count}",
+                nfcTitleCannotLock: "تعذر القفل النهائي",
+                nfcDescCannotLock: "هذه البطاقة مقفلة مسبقاً للقراءة فقط أو لا تدعم القفل العتادي الدائم.",
+                nfcBackToPin: "العودة",
+                nfcTitleDisabled: "خاصية NFC متوقفة",
+                nfcTitleNoHardware: "NFC غير مدعوم",
+                nfcTitleOpFailed: "فشلت العملية",
+                nfcDescOpFailed: "تعذرت العملية. يرجى تثبيت الهاتف فوق البطاقة والمحاولة مجدداً.",
                 nfcTitleError: "فشلت عملية الكتابة",
                 nfcDescLocked: "تعذرت العملية لأن هذه البطاقة محمية بكلمة مرور أو للقراءة فقط. يرجى فك قفلها أولاً قبل المتابعة.",
                 nfcDescCapacity: "حجم الرابط أكبر من سعة ذاكرة البطاقة.",
@@ -467,9 +489,10 @@
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc && dict.metaDesc) metaDesc.setAttribute('content', dict.metaDesc);
 
-        // Desktop Navbar
+        // Desktop Navbar & Bottom GitHub Dock
         setTxt('navGithubLabel', dict.navGithub);
         setTxt('navApkLabel', dict.navApk);
+        setTxt('fabGithubLabel', dict.fabGithubLabel);
 
         // Top bar & Header
         setTxt('apkDownloadLabel', dict.apkDownload);
@@ -556,11 +579,20 @@
         setTxt('qrCloseBtn', dict.qrCloseBtn);
 
         // NFC Modal (Native App)
-        setTxt('nfcTitle', dict.nfcTitleReady);
-        setTxt('nfcDesc', dict.nfcDescReady);
-        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
-        if (nfcCancelBtn) {
-            nfcCancelBtn.textContent = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+        const nfcOverlayEl = document.getElementById('nfcOverlay');
+        if (nfcOverlayEl && nfcOverlayEl.classList.contains('active') && typeof window.refreshActiveNfcModalStrings === 'function') {
+            window.refreshActiveNfcModalStrings();
+        } else {
+            setTxt('nfcTitle', dict.nfcTitleReady);
+            setTxt('nfcDesc', dict.nfcDescReady);
+            const cancelText = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+            const nfcCancelBtnLabel = document.getElementById('nfcCancelBtnLabel');
+            const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+            if (nfcCancelBtnLabel) {
+                nfcCancelBtnLabel.textContent = cancelText;
+            } else if (nfcCancelBtn) {
+                nfcCancelBtn.textContent = cancelText;
+            }
         }
         const nfcNextBtnLabel = document.getElementById('nfcNextBtnLabel');
         if (nfcNextBtnLabel && window.lastNfcOperation) {
@@ -653,7 +685,7 @@
 
         // 2. Coordinated continuous vertical roll (mirrors lock/unlock modal)
         isLangSwitching = true;
-        document.body.classList.add('is-lang-switching');
+        document.body.classList.add('is-lang-animating', 'is-lang-switching');
 
         setTimeout(() => {
             try {
@@ -675,6 +707,7 @@
                     if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
                     if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
                     setTimeout(() => {
+                        document.body.classList.remove('is-lang-animating');
                         isLangSwitching = false;
                     }, 260);
                 });

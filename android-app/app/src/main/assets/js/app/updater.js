@@ -151,14 +151,21 @@
         latestApkDownloadUrl = apkAsset ? apkAsset.browser_download_url : `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest/download/ReviewLinkGenerator.apk`;
         window.latestApkDownloadUrl = latestApkDownloadUrl;
 
-        if (updateOverlay) {
+        const updateModalBox = document.getElementById('updateModalBox');
+        const btnCheckUpdate = document.getElementById('btnCheckUpdate');
+        if (window.openMorphModal && updateOverlay && updateModalBox) {
+            window.openMorphModal(updateOverlay, updateModalBox, btnCheckUpdate);
+        } else if (updateOverlay) {
             updateOverlay.classList.add('active');
         }
     }
 
     function closeUpdateModal() {
         const updateOverlay = document.getElementById('updateOverlay');
-        if (updateOverlay) {
+        const updateModalBox = document.getElementById('updateModalBox');
+        if (window.closeMorphModal && updateOverlay && updateModalBox) {
+            window.closeMorphModal(updateOverlay, updateModalBox);
+        } else if (updateOverlay) {
             updateOverlay.classList.remove('active');
         }
     }

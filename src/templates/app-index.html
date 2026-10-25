@@ -277,7 +277,10 @@
             <!-- Standalone Card Action Tools Row (Permanent in both modes) -->
             <div class="card-tools-row" id="cardToolsRow">
                 <button type="button" class="btn-card-tool" id="btnReadTag">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/>
+                        <path d="M8.8 10.65a1.35 1.35 0 1 0 0 2.7 1.35 1.35 0 1 0 0-2.7zm1.96-.96a.85.85 0 0 1 1.33-1.05 5.45 5.45 0 0 1 0 6.72.85.85 0 0 1-1.33-1.05 3.75 3.75 0 0 0 0-4.62zm2.44-1.91a.85.85 0 0 1 1.34-1.05 8.55 8.55 0 0 1 0 10.54.85.85 0 0 1-1.34-1.05 6.85 6.85 0 0 0 0-8.44z"/>
+                    </svg>
                     <span id="lblReadTag">Read Card</span>
                 </button>
                 <button type="button" class="btn-card-tool" id="btnPwdLockTag">
@@ -361,10 +364,10 @@
     <!-- NFC Writing Overlay Modal -->
     <div class="nfc-overlay" id="nfcOverlay">
         <div class="nfc-modal" id="nfcModalBox">
-            <div class="nfc-wave-container">
+            <div class="nfc-wave-container" id="nfcWaveContainer">
                 <div class="nfc-wave-ring"></div>
                 <div class="nfc-wave-ring"></div>
-                <div class="nfc-icon-circle" id="nfcStatusIcon">
+                <div class="nfc-icon-circle" id="nfcStatusIcon" role="button" tabindex="-1">
                     <!-- NFC contact-less wave icon -->
                     <svg id="nfcSvgIcon" viewBox="0 0 24 24">
                         <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
@@ -387,7 +390,10 @@
                     <svg viewBox="0 0 24 24" id="nfcNextBtnIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                     <span id="nfcNextBtnLabel">Another Card</span>
                 </button>
-                <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
+                <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">
+                    <svg class="nfc-back-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                    <span id="nfcCancelBtnLabel">Cancel</span>
+                </button>
             </div>
         </div>
     </div>
@@ -415,8 +421,8 @@
 
             <!-- Animated Sliding Title -->
             <div class="pwd-title-wrapper">
-                <div class="qr-title pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
-                <div class="qr-title pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
+                <div class="pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
+                <div class="pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
             </div>
             
             <div class="pwd-input-group">
@@ -435,8 +441,8 @@
 
             <!-- Animated Sliding Description -->
             <div class="pwd-desc-wrapper">
-                <div class="qr-desc pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a PIN to protect card from modifications</div>
-                <div class="qr-desc pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter PIN to remove card protection</div>
+                <div class="pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a PIN to protect card from modifications</div>
+                <div class="pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter PIN to remove card protection</div>
             </div>
 
             <div class="pwd-actions">
@@ -519,10 +525,14 @@
         </div>
     </div>
 
-    <!-- Floating GitHub Project Button -->
-    <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer" class="fab-github" id="fabGithub" aria-label="GitHub Repository" title="GitHub">
-        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-    </a>
+    <!-- Bottom Docked GitHub Project Bar -->
+    <div class="bottom-github-dock" id="githubDock">
+        <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer" class="fab-github" id="fabGithub" aria-label="GitHub Repository" title="GitHub">
+            <svg class="fab-github-logo" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span class="fab-github-label" id="fabGithubLabel">Project on GitHub</span>
+            <svg class="fab-github-ext" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+        </a>
+    </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">

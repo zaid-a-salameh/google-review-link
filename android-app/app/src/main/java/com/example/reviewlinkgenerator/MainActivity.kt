@@ -38,9 +38,16 @@ import android.util.Base64
 import android.app.DownloadManager
 import android.content.BroadcastReceiver
 import android.content.IntentFilter
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import java.io.OutputStream
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import org.json.JSONObject
 
 class MainActivity : ComponentActivity() {
@@ -61,20 +68,33 @@ class MainActivity : ComponentActivity() {
     private var currentNfcOp: NfcOp = NfcOp.IDLE
     private var isNfcModeActive: Boolean = false
     private var lastWriteTimestamp: Long = 0
+    private var lastWrittenTagId: ByteArray? = null
     private var writtenTagsCount: Int = 0
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Dark background matching the app theme
-        window.statusBarColor = Color.parseColor("#0c0a09")
-        window.navigationBarColor = Color.parseColor("#0c0a09")
+        // Dark background matching the app theme & light system bar icons
+        val appBgColor = Color.parseColor("#0c0a09")
+        window.decorView.setBackgroundColor(appBgColor)
+        @Suppress("DEPRECATION")
+        window.statusBarColor = appBgColor
+        @Suppress("DEPRECATION")
+        window.navigationBarColor = appBgColor
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+        }
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         webView = WebView(this).apply {
-            setBackgroundColor(Color.parseColor("#0c0a09"))
+            setBackgroundColor(appBgColor)
+            setLayerType(View.LAYER_TYPE_HARDWARE, null)
+            overScrollMode = View.OVER_SCROLL_NEVER
+            isVerticalScrollBarEnabled = false
+            isHorizontalScrollBarEnabled = false
             settings.apply {
                 javaScriptEnabled = true
                 domStorageEnabled = true
@@ -84,6 +104,9 @@ class MainActivity : ComponentActivity() {
                 loadWithOverviewMode = true
                 displayZoomControls = false
                 builtInZoomControls = false
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    offscreenPreRaster = true
+                }
             }
 
             addJavascriptInterface(WebAppInterface(this@MainActivity, this), "AndroidNative")
@@ -134,19 +157,46 @@ class MainActivity : ComponentActivity() {
             webChromeClient = WebChromeClient()
         }
 
-        setContentView(webView)
+        val rootContainer = FrameLayout(this).apply {
+            setBackgroundColor(appBgColor)
+            addView(
+                webView,
+                FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            )
+        }
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootContainer) { v, windowInsets ->
+            val insets = windowInsets.getInsets(
+                WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
+            )
+            v.setPadding(insets.left, insets.top, insets.right, insets.bottom)
+            WindowInsetsCompat.CONSUMED
+        }
+
+        setContentView(rootContainer)
         val htmlContent = assets.open("index.html").bufferedReader().use { it.readText() }
         webView.loadDataWithBaseURL("https://zaid-a-salameh.github.io/google-review-link/", htmlContent, "text/html", "UTF-8", null)
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if (isNfcModeActive) {
-                    stopNfcSession()
-                    webView.evaluateJavascript("window.onNfcCancelled && window.onNfcCancelled();", null)
-                } else if (webView.canGoBack()) {
-                    webView.goBack()
-                } else {
-                    finish()
+                webView.evaluateJavascript(
+                    "(function(){ return window.handleAndroidBackPress ? Boolean(window.handleAndroidBackPress()) : false; })()"
+                ) { result ->
+                    if (result == "true") {
+                        // Modal or sub-state handled back press smoothly in JS
+                        return@evaluateJavascript
+                    }
+                    if (isNfcModeActive) {
+                        stopNfcSession()
+                        webView.evaluateJavascript("window.closeNfcModal && window.closeNfcModal();", null)
+                    } else if (webView.canGoBack()) {
+                        webView.goBack()
+                    } else {
+                        finish()
+                    }
                 }
             }
         })
@@ -156,7 +206,14 @@ class MainActivity : ComponentActivity() {
         super.onPause()
         if (isNfcModeActive) {
             stopNfcSession()
+            webView.evaluateJavascript("window.onNfcSessionPaused && window.onNfcSessionPaused();", null)
         }
+        webView.onPause()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        webView.onResume()
     }
 
     private fun checkNfcReady(): Boolean {
@@ -189,6 +246,7 @@ class MainActivity : ComponentActivity() {
         pendingNfcUrl = url
         isNfcModeActive = true
         lastWriteTimestamp = 0
+        lastWrittenTagId = null
         writtenTagsCount = 0
         enableReaderModeSafe()
     }
@@ -209,6 +267,11 @@ class MainActivity : ComponentActivity() {
 
     fun startNfcPasswordLocking(pin: String) {
         if (!checkNfcReady()) return
+        if (pin.isBlank()) {
+            stopNfcSession()
+            notifyNfcError("MISSING_PIN")
+            return
+        }
         currentNfcOp = NfcOp.PWD_LOCK
         pendingPassword = pin
         isNfcModeActive = true
@@ -217,6 +280,11 @@ class MainActivity : ComponentActivity() {
 
     fun startNfcPasswordUnlocking(pin: String) {
         if (!checkNfcReady()) return
+        if (pin.isBlank()) {
+            stopNfcSession()
+            notifyNfcError("MISSING_PIN")
+            return
+        }
         currentNfcOp = NfcOp.PWD_UNLOCK
         pendingPassword = pin
         isNfcModeActive = true
@@ -229,6 +297,7 @@ class MainActivity : ComponentActivity() {
         pendingNfcUrl = null
         pendingPassword = null
         lastWriteTimestamp = 0
+        lastWrittenTagId = null
         try {
             nfcAdapter?.disableReaderMode(this)
         } catch (e: Exception) {
@@ -243,8 +312,24 @@ class MainActivity : ComponentActivity() {
             NfcOp.WRITE -> handleWriteTag(tag)
             NfcOp.READ -> handleReadTag(tag)
             NfcOp.PERM_LOCK -> handlePermLockTag(tag)
-            NfcOp.PWD_LOCK -> handlePwdLockTag(tag, pendingPassword ?: "1234")
-            NfcOp.PWD_UNLOCK -> handlePwdUnlockTag(tag, pendingPassword ?: "1234")
+            NfcOp.PWD_LOCK -> {
+                val pin = pendingPassword
+                if (pin.isNullOrBlank()) {
+                    stopNfcSession()
+                    notifyNfcError("MISSING_PIN")
+                } else {
+                    handlePwdLockTag(tag, pin)
+                }
+            }
+            NfcOp.PWD_UNLOCK -> {
+                val pin = pendingPassword
+                if (pin.isNullOrBlank()) {
+                    stopNfcSession()
+                    notifyNfcError("MISSING_PIN")
+                } else {
+                    handlePwdUnlockTag(tag, pin)
+                }
+            }
             NfcOp.IDLE -> {}
         }
     }
@@ -259,8 +344,9 @@ class MainActivity : ComponentActivity() {
         val targetUrl = pendingNfcUrl
         if (targetUrl.isNullOrEmpty()) return
 
+        val tagId = tag.id
         val now = System.currentTimeMillis()
-        if (now - lastWriteTimestamp < 2200) {
+        if (tagId != null && lastWrittenTagId?.contentEquals(tagId) == true && now - lastWriteTimestamp < 1500L) {
             return
         }
 
@@ -284,6 +370,7 @@ class MainActivity : ComponentActivity() {
                 ndef.writeNdefMessage(message)
                 ndef.close()
                 lastWriteTimestamp = System.currentTimeMillis()
+                lastWrittenTagId = tagId?.clone()
                 writtenTagsCount++
                 triggerSuccessVibration()
                 notifyNfcSuccess(writtenTagsCount)
@@ -294,6 +381,7 @@ class MainActivity : ComponentActivity() {
                     formatable.format(message)
                     formatable.close()
                     lastWriteTimestamp = System.currentTimeMillis()
+                    lastWrittenTagId = tagId?.clone()
                     writtenTagsCount++
                     triggerSuccessVibration()
                     notifyNfcSuccess(writtenTagsCount)
@@ -705,6 +793,29 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun triggerLightHaptic() {
+        try {
+            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
+                vm?.defaultVibrator
+            } else {
+                @Suppress("DEPRECATION")
+                getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
+            } ?: return
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                vibrator.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK))
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(18, 120))
+            } else {
+                @Suppress("DEPRECATION")
+                vibrator.vibrate(18)
+            }
+        } catch (e: Exception) {
+            // vibration is optional
+        }
+    }
+
     private fun notifyNfcSuccess(count: Int) {
         runOnUiThread {
             webView.evaluateJavascript("window.onNfcSuccess && window.onNfcSuccess($count);", null)
@@ -712,6 +823,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun notifyNfcError(errorCode: String) {
+        stopNfcSession()
         triggerErrorVibration()
         runOnUiThread {
             webView.evaluateJavascript("window.onNfcError && window.onNfcError('$errorCode');", null)
@@ -764,11 +876,12 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), Context.RECEIVER_EXPORTED)
-            } else {
-                registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
-            }
+            ContextCompat.registerReceiver(
+                this,
+                receiver,
+                IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE),
+                ContextCompat.RECEIVER_EXPORTED
+            )
         } catch (e: Exception) {
             try {
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(downloadUrl)).apply {
@@ -788,6 +901,11 @@ class MainActivity : ComponentActivity() {
         @JavascriptInterface
         fun triggerHapticFeedback() {
             activity.triggerSuccessVibration()
+        }
+
+        @JavascriptInterface
+        fun triggerLightHaptic() {
+            activity.triggerLightHaptic()
         }
 
         @JavascriptInterface

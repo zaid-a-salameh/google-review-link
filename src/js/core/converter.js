@@ -237,6 +237,7 @@
             return;
         }
 
+        const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
         if (window.AppModes) {
             window.AppModes.setModeResult('link', generatedReviewUrl);
@@ -245,7 +246,7 @@
             if (resultCard) resultCard.classList.add('active');
         }
         
-        if (resultCard && (!window.AppModes || window.AppModes.link.isResultActive)) {
+        if (resultCard && !wasResultActive && (!window.AppModes || window.AppModes.link.isResultActive)) {
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         if (window.showToast) window.showToast(dict.toastSuccess || 'Link converted successfully', 'success');

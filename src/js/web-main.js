@@ -156,7 +156,7 @@
             });
         }
 
-        if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
+        if (qrBtn) qrBtn.addEventListener('click', () => window.openQrModal(qrBtn));
         if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
         if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
         if (qrOverlay) {
@@ -268,6 +268,11 @@
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
+            }).catch(() => {});
+        }
         window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
         // ── Scroll-driven Reveal Animation for Explanation Cards ──
         function initScrollReveal() {

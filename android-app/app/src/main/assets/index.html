@@ -222,9 +222,7 @@
         }
 
         body.is-native-app {
-            padding: 16px;
-            padding-top: max(56px, env(safe-area-inset-top, 56px));
-            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            padding: 14px 16px 96px;
         }
 
         html[lang="ar"] body,
@@ -233,32 +231,31 @@
         }
 
 
-        /* Ambient Lighting */
+        /* Ambient Lighting (GPU-Friendly Radial Gradients without Expensive Blur Filter) */
         .ambient-glow {
             position: fixed;
-            width: 340px;
-            height: 340px;
+            width: 520px;
+            height: 520px;
             border-radius: 50%;
-            filter: blur(100px);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.35;
+            opacity: 0.42;
+            transform: translateZ(0);
         }
         .glow-top {
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
-            top: -70px;
-            right: -70px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, rgba(139, 92, 246, 0.09) 38%, rgba(139, 92, 246, 0) 70%);
+            top: -160px;
+            right: -160px;
         }
         .glow-bottom {
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.35) 0%, transparent 70%);
-            bottom: -90px;
-            left: -80px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0.07) 38%, rgba(124, 58, 237, 0) 70%);
+            bottom: -180px;
+            left: -170px;
         }
 
 
         /* ======================================================== */
-        /* Language Text Continuous Vertical Roll Animation        */
-        /* (Mirrors Lock/Unlock Modal Text Slide Effect)            */
+        /* Language Text Continuous Vertical Roll Animation         */
         /* ======================================================== */
         .lang-slide-text,
         #appTitle,
@@ -268,6 +265,7 @@
         .result-label,
         .btn-action span,
         .tool-btn span,
+        .fab-github-label,
         .qr-title,
         .qr-desc,
         .nfc-title,
@@ -286,11 +284,21 @@
         .feature-card p,
         .faq-question span,
         .faq-answer p {
-            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform, opacity;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
             backface-visibility: hidden;
-            transform: translate3d(0, 0, 0);
+        }
+
+        body.is-lang-animating .lang-slide-text,
+        body.is-lang-animating #appTitle,
+        body.is-lang-animating #appSubtitle,
+        body.is-lang-animating .mode-tab span,
+        body.is-lang-animating .btn-card-tool span,
+        body.is-lang-animating .result-label,
+        body.is-lang-animating .btn-action span,
+        body.is-lang-animating .tool-btn span,
+        body.is-lang-animating .fab-github-label {
+            will-change: transform, opacity;
         }
 
         /* Phase 1 (Exit): Outgoing text slides UP and fades out */
@@ -302,6 +310,7 @@
         body.is-lang-switching .result-label,
         body.is-lang-switching .btn-action span,
         body.is-lang-switching .tool-btn span,
+        body.is-lang-switching .fab-github-label,
         body.is-lang-switching .qr-title,
         body.is-lang-switching .qr-desc,
         body.is-lang-switching .nfc-title,
@@ -335,6 +344,7 @@
         body.is-lang-entering .result-label,
         body.is-lang-entering .btn-action span,
         body.is-lang-entering .tool-btn span,
+        body.is-lang-entering .fab-github-label,
         body.is-lang-entering .qr-title,
         body.is-lang-entering .qr-desc,
         body.is-lang-entering .nfc-title,
@@ -370,118 +380,113 @@
 
 
         /* ======================================================== */
-        /* Page Opening & Entrance Animations (Smooth Cascade)     */
+        /* Page Opening & Entrance Animations (Smooth GPU Cascade)  */
         /* ======================================================== */
         @keyframes pageGlowBloom {
             0% {
                 opacity: 0;
-                transform: scale(0.65);
+                transform: scale3d(0.85, 0.85, 1);
             }
             100% {
-                opacity: 0.35;
-                transform: scale(1);
+                opacity: 0.42;
+                transform: scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageNavSlideDown {
             0% {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translate3d(0, -14px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         @keyframes pageFadeSlideUp {
             0% {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translate3d(0, 12px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         @keyframes pageIconSpring {
             0% {
                 opacity: 0;
-                transform: scale(0.7) rotate(-8deg);
-            }
-            65% {
-                transform: scale(1.05) rotate(1deg);
+                transform: scale3d(0.84, 0.84, 1);
             }
             100% {
                 opacity: 1;
-                transform: scale(1) rotate(0deg);
+                transform: scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageCardFloat {
             0% {
                 opacity: 0;
-                transform: translateY(32px) scale(0.97);
-                filter: blur(4px);
+                transform: translate3d(0, 16px, 0) scale3d(0.985, 0.985, 1);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0px);
+                transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageSectionCascade {
             0% {
                 opacity: 0;
-                transform: translateY(28px);
+                transform: translate3d(0, 18px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         /* Entrance Assignments with Orchestrated Delays */
         .ambient-glow {
-            animation: pageGlowBloom 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: pageGlowBloom 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
         .desktop-navbar {
-            animation: pageNavSlideDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: pageNavSlideDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
         .top-bar {
-            animation: pageFadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+            animation: pageFadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.03s backwards;
         }
 
         header {
-            animation: pageFadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+            animation: pageFadeSlideUp 0.46s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
         }
 
         .app-icon {
-            animation: pageIconSpring 0.85s cubic-bezier(0.34, 1.4, 0.64, 1) 0.12s backwards;
+            animation: pageIconSpring 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s backwards;
         }
 
-        .glass-card {
-            animation: pageCardFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards;
+        .main-input-card {
+            animation: pageCardFloat 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.11s backwards;
         }
 
         #howItWorksSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s backwards;
         }
 
         #featuresSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.42s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.24s backwards;
         }
 
         #faqSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s backwards;
         }
 
         .app-footer {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.36s backwards;
         }
 
         /* Seamless Interruption Handling: When switching languages, cancel entrance keyframes */
@@ -490,6 +495,7 @@
         body.is-lang-switching .top-bar,
         body.is-lang-switching header,
         body.is-lang-switching .app-icon,
+        body.is-lang-switching .main-input-card,
         body.is-lang-switching .glass-card,
         body.is-lang-switching .marketing-section,
         body.is-lang-switching #faqSection,
@@ -522,7 +528,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 32px 16px 60px;
+            padding: 32px 16px 96px;
             position: relative;
             z-index: 10;
         }
@@ -570,11 +576,10 @@
             position: relative;
             display: inline-flex;
             align-items: center;
-            background: rgba(28, 25, 23, 0.85);
+            background: rgba(28, 25, 23, 0.92);
             border: 1px solid var(--border);
             border-radius: 50px;
             padding: 3px;
-            backdrop-filter: blur(12px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             direction: ltr !important;
             unicode-bidi: isolate;
@@ -615,10 +620,9 @@
             background: var(--primary-gradient);
             border-radius: 50px;
             box-shadow: 0 2px 10px rgba(124, 58, 237, 0.45);
-            transition: transform 0.32s cubic-bezier(0.34, 1.35, 0.64, 1);
+            transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
             z-index: 1;
             pointer-events: none;
-            will-change: transform;
         }
 
 
@@ -670,6 +674,11 @@
             box-shadow: var(--shadow-glass);
             margin-bottom: 16px;
         }
+        body.is-native-app .glass-card {
+            background: linear-gradient(180deg, rgba(31, 28, 26, 0.96) 0%, rgba(22, 19, 18, 0.97) 100%);
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
 
         .main-input-card {
             z-index: 50;
@@ -686,7 +695,7 @@
             align-items: center;
             gap: 6px;
             padding: 5px 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(28, 25, 23, 0.9);
             border: 1px solid var(--border);
             border-radius: 50px;
             color: var(--text-muted);
@@ -694,18 +703,19 @@
             font-size: 11.5px;
             font-weight: 600;
             cursor: pointer;
-            backdrop-filter: blur(12px);
-            transition: all 0.2s ease;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             user-select: none;
         }
-        .btn-version-pill:hover {
-            background: rgba(139, 92, 246, 0.12);
-            border-color: rgba(139, 92, 246, 0.4);
-            color: #c4b5fd;
-            transform: translateY(-1px);
+        @media (hover: hover) and (pointer: fine) {
+            .btn-version-pill:hover {
+                background: rgba(139, 92, 246, 0.12);
+                border-color: rgba(139, 92, 246, 0.4);
+                color: #c4b5fd;
+                transform: translateY(-1px);
+            }
         }
         .btn-version-pill:active {
-            transform: scale(0.96);
+            transform: scale3d(0.95, 0.95, 1);
         }
         .btn-version-pill.has-update {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.22) 0%, rgba(16, 185, 129, 0.35) 100%);
@@ -811,7 +821,10 @@
         /* Responsive adjustments for compact screens */
         @media (max-width: 380px) {
             body {
-                padding: 12px 10px;
+                padding: 12px 10px 92px;
+            }
+            body.is-native-app {
+                padding: 12px 12px 92px;
             }
             .glass-card {
                 padding: 16px 12px;
@@ -904,8 +917,10 @@
         .mode-tab span {
             white-space: nowrap;
         }
-        .mode-tab:hover {
-            color: #ffffff;
+        @media (hover: hover) and (pointer: fine) {
+            .mode-tab:hover {
+                color: #ffffff;
+            }
         }
         .mode-tab.active {
             color: #ffffff;
@@ -942,30 +957,29 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-                        visibility 0.24s;
-            will-change: transform, opacity;
+            transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0.22s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
 
         /* LTR Slide Offsets */
         #modeLinkContent {
-            transform: translate3d(-24px, 0, 0);
+            transform: translate3d(-16px, 0, 0);
         }
         #modeSearchContent {
-            transform: translate3d(24px, 0, 0);
+            transform: translate3d(16px, 0, 0);
         }
 
         /* RTL Slide Offsets (Arabic Mode) */
         html[lang="ar"] #modeLinkContent,
         [dir="rtl"] #modeLinkContent {
-            transform: translate3d(24px, 0, 0);
+            transform: translate3d(16px, 0, 0);
         }
         html[lang="ar"] #modeSearchContent,
         [dir="rtl"] #modeSearchContent {
-            transform: translate3d(-24px, 0, 0);
+            transform: translate3d(-16px, 0, 0);
         }
 
         /* Active State */
@@ -974,8 +988,9 @@
             visibility: visible;
             pointer-events: auto;
             transform: translate3d(0, 0, 0) !important;
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0s;
         }
 
         .mode-content:has(.places-dropdown.show),
@@ -1277,48 +1292,89 @@
             box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
         }
 
-        /* Floating GitHub Corner Button */
-        .fab-github {
+        /* Bottom Docked Rectangular GitHub Button */
+        .bottom-github-dock {
             position: fixed;
-            bottom: max(16px, env(safe-area-inset-bottom, 16px));
-            inset-inline-end: 16px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(28, 25, 23, 0.88);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #d6d3d1;
-            display: inline-flex;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 85;
+            display: flex;
+            justify-content: center;
+            padding: 12px 16px max(14px, env(safe-area-inset-bottom, 14px));
+            background: linear-gradient(to top, rgba(12, 10, 9, 0.96) 38%, rgba(12, 10, 9, 0.72) 74%, rgba(12, 10, 9, 0) 100%);
+            pointer-events: none;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+            transform: translate3d(0, 0, 0);
+        }
+        body.is-native-app .bottom-github-dock {
+            padding: 10px 16px 12px;
+        }
+        body.keyboard-open .bottom-github-dock {
+            transform: translate3d(0, 115%, 0);
+            opacity: 0;
+        }
+        .fab-github {
+            pointer-events: auto;
+            width: 100%;
+            max-width: 450px;
+            height: 50px;
+            padding: 0 18px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(34, 30, 28, 0.96) 0%, rgba(22, 19, 18, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #fafaf9;
+            display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
             text-decoration: none;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
-            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
-            z-index: 85;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .fab-github svg {
-            width: 22px;
-            height: 22px;
+        .fab-github-logo {
+            width: 20px;
+            height: 20px;
             fill: currentColor;
+            flex-shrink: 0;
             transition: transform 0.2s ease;
         }
-        .fab-github:hover {
-            transform: scale(1.08);
-            background: rgba(41, 37, 36, 0.96);
-            border-color: rgba(255, 255, 255, 0.32);
-            color: #ffffff;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), 0 0 12px rgba(255, 255, 255, 0.12);
+        .fab-github-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .fab-github:hover svg {
-            transform: rotate(6deg) scale(1.05);
+        .fab-github-ext {
+            width: 15px;
+            height: 15px;
+            fill: var(--text-sub);
+            flex-shrink: 0;
+            opacity: 0.78;
+            transition: transform 0.2s ease, opacity 0.2s ease, fill 0.2s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .fab-github:hover {
+                transform: translate3d(0, -1px, 0);
+                background: linear-gradient(135deg, rgba(44, 39, 36, 0.98) 0%, rgba(28, 25, 23, 0.99) 100%);
+                border-color: rgba(167, 139, 250, 0.45);
+                box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65), 0 0 18px rgba(139, 92, 246, 0.18);
+            }
+            .fab-github:hover .fab-github-ext {
+                opacity: 1;
+                fill: #c4b5fd;
+                transform: translate3d(1px, -1px, 0);
+            }
         }
         .fab-github:active {
-            transform: scale(0.92);
-            background: rgba(20, 18, 16, 0.98);
+            transform: scale3d(0.975, 0.975, 1);
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(20, 18, 16, 0.99);
         }
 
         /* Standalone NFC Card Action Tools */
@@ -1337,7 +1393,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background: rgba(18, 16, 15, 0.85);
+            background: rgba(18, 16, 15, 0.88);
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 10px 4px;
@@ -1346,36 +1402,47 @@
             font-weight: 700;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             text-align: center;
             line-height: 1.25;
             min-height: 66px;
             user-select: none;
         }
-        .btn-card-tool:hover,
+        @media (hover: hover) and (pointer: fine) {
+            .btn-card-tool:hover {
+                background: rgba(124, 58, 237, 0.16);
+                border-color: rgba(139, 92, 246, 0.45);
+                color: #ffffff;
+                transform: translate3d(0, -1px, 0);
+            }
+            .btn-card-tool:hover svg {
+                fill: #ffffff;
+                transform: scale3d(1.08, 1.08, 1);
+            }
+            .btn-card-tool.btn-tool-danger:hover {
+                background: rgba(245, 39, 125, 0.14);
+                border-color: rgba(245, 39, 125, 0.55);
+                color: #ffffff;
+            }
+        }
         .btn-card-tool:active {
-            background: rgba(124, 58, 237, 0.16);
-            border-color: rgba(139, 92, 246, 0.45);
+            background: rgba(124, 58, 237, 0.18);
+            border-color: rgba(139, 92, 246, 0.5);
             color: #ffffff;
-            transform: translateY(-1px);
+            transform: scale3d(0.95, 0.95, 1);
         }
         .btn-card-tool svg {
-            width: 18px;
-            height: 18px;
+            width: 19px;
+            height: 19px;
             fill: #a78bfa;
-            transition: transform 0.2s ease, fill 0.2s ease;
+            transition: transform 0.18s ease, fill 0.18s ease;
             flex-shrink: 0;
-        }
-        .btn-card-tool:hover svg {
-            fill: #ffffff;
-            transform: scale(1.1);
         }
         .btn-card-tool.btn-tool-danger {
             border-color: rgba(245, 39, 125, 0.25);
         }
-        .btn-card-tool.btn-tool-danger:hover,
         .btn-card-tool.btn-tool-danger:active {
-            background: rgba(245, 39, 125, 0.14);
+            background: rgba(245, 39, 125, 0.16);
             border-color: rgba(245, 39, 125, 0.55);
             color: #ffffff;
         }
@@ -1383,10 +1450,9 @@
             fill: #F5277D;
         }
         .btn-card-tool.morph-active-btn {
-            transform: scale(0.95) !important;
-            opacity: 0.7 !important;
-            border-color: rgba(249, 115, 22, 0.6) !important;
-            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.26s ease, border-color 0.26s ease;
+            transform: scale3d(0.95, 0.95, 1) !important;
+            opacity: 0.78 !important;
+            transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
         }
 
 /* == search-dropdown.css == */
@@ -1402,7 +1468,7 @@
             border: 2px solid var(--border);
             border-radius: var(--radius-input);
             padding: 0 14px;
-            transition: all 0.25s ease;
+            transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
             margin-bottom: 14px;
         }
         .search-field-wrapper:has(.places-dropdown.show),
@@ -1612,9 +1678,14 @@
             flex-direction: column;
             overscroll-behavior: contain;
         }
+        body.is-native-app .places-dropdown {
+            background: #181412;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
         .places-dropdown.show {
             display: flex;
-            animation: dropdownExpandAnim 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: dropdownExpandAnim 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             transform-origin: top center;
         }
         @keyframes dropdownExpandAnim {
@@ -1650,9 +1721,16 @@
         .place-suggestion-item:last-of-type {
             border-bottom: none;
         }
-        .place-suggestion-item:hover,
         .place-suggestion-item.selected {
             background: rgba(139, 92, 246, 0.16);
+        }
+        .place-suggestion-item:active {
+            background: rgba(139, 92, 246, 0.22);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .place-suggestion-item:hover {
+                background: rgba(139, 92, 246, 0.16);
+            }
         }
         .place-icon {
             width: 30px;
@@ -1788,12 +1866,18 @@
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.24s;
+        }
+        body.is-native-app .gmp-key-overlay {
+            background: rgba(8, 7, 6, 0.88);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .gmp-key-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
         }
         .gmp-key-modal {
             width: 100%;
@@ -1803,15 +1887,15 @@
             border-radius: 24px;
             padding: 24px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(124, 58, 237, 0.2);
-            transform: scale(0.9) translateY(20px);
+            transform: translate3d(0, 14px, 0) scale3d(0.95, 0.95, 1);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
         .gmp-key-overlay.active .gmp-key-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .gmp-key-header {
@@ -1993,9 +2077,9 @@
         .nfc-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -2004,37 +2088,44 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
-            will-change: opacity, visibility;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+        }
+        body.is-native-app .nfc-overlay,
+        body.is-native-app .qr-overlay,
+        body.is-native-app .update-overlay,
+        body.is-native-app .pwd-overlay,
+        body.is-native-app .perm-lock-overlay {
+            background: rgba(8, 7, 6, 0.85);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .nfc-overlay.active {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
         .nfc-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.96);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 28px;
             padding: 32px 24px 28px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.2);
             opacity: 0;
-            transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease, border-color 0.24s ease, box-shadow 0.24s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
             contain: layout style;
         }
         .nfc-overlay.active .nfc-modal {
             opacity: 1;
-            transform: scale(1) translateY(0) translateZ(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
         }
         .nfc-wave-container {
             position: relative;
@@ -2051,8 +2142,8 @@
             border-radius: 50%;
             border: 2px solid rgba(139, 92, 246, 0.5);
             animation: nfcPulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-            will-change: transform, opacity;
             transform: translateZ(0);
+            transition: opacity 0.24s ease, border-color 0.24s ease;
         }
         .nfc-overlay:not(.active) .nfc-wave-ring {
             animation-play-state: paused;
@@ -2061,8 +2152,8 @@
             animation-delay: 0.6s;
         }
         @keyframes nfcPulse {
-            0% { transform: scale(0.7) translateZ(0); opacity: 0.9; }
-            100% { transform: scale(1.6) translateZ(0); opacity: 0; }
+            0% { transform: scale3d(0.72, 0.72, 1); opacity: 0.88; }
+            100% { transform: scale3d(1.58, 1.58, 1); opacity: 0; }
         }
         .nfc-icon-circle {
             position: relative;
@@ -2071,30 +2162,61 @@
             height: 72px;
             border-radius: 50%;
             background: var(--primary-gradient);
+            border: 2px solid transparent;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
-            transition: all 0.3s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .nfc-icon-circle svg {
             width: 36px;
             height: 36px;
             fill: #ffffff;
-            transition: transform 0.3s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), fill 0.24s ease, opacity 0.24s ease;
         }
-        .nfc-modal.success {
-            animation: modalHapticThump 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+        .nfc-modal.success,
+        .nfc-modal.perm-lock-thump {
+            animation: modalHapticThump 0.42s cubic-bezier(0.22, 1, 0.36, 1);
         }
         @keyframes modalHapticThump {
-            0% { transform: scale(1); }
-            30% { transform: scale(1.035) translateY(-2px); }
-            55% { transform: scale(0.985) translateY(1px); }
-            80% { transform: scale(1.01); }
-            100% { transform: scale(1); }
+            0% { transform: scale3d(1, 1, 1); }
+            30% { transform: scale3d(1.03, 1.03, 1) translate3d(0, -2px, 0); }
+            60% { transform: scale3d(0.99, 0.99, 1) translate3d(0, 1px, 0); }
+            100% { transform: scale3d(1, 1, 1); }
         }
         .nfc-modal.success .nfc-wave-ring {
-            display: none;
+            opacity: 0;
+            animation-play-state: paused;
+        }
+        .nfc-modal.perm-lock-standby {
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 32px rgba(16, 185, 129, 0.16);
+        }
+        .nfc-modal.perm-lock-standby .nfc-wave-container {
+            cursor: pointer;
+        }
+        .nfc-modal.perm-lock-standby .nfc-wave-ring {
+            opacity: 0;
+            animation-play-state: paused;
+        }
+        .nfc-modal.perm-lock-standby .nfc-icon-circle {
+            background: rgba(34, 30, 28, 0.96) !important;
+            border: 2px dashed rgba(168, 162, 158, 0.42);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+            transform: scale3d(0.95, 0.95, 1);
+            cursor: pointer;
+        }
+        .nfc-modal.perm-lock-standby .nfc-icon-circle svg {
+            fill: #a8a29e;
+            opacity: 0.48;
+            transform: scale3d(0.92, 0.92, 1);
+        }
+        .nfc-modal.perm-lock-standby .nfc-wave-container:active .nfc-icon-circle {
+            transform: scale3d(0.88, 0.88, 1);
+            border-color: rgba(245, 39, 125, 0.65);
         }
         .nfc-modal.success .nfc-icon-circle {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -2128,7 +2250,8 @@
             40%, 80% { transform: scale(0.99) translateX(6px); }
         }
         .nfc-modal.error .nfc-wave-ring {
-            display: none;
+            opacity: 0;
+            animation-play-state: paused;
         }
         .nfc-modal.error .nfc-icon-circle {
             background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
@@ -2280,17 +2403,52 @@
             flex: 1;
             width: 100%;
             height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border);
             border-radius: var(--radius-btn);
             color: var(--text-sub);
+            font-family: inherit;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
         }
         .btn-nfc-cancel:active {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.16);
+            transform: scale3d(0.97, 0.97, 1);
+        }
+        .nfc-back-icon {
+            display: none;
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+        .btn-nfc-cancel.is-back-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.26);
+            color: #fafaf9;
+        }
+        .btn-nfc-cancel.is-back-btn .nfc-back-icon {
+            display: block;
+        }
+        [dir="rtl"] .btn-nfc-cancel.is-back-btn .nfc-back-icon,
+        html[lang="ar"] .btn-nfc-cancel.is-back-btn .nfc-back-icon {
+            transform: scaleX(-1);
+        }
+        .nfc-modal.perm-lock-standby .btn-nfc-cancel {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+        .nfc-modal.perm-lock-standby .btn-nfc-cancel:active {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: scale3d(0.97, 0.97, 1);
         }
         .nfc-modal.success .btn-nfc-cancel {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -2353,9 +2511,9 @@
         .qr-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -2363,29 +2521,30 @@
             padding: 24px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
             visibility: hidden;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
         }
         .qr-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
         .qr-modal {
             width: 100%;
             max-width: 320px;
-            background: rgba(28, 25, 23, 0.95);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 28px;
             padding: 28px 24px 24px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(124, 58, 237, 0.2);
-            transform: scale(0.82) translateY(24px);
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
             opacity: 0;
-            transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease;
         }
         .qr-overlay.active .qr-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .qr-title {
@@ -2467,9 +2626,9 @@
         .update-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.84);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1050;
             display: flex;
             align-items: center;
@@ -2478,12 +2637,13 @@
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
         }
         .update-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
         .update-modal {
             width: 100%;
@@ -2493,15 +2653,15 @@
             border-radius: 24px;
             padding: 22px 20px 20px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(124, 58, 237, 0.22);
-            transform: scale(0.92) translateY(20px);
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease;
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
         .update-overlay.active .update-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .update-header {
@@ -2756,9 +2916,9 @@
         .perm-lock-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -2767,8 +2927,7 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
-            will-change: opacity, visibility;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             overscroll-behavior: contain;
@@ -2778,80 +2937,78 @@
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
+
+        /* Seamless Zero-Gap Modal-to-Modal Handoff States */
+        .nfc-overlay.handoff-enter,
+        .pwd-overlay.handoff-enter,
+        .perm-lock-overlay.handoff-enter {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: none !important;
+        }
+        .nfc-overlay.handoff-exit,
+        .pwd-overlay.handoff-exit,
+        .perm-lock-overlay.handoff-exit {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            pointer-events: none !important;
+            transition: none !important;
+        }
+
         .pwd-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.96);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(245, 39, 125, 0.4);
             border-radius: 28px;
             padding: 26px 22px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.22);
             opacity: 0;
-            transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.24s ease, 
-                        border-color 0.32s ease, 
-                        box-shadow 0.32s ease;
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.19s ease, 
+                        border-color 0.28s ease, 
+                        box-shadow 0.28s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
             contain: layout style;
         }
         .perm-lock-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.96);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(245, 39, 125, 0.45);
             border-radius: 28px;
             padding: 26px 22px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.25);
             opacity: 0;
-            transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.24s ease, 
-                        border-color 0.32s ease, 
-                        box-shadow 0.32s ease;
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.19s ease, 
+                        border-color 0.28s ease, 
+                        box-shadow 0.28s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
             contain: layout style;
         }
         .pwd-overlay.active .pwd-modal,
         .perm-lock-overlay.active .perm-lock-modal {
             opacity: 1;
-            transform: scale(1) translateY(0) translateZ(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
         }
 
-        /* Morphing Container Transform System */
+        /* Modal Transform Origin */
         .pwd-modal,
         .perm-lock-modal,
-        .nfc-modal {
+        .nfc-modal,
+        .qr-modal,
+        .update-modal {
             transform-origin: center center;
-            will-change: transform, opacity, border-radius;
-        }
-
-        .pwd-modal > *,
-        .perm-lock-modal > *,
-        .nfc-modal > * {
-            transition: opacity 0.22s ease 0.06s, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.06s;
-            will-change: opacity, transform;
-        }
-
-        .morph-expanding > * {
-            opacity: 0 !important;
-            transform: scale(0.92) !important;
-            transition: none !important;
-        }
-
-        .morph-collapsing > * {
-            opacity: 0 !important;
-            transform: scale(0.95) !important;
-            transition: opacity 0.14s ease, transform 0.14s ease !important;
         }
 
         .pwd-modal.unlock-mode {
@@ -3284,23 +3441,21 @@
         /* Toast Message */
         .toast {
             position: fixed;
-            bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            bottom: max(76px, calc(env(safe-area-inset-bottom, 16px) + 64px));
             left: 50%;
-            transform: translateX(-50%) translateY(80px);
-            background: rgba(28, 25, 23, 0.96);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            transform: translate3d(-50%, 40px, 0);
+            background: rgba(28, 25, 23, 0.97);
             border: 1px solid var(--border-glow);
             color: #ffffff;
             padding: 10px 18px;
             border-radius: 50px;
             font-size: 13px;
             font-weight: 700;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.65);
             z-index: 999;
             opacity: 0;
             pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
             max-width: min(90vw, 360px);
             width: max-content;
             box-sizing: border-box;
@@ -3312,7 +3467,7 @@
             line-height: 1.35;
         }
         .toast.show {
-            transform: translateX(-50%) translateY(0);
+            transform: translate3d(-50%, 0, 0);
             opacity: 1;
         }
         .toast.error {
@@ -3349,9 +3504,9 @@
             }
         }
         body.is-native-app .toast {
-            top: max(16px, env(safe-area-inset-top, 16px));
+            top: 14px;
             bottom: auto;
-            transform: translate3d(-50%, -80px, 0);
+            transform: translate3d(-50%, -64px, 0);
             z-index: 99999;
         }
         body.is-native-app .toast.show {
@@ -3365,9 +3520,7 @@
 /* ======================================================== */
 
 body {
-    padding: 16px;
-    padding-top: max(56px, env(safe-area-inset-top, 56px));
-    padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+    padding: 14px 16px 96px;
     overflow-x: hidden;
 }
 
@@ -3505,7 +3658,10 @@ body {
             <!-- Standalone Card Action Tools Row (Permanent in both modes) -->
             <div class="card-tools-row" id="cardToolsRow">
                 <button type="button" class="btn-card-tool" id="btnReadTag">
-                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/>
+                        <path d="M8.8 10.65a1.35 1.35 0 1 0 0 2.7 1.35 1.35 0 1 0 0-2.7zm1.96-.96a.85.85 0 0 1 1.33-1.05 5.45 5.45 0 0 1 0 6.72.85.85 0 0 1-1.33-1.05 3.75 3.75 0 0 0 0-4.62zm2.44-1.91a.85.85 0 0 1 1.34-1.05 8.55 8.55 0 0 1 0 10.54.85.85 0 0 1-1.34-1.05 6.85 6.85 0 0 0 0-8.44z"/>
+                    </svg>
                     <span id="lblReadTag">Read Card</span>
                 </button>
                 <button type="button" class="btn-card-tool" id="btnPwdLockTag">
@@ -3589,10 +3745,10 @@ body {
     <!-- NFC Writing Overlay Modal -->
     <div class="nfc-overlay" id="nfcOverlay">
         <div class="nfc-modal" id="nfcModalBox">
-            <div class="nfc-wave-container">
+            <div class="nfc-wave-container" id="nfcWaveContainer">
                 <div class="nfc-wave-ring"></div>
                 <div class="nfc-wave-ring"></div>
-                <div class="nfc-icon-circle" id="nfcStatusIcon">
+                <div class="nfc-icon-circle" id="nfcStatusIcon" role="button" tabindex="-1">
                     <!-- NFC contact-less wave icon -->
                     <svg id="nfcSvgIcon" viewBox="0 0 24 24">
                         <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
@@ -3615,7 +3771,10 @@ body {
                     <svg viewBox="0 0 24 24" id="nfcNextBtnIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                     <span id="nfcNextBtnLabel">Another Card</span>
                 </button>
-                <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">Cancel</button>
+                <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">
+                    <svg class="nfc-back-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+                    <span id="nfcCancelBtnLabel">Cancel</span>
+                </button>
             </div>
         </div>
     </div>
@@ -3643,8 +3802,8 @@ body {
 
             <!-- Animated Sliding Title -->
             <div class="pwd-title-wrapper">
-                <div class="qr-title pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
-                <div class="qr-title pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
+                <div class="pwd-mode-title mode-lock-title" id="pwdModalTitleLock">Lock Card</div>
+                <div class="pwd-mode-title mode-unlock-title" id="pwdModalTitleUnlock">Unlock Card</div>
             </div>
             
             <div class="pwd-input-group">
@@ -3663,8 +3822,8 @@ body {
 
             <!-- Animated Sliding Description -->
             <div class="pwd-desc-wrapper">
-                <div class="qr-desc pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a PIN to protect card from modifications</div>
-                <div class="qr-desc pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter PIN to remove card protection</div>
+                <div class="pwd-mode-desc mode-lock-desc" id="pwdModalDescLock">Set a PIN to protect card from modifications</div>
+                <div class="pwd-mode-desc mode-unlock-desc" id="pwdModalDescUnlock">Enter PIN to remove card protection</div>
             </div>
 
             <div class="pwd-actions">
@@ -3747,10 +3906,14 @@ body {
         </div>
     </div>
 
-    <!-- Floating GitHub Project Button -->
-    <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer" class="fab-github" id="fabGithub" aria-label="GitHub Repository" title="GitHub">
-        <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
-    </a>
+    <!-- Bottom Docked GitHub Project Bar -->
+    <div class="bottom-github-dock" id="githubDock">
+        <a href="https://github.com/zaid-a-salameh/google-review-link" target="_blank" rel="noopener noreferrer" class="fab-github" id="fabGithub" aria-label="GitHub Repository" title="GitHub">
+            <svg class="fab-github-logo" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            <span class="fab-github-label" id="fabGithubLabel">Project on GitHub</span>
+            <svg class="fab-github-ext" viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+        </a>
+    </div>
 
     <!-- Toast Notification -->
     <div class="toast" id="toast">
@@ -3830,6 +3993,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 footerGithub: "GitHub Repository",
                 footerBackToTop: "↑ Back to Top",
                 footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
+                fabGithubLabel: "Project on GitHub",
                 resultLabel: "Direct Link:",
                 resultLabelReview: "Direct Review Link:",
                 resultLabelCustom: "Direct Link:",
@@ -3912,6 +4076,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitleEmptyTag: "Empty Card",
                 nfcTitlePermLockSuccess: "Card Permanently Locked",
                 nfcDescPermLockSuccess: "Card has been permanently set to Read-Only mode.",
+                nfcTitlePermLockStandby: "Card Permanently Locked!",
+                nfcDescPermLockStandby: "Sensor paused for safety. Tap the icon above to reactivate and lock another card.",
+                nfcPermLockCount: "Locked cards: {count}",
+                nfcTitleCannotLock: "Cannot Permanently Lock",
+                nfcDescCannotLock: "This card is already read-only or does not support permanent hardware locking.",
+                nfcBackToPin: "Back",
+                nfcTitleDisabled: "NFC is Disabled",
+                nfcTitleNoHardware: "NFC Not Supported",
+                nfcTitleOpFailed: "Operation Failed",
+                nfcDescOpFailed: "Operation failed. Hold the phone steadily over the card and try again.",
                 nfcTitleError: "Write Failed",
                 nfcDescLocked: "Operation failed because this card is password-protected or read-only. Please unlock it first.",
                 nfcDescCapacity: "Link size exceeds this card's memory capacity.",
@@ -4032,6 +4206,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 footerGithub: "مستودع GitHub",
                 footerBackToTop: "↑ العودة للأعلى",
                 footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
+                fabGithubLabel: "المشروع على GitHub",
                 resultLabel: "الرابط المباشر:",
                 resultLabelReview: "رابط التقييم المباشر:",
                 resultLabelCustom: "الرابط المباشر:",
@@ -4114,6 +4289,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 nfcTitleEmptyTag: "البطاقة فارغة",
                 nfcTitlePermLockSuccess: "تم الإقفال النهائي بنجاح",
                 nfcDescPermLockSuccess: "تم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم.",
+                nfcTitlePermLockStandby: "تم قفل البطاقة نهائياً!",
+                nfcDescPermLockStandby: "توقفت العملية للأمان. انقر على الشعار أعلاه لإعادة التفعيل وقفل بطاقة أخرى.",
+                nfcPermLockCount: "البطاقات المقفلة: {count}",
+                nfcTitleCannotLock: "تعذر القفل النهائي",
+                nfcDescCannotLock: "هذه البطاقة مقفلة مسبقاً للقراءة فقط أو لا تدعم القفل العتادي الدائم.",
+                nfcBackToPin: "العودة",
+                nfcTitleDisabled: "خاصية NFC متوقفة",
+                nfcTitleNoHardware: "NFC غير مدعوم",
+                nfcTitleOpFailed: "فشلت العملية",
+                nfcDescOpFailed: "تعذرت العملية. يرجى تثبيت الهاتف فوق البطاقة والمحاولة مجدداً.",
                 nfcTitleError: "فشلت عملية الكتابة",
                 nfcDescLocked: "تعذرت العملية لأن هذه البطاقة محمية بكلمة مرور أو للقراءة فقط. يرجى فك قفلها أولاً قبل المتابعة.",
                 nfcDescCapacity: "حجم الرابط أكبر من سعة ذاكرة البطاقة.",
@@ -4234,9 +4419,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc && dict.metaDesc) metaDesc.setAttribute('content', dict.metaDesc);
 
-        // Desktop Navbar
+        // Desktop Navbar & Bottom GitHub Dock
         setTxt('navGithubLabel', dict.navGithub);
         setTxt('navApkLabel', dict.navApk);
+        setTxt('fabGithubLabel', dict.fabGithubLabel);
 
         // Top bar & Header
         setTxt('apkDownloadLabel', dict.apkDownload);
@@ -4323,11 +4509,20 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         setTxt('qrCloseBtn', dict.qrCloseBtn);
 
         // NFC Modal (Native App)
-        setTxt('nfcTitle', dict.nfcTitleReady);
-        setTxt('nfcDesc', dict.nfcDescReady);
-        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
-        if (nfcCancelBtn) {
-            nfcCancelBtn.textContent = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+        const nfcOverlayEl = document.getElementById('nfcOverlay');
+        if (nfcOverlayEl && nfcOverlayEl.classList.contains('active') && typeof window.refreshActiveNfcModalStrings === 'function') {
+            window.refreshActiveNfcModalStrings();
+        } else {
+            setTxt('nfcTitle', dict.nfcTitleReady);
+            setTxt('nfcDesc', dict.nfcDescReady);
+            const cancelText = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+            const nfcCancelBtnLabel = document.getElementById('nfcCancelBtnLabel');
+            const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+            if (nfcCancelBtnLabel) {
+                nfcCancelBtnLabel.textContent = cancelText;
+            } else if (nfcCancelBtn) {
+                nfcCancelBtn.textContent = cancelText;
+            }
         }
         const nfcNextBtnLabel = document.getElementById('nfcNextBtnLabel');
         if (nfcNextBtnLabel && window.lastNfcOperation) {
@@ -4420,7 +4615,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         // 2. Coordinated continuous vertical roll (mirrors lock/unlock modal)
         isLangSwitching = true;
-        document.body.classList.add('is-lang-switching');
+        document.body.classList.add('is-lang-animating', 'is-lang-switching');
 
         setTimeout(() => {
             try {
@@ -4442,6 +4637,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
                     if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
                     setTimeout(() => {
+                        document.body.classList.remove('is-lang-animating');
                         isLangSwitching = false;
                     }, 260);
                 });
@@ -4529,65 +4725,97 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     // ========================================================
-    // Morphing Container Transform Engine (Button-to-Modal)
+    // Smooth GPU Modal & Zero-Gap Handoff Engine
     // ========================================================
+    function clearModalTimers(overlay, modalBox) {
+        if (overlay && overlay._modalTimer) {
+            clearTimeout(overlay._modalTimer);
+            overlay._modalTimer = null;
+        }
+        if (modalBox && modalBox._modalTimer) {
+            clearTimeout(modalBox._modalTimer);
+            modalBox._modalTimer = null;
+        }
+        if (modalBox && modalBox._btnTimer) {
+            clearTimeout(modalBox._btnTimer);
+            modalBox._btnTimer = null;
+        }
+    }
+
+    function resetModalInlineStyles(modalBox) {
+        if (!modalBox) return;
+        modalBox.classList.remove('morph-expanding', 'morph-collapsing', 'morph-active');
+        modalBox.style.transition = '';
+        modalBox.style.transform = '';
+        modalBox.style.borderRadius = '';
+        modalBox.style.opacity = '';
+    }
+
+    function clampNum(val, min, max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
     function openMorphModal(overlay, modalBox, triggerBtn) {
         if (!overlay || !modalBox) return;
 
-        // Dismiss virtual keyboard to avoid viewport shifts
         if (document.activeElement && typeof document.activeElement.blur === 'function') {
             try { document.activeElement.blur(); } catch (e) {}
         }
 
-        if (!triggerBtn || typeof triggerBtn.getBoundingClientRect !== 'function') {
-            overlay.classList.add('active');
-            return;
+        clearModalTimers(overlay, modalBox);
+        overlay.classList.remove('handoff-enter', 'handoff-exit');
+        resetModalInlineStyles(modalBox);
+
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1 && typeof triggerBtn.getBoundingClientRect === 'function')
+            ? triggerBtn
+            : null;
+
+        let dx = 0;
+        let dy = 14;
+
+        if (validBtn) {
+            const btnRect = validBtn.getBoundingClientRect();
+            if (btnRect.width > 0 && btnRect.height > 0) {
+                const rawDx = (btnRect.left + btnRect.width * 0.5) - (window.innerWidth * 0.5);
+                const rawDy = (btnRect.top + btnRect.height * 0.5) - (window.innerHeight * 0.5);
+                dx = clampNum(rawDx * 0.16, -24, 24);
+                dy = clampNum(rawDy * 0.16, -32, 32);
+            }
+            modalBox.dataset.originDx = dx.toFixed(1);
+            modalBox.dataset.originDy = dy.toFixed(1);
+            modalBox._morphTriggerBtn = validBtn;
+
+            validBtn.classList.add('morph-active-btn');
+            modalBox._btnTimer = setTimeout(() => {
+                validBtn.classList.remove('morph-active-btn');
+                modalBox._btnTimer = null;
+            }, 200);
+        } else {
+            modalBox.dataset.originDx = '0';
+            modalBox.dataset.originDy = '14';
+            modalBox._morphTriggerBtn = null;
         }
 
-        const btnRect = triggerBtn.getBoundingClientRect();
-        const modalRect = modalBox.getBoundingClientRect();
-
-        // Calculate center offsets between the button and the centered modal
-        const modalCenterX = modalRect.left + (modalRect.width / 2);
-        const modalCenterY = modalRect.top + (modalRect.height / 2);
-        const btnCenterX = btnRect.left + (btnRect.width / 2);
-        const btnCenterY = btnRect.top + (btnRect.height / 2);
-
-        const deltaX = btnCenterX - modalCenterX;
-        const deltaY = btnCenterY - modalCenterY;
-        const scaleX = modalRect.width > 0 ? (btnRect.width / modalRect.width) : 0.3;
-        const scaleY = modalRect.height > 0 ? (btnRect.height / modalRect.height) : 0.2;
-
-        // Save origin parameters for collapse animation
-        modalBox.dataset.morphDeltaX = deltaX.toFixed(2);
-        modalBox.dataset.morphDeltaY = deltaY.toFixed(2);
-        modalBox.dataset.morphScaleX = scaleX.toFixed(3);
-        modalBox.dataset.morphScaleY = scaleY.toFixed(3);
-        modalBox._morphTriggerBtn = triggerBtn;
-
-        // Mark trigger button as active
-        triggerBtn.classList.add('morph-active-btn');
-
-        // Set initial state: collapsed down to button bounds
-        modalBox.classList.add('morph-expanding');
         modalBox.style.transition = 'none';
-        modalBox.style.transform = `translate3d(${deltaX.toFixed(2)}px, ${deltaY.toFixed(2)}px, 0) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
-        modalBox.style.borderRadius = '14px';
-        modalBox.style.opacity = '0.45';
+        modalBox.style.opacity = '0';
+        modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.92, 0.92, 1)`;
 
-        // Show overlay backdrop
         overlay.classList.add('active');
 
-        // Next paint frames: expand smoothly to center
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                modalBox.style.transition = 'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease';
-                modalBox.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
-                modalBox.style.borderRadius = '28px';
+                modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
                 modalBox.style.opacity = '1';
-                modalBox.classList.remove('morph-expanding');
+                modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
             });
         });
+
+        modalBox._modalTimer = setTimeout(() => {
+            modalBox._modalTimer = null;
+            if (overlay.classList.contains('active')) {
+                resetModalInlineStyles(modalBox);
+            }
+        }, 255);
     }
 
     function closeMorphModal(overlay, modalBox, callback) {
@@ -4596,55 +4824,116 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             return;
         }
 
-        const deltaX = modalBox ? modalBox.dataset.morphDeltaX : null;
-        const deltaY = modalBox ? modalBox.dataset.morphDeltaY : null;
-        const scaleX = modalBox ? modalBox.dataset.morphScaleX : null;
-        const scaleY = modalBox ? modalBox.dataset.morphScaleY : null;
-        const triggerBtn = modalBox ? modalBox._morphTriggerBtn : null;
+        clearModalTimers(overlay, modalBox);
+        overlay.classList.remove('handoff-enter', 'handoff-exit');
 
-        if (modalBox && deltaX !== null && deltaY !== null && scaleX && scaleY) {
-            modalBox.classList.add('morph-collapsing');
-            modalBox.style.transition = 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s cubic-bezier(0.4, 0, 1, 1)';
-            modalBox.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`;
-            modalBox.style.borderRadius = '14px';
+        const triggerBtn = modalBox ? modalBox._morphTriggerBtn : null;
+        if (triggerBtn) {
+            triggerBtn.classList.remove('morph-active-btn');
+        }
+
+        if (modalBox) {
+            const dx = (parseFloat(modalBox.dataset.originDx) || 0) * 0.65;
+            const dy = (parseFloat(modalBox.dataset.originDy) || 14) * 0.65;
+
+            modalBox.style.transition = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s cubic-bezier(0.4, 0, 1, 1)';
             modalBox.style.opacity = '0';
+            modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.94, 0.94, 1)`;
             overlay.classList.remove('active');
 
-            if (triggerBtn) {
-                setTimeout(() => {
-                    triggerBtn.classList.remove('morph-active-btn');
-                }, 180);
-            }
-
-            setTimeout(() => {
-                modalBox.classList.remove('morph-active', 'morph-collapsing');
-                modalBox.style.transition = '';
-                modalBox.style.transform = '';
-                modalBox.style.borderRadius = '';
-                modalBox.style.opacity = '';
-                delete modalBox.dataset.morphDeltaX;
-                delete modalBox.dataset.morphDeltaY;
-                delete modalBox.dataset.morphScaleX;
-                delete modalBox.dataset.morphScaleY;
-                if (triggerBtn) {
-                    triggerBtn.classList.remove('morph-active-btn');
-                    modalBox._morphTriggerBtn = null;
-                }
+            modalBox._modalTimer = setTimeout(() => {
+                modalBox._modalTimer = null;
+                resetModalInlineStyles(modalBox);
+                delete modalBox.dataset.originDx;
+                delete modalBox.dataset.originDy;
+                modalBox._morphTriggerBtn = null;
                 if (typeof callback === 'function') callback();
-            }, 300);
+            }, 195);
         } else {
             overlay.classList.remove('active');
-            if (triggerBtn) {
-                triggerBtn.classList.remove('morph-active-btn');
-                if (modalBox) modalBox._morphTriggerBtn = null;
-            }
             if (typeof callback === 'function') callback();
         }
+    }
+
+    function transitionModalToModal(fromOverlay, fromBox, toOverlay, toBox, onBeforeEnter) {
+        if (!toOverlay || !toBox) {
+            if (typeof onBeforeEnter === 'function') onBeforeEnter();
+            return;
+        }
+
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
+
+        clearModalTimers(fromOverlay, fromBox);
+        clearModalTimers(toOverlay, toBox);
+
+        if (fromBox && toBox) {
+            if (fromBox.dataset.originDx && !toBox.dataset.originDx) {
+                toBox.dataset.originDx = fromBox.dataset.originDx;
+                toBox.dataset.originDy = fromBox.dataset.originDy || '14';
+            }
+            if (fromBox._morphTriggerBtn && !toBox._morphTriggerBtn) {
+                toBox._morphTriggerBtn = fromBox._morphTriggerBtn;
+            }
+            if (fromBox._morphTriggerBtn) {
+                fromBox._morphTriggerBtn.classList.remove('morph-active-btn');
+            }
+        }
+
+        if (typeof onBeforeEnter === 'function') {
+            onBeforeEnter();
+        }
+
+        const wasFromActive = fromOverlay && fromOverlay.classList.contains('active');
+
+        if (wasFromActive && fromOverlay && fromBox) {
+            fromOverlay.classList.remove('handoff-enter');
+            fromOverlay.classList.add('handoff-exit');
+            fromBox.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.14s ease';
+            fromBox.style.opacity = '0';
+            fromBox.style.transform = 'translate3d(0, -6px, 0) scale3d(0.94, 0.94, 1)';
+
+            fromOverlay._modalTimer = setTimeout(() => {
+                fromOverlay._modalTimer = null;
+                fromOverlay.classList.remove('active', 'handoff-exit');
+                resetModalInlineStyles(fromBox);
+            }, 175);
+        } else if (fromOverlay) {
+            fromOverlay.classList.remove('active', 'handoff-enter', 'handoff-exit');
+            resetModalInlineStyles(fromBox);
+        }
+
+        toOverlay.classList.remove('handoff-exit');
+        if (wasFromActive) {
+            toOverlay.classList.add('handoff-enter');
+        }
+        toBox.style.transition = 'none';
+        toBox.style.opacity = '0';
+        toBox.style.transform = 'translate3d(0, 10px, 0) scale3d(0.94, 0.94, 1)';
+        toOverlay.classList.add('active');
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                toBox.style.transition = 'transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1)';
+                toBox.style.opacity = '1';
+                toBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
+            });
+        });
+
+        toBox._modalTimer = setTimeout(() => {
+            toBox._modalTimer = null;
+            toOverlay.classList.remove('handoff-enter');
+            if (toOverlay.classList.contains('active')) {
+                resetModalInlineStyles(toBox);
+            }
+        }, 235);
     }
 
     window.showToast = showToast;
     window.openMorphModal = openMorphModal;
     window.closeMorphModal = closeMorphModal;
+    window.transitionModalToModal = transitionModalToModal;
 })();
 
 /* == core/converter.js == */
@@ -4887,6 +5176,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             return;
         }
 
+        const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
         if (window.AppModes) {
             window.AppModes.setModeResult('link', generatedReviewUrl);
@@ -4895,7 +5185,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (resultCard) resultCard.classList.add('active');
         }
         
-        if (resultCard && (!window.AppModes || window.AppModes.link.isResultActive)) {
+        if (resultCard && !wasResultActive && (!window.AppModes || window.AppModes.link.isResultActive)) {
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         if (window.showToast) window.showToast(dict.toastSuccess || 'Link converted successfully', 'success');
@@ -5248,6 +5538,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         resetAutocompleteSessionToken();
 
         if (placeId) {
+            const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
             if (window.AppModes) {
                 window.AppModes.setModeResult('search', reviewUrl);
@@ -5256,7 +5547,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (resultLinkText) resultLinkText.textContent = reviewUrl;
                 if (resultCard) resultCard.classList.add('active');
             }
-            if (resultCard && (!window.AppModes || window.AppModes.search.isResultActive)) {
+            if (resultCard && !wasResultActive && (!window.AppModes || window.AppModes.search.isResultActive)) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
             if (window.showToast) window.showToast(dict.toastSelectSuccess || 'Business selected and review link generated', 'success');
@@ -5362,22 +5653,31 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
-    function openQrModal() {
+    function openQrModal(triggerBtn) {
         if (document.activeElement && typeof document.activeElement.blur === 'function') {
             try { document.activeElement.blur(); } catch (e) {}
         }
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
         const qrOverlay = document.getElementById('qrOverlay');
-        if (qrOverlay) qrOverlay.classList.add('active');
-        requestAnimationFrame(() => {
-            generateQrCode(url);
-        });
+        const qrModalBox = document.getElementById('qrModalBox');
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1) ? triggerBtn : document.getElementById('qrBtn');
+        generateQrCode(url);
+        if (window.openMorphModal && qrOverlay && qrModalBox) {
+            window.openMorphModal(qrOverlay, qrModalBox, validBtn);
+        } else if (qrOverlay) {
+            qrOverlay.classList.add('active');
+        }
     }
 
     function closeQrModal() {
         const qrOverlay = document.getElementById('qrOverlay');
-        if (qrOverlay) qrOverlay.classList.remove('active');
+        const qrModalBox = document.getElementById('qrModalBox');
+        if (window.closeMorphModal && qrOverlay && qrModalBox) {
+            window.closeMorphModal(qrOverlay, qrModalBox);
+        } else if (qrOverlay) {
+            qrOverlay.classList.remove('active');
+        }
     }
 
     function downloadQrImage() {
@@ -5428,15 +5728,46 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
 /* == app/nfc.js == */
 // ========================================================
-// Native Android Hardware NFC Tag Writing Engine
+// Native Android Hardware NFC Tag Writing & Security Engine
 // ========================================================
 (function() {
     'use strict';
 
     let nfcBatchCount = 0;
+    let permLockBatchCount = 0;
+    let isPermLockStandby = false;
+    let shouldReturnToPwdModal = false;
     let nfcResetTimer = null;
+    let permThumpTimer = null;
     let lastNfcOperation = 'write';
     let lastNfcPin = '';
+    let currentModalState = 'ready';
+    let currentModalDetail = null;
+
+    const ICON_NFC_WAVES = `
+        <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
+    `;
+
+    const ICON_READ_SCANNER = `
+        <path d="M3 5v4h2V5h4V3H5c-1.1 0-2 .9-2 2zm2 10H3v4c0 1.1.9 2 2 2h4v-2H5v-4zm14 4h-4v2h4c1.1 0 2-.9 2-2v-4h-2v4zm0-16h-4v2h4v4h2V5c0-1.1-.9-2-2-2z"/>
+        <path d="M8.8 10.65a1.35 1.35 0 1 0 0 2.7 1.35 1.35 0 1 0 0-2.7zm1.96-.96a.85.85 0 0 1 1.33-1.05 5.45 5.45 0 0 1 0 6.72.85.85 0 0 1-1.33-1.05 3.75 3.75 0 0 0 0-4.62zm2.44-1.91a.85.85 0 0 1 1.34-1.05 8.55 8.55 0 0 1 0 10.54.85.85 0 0 1-1.34-1.05 6.85 6.85 0 0 0 0-8.44z"/>
+    `;
+
+    const ICON_SHIELD_PERM = `
+        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+    `;
+
+    const ICON_LOCK = `
+        <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+    `;
+
+    const ICON_UNLOCK = `
+        <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
+    `;
+
+    const ICON_CHECK = `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`;
+    const ICON_ERROR_X = `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`;
 
     function getDict() {
         const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
@@ -5460,22 +5791,82 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
+    function setCancelBtnMode(label, isBack = false) {
+        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+        const nfcCancelBtnLabel = document.getElementById('nfcCancelBtnLabel');
+        shouldReturnToPwdModal = Boolean(isBack);
+        if (nfcCancelBtn) {
+            nfcCancelBtn.classList.toggle('is-back-btn', Boolean(isBack));
+        }
+        if (nfcCancelBtnLabel) {
+            nfcCancelBtnLabel.textContent = label || '';
+        } else if (nfcCancelBtn) {
+            nfcCancelBtn.textContent = label || '';
+        }
+    }
+
+    function syncEmblemInteractivity(interactive) {
+        const nfcStatusIcon = document.getElementById('nfcStatusIcon');
+        if (!nfcStatusIcon) return;
+        if (interactive) {
+            nfcStatusIcon.setAttribute('tabindex', '0');
+            nfcStatusIcon.setAttribute('aria-disabled', 'false');
+        } else {
+            nfcStatusIcon.setAttribute('tabindex', '-1');
+            nfcStatusIcon.setAttribute('aria-disabled', 'true');
+        }
+    }
+
+    function updatePermLockBadge(dict) {
+        const nfcCounterBadge = document.getElementById('nfcCounterBadge');
+        const nfcCounterText = document.getElementById('nfcCounterText');
+        if (!nfcCounterBadge) return;
+        if (permLockBatchCount > 0) {
+            nfcCounterBadge.style.display = 'inline-flex';
+            if (nfcCounterText) {
+                const tpl = dict.nfcPermLockCount || 'Locked cards: {count}';
+                nfcCounterText.textContent = tpl.replace('{count}', permLockBatchCount);
+            }
+        } else {
+            nfcCounterBadge.style.display = 'none';
+        }
+    }
+
+    function updateWriteBatchBadge(dict) {
+        const nfcCounterBadge = document.getElementById('nfcCounterBadge');
+        const nfcCounterText = document.getElementById('nfcCounterText');
+        if (!nfcCounterBadge) return;
+        if (nfcBatchCount > 0) {
+            nfcCounterBadge.style.display = 'inline-flex';
+            if (nfcCounterText) {
+                const tpl = dict.nfcCardsCount || 'Cards written: {count}';
+                nfcCounterText.textContent = tpl.replace('{count}', nfcBatchCount);
+            }
+        } else {
+            nfcCounterBadge.style.display = 'none';
+        }
+    }
+
     function setNfcModalState(state, detail = null) {
+        currentModalState = state;
+        currentModalDetail = detail;
+
         const dict = getDict();
         const nfcModalBox = document.getElementById('nfcModalBox');
         const nfcTitle = document.getElementById('nfcTitle');
         const nfcDesc = document.getElementById('nfcDesc');
-        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
         const nfcRetryBtn = document.getElementById('nfcRetryBtn');
         const nfcNextBtn = document.getElementById('nfcNextBtn');
         const nfcNextBtnLabel = document.getElementById('nfcNextBtnLabel');
         const nfcNextBtnIcon = document.getElementById('nfcNextBtnIcon');
         const nfcCounterBadge = document.getElementById('nfcCounterBadge');
-        const nfcCounterText = document.getElementById('nfcCounterText');
         const nfcSvgIcon = document.getElementById('nfcSvgIcon');
 
         if (nfcModalBox && state !== 'error') {
             nfcModalBox.classList.remove('error');
+        }
+        if (nfcModalBox && state !== 'perm_lock_standby') {
+            nfcModalBox.classList.remove('perm-lock-standby');
         }
         if (nfcRetryBtn && state !== 'error') {
             nfcRetryBtn.style.display = 'none';
@@ -5487,62 +5878,70 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             nfcModalBox.classList.remove('has-next-btn');
         }
 
+        syncEmblemInteractivity(state === 'perm_lock_standby');
+
         if (state === 'ready') {
+            isPermLockStandby = false;
             if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReady;
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReady;
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            setCancelBtnMode(dict.nfcCancel, false);
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `
-                <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
-            `);
+            setIconIfChanged(nfcSvgIcon, ICON_NFC_WAVES);
         } else if (state === 'read_ready') {
+            isPermLockStandby = false;
             if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReadReady || 'Ready to Read Card';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReadReady || 'Hold phone near NFC card to read its content...';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            setCancelBtnMode(dict.nfcCancel, false);
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `
-                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
-            `);
+            setIconIfChanged(nfcSvgIcon, ICON_READ_SCANNER);
         } else if (state === 'perm_lock_ready') {
+            isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('success', 'theme-unlock');
+                nfcModalBox.classList.remove('success', 'theme-unlock', 'perm-lock-standby');
                 nfcModalBox.classList.add('theme-lock', 'theme-perm-lock');
             }
-            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockReady || 'Ready to Lock';
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockReady || 'Ready to Permanently Lock';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockReady || 'Hold phone near NFC card to apply permanent lock...';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `
-                <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
-            `);
+            setCancelBtnMode(permLockBatchCount > 0 ? (dict.nfcDone || 'Done') : dict.nfcCancel, false);
+            updatePermLockBadge(dict);
+            setIconIfChanged(nfcSvgIcon, ICON_SHIELD_PERM);
+        } else if (state === 'perm_lock_standby') {
+            isPermLockStandby = true;
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('success', 'error', 'theme-unlock');
+                nfcModalBox.classList.add('theme-lock', 'theme-perm-lock', 'perm-lock-standby');
+            }
+            if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockStandby || 'Card Permanently Locked!';
+            if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockStandby || 'Sensor paused for safety. Tap the icon above to reactivate and lock another card.';
+            setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
+            updatePermLockBadge(dict);
+            setIconIfChanged(nfcSvgIcon, ICON_SHIELD_PERM);
         } else if (state === 'pwd_lock_ready') {
+            isPermLockStandby = false;
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('success', 'theme-unlock', 'theme-perm-lock');
                 nfcModalBox.classList.add('theme-lock');
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockReady || 'Ready to Lock';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockReady || 'Hold phone near card to lock with PIN...';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            setCancelBtnMode(dict.nfcCancel, false);
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `
-                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-            `);
+            setIconIfChanged(nfcSvgIcon, ICON_LOCK);
         } else if (state === 'pwd_unlock_ready') {
+            isPermLockStandby = false;
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('success', 'theme-lock', 'theme-perm-lock');
                 nfcModalBox.classList.add('theme-unlock');
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockReady || 'Ready to Unlock';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockReady || 'Hold phone near card to remove protection...';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel;
+            setCancelBtnMode(dict.nfcCancel, false);
             if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `
-                <path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>
-            `);
+            setIconIfChanged(nfcSvgIcon, ICON_UNLOCK);
         } else if (state === 'success') {
+            isPermLockStandby = false;
             if (nfcModalBox) {
                 nfcModalBox.classList.remove('morph-to-ready', 'error', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
                 nfcModalBox.classList.add('success');
@@ -5550,16 +5949,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (detail === 'PWD_LOCK') {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdLockSuccess || 'Card Locked';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdLockSuccess || 'Card is now locked against modifications.';
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone || dict.nfcOk || 'Done';
+                setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
                 if (nfcNextBtn) {
                     nfcNextBtn.className = 'btn-nfc-next theme-lock';
                     nfcNextBtn.style.display = 'inline-flex';
                     if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnLockAnother || 'Lock Another Card';
-                    if (nfcNextBtnIcon) {
-                        nfcNextBtnIcon.innerHTML = '<path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>';
-                    }
+                    if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_LOCK.trim();
                 }
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
+                if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else if (detail === 'PWD_UNLOCK' || detail === 'ALREADY_UNLOCKED') {
                 if (detail === 'ALREADY_UNLOCKED') {
                     if (nfcTitle) nfcTitle.textContent = dict.nfcTitleAlreadyUnlocked || 'Card Not Locked';
@@ -5568,33 +5966,34 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePwdUnlockSuccess || 'Card Unlocked';
                     if (nfcDesc) nfcDesc.textContent = dict.nfcDescPwdUnlockSuccess || 'Card is now unlocked and ready for editing.';
                 }
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone || dict.nfcOk || 'Done';
+                setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
                 if (nfcNextBtn) {
                     nfcNextBtn.className = 'btn-nfc-next theme-unlock';
                     nfcNextBtn.style.display = 'inline-flex';
                     if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
-                    if (nfcNextBtnIcon) {
-                        nfcNextBtnIcon.innerHTML = '<path d="M12 17c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm6-9h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H6V10h12v10z"/>';
-                    }
+                    if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_UNLOCK.trim();
                 }
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
+                if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             } else if (detail === 'PERM_LOCK') {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockSuccess || 'Card Permanently Locked';
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescPermLockSuccess || 'Card permanently locked to Read-Only mode.';
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcOk || 'OK';
+                setCancelBtnMode(dict.nfcOk || 'OK', false);
                 if (nfcNextBtn) nfcNextBtn.style.display = 'none';
                 if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                updatePermLockBadge(dict);
             } else {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleSuccess;
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescSuccess || '';
-                if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
+                setCancelBtnMode(dict.nfcDone, false);
                 if (nfcNextBtn) nfcNextBtn.style.display = 'none';
                 if (nfcModalBox) nfcModalBox.classList.remove('has-next-btn');
+                updateWriteBatchBadge(dict);
             }
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             if (nfcRetryBtn) nfcRetryBtn.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>`);
+            setIconIfChanged(nfcSvgIcon, ICON_CHECK);
         } else if (state === 'next') {
+            isPermLockStandby = false;
             if (nfcModalBox) {
                 nfcModalBox.classList.add('morph-to-ready');
                 setTimeout(() => {
@@ -5602,61 +6001,120 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         nfcModalBox.classList.remove('success');
                         nfcModalBox.classList.remove('morph-to-ready');
                     }
-                }, 350);
+                }, 320);
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleNext;
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescNext;
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcDone;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            setIconIfChanged(nfcSvgIcon, `
-                <path d="M4.5 10.5C3.67 10.5 3 11.17 3 12s.67 1.5 1.5 1.5S6 12.83 6 12s-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm4.8 0c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5z"/>
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.55.45-1 1-1s1 .45 1 1c0 3.31 2.69 6 6 6s6-2.69 6-6c0-.55.45-1 1-1s1 .45 1 1c0 4.41-3.59 8-8 8z"/>
-            `);
+            setCancelBtnMode(dict.nfcDone, false);
+            updateWriteBatchBadge(dict);
+            setIconIfChanged(nfcSvgIcon, ICON_NFC_WAVES);
         } else if (state === 'error') {
+            isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('morph-to-ready', 'success', 'theme-unlock');
+                nfcModalBox.classList.remove('morph-to-ready', 'success', 'theme-unlock', 'perm-lock-standby');
                 nfcModalBox.classList.add('error');
             }
             if (nfcTitle) {
-                if (detail === 'TAG_LOST') nfcTitle.textContent = dict.nfcTitleTagLost || 'Connection Dropped';
+                if (detail === 'DISABLED') nfcTitle.textContent = dict.nfcTitleDisabled || 'NFC is Disabled';
+                else if (detail === 'NO_HARDWARE' || detail === 'NOT_SUPPORTED') nfcTitle.textContent = dict.nfcTitleNoHardware || 'NFC Not Supported';
+                else if (detail === 'TAG_LOST') nfcTitle.textContent = dict.nfcTitleTagLost || 'Connection Dropped';
                 else if (detail === 'LOCKED') nfcTitle.textContent = dict.nfcTitleLocked || 'Card is Protected';
                 else if (detail === 'READ_LOCKED') nfcTitle.textContent = dict.nfcTitleReadLocked || 'Card is Read-Protected';
                 else if (detail === 'WRONG_PWD') nfcTitle.textContent = dict.nfcTitleWrongPwd || 'Incorrect PIN';
                 else if (detail === 'ALREADY_LOCKED') nfcTitle.textContent = dict.nfcTitleAlreadyLocked || 'Card Already Locked';
+                else if (detail === 'CANNOT_LOCK') nfcTitle.textContent = dict.nfcTitleCannotLock || 'Cannot Permanently Lock';
                 else if (detail === 'CAPACITY') nfcTitle.textContent = dict.nfcTitleCapacity || 'Capacity Exceeded';
                 else if (detail === 'EMPTY_TAG') nfcTitle.textContent = dict.nfcTitleEmptyTag || 'Empty Card';
-                else nfcTitle.textContent = dict.nfcTitleError || 'Operation Failed';
+                else if (lastNfcOperation !== 'write') nfcTitle.textContent = dict.nfcTitleOpFailed || 'Operation Failed';
+                else nfcTitle.textContent = dict.nfcTitleError || 'Write Failed';
             }
 
-            let detailMsg = dict.nfcDescGenericError || 'Operation failed. Ensure the phone is held steady near the card.';
-            if (detail === 'TAG_LOST') detailMsg = dict.nfcDescTagLost || 'Connection lost due to phone movement or weak NFC signal. Please hold the phone steadily over the card without moving it.';
+            let detailMsg = lastNfcOperation === 'write'
+                ? (dict.nfcDescGenericError || 'Write operation failed. Ensure the phone is held steady near the card.')
+                : (dict.nfcDescOpFailed || 'Operation failed. Hold the phone steadily over the card and try again.');
+
+            if (detail === 'DISABLED') detailMsg = dict.nfcDisabled || 'Please enable NFC in your phone settings.';
+            else if (detail === 'NO_HARDWARE' || detail === 'NOT_SUPPORTED') detailMsg = dict.nfcNoHardware || 'NFC is not supported on this device.';
+            else if (detail === 'TAG_LOST') detailMsg = dict.nfcDescTagLost || 'Connection lost due to phone movement or weak NFC signal. Please hold the phone steadily over the card without moving it.';
             else if (detail === 'LOCKED') detailMsg = dict.nfcDescLocked || 'This card is locked with a password or read-only and cannot be modified. Please unlock it first.';
             else if (detail === 'READ_LOCKED') detailMsg = dict.nfcDescReadLocked || 'Cannot read card data because it is password-protected.';
+            else if (detail === 'CANNOT_LOCK') detailMsg = dict.nfcDescCannotLock || 'This card is already read-only or does not support permanent hardware locking.';
             else if (detail === 'CAPACITY') detailMsg = dict.nfcDescCapacity || 'Link size exceeds this card\'s memory capacity.';
-            else if (detail === 'UNSUPPORTED') detailMsg = dict.nfcDescUnsupported || 'This card type is not supported for writing.';
+            else if (detail === 'UNSUPPORTED') detailMsg = dict.nfcDescUnsupported || 'This card type is not supported.';
             else if (detail === 'EMPTY_TAG') detailMsg = dict.toastNfcReadEmpty || 'No valid URL found on this card.';
             else if (detail === 'WRONG_PWD') detailMsg = dict.toastNfcWrongPwd || 'Incorrect PIN. The card is protected with a different password.';
             else if (detail === 'PWD_UNSUPPORTED') detailMsg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card.';
             else if (detail === 'ALREADY_LOCKED') detailMsg = dict.toastNfcAlreadyLocked || 'This card is already locked with a different PIN. Unlock it first.';
+            else if (detail === 'MISSING_PIN') detailMsg = dict.toastEnterPwd || 'Please enter a password or PIN.';
 
             if (nfcDesc) nfcDesc.textContent = detailMsg;
-            if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
-            if (nfcCancelBtn) nfcCancelBtn.textContent = dict.nfcCancel || 'Cancel';
 
-            if (nfcRetryBtn) {
-                nfcRetryBtn.style.display = 'inline-flex';
-                const retryLabel = document.getElementById('nfcRetryBtnLabel');
-                if (retryLabel) retryLabel.textContent = dict.nfcRetryBtn || 'Try Again';
+            if (lastNfcOperation === 'perm_lock' && permLockBatchCount > 0) {
+                updatePermLockBadge(dict);
+            } else if (nfcCounterBadge) {
+                nfcCounterBadge.style.display = 'none';
             }
 
-            setIconIfChanged(nfcSvgIcon, `<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>`);
+            const isPinReturnError =
+                (lastNfcOperation === 'pwd_unlock') ||
+                (lastNfcOperation === 'pwd_lock' && (
+                    detail === 'ALREADY_LOCKED' ||
+                    detail === 'LOCKED' ||
+                    detail === 'WRONG_PWD' ||
+                    detail === 'PWD_FAILED' ||
+                    detail === 'MISSING_PIN'
+                ));
+
+            if (isPinReturnError) {
+                setCancelBtnMode(dict.nfcBackToPin || 'Back', true);
+            } else {
+                const fallbackLabel = (lastNfcOperation === 'perm_lock' && permLockBatchCount > 0)
+                    ? (dict.nfcDone || 'Done')
+                    : (dict.nfcCancel || 'Cancel');
+                setCancelBtnMode(fallbackLabel, false);
+            }
+
+            if (nfcRetryBtn) {
+                if (detail === 'NO_HARDWARE' || detail === 'NOT_SUPPORTED') {
+                    nfcRetryBtn.style.display = 'none';
+                } else {
+                    nfcRetryBtn.style.display = 'inline-flex';
+                    const retryLabel = document.getElementById('nfcRetryBtnLabel');
+                    if (retryLabel) retryLabel.textContent = dict.nfcRetryBtn || 'Try Again';
+                }
+            }
+
+            setIconIfChanged(nfcSvgIcon, ICON_ERROR_X);
         }
     }
 
-    function openNfcModal() {
+    function ensureNfcModalVisible(triggerBtn, fallbackBtnId, options = {}) {
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (!nfcOverlay) return;
+
+        if (options.skipOpenAnimation || nfcOverlay.classList.contains('active')) {
+            nfcOverlay.classList.add('active');
+            return;
+        }
+
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1)
+            ? triggerBtn
+            : (fallbackBtnId ? document.getElementById(fallbackBtnId) : null);
+
+        if (window.openMorphModal && nfcModalBox) {
+            window.openMorphModal(nfcOverlay, nfcModalBox, validBtn);
+        } else {
+            nfcOverlay.classList.add('active');
+        }
+    }
+
+    function openNfcModal(triggerBtn, options = {}) {
         blurActiveElement();
         nfcBatchCount = 0;
         window.nfcBatchCount = 0;
+        isPermLockStandby = false;
+        shouldReturnToPwdModal = false;
         if (nfcResetTimer) {
             clearTimeout(nfcResetTimer);
             nfcResetTimer = null;
@@ -5665,16 +6123,19 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (nfcNextBtn) nfcNextBtn.style.display = 'none';
         const nfcModalBox = document.getElementById('nfcModalBox');
         if (nfcModalBox) {
-            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'has-next-btn');
+            nfcModalBox.classList.remove(
+                'theme-lock',
+                'theme-unlock',
+                'theme-perm-lock',
+                'perm-lock-standby',
+                'perm-lock-thump',
+                'success',
+                'error',
+                'has-next-btn'
+            );
         }
         setNfcModalState('ready');
-        const nfcOverlay = document.getElementById('nfcOverlay');
-        const btn = triggerBtn || document.getElementById('btnNfc');
-        if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
-            window.openMorphModal(nfcOverlay, nfcModalBox, btn);
-        } else if (nfcOverlay) {
-            nfcOverlay.classList.add('active');
-        }
+        ensureNfcModalVisible(triggerBtn, 'nfcBtn', options);
     }
 
     function closeNfcModal() {
@@ -5683,45 +6144,112 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             clearTimeout(nfcResetTimer);
             nfcResetTimer = null;
         }
+        if (permThumpTimer) {
+            clearTimeout(permThumpTimer);
+            permThumpTimer = null;
+        }
+
+        const completedWrites = nfcBatchCount;
+        nfcBatchCount = 0;
+        window.nfcBatchCount = 0;
+        permLockBatchCount = 0;
+        isPermLockStandby = false;
+        shouldReturnToPwdModal = false;
+
+        if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
+            try { window.AndroidNative.cancelNfcWrite(); } catch (e) {}
+        }
+
         const nfcOverlay = document.getElementById('nfcOverlay');
         const nfcModalBox = document.getElementById('nfcModalBox');
         if (window.closeMorphModal && nfcOverlay && nfcModalBox) {
-            window.closeMorphModal(nfcOverlay, nfcModalBox);
+            window.closeMorphModal(nfcOverlay, nfcModalBox, () => {
+                const nfcNextBtn = document.getElementById('nfcNextBtn');
+                if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                nfcModalBox.classList.remove(
+                    'theme-lock',
+                    'theme-unlock',
+                    'theme-perm-lock',
+                    'perm-lock-standby',
+                    'perm-lock-thump',
+                    'success',
+                    'error',
+                    'morph-to-ready',
+                    'has-next-btn'
+                );
+            });
         } else if (nfcOverlay) {
             nfcOverlay.classList.remove('active');
-        }
-        const nfcNextBtn = document.getElementById('nfcNextBtn');
-        if (nfcNextBtn) nfcNextBtn.style.display = 'none';
-        if (nfcModalBox) {
-            nfcModalBox.classList.remove('theme-lock', 'theme-unlock', 'theme-perm-lock', 'success', 'error', 'morph-to-ready', 'has-next-btn');
-        }
-
-        if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
-            window.AndroidNative.cancelNfcWrite();
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove(
+                    'theme-lock',
+                    'theme-unlock',
+                    'theme-perm-lock',
+                    'perm-lock-standby',
+                    'perm-lock-thump',
+                    'success',
+                    'error',
+                    'morph-to-ready',
+                    'has-next-btn'
+                );
+            }
         }
 
         const dict = getDict();
-        if (nfcBatchCount > 0 && window.showToast) {
-            const toastMsg = (dict.toastNfcBatchSuccess || '').replace('{count}', nfcBatchCount);
+        if (completedWrites > 0 && window.showToast) {
+            const toastMsg = (dict.toastNfcBatchSuccess || '').replace('{count}', completedWrites);
             window.showToast(toastMsg, 'success');
         }
     }
 
-    function startNfcWrite() {
+    function handleNfcCancelOrBack() {
+        if (shouldReturnToPwdModal && typeof window.returnToPasswordModal === 'function') {
+            shouldReturnToPwdModal = false;
+            isPermLockStandby = false;
+            if (nfcResetTimer) {
+                clearTimeout(nfcResetTimer);
+                nfcResetTimer = null;
+            }
+            if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
+                try { window.AndroidNative.cancelNfcWrite(); } catch (e) {}
+            }
+            window.returnToPasswordModal();
+            return;
+        }
+        closeNfcModal();
+    }
+
+    function startNfcWrite(triggerBtn, options = {}) {
         blurActiveElement();
-        const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
-        if (!url) return;
         const dict = getDict();
+        const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
+        if (!url) {
+            if (window.showToast) window.showToast(dict.toastPasteFirst || 'Please generate a link first', 'warn');
+            return;
+        }
+
         lastNfcOperation = 'write';
+        window.lastNfcOperation = 'write';
+
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        const alreadyOpen = nfcOverlay && nfcOverlay.classList.contains('active');
 
         if (window.AndroidNative && window.AndroidNative.startNfcWrite) {
-            openNfcModal();
+            if (alreadyOpen && !options.resetBatch) {
+                setNfcModalState('ready');
+            } else {
+                openNfcModal(triggerBtn, options);
+            }
             window.AndroidNative.startNfcWrite(url);
         } else if ('NDEFReader' in window) {
-            openNfcModal();
+            if (alreadyOpen && !options.resetBatch) {
+                setNfcModalState('ready');
+            } else {
+                openNfcModal(triggerBtn, options);
+            }
             const ndef = new NDEFReader();
             ndef.write({
-                records: [{ recordType: "url", data: url }]
+                records: [{ recordType: 'url', data: url }]
             }, { overwrite: true }).then(() => {
                 if (window.onNfcSuccess) window.onNfcSuccess(1);
             }).catch(() => {
@@ -5732,47 +6260,50 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
     }
 
-    function startNfcRead(triggerBtn) {
+    function startNfcRead(triggerBtn, options = {}) {
         blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'read';
+        window.lastNfcOperation = 'read';
         if (window.AndroidNative && window.AndroidNative.startNfcRead) {
             setNfcModalState('read_ready');
-            const nfcOverlay = document.getElementById('nfcOverlay');
-            const nfcModalBox = document.getElementById('nfcModalBox');
-            const btn = triggerBtn || document.getElementById('btnReadTag');
-            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
-                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
-            } else if (nfcOverlay) {
-                nfcOverlay.classList.add('active');
-            }
+            ensureNfcModalVisible(triggerBtn, 'btnReadTag', options);
             window.AndroidNative.startNfcRead();
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPermanentLock(triggerBtn) {
+    function startNfcPermanentLock(triggerBtn, options = {}) {
         blurActiveElement();
         const dict = getDict();
         lastNfcOperation = 'perm_lock';
+        window.lastNfcOperation = 'perm_lock';
+        if (options.resetCount !== false && !(options.preserveCount)) {
+            permLockBatchCount = 0;
+        }
+        isPermLockStandby = false;
+
         if (window.AndroidNative && window.AndroidNative.startNfcPermanentLock) {
             setNfcModalState('perm_lock_ready');
-            const nfcOverlay = document.getElementById('nfcOverlay');
-            const nfcModalBox = document.getElementById('nfcModalBox');
-            const btn = triggerBtn || document.getElementById('btnPermLockTag');
-            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
-                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
-            } else if (nfcOverlay) {
-                nfcOverlay.classList.add('active');
-            }
+            ensureNfcModalVisible(triggerBtn, 'btnPermLockTag', options);
             window.AndroidNative.startNfcPermanentLock();
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPasswordLock(pin, triggerBtn) {
+    function rearmSequentialPermLock() {
+        if (!isPermLockStandby || lastNfcOperation !== 'perm_lock') return;
+        if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+            try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+        } else if (navigator.vibrate) {
+            try { navigator.vibrate(18); } catch (e) {}
+        }
+        startNfcPermanentLock(null, { skipOpenAnimation: true, preserveCount: true });
+    }
+
+    function startNfcPasswordLock(pin, triggerBtn, options = {}) {
         blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
@@ -5781,21 +6312,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         lastNfcPin = pin;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordLock) {
             setNfcModalState('pwd_lock_ready');
-            const nfcOverlay = document.getElementById('nfcOverlay');
-            const nfcModalBox = document.getElementById('nfcModalBox');
-            const btn = triggerBtn || document.getElementById('btnPwdLockTag');
-            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
-                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
-            } else if (nfcOverlay) {
-                nfcOverlay.classList.add('active');
-            }
+            ensureNfcModalVisible(triggerBtn, 'btnPwdLockTag', options);
             window.AndroidNative.startNfcPasswordLock(pin);
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
         }
     }
 
-    function startNfcPasswordUnlock(pin, triggerBtn) {
+    function startNfcPasswordUnlock(pin, triggerBtn, options = {}) {
         blurActiveElement();
         const dict = getDict();
         if (!pin || !pin.trim()) return;
@@ -5804,14 +6328,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         lastNfcPin = pin;
         if (window.AndroidNative && window.AndroidNative.startNfcPasswordUnlock) {
             setNfcModalState('pwd_unlock_ready');
-            const nfcOverlay = document.getElementById('nfcOverlay');
-            const nfcModalBox = document.getElementById('nfcModalBox');
-            const btn = triggerBtn || document.getElementById('btnPwdLockTag');
-            if (window.openMorphModal && nfcOverlay && nfcModalBox && btn) {
-                window.openMorphModal(nfcOverlay, nfcModalBox, btn);
-            } else if (nfcOverlay) {
-                nfcOverlay.classList.add('active');
-            }
+            ensureNfcModalVisible(triggerBtn, 'btnPwdLockTag', options);
             window.AndroidNative.startNfcPasswordUnlock(pin);
         } else {
             if (window.showToast) window.showToast(dict.nfcNoHardware || 'NFC not supported', 'warn');
@@ -5822,11 +6339,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.onNfcSuccess = function(count) {
         nfcBatchCount = typeof count === 'number' && count > 0 ? count : (nfcBatchCount + 1);
         window.nfcBatchCount = nfcBatchCount;
-        
-        // Haptic feedback trigger (gentle vibration)
-        if (window.AndroidNative && typeof window.AndroidNative.triggerHapticFeedback === 'function') {
-            try { window.AndroidNative.triggerHapticFeedback(); } catch (e) {}
-        } else if (navigator.vibrate) {
+
+        if (!window.AndroidNative && navigator.vibrate) {
             try { navigator.vibrate([140, 70, 180]); } catch (e) {}
         }
 
@@ -5874,14 +6388,31 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             clearTimeout(nfcResetTimer);
             nfcResetTimer = null;
         }
+        permLockBatchCount += 1;
         const dict = getDict();
+
+        if (!window.AndroidNative && navigator.vibrate) {
+            try { navigator.vibrate([140, 70, 180]); } catch (e) {}
+        }
+
+        if (window.showToast) {
+            window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+        }
+
         const nfcOverlay = document.getElementById('nfcOverlay');
+        const nfcModalBox = document.getElementById('nfcModalBox');
         const isModalOpen = nfcOverlay && nfcOverlay.classList.contains('active');
         if (isModalOpen) {
-            setNfcModalState('success', 'PERM_LOCK');
-        } else {
-            if (window.showToast) {
-                window.showToast(dict.toastNfcPermLockSuccess || 'Card permanently locked to Read-Only', 'success');
+            setNfcModalState('perm_lock_standby', permLockBatchCount);
+            if (nfcModalBox) {
+                nfcModalBox.classList.remove('perm-lock-thump');
+                void nfcModalBox.offsetWidth;
+                nfcModalBox.classList.add('perm-lock-thump');
+                if (permThumpTimer) clearTimeout(permThumpTimer);
+                permThumpTimer = setTimeout(() => {
+                    if (nfcModalBox) nfcModalBox.classList.remove('perm-lock-thump');
+                    permThumpTimer = null;
+                }, 460);
             }
         }
     };
@@ -5915,19 +6446,38 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else {
             const dict = getDict();
             let msg = dict.nfcWriteFailed || 'Operation failed';
-            if (errorType === 'NOT_SUPPORTED') msg = dict.nfcNoHardware;
+            if (errorType === 'NOT_SUPPORTED' || errorType === 'NO_HARDWARE') msg = dict.nfcNoHardware;
             else if (errorType === 'DISABLED') msg = dict.nfcDisabled;
             else if (errorType === 'TAG_LOST') msg = dict.nfcDescTagLost;
             else if (errorType === 'LOCKED') msg = dict.nfcDescLocked;
             else if (errorType === 'READ_LOCKED') msg = dict.nfcDescReadLocked;
+            else if (errorType === 'CANNOT_LOCK') msg = dict.nfcDescCannotLock || dict.nfcDescLocked;
             else if (errorType === 'CAPACITY') msg = dict.nfcCapacity;
             else if (errorType === 'UNSUPPORTED') msg = dict.nfcUnsupported;
             else if (errorType === 'EMPTY_TAG') msg = dict.toastNfcReadEmpty || 'Tag is empty';
             else if (errorType === 'WRONG_PWD') msg = dict.toastNfcWrongPwd || 'Incorrect PIN';
             else if (errorType === 'PWD_UNSUPPORTED') msg = dict.toastNfcPwdUnsupported || 'PIN protection is not supported on this card';
             else if (errorType === 'ALREADY_LOCKED') msg = dict.toastNfcAlreadyLocked || 'Card is already locked with a PIN';
-            else if (errorType === 'LOCK_FAILED' || errorType === 'CANNOT_LOCK') msg = dict.nfcDescLocked || 'Locking failed on this tag';
+            else if (errorType === 'MISSING_PIN') msg = dict.toastEnterPwd || 'Please enter a password or PIN';
+            else if (errorType === 'LOCK_FAILED') msg = dict.nfcDescCannotLock || dict.nfcDescLocked || 'Locking failed on this tag';
             if (window.showToast) window.showToast(msg, 'error');
+        }
+    };
+
+    window.onNfcSessionPaused = function() {
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (!nfcOverlay || !nfcOverlay.classList.contains('active')) return;
+        if (lastNfcOperation === 'perm_lock' && permLockBatchCount > 0) {
+            setNfcModalState('perm_lock_standby', permLockBatchCount);
+        } else if (currentModalState !== 'error' && currentModalState !== 'success' && currentModalState !== 'perm_lock_standby') {
+            closeNfcModal();
+        }
+    };
+
+    window.refreshActiveNfcModalStrings = function() {
+        const nfcOverlay = document.getElementById('nfcOverlay');
+        if (nfcOverlay && nfcOverlay.classList.contains('active')) {
+            setNfcModalState(currentModalState, currentModalDetail);
         }
     };
 
@@ -5936,17 +6486,17 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (nfcRetryBtn) {
             nfcRetryBtn.addEventListener('click', () => {
                 if (lastNfcOperation === 'write') {
-                    startNfcWrite();
+                    startNfcWrite(null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'read') {
-                    startNfcRead();
+                    startNfcRead(null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'perm_lock') {
-                    startNfcPermanentLock();
+                    startNfcPermanentLock(null, { skipOpenAnimation: true, preserveCount: true });
                 } else if (lastNfcOperation === 'pwd_lock') {
-                    startNfcPasswordLock(lastNfcPin);
+                    startNfcPasswordLock(lastNfcPin, null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'pwd_unlock') {
-                    startNfcPasswordUnlock(lastNfcPin);
+                    startNfcPasswordUnlock(lastNfcPin, null, { skipOpenAnimation: true });
                 } else {
-                    startNfcWrite();
+                    startNfcWrite(null, { skipOpenAnimation: true });
                 }
             });
         }
@@ -5955,9 +6505,30 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (nfcNextBtn) {
             nfcNextBtn.addEventListener('click', () => {
                 if (lastNfcOperation === 'pwd_lock') {
-                    if (lastNfcPin) startNfcPasswordLock(lastNfcPin);
+                    if (lastNfcPin) startNfcPasswordLock(lastNfcPin, null, { skipOpenAnimation: true });
                 } else if (lastNfcOperation === 'pwd_unlock') {
-                    if (lastNfcPin) startNfcPasswordUnlock(lastNfcPin);
+                    if (lastNfcPin) startNfcPasswordUnlock(lastNfcPin, null, { skipOpenAnimation: true });
+                }
+            });
+        }
+
+        const nfcWaveContainer = document.getElementById('nfcWaveContainer');
+        const nfcStatusIcon = document.getElementById('nfcStatusIcon');
+        const rearmTarget = nfcWaveContainer || nfcStatusIcon;
+        if (rearmTarget) {
+            rearmTarget.addEventListener('click', (e) => {
+                if (!isPermLockStandby) return;
+                e.preventDefault();
+                e.stopPropagation();
+                rearmSequentialPermLock();
+            });
+        }
+        if (nfcStatusIcon) {
+            nfcStatusIcon.addEventListener('keydown', (e) => {
+                if (!isPermLockStandby) return;
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    rearmSequentialPermLock();
                 }
             });
         }
@@ -5965,6 +6536,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     window.openNfcModal = openNfcModal;
     window.closeNfcModal = closeNfcModal;
+    window.handleNfcCancelOrBack = handleNfcCancelOrBack;
+    window.isNfcBackToPinActive = function() { return shouldReturnToPwdModal; };
     window.startNfcWrite = startNfcWrite;
     window.startNfcRead = startNfcRead;
     window.startNfcPermanentLock = startNfcPermanentLock;
@@ -6127,14 +6700,21 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         latestApkDownloadUrl = apkAsset ? apkAsset.browser_download_url : `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest/download/ReviewLinkGenerator.apk`;
         window.latestApkDownloadUrl = latestApkDownloadUrl;
 
-        if (updateOverlay) {
+        const updateModalBox = document.getElementById('updateModalBox');
+        const btnCheckUpdate = document.getElementById('btnCheckUpdate');
+        if (window.openMorphModal && updateOverlay && updateModalBox) {
+            window.openMorphModal(updateOverlay, updateModalBox, btnCheckUpdate);
+        } else if (updateOverlay) {
             updateOverlay.classList.add('active');
         }
     }
 
     function closeUpdateModal() {
         const updateOverlay = document.getElementById('updateOverlay');
-        if (updateOverlay) {
+        const updateModalBox = document.getElementById('updateModalBox');
+        if (window.closeMorphModal && updateOverlay && updateModalBox) {
+            window.closeMorphModal(updateOverlay, updateModalBox);
+        } else if (updateOverlay) {
             updateOverlay.classList.remove('active');
         }
     }
@@ -6353,6 +6933,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 }
             };
 
+            const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
+
             // 1. If it's already a 5-star Google review link (writereview?placeid=...)
             // Preserve it exactly as-is without re-converting or breaking it
             if (/writereview\?placeid=/i.test(text)) {
@@ -6365,7 +6947,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 }
                 updateResultLabel(text);
                 syncToolsVisibility();
-                if (resultCard) {
+                if (resultCard && !wasResultActive) {
                     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
                 return;
@@ -6390,7 +6972,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             }
             updateResultLabel(text);
             syncToolsVisibility();
-            if (resultCard) {
+            if (resultCard && !wasResultActive) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
@@ -6585,6 +7167,38 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
+        function returnToPasswordModal() {
+            const nfcOverlayEl = $('nfcOverlay');
+            const nfcModalBoxEl = $('nfcModalBox');
+            const focusAndSelectPin = () => {
+                if (nfcPinInput && pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                    nfcPinInput.focus();
+                    nfcPinInput.select();
+                }
+            };
+            if (window.transitionModalToModal && nfcOverlayEl && nfcModalBoxEl && pwdModalOverlay && pwdModalBox) {
+                window.transitionModalToModal(nfcOverlayEl, nfcModalBoxEl, pwdModalOverlay, pwdModalBox, () => {
+                    syncPwdModalText(false);
+                });
+                focusAndSelectPin();
+                requestAnimationFrame(() => updatePwdTabSlider());
+                setTimeout(() => {
+                    updatePwdTabSlider();
+                    focusAndSelectPin();
+                }, 60);
+            } else if (pwdModalOverlay) {
+                if (nfcOverlayEl) nfcOverlayEl.classList.remove('active');
+                pwdModalOverlay.classList.add('active');
+                syncPwdModalText(false);
+                focusAndSelectPin();
+                setTimeout(() => {
+                    updatePwdTabSlider();
+                    focusAndSelectPin();
+                }, 30);
+            }
+        }
+        window.returnToPasswordModal = returnToPasswordModal;
+
         if (btnPwdSubmit) {
             btnPwdSubmit.addEventListener('click', () => {
                 const pin = nfcPinInput ? nfcPinInput.value.trim() : '';
@@ -6595,12 +7209,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 }
                 if (nfcPinInput) nfcPinInput.blur();
                 const action = pwdCurrentAction;
-                if (window.closeMorphModal && pwdModalBox) {
-                    window.closeMorphModal(pwdModalOverlay, pwdModalBox, () => {
+                const nfcOverlayEl = $('nfcOverlay');
+                const nfcModalBoxEl = $('nfcModalBox');
+                if (window.transitionModalToModal && pwdModalOverlay && pwdModalBox && nfcOverlayEl && nfcModalBoxEl) {
+                    window.transitionModalToModal(pwdModalOverlay, pwdModalBox, nfcOverlayEl, nfcModalBoxEl, () => {
                         if (action === 'lock') {
-                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
+                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                         } else {
-                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
+                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                         }
                     });
                 } else {
@@ -6653,13 +7269,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                if (window.closeMorphModal && permLockBox) {
-                    window.closeMorphModal(permLockOverlay, permLockBox, () => {
-                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                const nfcOverlayEl = $('nfcOverlay');
+                const nfcModalBoxEl = $('nfcModalBox');
+                if (window.transitionModalToModal && permLockOverlay && permLockBox && nfcOverlayEl && nfcModalBoxEl) {
+                    window.transitionModalToModal(permLockOverlay, permLockBox, nfcOverlayEl, nfcModalBoxEl, () => {
+                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                     });
                 } else {
                     if (permLockOverlay) permLockOverlay.classList.remove('active');
-                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { resetCount: true });
                 }
             });
         }
@@ -6788,7 +7406,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         // ── QR Code Modal Handlers ──
-        if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
+        if (qrBtn) qrBtn.addEventListener('click', () => window.openQrModal(qrBtn));
         if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
         if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
         if (qrOverlay) {
@@ -6798,14 +7416,68 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
 
         // ── NFC Button & Modal Handlers ──
-        if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
-        if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
+        if (nfcBtn) {
+            nfcBtn.addEventListener('click', () => {
+                if (window.startNfcWrite) window.startNfcWrite(nfcBtn);
+            });
+        }
+        if (nfcCancelBtn) {
+            nfcCancelBtn.addEventListener('click', () => {
+                if (window.handleNfcCancelOrBack) {
+                    window.handleNfcCancelOrBack();
+                } else if (window.closeNfcModal) {
+                    window.closeNfcModal();
+                }
+            });
+        }
         const nfcOverlay = $('nfcOverlay');
         if (nfcOverlay) {
             nfcOverlay.addEventListener('click', e => {
                 if (e.target === nfcOverlay && window.closeNfcModal) window.closeNfcModal();
             });
         }
+
+        // ── Hardware Back Button Coordinator ──
+        window.handleAndroidBackPress = function() {
+            if (updateOverlay && updateOverlay.classList.contains('active')) {
+                if (window.closeUpdateModal) window.closeUpdateModal();
+                return true;
+            }
+            if (nfcOverlay && nfcOverlay.classList.contains('active')) {
+                if (window.handleNfcCancelOrBack) {
+                    window.handleNfcCancelOrBack();
+                } else if (window.closeNfcModal) {
+                    window.closeNfcModal();
+                }
+                return true;
+            }
+            if (pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                if (nfcPinInput) nfcPinInput.blur();
+                if (window.closeMorphModal && pwdModalBox) {
+                    window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                } else {
+                    pwdModalOverlay.classList.remove('active');
+                }
+                return true;
+            }
+            if (permLockOverlay && permLockOverlay.classList.contains('active')) {
+                if (window.closeMorphModal && permLockBox) {
+                    window.closeMorphModal(permLockOverlay, permLockBox);
+                } else {
+                    permLockOverlay.classList.remove('active');
+                }
+                return true;
+            }
+            if (qrOverlay && qrOverlay.classList.contains('active')) {
+                if (window.closeQrModal) window.closeQrModal();
+                return true;
+            }
+            if (placesDropdown && placesDropdown.classList.contains('show')) {
+                if (window.hidePlacesDropdown) window.hidePlacesDropdown();
+                return true;
+            }
+            return false;
+        };
 
         // ── In-App Update Handlers ──
         if (btnCheckUpdate) {
@@ -6926,6 +7598,33 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
+        // ── Soft Keyboard Dock Avoidance on Mobile/Native ──
+        let keyboardBlurTimer = null;
+        document.addEventListener('focusin', e => {
+            const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                if (keyboardBlurTimer) {
+                    clearTimeout(keyboardBlurTimer);
+                    keyboardBlurTimer = null;
+                }
+                document.body.classList.add('keyboard-open');
+            }
+        });
+        document.addEventListener('focusout', e => {
+            const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                if (keyboardBlurTimer) clearTimeout(keyboardBlurTimer);
+                keyboardBlurTimer = setTimeout(() => {
+                    const activeTag = document.activeElement && document.activeElement.tagName
+                        ? document.activeElement.tagName.toUpperCase()
+                        : '';
+                    if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
+                        document.body.classList.remove('keyboard-open');
+                    }
+                }, 120);
+            }
+        });
+
         // ── Language Toggle Buttons ──
         if (btnEn) btnEn.addEventListener('click', () => window.switchLanguage('en'));
         if (btnAr) btnAr.addEventListener('click', () => window.switchLanguage('ar'));
@@ -6941,6 +7640,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         window.initGoogleMapsPlaces();
         syncToolsVisibility();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
+            }).catch(() => {});
+        }
         window.addEventListener('resize', () => { 
             if (window.updateModeTabSlider) window.updateModeTabSlider(); 
             if (window.updatePwdTabSlider) window.updatePwdTabSlider();

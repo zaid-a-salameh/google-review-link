@@ -51,65 +51,97 @@
     }
 
     // ========================================================
-    // Morphing Container Transform Engine (Button-to-Modal)
+    // Smooth GPU Modal & Zero-Gap Handoff Engine
     // ========================================================
+    function clearModalTimers(overlay, modalBox) {
+        if (overlay && overlay._modalTimer) {
+            clearTimeout(overlay._modalTimer);
+            overlay._modalTimer = null;
+        }
+        if (modalBox && modalBox._modalTimer) {
+            clearTimeout(modalBox._modalTimer);
+            modalBox._modalTimer = null;
+        }
+        if (modalBox && modalBox._btnTimer) {
+            clearTimeout(modalBox._btnTimer);
+            modalBox._btnTimer = null;
+        }
+    }
+
+    function resetModalInlineStyles(modalBox) {
+        if (!modalBox) return;
+        modalBox.classList.remove('morph-expanding', 'morph-collapsing', 'morph-active');
+        modalBox.style.transition = '';
+        modalBox.style.transform = '';
+        modalBox.style.borderRadius = '';
+        modalBox.style.opacity = '';
+    }
+
+    function clampNum(val, min, max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
     function openMorphModal(overlay, modalBox, triggerBtn) {
         if (!overlay || !modalBox) return;
 
-        // Dismiss virtual keyboard to avoid viewport shifts
         if (document.activeElement && typeof document.activeElement.blur === 'function') {
             try { document.activeElement.blur(); } catch (e) {}
         }
 
-        if (!triggerBtn || typeof triggerBtn.getBoundingClientRect !== 'function') {
-            overlay.classList.add('active');
-            return;
+        clearModalTimers(overlay, modalBox);
+        overlay.classList.remove('handoff-enter', 'handoff-exit');
+        resetModalInlineStyles(modalBox);
+
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1 && typeof triggerBtn.getBoundingClientRect === 'function')
+            ? triggerBtn
+            : null;
+
+        let dx = 0;
+        let dy = 14;
+
+        if (validBtn) {
+            const btnRect = validBtn.getBoundingClientRect();
+            if (btnRect.width > 0 && btnRect.height > 0) {
+                const rawDx = (btnRect.left + btnRect.width * 0.5) - (window.innerWidth * 0.5);
+                const rawDy = (btnRect.top + btnRect.height * 0.5) - (window.innerHeight * 0.5);
+                dx = clampNum(rawDx * 0.16, -24, 24);
+                dy = clampNum(rawDy * 0.16, -32, 32);
+            }
+            modalBox.dataset.originDx = dx.toFixed(1);
+            modalBox.dataset.originDy = dy.toFixed(1);
+            modalBox._morphTriggerBtn = validBtn;
+
+            validBtn.classList.add('morph-active-btn');
+            modalBox._btnTimer = setTimeout(() => {
+                validBtn.classList.remove('morph-active-btn');
+                modalBox._btnTimer = null;
+            }, 200);
+        } else {
+            modalBox.dataset.originDx = '0';
+            modalBox.dataset.originDy = '14';
+            modalBox._morphTriggerBtn = null;
         }
 
-        const btnRect = triggerBtn.getBoundingClientRect();
-        const modalRect = modalBox.getBoundingClientRect();
-
-        // Calculate center offsets between the button and the centered modal
-        const modalCenterX = modalRect.left + (modalRect.width / 2);
-        const modalCenterY = modalRect.top + (modalRect.height / 2);
-        const btnCenterX = btnRect.left + (btnRect.width / 2);
-        const btnCenterY = btnRect.top + (btnRect.height / 2);
-
-        const deltaX = btnCenterX - modalCenterX;
-        const deltaY = btnCenterY - modalCenterY;
-        const scaleX = modalRect.width > 0 ? (btnRect.width / modalRect.width) : 0.3;
-        const scaleY = modalRect.height > 0 ? (btnRect.height / modalRect.height) : 0.2;
-
-        // Save origin parameters for collapse animation
-        modalBox.dataset.morphDeltaX = deltaX.toFixed(2);
-        modalBox.dataset.morphDeltaY = deltaY.toFixed(2);
-        modalBox.dataset.morphScaleX = scaleX.toFixed(3);
-        modalBox.dataset.morphScaleY = scaleY.toFixed(3);
-        modalBox._morphTriggerBtn = triggerBtn;
-
-        // Mark trigger button as active
-        triggerBtn.classList.add('morph-active-btn');
-
-        // Set initial state: collapsed down to button bounds
-        modalBox.classList.add('morph-expanding');
         modalBox.style.transition = 'none';
-        modalBox.style.transform = `translate3d(${deltaX.toFixed(2)}px, ${deltaY.toFixed(2)}px, 0) scale(${scaleX.toFixed(3)}, ${scaleY.toFixed(3)})`;
-        modalBox.style.borderRadius = '14px';
-        modalBox.style.opacity = '0.45';
+        modalBox.style.opacity = '0';
+        modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.92, 0.92, 1)`;
 
-        // Show overlay backdrop
         overlay.classList.add('active');
 
-        // Next paint frames: expand smoothly to center
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
-                modalBox.style.transition = 'transform 0.32s cubic-bezier(0.16, 1, 0.3, 1), border-radius 0.32s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease';
-                modalBox.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
-                modalBox.style.borderRadius = '28px';
+                modalBox.style.transition = 'transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s cubic-bezier(0.22, 1, 0.36, 1)';
                 modalBox.style.opacity = '1';
-                modalBox.classList.remove('morph-expanding');
+                modalBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
             });
         });
+
+        modalBox._modalTimer = setTimeout(() => {
+            modalBox._modalTimer = null;
+            if (overlay.classList.contains('active')) {
+                resetModalInlineStyles(modalBox);
+            }
+        }, 255);
     }
 
     function closeMorphModal(overlay, modalBox, callback) {
@@ -118,53 +150,114 @@
             return;
         }
 
-        const deltaX = modalBox ? modalBox.dataset.morphDeltaX : null;
-        const deltaY = modalBox ? modalBox.dataset.morphDeltaY : null;
-        const scaleX = modalBox ? modalBox.dataset.morphScaleX : null;
-        const scaleY = modalBox ? modalBox.dataset.morphScaleY : null;
-        const triggerBtn = modalBox ? modalBox._morphTriggerBtn : null;
+        clearModalTimers(overlay, modalBox);
+        overlay.classList.remove('handoff-enter', 'handoff-exit');
 
-        if (modalBox && deltaX !== null && deltaY !== null && scaleX && scaleY) {
-            modalBox.classList.add('morph-collapsing');
-            modalBox.style.transition = 'transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-radius 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s cubic-bezier(0.4, 0, 1, 1)';
-            modalBox.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(${scaleX}, ${scaleY})`;
-            modalBox.style.borderRadius = '14px';
+        const triggerBtn = modalBox ? modalBox._morphTriggerBtn : null;
+        if (triggerBtn) {
+            triggerBtn.classList.remove('morph-active-btn');
+        }
+
+        if (modalBox) {
+            const dx = (parseFloat(modalBox.dataset.originDx) || 0) * 0.65;
+            const dy = (parseFloat(modalBox.dataset.originDy) || 14) * 0.65;
+
+            modalBox.style.transition = 'transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.16s cubic-bezier(0.4, 0, 1, 1)';
             modalBox.style.opacity = '0';
+            modalBox.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0) scale3d(0.94, 0.94, 1)`;
             overlay.classList.remove('active');
 
-            if (triggerBtn) {
-                setTimeout(() => {
-                    triggerBtn.classList.remove('morph-active-btn');
-                }, 180);
-            }
-
-            setTimeout(() => {
-                modalBox.classList.remove('morph-active', 'morph-collapsing');
-                modalBox.style.transition = '';
-                modalBox.style.transform = '';
-                modalBox.style.borderRadius = '';
-                modalBox.style.opacity = '';
-                delete modalBox.dataset.morphDeltaX;
-                delete modalBox.dataset.morphDeltaY;
-                delete modalBox.dataset.morphScaleX;
-                delete modalBox.dataset.morphScaleY;
-                if (triggerBtn) {
-                    triggerBtn.classList.remove('morph-active-btn');
-                    modalBox._morphTriggerBtn = null;
-                }
+            modalBox._modalTimer = setTimeout(() => {
+                modalBox._modalTimer = null;
+                resetModalInlineStyles(modalBox);
+                delete modalBox.dataset.originDx;
+                delete modalBox.dataset.originDy;
+                modalBox._morphTriggerBtn = null;
                 if (typeof callback === 'function') callback();
-            }, 300);
+            }, 195);
         } else {
             overlay.classList.remove('active');
-            if (triggerBtn) {
-                triggerBtn.classList.remove('morph-active-btn');
-                if (modalBox) modalBox._morphTriggerBtn = null;
-            }
             if (typeof callback === 'function') callback();
         }
+    }
+
+    function transitionModalToModal(fromOverlay, fromBox, toOverlay, toBox, onBeforeEnter) {
+        if (!toOverlay || !toBox) {
+            if (typeof onBeforeEnter === 'function') onBeforeEnter();
+            return;
+        }
+
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
+
+        clearModalTimers(fromOverlay, fromBox);
+        clearModalTimers(toOverlay, toBox);
+
+        if (fromBox && toBox) {
+            if (fromBox.dataset.originDx && !toBox.dataset.originDx) {
+                toBox.dataset.originDx = fromBox.dataset.originDx;
+                toBox.dataset.originDy = fromBox.dataset.originDy || '14';
+            }
+            if (fromBox._morphTriggerBtn && !toBox._morphTriggerBtn) {
+                toBox._morphTriggerBtn = fromBox._morphTriggerBtn;
+            }
+            if (fromBox._morphTriggerBtn) {
+                fromBox._morphTriggerBtn.classList.remove('morph-active-btn');
+            }
+        }
+
+        if (typeof onBeforeEnter === 'function') {
+            onBeforeEnter();
+        }
+
+        const wasFromActive = fromOverlay && fromOverlay.classList.contains('active');
+
+        if (wasFromActive && fromOverlay && fromBox) {
+            fromOverlay.classList.remove('handoff-enter');
+            fromOverlay.classList.add('handoff-exit');
+            fromBox.style.transition = 'transform 0.16s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.14s ease';
+            fromBox.style.opacity = '0';
+            fromBox.style.transform = 'translate3d(0, -6px, 0) scale3d(0.94, 0.94, 1)';
+
+            fromOverlay._modalTimer = setTimeout(() => {
+                fromOverlay._modalTimer = null;
+                fromOverlay.classList.remove('active', 'handoff-exit');
+                resetModalInlineStyles(fromBox);
+            }, 175);
+        } else if (fromOverlay) {
+            fromOverlay.classList.remove('active', 'handoff-enter', 'handoff-exit');
+            resetModalInlineStyles(fromBox);
+        }
+
+        toOverlay.classList.remove('handoff-exit');
+        if (wasFromActive) {
+            toOverlay.classList.add('handoff-enter');
+        }
+        toBox.style.transition = 'none';
+        toBox.style.opacity = '0';
+        toBox.style.transform = 'translate3d(0, 10px, 0) scale3d(0.94, 0.94, 1)';
+        toOverlay.classList.add('active');
+
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                toBox.style.transition = 'transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1)';
+                toBox.style.opacity = '1';
+                toBox.style.transform = 'translate3d(0, 0, 0) scale3d(1, 1, 1)';
+            });
+        });
+
+        toBox._modalTimer = setTimeout(() => {
+            toBox._modalTimer = null;
+            toOverlay.classList.remove('handoff-enter');
+            if (toOverlay.classList.contains('active')) {
+                resetModalInlineStyles(toBox);
+            }
+        }, 235);
     }
 
     window.showToast = showToast;
     window.openMorphModal = openMorphModal;
     window.closeMorphModal = closeMorphModal;
+    window.transitionModalToModal = transitionModalToModal;
 })();

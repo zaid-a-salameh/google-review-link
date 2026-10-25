@@ -86,6 +86,8 @@
                 }
             };
 
+            const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
+
             // 1. If it's already a 5-star Google review link (writereview?placeid=...)
             // Preserve it exactly as-is without re-converting or breaking it
             if (/writereview\?placeid=/i.test(text)) {
@@ -98,7 +100,7 @@
                 }
                 updateResultLabel(text);
                 syncToolsVisibility();
-                if (resultCard) {
+                if (resultCard && !wasResultActive) {
                     resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 }
                 return;
@@ -123,7 +125,7 @@
             }
             updateResultLabel(text);
             syncToolsVisibility();
-            if (resultCard) {
+            if (resultCard && !wasResultActive) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
@@ -318,6 +320,38 @@
             });
         }
 
+        function returnToPasswordModal() {
+            const nfcOverlayEl = $('nfcOverlay');
+            const nfcModalBoxEl = $('nfcModalBox');
+            const focusAndSelectPin = () => {
+                if (nfcPinInput && pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                    nfcPinInput.focus();
+                    nfcPinInput.select();
+                }
+            };
+            if (window.transitionModalToModal && nfcOverlayEl && nfcModalBoxEl && pwdModalOverlay && pwdModalBox) {
+                window.transitionModalToModal(nfcOverlayEl, nfcModalBoxEl, pwdModalOverlay, pwdModalBox, () => {
+                    syncPwdModalText(false);
+                });
+                focusAndSelectPin();
+                requestAnimationFrame(() => updatePwdTabSlider());
+                setTimeout(() => {
+                    updatePwdTabSlider();
+                    focusAndSelectPin();
+                }, 60);
+            } else if (pwdModalOverlay) {
+                if (nfcOverlayEl) nfcOverlayEl.classList.remove('active');
+                pwdModalOverlay.classList.add('active');
+                syncPwdModalText(false);
+                focusAndSelectPin();
+                setTimeout(() => {
+                    updatePwdTabSlider();
+                    focusAndSelectPin();
+                }, 30);
+            }
+        }
+        window.returnToPasswordModal = returnToPasswordModal;
+
         if (btnPwdSubmit) {
             btnPwdSubmit.addEventListener('click', () => {
                 const pin = nfcPinInput ? nfcPinInput.value.trim() : '';
@@ -328,12 +362,14 @@
                 }
                 if (nfcPinInput) nfcPinInput.blur();
                 const action = pwdCurrentAction;
-                if (window.closeMorphModal && pwdModalBox) {
-                    window.closeMorphModal(pwdModalOverlay, pwdModalBox, () => {
+                const nfcOverlayEl = $('nfcOverlay');
+                const nfcModalBoxEl = $('nfcModalBox');
+                if (window.transitionModalToModal && pwdModalOverlay && pwdModalBox && nfcOverlayEl && nfcModalBoxEl) {
+                    window.transitionModalToModal(pwdModalOverlay, pwdModalBox, nfcOverlayEl, nfcModalBoxEl, () => {
                         if (action === 'lock') {
-                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag);
+                            if (window.startNfcPasswordLock) window.startNfcPasswordLock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                         } else {
-                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag);
+                            if (window.startNfcPasswordUnlock) window.startNfcPasswordUnlock(pin, btnPwdLockTag, { skipOpenAnimation: true });
                         }
                     });
                 } else {
@@ -386,13 +422,15 @@
 
         if (btnPermLockConfirm) {
             btnPermLockConfirm.addEventListener('click', () => {
-                if (window.closeMorphModal && permLockBox) {
-                    window.closeMorphModal(permLockOverlay, permLockBox, () => {
-                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                const nfcOverlayEl = $('nfcOverlay');
+                const nfcModalBoxEl = $('nfcModalBox');
+                if (window.transitionModalToModal && permLockOverlay && permLockBox && nfcOverlayEl && nfcModalBoxEl) {
+                    window.transitionModalToModal(permLockOverlay, permLockBox, nfcOverlayEl, nfcModalBoxEl, () => {
+                        if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { skipOpenAnimation: true, resetCount: true });
                     });
                 } else {
                     if (permLockOverlay) permLockOverlay.classList.remove('active');
-                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag);
+                    if (window.startNfcPermanentLock) window.startNfcPermanentLock(btnPermLockTag, { resetCount: true });
                 }
             });
         }
@@ -521,7 +559,7 @@
         }
 
         // ── QR Code Modal Handlers ──
-        if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
+        if (qrBtn) qrBtn.addEventListener('click', () => window.openQrModal(qrBtn));
         if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
         if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
         if (qrOverlay) {
@@ -531,14 +569,68 @@
         }
 
         // ── NFC Button & Modal Handlers ──
-        if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
-        if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
+        if (nfcBtn) {
+            nfcBtn.addEventListener('click', () => {
+                if (window.startNfcWrite) window.startNfcWrite(nfcBtn);
+            });
+        }
+        if (nfcCancelBtn) {
+            nfcCancelBtn.addEventListener('click', () => {
+                if (window.handleNfcCancelOrBack) {
+                    window.handleNfcCancelOrBack();
+                } else if (window.closeNfcModal) {
+                    window.closeNfcModal();
+                }
+            });
+        }
         const nfcOverlay = $('nfcOverlay');
         if (nfcOverlay) {
             nfcOverlay.addEventListener('click', e => {
                 if (e.target === nfcOverlay && window.closeNfcModal) window.closeNfcModal();
             });
         }
+
+        // ── Hardware Back Button Coordinator ──
+        window.handleAndroidBackPress = function() {
+            if (updateOverlay && updateOverlay.classList.contains('active')) {
+                if (window.closeUpdateModal) window.closeUpdateModal();
+                return true;
+            }
+            if (nfcOverlay && nfcOverlay.classList.contains('active')) {
+                if (window.handleNfcCancelOrBack) {
+                    window.handleNfcCancelOrBack();
+                } else if (window.closeNfcModal) {
+                    window.closeNfcModal();
+                }
+                return true;
+            }
+            if (pwdModalOverlay && pwdModalOverlay.classList.contains('active')) {
+                if (nfcPinInput) nfcPinInput.blur();
+                if (window.closeMorphModal && pwdModalBox) {
+                    window.closeMorphModal(pwdModalOverlay, pwdModalBox);
+                } else {
+                    pwdModalOverlay.classList.remove('active');
+                }
+                return true;
+            }
+            if (permLockOverlay && permLockOverlay.classList.contains('active')) {
+                if (window.closeMorphModal && permLockBox) {
+                    window.closeMorphModal(permLockOverlay, permLockBox);
+                } else {
+                    permLockOverlay.classList.remove('active');
+                }
+                return true;
+            }
+            if (qrOverlay && qrOverlay.classList.contains('active')) {
+                if (window.closeQrModal) window.closeQrModal();
+                return true;
+            }
+            if (placesDropdown && placesDropdown.classList.contains('show')) {
+                if (window.hidePlacesDropdown) window.hidePlacesDropdown();
+                return true;
+            }
+            return false;
+        };
 
         // ── In-App Update Handlers ──
         if (btnCheckUpdate) {
@@ -659,6 +751,33 @@
             });
         }
 
+        // ── Soft Keyboard Dock Avoidance on Mobile/Native ──
+        let keyboardBlurTimer = null;
+        document.addEventListener('focusin', e => {
+            const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                if (keyboardBlurTimer) {
+                    clearTimeout(keyboardBlurTimer);
+                    keyboardBlurTimer = null;
+                }
+                document.body.classList.add('keyboard-open');
+            }
+        });
+        document.addEventListener('focusout', e => {
+            const tag = e.target && e.target.tagName ? e.target.tagName.toUpperCase() : '';
+            if (tag === 'INPUT' || tag === 'TEXTAREA') {
+                if (keyboardBlurTimer) clearTimeout(keyboardBlurTimer);
+                keyboardBlurTimer = setTimeout(() => {
+                    const activeTag = document.activeElement && document.activeElement.tagName
+                        ? document.activeElement.tagName.toUpperCase()
+                        : '';
+                    if (activeTag !== 'INPUT' && activeTag !== 'TEXTAREA') {
+                        document.body.classList.remove('keyboard-open');
+                    }
+                }, 120);
+            }
+        });
+
         // ── Language Toggle Buttons ──
         if (btnEn) btnEn.addEventListener('click', () => window.switchLanguage('en'));
         if (btnAr) btnAr.addEventListener('click', () => window.switchLanguage('ar'));
@@ -674,6 +793,12 @@
         window.initGoogleMapsPlaces();
         syncToolsVisibility();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
+            }).catch(() => {});
+        }
         window.addEventListener('resize', () => { 
             if (window.updateModeTabSlider) window.updateModeTabSlider(); 
             if (window.updatePwdTabSlider) window.updatePwdTabSlider();

@@ -2,7 +2,8 @@ import os
 import shutil
 import re
 
-ROOT_DIR = r"C:\Users\Zaid-PC\Desktop\Projects\Google Link"
+_CWD = os.getcwd()
+ROOT_DIR = _CWD if (os.path.isdir(os.path.join(_CWD, "src")) and os.path.isdir(os.path.join(_CWD, "android-app"))) else os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(ROOT_DIR, "src")
 ASSETS_DIR = os.path.join(ROOT_DIR, "android-app", "app", "src", "main", "assets")
 

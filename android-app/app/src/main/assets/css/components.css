@@ -54,8 +54,10 @@
         .mode-tab span {
             white-space: nowrap;
         }
-        .mode-tab:hover {
-            color: #ffffff;
+        @media (hover: hover) and (pointer: fine) {
+            .mode-tab:hover {
+                color: #ffffff;
+            }
         }
         .mode-tab.active {
             color: #ffffff;
@@ -92,30 +94,29 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
-                        visibility 0.24s;
-            will-change: transform, opacity;
+            transition: opacity 0.18s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0.22s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
         }
 
         /* LTR Slide Offsets */
         #modeLinkContent {
-            transform: translate3d(-24px, 0, 0);
+            transform: translate3d(-16px, 0, 0);
         }
         #modeSearchContent {
-            transform: translate3d(24px, 0, 0);
+            transform: translate3d(16px, 0, 0);
         }
 
         /* RTL Slide Offsets (Arabic Mode) */
         html[lang="ar"] #modeLinkContent,
         [dir="rtl"] #modeLinkContent {
-            transform: translate3d(24px, 0, 0);
+            transform: translate3d(16px, 0, 0);
         }
         html[lang="ar"] #modeSearchContent,
         [dir="rtl"] #modeSearchContent {
-            transform: translate3d(-24px, 0, 0);
+            transform: translate3d(-16px, 0, 0);
         }
 
         /* Active State */
@@ -124,8 +125,9 @@
             visibility: visible;
             pointer-events: auto;
             transform: translate3d(0, 0, 0) !important;
-            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
+                        transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                        visibility 0s linear 0s;
         }
 
         .mode-content:has(.places-dropdown.show),
@@ -427,48 +429,89 @@
             box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
         }
 
-        /* Floating GitHub Corner Button */
-        .fab-github {
+        /* Bottom Docked Rectangular GitHub Button */
+        .bottom-github-dock {
             position: fixed;
-            bottom: max(16px, env(safe-area-inset-bottom, 16px));
-            inset-inline-end: 16px;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: rgba(28, 25, 23, 0.88);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #d6d3d1;
-            display: inline-flex;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 85;
+            display: flex;
+            justify-content: center;
+            padding: 12px 16px max(14px, env(safe-area-inset-bottom, 14px));
+            background: linear-gradient(to top, rgba(12, 10, 9, 0.96) 38%, rgba(12, 10, 9, 0.72) 74%, rgba(12, 10, 9, 0) 100%);
+            pointer-events: none;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+            transform: translate3d(0, 0, 0);
+        }
+        body.is-native-app .bottom-github-dock {
+            padding: 10px 16px 12px;
+        }
+        body.keyboard-open .bottom-github-dock {
+            transform: translate3d(0, 115%, 0);
+            opacity: 0;
+        }
+        .fab-github {
+            pointer-events: auto;
+            width: 100%;
+            max-width: 450px;
+            height: 50px;
+            padding: 0 18px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(34, 30, 28, 0.96) 0%, rgba(22, 19, 18, 0.98) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #fafaf9;
+            display: flex;
             align-items: center;
             justify-content: center;
+            gap: 10px;
             text-decoration: none;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
-            transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.2s, border-color 0.2s, box-shadow 0.2s, color 0.2s;
-            z-index: 85;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 700;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
             cursor: pointer;
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .fab-github svg {
-            width: 22px;
-            height: 22px;
+        .fab-github-logo {
+            width: 20px;
+            height: 20px;
             fill: currentColor;
+            flex-shrink: 0;
             transition: transform 0.2s ease;
         }
-        .fab-github:hover {
-            transform: scale(1.08);
-            background: rgba(41, 37, 36, 0.96);
-            border-color: rgba(255, 255, 255, 0.32);
-            color: #ffffff;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), 0 0 12px rgba(255, 255, 255, 0.12);
+        .fab-github-label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .fab-github:hover svg {
-            transform: rotate(6deg) scale(1.05);
+        .fab-github-ext {
+            width: 15px;
+            height: 15px;
+            fill: var(--text-sub);
+            flex-shrink: 0;
+            opacity: 0.78;
+            transition: transform 0.2s ease, opacity 0.2s ease, fill 0.2s ease;
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .fab-github:hover {
+                transform: translate3d(0, -1px, 0);
+                background: linear-gradient(135deg, rgba(44, 39, 36, 0.98) 0%, rgba(28, 25, 23, 0.99) 100%);
+                border-color: rgba(167, 139, 250, 0.45);
+                box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65), 0 0 18px rgba(139, 92, 246, 0.18);
+            }
+            .fab-github:hover .fab-github-ext {
+                opacity: 1;
+                fill: #c4b5fd;
+                transform: translate3d(1px, -1px, 0);
+            }
         }
         .fab-github:active {
-            transform: scale(0.92);
-            background: rgba(20, 18, 16, 0.98);
+            transform: scale3d(0.975, 0.975, 1);
+            border-color: rgba(139, 92, 246, 0.5);
+            background: rgba(20, 18, 16, 0.99);
         }
 
         /* Standalone NFC Card Action Tools */
@@ -487,7 +530,7 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background: rgba(18, 16, 15, 0.85);
+            background: rgba(18, 16, 15, 0.88);
             border: 1px solid var(--border);
             border-radius: 14px;
             padding: 10px 4px;
@@ -496,36 +539,47 @@
             font-weight: 700;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
             text-align: center;
             line-height: 1.25;
             min-height: 66px;
             user-select: none;
         }
-        .btn-card-tool:hover,
+        @media (hover: hover) and (pointer: fine) {
+            .btn-card-tool:hover {
+                background: rgba(124, 58, 237, 0.16);
+                border-color: rgba(139, 92, 246, 0.45);
+                color: #ffffff;
+                transform: translate3d(0, -1px, 0);
+            }
+            .btn-card-tool:hover svg {
+                fill: #ffffff;
+                transform: scale3d(1.08, 1.08, 1);
+            }
+            .btn-card-tool.btn-tool-danger:hover {
+                background: rgba(245, 39, 125, 0.14);
+                border-color: rgba(245, 39, 125, 0.55);
+                color: #ffffff;
+            }
+        }
         .btn-card-tool:active {
-            background: rgba(124, 58, 237, 0.16);
-            border-color: rgba(139, 92, 246, 0.45);
+            background: rgba(124, 58, 237, 0.18);
+            border-color: rgba(139, 92, 246, 0.5);
             color: #ffffff;
-            transform: translateY(-1px);
+            transform: scale3d(0.95, 0.95, 1);
         }
         .btn-card-tool svg {
-            width: 18px;
-            height: 18px;
+            width: 19px;
+            height: 19px;
             fill: #a78bfa;
-            transition: transform 0.2s ease, fill 0.2s ease;
+            transition: transform 0.18s ease, fill 0.18s ease;
             flex-shrink: 0;
-        }
-        .btn-card-tool:hover svg {
-            fill: #ffffff;
-            transform: scale(1.1);
         }
         .btn-card-tool.btn-tool-danger {
             border-color: rgba(245, 39, 125, 0.25);
         }
-        .btn-card-tool.btn-tool-danger:hover,
         .btn-card-tool.btn-tool-danger:active {
-            background: rgba(245, 39, 125, 0.14);
+            background: rgba(245, 39, 125, 0.16);
             border-color: rgba(245, 39, 125, 0.55);
             color: #ffffff;
         }
@@ -533,8 +587,7 @@
             fill: #F5277D;
         }
         .btn-card-tool.morph-active-btn {
-            transform: scale(0.95) !important;
-            opacity: 0.7 !important;
-            border-color: rgba(249, 115, 22, 0.6) !important;
-            transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.26s ease, border-color 0.26s ease;
+            transform: scale3d(0.95, 0.95, 1) !important;
+            opacity: 0.78 !important;
+            transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
         }

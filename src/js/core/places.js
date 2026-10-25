@@ -327,6 +327,7 @@
         resetAutocompleteSessionToken();
 
         if (placeId) {
+            const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
             if (window.AppModes) {
                 window.AppModes.setModeResult('search', reviewUrl);
@@ -335,7 +336,7 @@
                 if (resultLinkText) resultLinkText.textContent = reviewUrl;
                 if (resultCard) resultCard.classList.add('active');
             }
-            if (resultCard && (!window.AppModes || window.AppModes.search.isResultActive)) {
+            if (resultCard && !wasResultActive && (!window.AppModes || window.AppModes.search.isResultActive)) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
             if (window.showToast) window.showToast(dict.toastSelectSuccess || 'Business selected and review link generated', 'success');

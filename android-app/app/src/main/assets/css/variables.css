@@ -66,9 +66,7 @@
         }
 
         body.is-native-app {
-            padding: 16px;
-            padding-top: max(56px, env(safe-area-inset-top, 56px));
-            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            padding: 14px 16px 96px;
         }
 
         html[lang="ar"] body,
@@ -77,32 +75,31 @@
         }
 
 
-        /* Ambient Lighting */
+        /* Ambient Lighting (GPU-Friendly Radial Gradients without Expensive Blur Filter) */
         .ambient-glow {
             position: fixed;
-            width: 340px;
-            height: 340px;
+            width: 520px;
+            height: 520px;
             border-radius: 50%;
-            filter: blur(100px);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.35;
+            opacity: 0.42;
+            transform: translateZ(0);
         }
         .glow-top {
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.5) 0%, transparent 70%);
-            top: -70px;
-            right: -70px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, rgba(139, 92, 246, 0.09) 38%, rgba(139, 92, 246, 0) 70%);
+            top: -160px;
+            right: -160px;
         }
         .glow-bottom {
-            background: radial-gradient(circle, rgba(124, 58, 237, 0.35) 0%, transparent 70%);
-            bottom: -90px;
-            left: -80px;
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0.07) 38%, rgba(124, 58, 237, 0) 70%);
+            bottom: -180px;
+            left: -170px;
         }
 
 
         /* ======================================================== */
-        /* Language Text Continuous Vertical Roll Animation        */
-        /* (Mirrors Lock/Unlock Modal Text Slide Effect)            */
+        /* Language Text Continuous Vertical Roll Animation         */
         /* ======================================================== */
         .lang-slide-text,
         #appTitle,
@@ -112,6 +109,7 @@
         .result-label,
         .btn-action span,
         .tool-btn span,
+        .fab-github-label,
         .qr-title,
         .qr-desc,
         .nfc-title,
@@ -130,11 +128,21 @@
         .feature-card p,
         .faq-question span,
         .faq-answer p {
-            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: transform, opacity;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
             backface-visibility: hidden;
-            transform: translate3d(0, 0, 0);
+        }
+
+        body.is-lang-animating .lang-slide-text,
+        body.is-lang-animating #appTitle,
+        body.is-lang-animating #appSubtitle,
+        body.is-lang-animating .mode-tab span,
+        body.is-lang-animating .btn-card-tool span,
+        body.is-lang-animating .result-label,
+        body.is-lang-animating .btn-action span,
+        body.is-lang-animating .tool-btn span,
+        body.is-lang-animating .fab-github-label {
+            will-change: transform, opacity;
         }
 
         /* Phase 1 (Exit): Outgoing text slides UP and fades out */
@@ -146,6 +154,7 @@
         body.is-lang-switching .result-label,
         body.is-lang-switching .btn-action span,
         body.is-lang-switching .tool-btn span,
+        body.is-lang-switching .fab-github-label,
         body.is-lang-switching .qr-title,
         body.is-lang-switching .qr-desc,
         body.is-lang-switching .nfc-title,
@@ -179,6 +188,7 @@
         body.is-lang-entering .result-label,
         body.is-lang-entering .btn-action span,
         body.is-lang-entering .tool-btn span,
+        body.is-lang-entering .fab-github-label,
         body.is-lang-entering .qr-title,
         body.is-lang-entering .qr-desc,
         body.is-lang-entering .nfc-title,
@@ -214,118 +224,113 @@
 
 
         /* ======================================================== */
-        /* Page Opening & Entrance Animations (Smooth Cascade)     */
+        /* Page Opening & Entrance Animations (Smooth GPU Cascade)  */
         /* ======================================================== */
         @keyframes pageGlowBloom {
             0% {
                 opacity: 0;
-                transform: scale(0.65);
+                transform: scale3d(0.85, 0.85, 1);
             }
             100% {
-                opacity: 0.35;
-                transform: scale(1);
+                opacity: 0.42;
+                transform: scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageNavSlideDown {
             0% {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translate3d(0, -14px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         @keyframes pageFadeSlideUp {
             0% {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translate3d(0, 12px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         @keyframes pageIconSpring {
             0% {
                 opacity: 0;
-                transform: scale(0.7) rotate(-8deg);
-            }
-            65% {
-                transform: scale(1.05) rotate(1deg);
+                transform: scale3d(0.84, 0.84, 1);
             }
             100% {
                 opacity: 1;
-                transform: scale(1) rotate(0deg);
+                transform: scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageCardFloat {
             0% {
                 opacity: 0;
-                transform: translateY(32px) scale(0.97);
-                filter: blur(4px);
+                transform: translate3d(0, 16px, 0) scale3d(0.985, 0.985, 1);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0px);
+                transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageSectionCascade {
             0% {
                 opacity: 0;
-                transform: translateY(28px);
+                transform: translate3d(0, 18px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         /* Entrance Assignments with Orchestrated Delays */
         .ambient-glow {
-            animation: pageGlowBloom 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: pageGlowBloom 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
         .desktop-navbar {
-            animation: pageNavSlideDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: pageNavSlideDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
         .top-bar {
-            animation: pageFadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+            animation: pageFadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.03s backwards;
         }
 
         header {
-            animation: pageFadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+            animation: pageFadeSlideUp 0.46s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
         }
 
         .app-icon {
-            animation: pageIconSpring 0.85s cubic-bezier(0.34, 1.4, 0.64, 1) 0.12s backwards;
+            animation: pageIconSpring 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s backwards;
         }
 
-        .glass-card {
-            animation: pageCardFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards;
+        .main-input-card {
+            animation: pageCardFloat 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.11s backwards;
         }
 
         #howItWorksSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s backwards;
         }
 
         #featuresSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.42s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.24s backwards;
         }
 
         #faqSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s backwards;
         }
 
         .app-footer {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.36s backwards;
         }
 
         /* Seamless Interruption Handling: When switching languages, cancel entrance keyframes */
@@ -334,6 +339,7 @@
         body.is-lang-switching .top-bar,
         body.is-lang-switching header,
         body.is-lang-switching .app-icon,
+        body.is-lang-switching .main-input-card,
         body.is-lang-switching .glass-card,
         body.is-lang-switching .marketing-section,
         body.is-lang-switching #faqSection,

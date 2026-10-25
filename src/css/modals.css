@@ -3,9 +3,9 @@
         .nfc-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -14,37 +14,44 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
-            will-change: opacity, visibility;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+        }
+        body.is-native-app .nfc-overlay,
+        body.is-native-app .qr-overlay,
+        body.is-native-app .update-overlay,
+        body.is-native-app .pwd-overlay,
+        body.is-native-app .perm-lock-overlay {
+            background: rgba(8, 7, 6, 0.85);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .nfc-overlay.active {
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
         .nfc-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.96);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 28px;
             padding: 32px 24px 28px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.2);
             opacity: 0;
-            transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.24s ease;
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease, border-color 0.24s ease, box-shadow 0.24s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
             contain: layout style;
         }
         .nfc-overlay.active .nfc-modal {
             opacity: 1;
-            transform: scale(1) translateY(0) translateZ(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
         }
         .nfc-wave-container {
             position: relative;
@@ -61,8 +68,8 @@
             border-radius: 50%;
             border: 2px solid rgba(139, 92, 246, 0.5);
             animation: nfcPulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
-            will-change: transform, opacity;
             transform: translateZ(0);
+            transition: opacity 0.24s ease, border-color 0.24s ease;
         }
         .nfc-overlay:not(.active) .nfc-wave-ring {
             animation-play-state: paused;
@@ -71,8 +78,8 @@
             animation-delay: 0.6s;
         }
         @keyframes nfcPulse {
-            0% { transform: scale(0.7) translateZ(0); opacity: 0.9; }
-            100% { transform: scale(1.6) translateZ(0); opacity: 0; }
+            0% { transform: scale3d(0.72, 0.72, 1); opacity: 0.88; }
+            100% { transform: scale3d(1.58, 1.58, 1); opacity: 0; }
         }
         .nfc-icon-circle {
             position: relative;
@@ -81,30 +88,61 @@
             height: 72px;
             border-radius: 50%;
             background: var(--primary-gradient);
+            border: 2px solid transparent;
             display: flex;
             align-items: center;
             justify-content: center;
             box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
-            transition: all 0.3s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), background 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+            outline: none;
+            -webkit-tap-highlight-color: transparent;
         }
         .nfc-icon-circle svg {
             width: 36px;
             height: 36px;
             fill: #ffffff;
-            transition: transform 0.3s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), fill 0.24s ease, opacity 0.24s ease;
         }
-        .nfc-modal.success {
-            animation: modalHapticThump 0.45s cubic-bezier(0.25, 1, 0.5, 1);
+        .nfc-modal.success,
+        .nfc-modal.perm-lock-thump {
+            animation: modalHapticThump 0.42s cubic-bezier(0.22, 1, 0.36, 1);
         }
         @keyframes modalHapticThump {
-            0% { transform: scale(1); }
-            30% { transform: scale(1.035) translateY(-2px); }
-            55% { transform: scale(0.985) translateY(1px); }
-            80% { transform: scale(1.01); }
-            100% { transform: scale(1); }
+            0% { transform: scale3d(1, 1, 1); }
+            30% { transform: scale3d(1.03, 1.03, 1) translate3d(0, -2px, 0); }
+            60% { transform: scale3d(0.99, 0.99, 1) translate3d(0, 1px, 0); }
+            100% { transform: scale3d(1, 1, 1); }
         }
         .nfc-modal.success .nfc-wave-ring {
-            display: none;
+            opacity: 0;
+            animation-play-state: paused;
+        }
+        .nfc-modal.perm-lock-standby {
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 32px rgba(16, 185, 129, 0.16);
+        }
+        .nfc-modal.perm-lock-standby .nfc-wave-container {
+            cursor: pointer;
+        }
+        .nfc-modal.perm-lock-standby .nfc-wave-ring {
+            opacity: 0;
+            animation-play-state: paused;
+        }
+        .nfc-modal.perm-lock-standby .nfc-icon-circle {
+            background: rgba(34, 30, 28, 0.96) !important;
+            border: 2px dashed rgba(168, 162, 158, 0.42);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+            transform: scale3d(0.95, 0.95, 1);
+            cursor: pointer;
+        }
+        .nfc-modal.perm-lock-standby .nfc-icon-circle svg {
+            fill: #a8a29e;
+            opacity: 0.48;
+            transform: scale3d(0.92, 0.92, 1);
+        }
+        .nfc-modal.perm-lock-standby .nfc-wave-container:active .nfc-icon-circle {
+            transform: scale3d(0.88, 0.88, 1);
+            border-color: rgba(245, 39, 125, 0.65);
         }
         .nfc-modal.success .nfc-icon-circle {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -138,7 +176,8 @@
             40%, 80% { transform: scale(0.99) translateX(6px); }
         }
         .nfc-modal.error .nfc-wave-ring {
-            display: none;
+            opacity: 0;
+            animation-play-state: paused;
         }
         .nfc-modal.error .nfc-icon-circle {
             background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
@@ -290,17 +329,52 @@
             flex: 1;
             width: 100%;
             height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid var(--border);
             border-radius: var(--radius-btn);
             color: var(--text-sub);
+            font-family: inherit;
             font-size: 13px;
             font-weight: 700;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
         }
         .btn-nfc-cancel:active {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.16);
+            transform: scale3d(0.97, 0.97, 1);
+        }
+        .nfc-back-icon {
+            display: none;
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+        .btn-nfc-cancel.is-back-btn {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.26);
+            color: #fafaf9;
+        }
+        .btn-nfc-cancel.is-back-btn .nfc-back-icon {
+            display: block;
+        }
+        [dir="rtl"] .btn-nfc-cancel.is-back-btn .nfc-back-icon,
+        html[lang="ar"] .btn-nfc-cancel.is-back-btn .nfc-back-icon {
+            transform: scaleX(-1);
+        }
+        .nfc-modal.perm-lock-standby .btn-nfc-cancel {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-color: rgba(16, 185, 129, 0.5);
+            color: #ffffff;
+            box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+        }
+        .nfc-modal.perm-lock-standby .btn-nfc-cancel:active {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: scale3d(0.97, 0.97, 1);
         }
         .nfc-modal.success .btn-nfc-cancel {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
@@ -363,9 +437,9 @@
         .qr-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -373,29 +447,30 @@
             padding: 24px;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
             visibility: hidden;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
         }
         .qr-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
         .qr-modal {
             width: 100%;
             max-width: 320px;
-            background: rgba(28, 25, 23, 0.95);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 28px;
             padding: 28px 24px 24px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(124, 58, 237, 0.2);
-            transform: scale(0.82) translateY(24px);
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
             opacity: 0;
-            transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease;
         }
         .qr-overlay.active .qr-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .qr-title {
@@ -477,9 +552,9 @@
         .update-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.82);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.84);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1050;
             display: flex;
             align-items: center;
@@ -488,12 +563,13 @@
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
         }
         .update-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
         .update-modal {
             width: 100%;
@@ -503,15 +579,15 @@
             border-radius: 24px;
             padding: 22px 20px 20px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(124, 58, 237, 0.22);
-            transform: scale(0.92) translateY(20px);
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease;
             display: flex;
             flex-direction: column;
             gap: 14px;
         }
         .update-overlay.active .update-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .update-header {
@@ -766,9 +842,9 @@
         .perm-lock-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.78);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
+            background: rgba(8, 7, 6, 0.82);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -777,8 +853,7 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.28s;
-            will-change: opacity, visibility;
+            transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             overscroll-behavior: contain;
@@ -788,80 +863,78 @@
             opacity: 1;
             visibility: visible;
             pointer-events: auto;
+            transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
         }
+
+        /* Seamless Zero-Gap Modal-to-Modal Handoff States */
+        .nfc-overlay.handoff-enter,
+        .pwd-overlay.handoff-enter,
+        .perm-lock-overlay.handoff-enter {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transition: none !important;
+        }
+        .nfc-overlay.handoff-exit,
+        .pwd-overlay.handoff-exit,
+        .perm-lock-overlay.handoff-exit {
+            background: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            pointer-events: none !important;
+            transition: none !important;
+        }
+
         .pwd-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.96);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(245, 39, 125, 0.4);
             border-radius: 28px;
             padding: 26px 22px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.22);
             opacity: 0;
-            transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.24s ease, 
-                        border-color 0.32s ease, 
-                        box-shadow 0.32s ease;
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.19s ease, 
+                        border-color 0.28s ease, 
+                        box-shadow 0.28s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
             contain: layout style;
         }
         .perm-lock-modal {
             width: 100%;
             max-width: 340px;
-            background: rgba(28, 25, 23, 0.96);
+            background: rgba(28, 25, 23, 0.98);
             border: 1px solid rgba(245, 39, 125, 0.45);
             border-radius: 28px;
             padding: 26px 22px;
             text-align: center;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.25);
             opacity: 0;
-            transform: scale(0.92) translateY(14px) translateZ(0);
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), 
-                        opacity 0.24s ease, 
-                        border-color 0.32s ease, 
-                        box-shadow 0.32s ease;
+            transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+            transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.19s ease, 
+                        border-color 0.28s ease, 
+                        box-shadow 0.28s ease;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            transform-style: preserve-3d;
-            will-change: transform, opacity;
             contain: layout style;
         }
         .pwd-overlay.active .pwd-modal,
         .perm-lock-overlay.active .perm-lock-modal {
             opacity: 1;
-            transform: scale(1) translateY(0) translateZ(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
         }
 
-        /* Morphing Container Transform System */
+        /* Modal Transform Origin */
         .pwd-modal,
         .perm-lock-modal,
-        .nfc-modal {
+        .nfc-modal,
+        .qr-modal,
+        .update-modal {
             transform-origin: center center;
-            will-change: transform, opacity, border-radius;
-        }
-
-        .pwd-modal > *,
-        .perm-lock-modal > *,
-        .nfc-modal > * {
-            transition: opacity 0.22s ease 0.06s, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1) 0.06s;
-            will-change: opacity, transform;
-        }
-
-        .morph-expanding > * {
-            opacity: 0 !important;
-            transform: scale(0.92) !important;
-            transition: none !important;
-        }
-
-        .morph-collapsing > * {
-            opacity: 0 !important;
-            transform: scale(0.95) !important;
-            transition: opacity 0.14s ease, transform 0.14s ease !important;
         }
 
         .pwd-modal.unlock-mode {

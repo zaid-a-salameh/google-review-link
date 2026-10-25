@@ -34,22 +34,31 @@
         }
     }
 
-    function openQrModal() {
+    function openQrModal(triggerBtn) {
         if (document.activeElement && typeof document.activeElement.blur === 'function') {
             try { document.activeElement.blur(); } catch (e) {}
         }
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
         const qrOverlay = document.getElementById('qrOverlay');
-        if (qrOverlay) qrOverlay.classList.add('active');
-        requestAnimationFrame(() => {
-            generateQrCode(url);
-        });
+        const qrModalBox = document.getElementById('qrModalBox');
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1) ? triggerBtn : document.getElementById('qrBtn');
+        generateQrCode(url);
+        if (window.openMorphModal && qrOverlay && qrModalBox) {
+            window.openMorphModal(qrOverlay, qrModalBox, validBtn);
+        } else if (qrOverlay) {
+            qrOverlay.classList.add('active');
+        }
     }
 
     function closeQrModal() {
         const qrOverlay = document.getElementById('qrOverlay');
-        if (qrOverlay) qrOverlay.classList.remove('active');
+        const qrModalBox = document.getElementById('qrModalBox');
+        if (window.closeMorphModal && qrOverlay && qrModalBox) {
+            window.closeMorphModal(qrOverlay, qrModalBox);
+        } else if (qrOverlay) {
+            qrOverlay.classList.remove('active');
+        }
     }
 
     function downloadQrImage() {

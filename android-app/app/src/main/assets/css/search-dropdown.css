@@ -10,7 +10,7 @@
             border: 2px solid var(--border);
             border-radius: var(--radius-input);
             padding: 0 14px;
-            transition: all 0.25s ease;
+            transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
             margin-bottom: 14px;
         }
         .search-field-wrapper:has(.places-dropdown.show),
@@ -220,9 +220,14 @@
             flex-direction: column;
             overscroll-behavior: contain;
         }
+        body.is-native-app .places-dropdown {
+            background: #181412;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+        }
         .places-dropdown.show {
             display: flex;
-            animation: dropdownExpandAnim 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: dropdownExpandAnim 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             transform-origin: top center;
         }
         @keyframes dropdownExpandAnim {
@@ -258,9 +263,16 @@
         .place-suggestion-item:last-of-type {
             border-bottom: none;
         }
-        .place-suggestion-item:hover,
         .place-suggestion-item.selected {
             background: rgba(139, 92, 246, 0.16);
+        }
+        .place-suggestion-item:active {
+            background: rgba(139, 92, 246, 0.22);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .place-suggestion-item:hover {
+                background: rgba(139, 92, 246, 0.16);
+            }
         }
         .place-icon {
             width: 30px;
@@ -396,12 +408,18 @@
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.24s;
+        }
+        body.is-native-app .gmp-key-overlay {
+            background: rgba(8, 7, 6, 0.88);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .gmp-key-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
         }
         .gmp-key-modal {
             width: 100%;
@@ -411,15 +429,15 @@
             border-radius: 24px;
             padding: 24px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(124, 58, 237, 0.2);
-            transform: scale(0.9) translateY(20px);
+            transform: translate3d(0, 14px, 0) scale3d(0.95, 0.95, 1);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
         .gmp-key-overlay.active .gmp-key-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .gmp-key-header {
