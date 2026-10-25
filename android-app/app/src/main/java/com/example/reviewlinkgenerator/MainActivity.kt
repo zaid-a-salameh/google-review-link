@@ -219,12 +219,19 @@ class MainActivity : ComponentActivity() {
             stopNfcSession()
             webView.evaluateJavascript("window.onNfcSessionPaused && window.onNfcSessionPaused();", null)
         }
+        disableReaderModeSafe()
         webView.onPause()
     }
 
     override fun onResume() {
         super.onResume()
         webView.onResume()
+        enableReaderModeSafe()
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
     }
 
     private fun checkNfcReady(): Boolean {
@@ -240,15 +247,29 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun enableReaderModeSafe() {
+        val adapter = nfcAdapter ?: return
+        if (!adapter.isEnabled) return
         val flags = NfcAdapter.FLAG_READER_NFC_A or
                 NfcAdapter.FLAG_READER_NFC_B or
                 NfcAdapter.FLAG_READER_NFC_F or
                 NfcAdapter.FLAG_READER_NFC_V or
                 NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS
 
-        nfcAdapter?.enableReaderMode(this, { tag ->
-            handleTagDiscovered(tag)
-        }, flags, null)
+        try {
+            adapter.enableReaderMode(this, { tag ->
+                handleTagDiscovered(tag)
+            }, flags, null)
+        } catch (e: Exception) {
+            // ignore
+        }
+    }
+
+    private fun disableReaderModeSafe() {
+        try {
+            nfcAdapter?.disableReaderMode(this)
+        } catch (e: Exception) {
+            // ignore
+        }
     }
 
     fun startNfcWriting(url: String) {
@@ -309,15 +330,14 @@ class MainActivity : ComponentActivity() {
         pendingPassword = null
         lastWriteTimestamp = 0
         lastWrittenTagId = null
-        try {
-            nfcAdapter?.disableReaderMode(this)
-        } catch (e: Exception) {
-            // ignore
-        }
     }
 
     private fun handleTagDiscovered(tag: Tag) {
-        if (!isNfcModeActive) return
+        if (!isNfcModeActive || currentNfcOp == NfcOp.IDLE) {
+            // Silently absorb NFC tags scanned while inside the app without an active modal,
+            // completely preventing Android OS from intercepting, playing sounds, or showing system notifications!
+            return
+        }
 
         when (currentNfcOp) {
             NfcOp.WRITE -> handleWriteTag(tag)
