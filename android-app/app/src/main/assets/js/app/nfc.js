@@ -15,6 +15,7 @@
     let pendingWifiSsid = '';
     let pendingWifiPassword = '';
     let pendingWifiEncType = 'WPA';
+    let isWifiCloneMode = false;
     let currentModalState = 'ready';
     let currentModalDetail = null;
 
@@ -248,12 +249,17 @@
                 setCancelBtnMode(dict.nfcDone || 'Done', false);
                 updateWriteBatchBadge(dict);
             } else {
-                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiReady || 'Ready to Write Wi-Fi';
+                if (nfcTitle) nfcTitle.textContent = isWifiCloneMode ? (dict.nfcTitleWifiClone || 'Clone Wi-Fi Card') : (dict.nfcTitleWifiReady || 'Ready to Write Wi-Fi');
                 if (nfcDesc) {
-                    if (pendingWifiSsid && dict.nfcDescWifiReadyWithSsid) {
-                        nfcDesc.textContent = dict.nfcDescWifiReadyWithSsid.replace('{ssid}', pendingWifiSsid);
+                    const descTemplate = isWifiCloneMode
+                        ? (dict.nfcDescWifiCloneWithSsid || dict.nfcDescWifiReadyWithSsid)
+                        : dict.nfcDescWifiReadyWithSsid;
+                    if (pendingWifiSsid && descTemplate) {
+                        nfcDesc.textContent = descTemplate.replace('{ssid}', pendingWifiSsid);
                     } else {
-                        nfcDesc.textContent = dict.nfcDescWifiReady || 'Hold phone near NFC card to write Wi-Fi credentials.';
+                        nfcDesc.textContent = isWifiCloneMode
+                            ? (dict.nfcDescWifiClone || 'Hold another NFC card near phone to copy Wi-Fi.')
+                            : (dict.nfcDescWifiReady || 'Hold phone near NFC card to write Wi-Fi credentials.');
                     }
                 }
                 setCancelBtnMode(dict.wifiBack || 'Back', true);
@@ -307,13 +313,13 @@
                 updatePermLockBadge(dict);
             } else if (detail === 'WRITE_WIFI' || lastNfcOperation === 'write_wifi') {
                 if (nfcModalBox) nfcModalBox.classList.add('theme-wifi');
-                if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiSuccess || 'Wi-Fi Card Programmed!';
+                if (nfcTitle) nfcTitle.textContent = isWifiCloneMode ? (dict.nfcTitleWifiCloneSuccess || dict.nfcTitleWifiSuccess || 'Wi-Fi Card Cloned Successfully!') : (dict.nfcTitleWifiSuccess || 'Wi-Fi Card Programmed!');
                 if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiSuccess || 'Wi-Fi configuration successfully written to NFC card.';
                 setCancelBtnMode(dict.nfcDone || dict.nfcOk || 'Done', false);
                 if (nfcNextBtn) {
                     nfcNextBtn.className = 'btn-nfc-next theme-wifi';
                     nfcNextBtn.style.display = 'inline-flex';
-                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = dict.nfcBtnWifiAnother || 'Write Another Card';
+                    if (nfcNextBtnLabel) nfcNextBtnLabel.textContent = isWifiCloneMode ? (dict.nfcBtnWifiCloneAnother || dict.nfcBtnWifiAnother || 'Clone Another Card') : (dict.nfcBtnWifiAnother || 'Write Another Card');
                     if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_WIFI.trim();
                 }
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
@@ -510,6 +516,7 @@
         pendingWifiSsid = '';
         pendingWifiPassword = '';
         pendingWifiEncType = 'WPA';
+        isWifiCloneMode = false;
 
         if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
             try { window.AndroidNative.cancelNfcWrite(); } catch (e) {}
@@ -779,6 +786,11 @@
 
         lastNfcOperation = 'write_wifi';
         window.lastNfcOperation = 'write_wifi';
+        if (options.isClone !== undefined) {
+            isWifiCloneMode = Boolean(options.isClone);
+        } else if (!options.preserveCloneMode) {
+            isWifiCloneMode = false;
+        }
         pendingWifiSsid = (ssid || '').trim();
         pendingWifiPassword = password || '';
         pendingWifiEncType = encType || 'WPA';
@@ -896,20 +908,27 @@
         }
 
         // 2. Play subtle haptic feedback
-        if (!window.AndroidNative && navigator.vibrate) {
+        if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+            try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+        } else if (navigator.vibrate) {
             try { navigator.vibrate([120, 60, 160]); } catch (e) {}
         }
 
-        // 3. Immediately arm Wi-Fi write mode (ready for next card)
-        if (window.startNfcWifiWrite) {
-            window.startNfcWifiWrite(ssid, password, encType, null, { skipOpenAnimation: true, resetBatch: true });
+        // 3. Mark clone mode and trigger smooth morph animation
+        isWifiCloneMode = true;
+        const nfcModalBox = document.getElementById('nfcModalBox');
+        if (nfcModalBox) {
+            nfcModalBox.classList.remove('morph-to-wifi');
+            void nfcModalBox.offsetWidth;
+            nfcModalBox.classList.add('morph-to-wifi');
+            setTimeout(() => {
+                if (nfcModalBox) nfcModalBox.classList.remove('morph-to-wifi');
+            }, 550);
         }
 
-        // 4. Show informative toast
-        const dict = getDict();
-        if (window.showToast) {
-            const tpl = dict.toastNfcWifiReadSuccess || 'Wi-Fi network "{ssid}" read successfully! Ready to write to a new card.';
-            window.showToast(tpl.replace('{ssid}', ssid), 'success');
+        // 4. Immediately arm Wi-Fi write mode (ready for next card in clone mode, no popup toast)
+        if (window.startNfcWifiWrite) {
+            window.startNfcWifiWrite(ssid, password, encType, null, { skipOpenAnimation: true, resetBatch: true, isClone: true });
         }
     };
 

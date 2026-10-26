@@ -610,7 +610,7 @@
 
         window.retryNfcWifiWrite = function() {
             if (window.startNfcWifiWrite) {
-                window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+                window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true, preserveCloneMode: true });
             }
         };
 

@@ -360,6 +360,45 @@
             50% { transform: scale(0.85); opacity: 0.6; }
             100% { transform: scale(1); opacity: 1; }
         }
+
+        /* Smooth Morph Transition from Read to Wi-Fi */
+        .nfc-modal.morph-to-wifi {
+            animation: modalHapticThump 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .nfc-modal.morph-to-wifi .nfc-icon-circle {
+            animation: iconWifiMorphIn 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .nfc-modal.morph-to-wifi .nfc-icon-circle svg {
+            animation: iconWifiSvgPop 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-modal.morph-to-wifi .nfc-title {
+            animation: modalTextMorphIn 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-modal.morph-to-wifi .nfc-desc {
+            animation: modalTextMorphIn 0.44s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nfc-modal.morph-to-wifi .nfc-wave-ring {
+            animation: modalWaveBurst 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes iconWifiMorphIn {
+            0% { transform: scale(0.65) rotate(-14deg); opacity: 0.3; }
+            60% { transform: scale(1.16) rotate(3deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+        @keyframes iconWifiSvgPop {
+            0% { transform: scale(0.35); opacity: 0; }
+            70% { transform: scale(1.18); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes modalTextMorphIn {
+            0% { opacity: 0; transform: translateY(8px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes modalWaveBurst {
+            0% { transform: scale3d(0.8, 0.8, 1); opacity: 0.9; }
+            100% { transform: scale3d(1.4, 1.4, 1); opacity: 0; }
+        }
         .nfc-counter-badge {
             display: inline-flex;
             align-items: center;
