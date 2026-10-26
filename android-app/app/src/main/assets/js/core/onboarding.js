@@ -32,16 +32,27 @@
         if (index < 1 || index > TOTAL_SLIDES) return;
         currentSlide = index;
 
-        // 1. Update slide active states
+        // 1. Update slide active, prev, and next states for smooth directional sliding
         const slides = document.querySelectorAll('.onboarding-slide');
         slides.forEach(slide => {
             const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
-            slide.classList.toggle('active', slideNum === currentSlide);
+            slide.classList.remove('active', 'slide-prev', 'slide-next');
+            if (slideNum === currentSlide) {
+                slide.classList.add('active');
+            } else if (slideNum < currentSlide) {
+                slide.classList.add('slide-prev');
+            } else {
+                slide.classList.add('slide-next');
+            }
         });
 
-        // 2. Update top icon circle theme & visible icon
+        // 2. Trigger morph pulse on top icon circle & crossfade active SVG
         const iconWrap = document.getElementById('obTopIconWrap');
         if (iconWrap) {
+            iconWrap.classList.remove('morphing');
+            void iconWrap.offsetWidth; // Force reflow to retrigger animation
+            iconWrap.classList.add('morphing');
+
             iconWrap.classList.remove('theme-purple', 'theme-cyan', 'theme-gold');
             if (currentSlide === 1) iconWrap.classList.add('theme-purple');
             else if (currentSlide === 2) iconWrap.classList.add('theme-cyan');
@@ -50,11 +61,11 @@
         const icon1 = document.getElementById('obIcon1');
         const icon2 = document.getElementById('obIcon2');
         const icon3 = document.getElementById('obIcon3');
-        if (icon1) icon1.style.display = (currentSlide === 1) ? 'block' : 'none';
-        if (icon2) icon2.style.display = (currentSlide === 2) ? 'block' : 'none';
-        if (icon3) icon3.style.display = (currentSlide === 3) ? 'block' : 'none';
+        if (icon1) icon1.classList.toggle('active', currentSlide === 1);
+        if (icon2) icon2.classList.toggle('active', currentSlide === 2);
+        if (icon3) icon3.classList.toggle('active', currentSlide === 3);
 
-        // 3. Update numbered steps progress indicator (1) —— (2) —— (3) (Wi-Fi modal style)
+        // 3. Update numbered steps progress indicator (1) —— (2) —— (3) with animated lines
         const indicator = document.getElementById('onboardingStepsIndicator');
         if (indicator) {
             const stepItems = indicator.querySelectorAll('.onboarding-step-item');
@@ -94,11 +105,17 @@
         if (!overlay || !modal) return;
 
         goToSlide(1);
+
+        overlay.classList.remove('closing');
+        modal.classList.remove('closing');
+
         overlay.classList.add('active');
         modal.classList.add('active');
 
         if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
             try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+        } else if (navigator.vibrate) {
+            try { navigator.vibrate(18); } catch (e) {}
         }
     }
 
@@ -107,8 +124,13 @@
         const modal = document.getElementById('onboardingModalBox');
         if (!overlay) return;
 
-        overlay.classList.remove('active');
-        if (modal) modal.classList.remove('active');
+        overlay.classList.add('closing');
+        if (modal) modal.classList.add('closing');
+
+        setTimeout(() => {
+            overlay.classList.remove('active', 'closing');
+            if (modal) modal.classList.remove('active', 'closing');
+        }, 240);
 
         if (markAsSeen) {
             try {
@@ -137,10 +159,12 @@
         const onboardingCloseBtn = document.getElementById('onboardingCloseBtn');
         const overlay = document.getElementById('onboardingOverlay');
         const indicator = document.getElementById('onboardingStepsIndicator');
+        const btnOpenHelpGuide = document.getElementById('btnOpenHelpGuide');
 
         if (btnObNext) btnObNext.addEventListener('click', nextSlide);
         if (btnObSkip) btnObSkip.addEventListener('click', () => closeOnboarding(true));
         if (onboardingCloseBtn) onboardingCloseBtn.addEventListener('click', () => closeOnboarding(true));
+        if (btnOpenHelpGuide) btnOpenHelpGuide.addEventListener('click', openOnboarding);
 
         if (overlay) {
             overlay.addEventListener('click', (e) => {
@@ -158,13 +182,13 @@
             });
         }
 
-        // First-launch check
+        // First-launch check with smooth delayed entrance
         try {
             const hasSeen = localStorage.getItem(STORAGE_KEY);
             if (!hasSeen) {
                 setTimeout(() => {
                     openOnboarding();
-                }, 400);
+                }, 450);
             }
         } catch (e) {}
     });

@@ -2279,8 +2279,8 @@
             position: fixed;
             inset: 0;
             background: rgba(8, 7, 12, 0.82);
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             z-index: 3000;
             display: flex;
             align-items: center;
@@ -2289,14 +2289,22 @@
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.24s;
+            transition: opacity 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0s linear 0.32s;
+            will-change: opacity;
         }
         .onboarding-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
-            transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0s linear 0s;
         }
+        .onboarding-overlay.closing {
+            opacity: 0;
+            transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         .onboarding-modal {
             position: relative;
             width: 100%;
@@ -2307,15 +2315,39 @@
             padding: 26px 22px 22px;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(124, 58, 237, 0.2);
             text-align: center;
-            transform: scale(0.94) translateY(12px);
-            opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
             overflow: hidden;
+            transform: scale3d(0.88, 0.88, 1) translateY(24px);
+            opacity: 0;
+            transition: transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.28s ease,
+                        box-shadow 0.38s ease;
+            will-change: transform, opacity, box-shadow;
         }
         .onboarding-overlay.active .onboarding-modal {
-            transform: scale(1) translateY(0);
             opacity: 1;
+            transform: scale3d(1, 1, 1) translateY(0);
+            box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 55px rgba(124, 58, 237, 0.3);
+            animation: modalSpringOpen 0.44s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+        .onboarding-overlay.closing .onboarding-modal {
+            transform: scale3d(0.9, 0.9, 1) translateY(18px);
+            opacity: 0;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+        }
+        @keyframes modalSpringOpen {
+            0% {
+                opacity: 0;
+                transform: scale3d(0.86, 0.86, 1) translateY(26px);
+            }
+            65% {
+                transform: scale3d(1.025, 1.025, 1) translateY(-2px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale3d(1, 1, 1) translateY(0);
+            }
+        }
+
         .btn-onboarding-close {
             position: absolute;
             top: 16px;
@@ -2347,106 +2379,206 @@
             fill: currentColor;
         }
 
-        .onboarding-track {
-            position: relative;
-            width: 100%;
-            min-height: 125px;
-        }
-        .onboarding-slide {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            animation: obSlideFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .onboarding-slide.active {
-            display: flex;
-        }
-        @keyframes obSlideFadeIn {
-            0% { opacity: 0; transform: translateY(10px); }
-            100% { opacity: 1; transform: translateY(0); }
-        }
-
+        /* Top Icon Circle with Ambient Theme Glow & Morphing */
         .onboarding-icon-wrap {
             position: relative;
-            width: 60px;
-            height: 60px;
+            width: 62px;
+            height: 62px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 12px;
+            margin: 0 auto 14px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            transition: background 0.3s ease, box-shadow 0.3s ease;
+            transition: background 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                        border-color 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .onboarding-overlay.active .onboarding-icon-wrap {
+            animation: obIconEntrance 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.06s both;
+        }
+        @keyframes obIconEntrance {
+            0% {
+                opacity: 0;
+                transform: scale3d(0.65, 0.65, 1) translateY(-14px);
+            }
+            70% {
+                transform: scale3d(1.12, 1.12, 1) translateY(2px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale3d(1, 1, 1) translateY(0);
+            }
+        }
+        .onboarding-icon-wrap.morphing {
+            animation: obIconMorphPulse 0.36s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes obIconMorphPulse {
+            0% { transform: scale3d(1, 1, 1); }
+            40% { transform: scale3d(0.85, 0.85, 1); }
+            75% { transform: scale3d(1.12, 1.12, 1); }
+            100% { transform: scale3d(1, 1, 1); }
         }
         .onboarding-icon-wrap svg {
+            position: absolute;
             width: 30px;
             height: 30px;
             fill: #ffffff;
+            opacity: 0;
+            transform: scale3d(0.65, 0.65, 1) rotate(-8deg);
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        .onboarding-icon-wrap svg.active {
+            opacity: 1;
+            transform: scale3d(1, 1, 1) rotate(0deg);
         }
         .onboarding-icon-wrap.theme-purple {
             background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            border: 1px solid rgba(167, 139, 250, 0.4);
             box-shadow: 0 10px 25px rgba(124, 58, 237, 0.45);
         }
         .onboarding-icon-wrap.theme-cyan {
             background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            border: 1px solid rgba(56, 189, 248, 0.4);
             box-shadow: 0 10px 25px rgba(2, 132, 199, 0.45);
         }
         .onboarding-icon-wrap.theme-gold {
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: 1px solid rgba(251, 191, 36, 0.4);
             box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45);
         }
 
-        /* Numbered Steps Progress Indicator (Wi-Fi modal style) */
+        /* Numbered Steps Progress Indicator (Wi-Fi modal style with smooth progress line) */
         .onboarding-steps-indicator {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
+        }
+        .onboarding-overlay.active .onboarding-steps-indicator {
+            animation: obElementEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) 0.1s both;
         }
         .onboarding-step-item {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             background: rgba(41, 37, 36, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.14);
             color: var(--text-muted);
-            font-size: 10.5px;
+            font-size: 11px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.24s ease;
+            transition: transform 0.28s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        background 0.26s ease,
+                        border-color 0.26s ease,
+                        color 0.26s ease,
+                        box-shadow 0.28s ease;
+        }
+        .onboarding-step-item:active {
+            transform: scale(0.92);
         }
         .onboarding-step-item.active {
             background: var(--primary-gradient);
             border-color: #a78bfa;
             color: #ffffff;
-            box-shadow: 0 0 14px rgba(139, 92, 246, 0.5);
-            transform: scale(1.08);
+            box-shadow: 0 0 16px rgba(139, 92, 246, 0.6);
+            transform: scale(1.15);
         }
         .onboarding-step-item.completed {
-            background: rgba(139, 92, 246, 0.25);
+            background: rgba(139, 92, 246, 0.28);
             border-color: rgba(167, 139, 250, 0.55);
             color: #c4b5fd;
+            transform: scale(1);
         }
         .onboarding-step-line {
-            width: 20px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            transition: background 0.24s ease;
+            position: relative;
+            width: 22px;
+            height: 2.5px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 3px;
+            overflow: hidden;
         }
-        .onboarding-step-line.active {
-            background: rgba(139, 92, 246, 0.75);
+        .onboarding-step-line::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #7c3aed, #a78bfa);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        html[lang="ar"] .onboarding-step-line::after,
+        [dir="rtl"] .onboarding-step-line::after {
+            transform-origin: right;
+        }
+        .onboarding-step-line.active::after {
+            transform: scaleX(1);
+        }
+
+        /* Directional Carousel Panes for Slide Content */
+        .onboarding-track {
+            position: relative;
+            width: 100%;
+            min-height: 125px;
+            display: grid;
+            grid-template-columns: 100%;
+            align-items: center;
+            overflow: hidden;
+        }
+        .onboarding-overlay.active .onboarding-track {
+            animation: obElementEntrance 0.42s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+        }
+        .onboarding-slide {
+            grid-column: 1 / 2;
+            grid-row: 1 / 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0s linear 0.32s;
+            will-change: transform, opacity;
+            box-sizing: border-box;
+        }
+        .onboarding-slide.slide-prev {
+            transform: translate3d(-30px, 0, 0);
+        }
+        .onboarding-slide.slide-next {
+            transform: translate3d(30px, 0, 0);
+        }
+        html[lang="ar"] .onboarding-slide.slide-prev,
+        [dir="rtl"] .onboarding-slide.slide-prev {
+            transform: translate3d(30px, 0, 0);
+        }
+        html[lang="ar"] .onboarding-slide.slide-next,
+        [dir="rtl"] .onboarding-slide.slide-next {
+            transform: translate3d(-30px, 0, 0);
+        }
+        .onboarding-slide.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            transform: translate3d(0, 0, 0) !important;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.34s cubic-bezier(0.16, 1, 0.3, 1),
+                        visibility 0s linear 0s;
         }
 
         .onboarding-title {
             font-size: 17px;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             line-height: 1.35;
         }
         .onboarding-desc {
@@ -2462,7 +2594,22 @@
             align-items: center;
             gap: 10px;
             width: 100%;
+            transition: gap 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
+        .onboarding-overlay.active .onboarding-actions {
+            animation: obElementEntrance 0.44s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both;
+        }
+        @keyframes obElementEntrance {
+            0% {
+                opacity: 0;
+                transform: translate3d(0, 16px, 0);
+            }
+            100% {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
         .btn-ob-skip {
             flex: 1;
             min-height: 46px;
@@ -2480,7 +2627,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s ease;
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .btn-ob-skip:hover {
             color: #ffffff;
@@ -2509,7 +2656,10 @@
             padding: 10px 18px;
             white-space: nowrap;
             box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
-            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+            transition: transform 0.16s ease,
+                        box-shadow 0.2s ease,
+                        flex 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                        width 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .btn-ob-next:active {
             transform: scale(0.97);
@@ -2521,6 +2671,15 @@
         .onboarding-actions.is-last-step .btn-ob-next {
             flex: 1 !important;
             width: 100% !important;
+        }
+        .ob-next-arrow {
+            width: 16px;
+            height: 16px;
+            fill: #ffffff;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        html[lang="ar"] .ob-next-arrow {
+            transform: rotate(180deg);
         }
         .ob-next-arrow {
             width: 16px;
