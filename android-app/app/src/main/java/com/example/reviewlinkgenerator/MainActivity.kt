@@ -278,12 +278,15 @@ class MainActivity : ComponentActivity() {
 
     fun startNfcWriting(url: String) {
         if (!checkNfcReady()) return
+        val isContinuingBatch = isNfcModeActive && currentNfcOp == NfcOp.WRITE && pendingNfcUrl == url
         currentNfcOp = NfcOp.WRITE
         pendingNfcUrl = url
         isNfcModeActive = true
         lastWriteTimestamp = 0
         lastWrittenTagId = null
-        writtenTagsCount = 0
+        if (!isContinuingBatch) {
+            writtenTagsCount = 0
+        }
         enableReaderModeSafe()
     }
 
@@ -334,6 +337,7 @@ class MainActivity : ComponentActivity() {
             notifyNfcError("MISSING_SSID")
             return
         }
+        val isContinuingBatch = isNfcModeActive && currentNfcOp == NfcOp.WRITE_WIFI && pendingWifiSsid == ssid
         currentNfcOp = NfcOp.WRITE_WIFI
         pendingWifiSsid = ssid
         pendingWifiPassword = password
@@ -341,7 +345,9 @@ class MainActivity : ComponentActivity() {
         isNfcModeActive = true
         lastWriteTimestamp = 0
         lastWrittenTagId = null
-        writtenTagsCount = 0
+        if (!isContinuingBatch) {
+            writtenTagsCount = 0
+        }
         enableReaderModeSafe()
     }
 
@@ -355,6 +361,7 @@ class MainActivity : ComponentActivity() {
         pendingWifiEncType = null
         lastWriteTimestamp = 0
         lastWrittenTagId = null
+        writtenTagsCount = 0
     }
 
     private fun handleTagDiscovered(tag: Tag) {
