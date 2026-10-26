@@ -623,6 +623,129 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    data class ParsedWifiConfig(val ssid: String, val password: String, val encType: String)
+
+    private fun parseWscPayload(payload: ByteArray): ParsedWifiConfig? {
+        var ssid: String? = null
+        var password = ""
+        var encType: String? = null
+
+        fun parseTlvs(bytes: ByteArray, startOffset: Int, endOffset: Int) {
+            var i = startOffset
+            while (i + 4 <= endOffset) {
+                val type = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
+                val len = ((bytes[i + 2].toInt() and 0xFF) shl 8) or (bytes[i + 3].toInt() and 0xFF)
+                i += 4
+                if (i + len > endOffset) break
+
+                when (type) {
+                    0x100E -> {
+                        // Credential container
+                        parseTlvs(bytes, i, i + len)
+                    }
+                    0x1045 -> {
+                        // SSID
+                        ssid = String(bytes, i, len, Charsets.UTF_8).trim()
+                    }
+                    0x1027 -> {
+                        // Network Key / Password
+                        password = String(bytes, i, len, Charsets.UTF_8)
+                    }
+                    0x1003 -> {
+                        // Authentication Type
+                        if (len >= 2) {
+                            val auth = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
+                            encType = when (auth) {
+                                0x0001 -> "OPEN"
+                                0x0002, 0x0004 -> "WEP"
+                                else -> "WPA"
+                            }
+                        }
+                    }
+                    0x100F -> {
+                        // Encryption Type
+                        if (len >= 2 && encType == null) {
+                            val enc = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
+                            encType = when (enc) {
+                                0x0001 -> "OPEN"
+                                0x0002 -> "WEP"
+                                else -> "WPA"
+                            }
+                        }
+                    }
+                }
+                i += len
+            }
+        }
+
+        try {
+            parseTlvs(payload, 0, payload.size)
+        } catch (e: Exception) {
+            return null
+        }
+
+        if (ssid.isNullOrEmpty()) return null
+        val finalEnc = encType ?: if (password.isNotEmpty()) "WPA" else "OPEN"
+        return ParsedWifiConfig(ssid, password, finalEnc)
+    }
+
+    private fun parseWifiUriString(raw: String): ParsedWifiConfig? {
+        var ssid: String? = null
+        var password = ""
+        var encType: String? = null
+
+        val content = if (raw.startsWith("WIFI:", ignoreCase = true)) raw.substring(5) else raw
+        val parts = content.split(";")
+        for (part in parts) {
+            val trimmed = part.trim()
+            if (trimmed.startsWith("S:", ignoreCase = true)) {
+                ssid = trimmed.substring(2)
+            } else if (trimmed.startsWith("P:", ignoreCase = true)) {
+                password = trimmed.substring(2)
+            } else if (trimmed.startsWith("T:", ignoreCase = true)) {
+                val t = trimmed.substring(2).uppercase()
+                encType = when (t) {
+                    "WEP" -> "WEP"
+                    "NOPASS", "NONE", "OPEN" -> "OPEN"
+                    else -> "WPA"
+                }
+            }
+        }
+        if (ssid.isNullOrEmpty()) return null
+        val finalEnc = encType ?: if (password.isNotEmpty()) "WPA" else "OPEN"
+        return ParsedWifiConfig(ssid, password, finalEnc)
+    }
+
+    private fun parseWifiFromNdef(msg: NdefMessage): ParsedWifiConfig? {
+        for (record in msg.records) {
+            val mimeType = try { record.toMimeType() } catch (e: Exception) { null }
+            val typeStr = try { String(record.type, Charsets.US_ASCII) } catch (e: Exception) { "" }
+
+            if ("application/vnd.wfa.wsc".equals(mimeType, ignoreCase = true) ||
+                "application/vnd.wfa.wsc".equals(typeStr, ignoreCase = true)) {
+                val config = parseWscPayload(record.payload)
+                if (config != null) return config
+            }
+
+            val uriStr = try { record.toUri()?.toString() } catch (e: Exception) { null }
+            if (uriStr != null && uriStr.startsWith("WIFI:", ignoreCase = true)) {
+                val config = parseWifiUriString(uriStr)
+                if (config != null) return config
+            }
+
+            val payload = record.payload
+            if (payload != null && payload.isNotEmpty()) {
+                val text = try { String(payload, Charsets.UTF_8).trim() } catch (e: Exception) { "" }
+                val wifiIdx = text.indexOf("WIFI:", ignoreCase = true)
+                if (wifiIdx >= 0) {
+                    val config = parseWifiUriString(text.substring(wifiIdx))
+                    if (config != null) return config
+                }
+            }
+        }
+        return null
+    }
+
     private fun handleReadTag(tag: Tag) {
         try {
             val ndef = Ndef.get(tag)
@@ -630,6 +753,25 @@ class MainActivity : ComponentActivity() {
                 ndef.connect()
                 val msg = ndef.ndefMessage
                 ndef.close()
+
+                if (msg != null && msg.records.isNotEmpty()) {
+                    val wifiConfig = parseWifiFromNdef(msg)
+                    if (wifiConfig != null) {
+                        triggerSuccessVibration()
+                        val json = JSONObject().apply {
+                            put("ssid", wifiConfig.ssid)
+                            put("password", wifiConfig.password)
+                            put("encType", wifiConfig.encType)
+                        }
+                        runOnUiThread {
+                            val escaped = JSONObject.quote(json.toString())
+                            webView.evaluateJavascript("window.onNfcWifiTagRead && window.onNfcWifiTagRead($escaped);", null)
+                        }
+                        stopNfcSession()
+                        return
+                    }
+                }
+
                 var extractedUrl: String? = null
                 if (msg != null && msg.records.isNotEmpty()) {
                     for (record in msg.records) {

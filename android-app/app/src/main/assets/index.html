@@ -5012,10 +5012,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 toastWifiWpaRequired: "WPA networks require a password of at least 8 characters",
                 nfcTitleWifiReady: "Ready to Write Wi-Fi",
                 nfcDescWifiReady: "Hold phone near NFC card to write Wi-Fi credentials.",
+                nfcDescWifiReadyWithSsid: "Hold phone near NFC card to write Wi-Fi \"{ssid}\", or tap Back to review and edit.",
                 nfcTitleWifiSuccess: "Wi-Fi Card Programmed!",
                 nfcDescWifiSuccess: "Wi-Fi configuration successfully written to NFC card.",
                 nfcBtnWifiAnother: "Write Another Card",
                 toastNfcWifiSuccess: "Wi-Fi card written successfully!",
+                toastNfcWifiReadSuccess: "Wi-Fi network \"{ssid}\" read successfully! Ready to write to a new card.",
                 nfcBtn: "Write to NFC Tag",
                 nfcBtnWriteAnother: "Write Another Card",
                 nfcTitleReady: "Ready to Write",
@@ -5254,10 +5256,12 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 toastWifiWpaRequired: "شبكات WPA تتطلب كلمة مرور من 8 خانات على الأقل",
                 nfcTitleWifiReady: "جاهز لبرمجة كرت Wi-Fi",
                 nfcDescWifiReady: "قرب الهاتف من بطاقة NFC لبرمجة بيانات شبكة الواي فاي.",
+                nfcDescWifiReadyWithSsid: "قرّب بطاقة NFC من الهاتف لبرمجة شبكة \"{ssid}\"، أو انقر رجوع للتأكد والتعديل.",
                 nfcTitleWifiSuccess: "تمت برمجة كرت Wi-Fi بنجاح!",
                 nfcDescWifiSuccess: "تم حفظ إعدادات الاتصال التلقائي بالشبكة على البطاقة.",
                 nfcBtnWifiAnother: "برمجة بطاقة أخرى",
                 toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
+                toastNfcWifiReadSuccess: "تمت قراءة شبكة الواي فاي \"{ssid}\" بنجاح! جاهز لنسخها على بطاقة جديدة.",
                 nfcBtn: "كتابة على بطاقة NFC",
                 nfcBtnWriteAnother: "نسخ بطاقة أخرى",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
@@ -6916,6 +6920,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     let permThumpTimer = null;
     let lastNfcOperation = 'write';
     let lastNfcPin = '';
+    let pendingWifiSsid = '';
+    let pendingWifiPassword = '';
+    let pendingWifiEncType = 'WPA';
     let currentModalState = 'ready';
     let currentModalDetail = null;
 
@@ -7061,7 +7068,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (state === 'ready') {
             isPermLockStandby = false;
-            if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
+            if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock', 'theme-wifi');
             if (nfcTitle) nfcTitle.textContent = nfcBatchCount > 0 ? (dict.nfcTitleNext || 'Ready for Next Card') : dict.nfcTitleReady;
             if (nfcDesc) nfcDesc.textContent = nfcBatchCount > 0 ? (dict.nfcDescNext || 'Hold another NFC card near the phone to write the review link.') : dict.nfcDescReady;
             setCancelBtnMode(nfcBatchCount > 0 ? dict.nfcDone : dict.nfcCancel, false);
@@ -7073,7 +7080,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             setIconIfChanged(nfcSvgIcon, ICON_NFC_WAVES);
         } else if (state === 'read_ready') {
             isPermLockStandby = false;
-            if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
+            if (nfcModalBox) nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock', 'theme-wifi');
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitleReadReady || 'Ready to Read Card';
             if (nfcDesc) nfcDesc.textContent = dict.nfcDescReadReady || 'Hold phone near NFC card to read its content...';
             setCancelBtnMode(dict.nfcCancel, false);
@@ -7082,7 +7089,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else if (state === 'perm_lock_ready') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('success', 'theme-unlock', 'perm-lock-standby');
+                nfcModalBox.classList.remove('success', 'theme-link', 'theme-unlock', 'theme-wifi', 'perm-lock-standby');
                 nfcModalBox.classList.add('theme-lock', 'theme-perm-lock');
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockReady || 'Ready to Permanently Lock';
@@ -7093,7 +7100,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else if (state === 'perm_lock_standby') {
             isPermLockStandby = true;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('success', 'error', 'theme-unlock');
+                nfcModalBox.classList.remove('success', 'error', 'theme-link', 'theme-unlock', 'theme-wifi');
                 nfcModalBox.classList.add('theme-lock', 'theme-perm-lock', 'perm-lock-standby');
             }
             if (nfcTitle) nfcTitle.textContent = dict.nfcTitlePermLockStandby || 'Card Permanently Locked!';
@@ -7104,7 +7111,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else if (state === 'pwd_lock_ready') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('success', 'theme-unlock', 'theme-perm-lock', 'theme-wifi');
+                nfcModalBox.classList.remove('success', 'theme-link', 'theme-unlock', 'theme-perm-lock', 'theme-wifi');
                 nfcModalBox.classList.add('theme-lock');
             }
             if (nfcBatchCount > 0) {
@@ -7122,7 +7129,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else if (state === 'pwd_unlock_ready') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('success', 'theme-lock', 'theme-perm-lock', 'theme-wifi');
+                nfcModalBox.classList.remove('success', 'theme-link', 'theme-lock', 'theme-perm-lock', 'theme-wifi');
                 nfcModalBox.classList.add('theme-unlock');
             }
             if (nfcBatchCount > 0) {
@@ -7140,7 +7147,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else if (state === 'wifi_ready') {
             isPermLockStandby = false;
             if (nfcModalBox) {
-                nfcModalBox.classList.remove('success', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
+                nfcModalBox.classList.remove('success', 'theme-link', 'theme-lock', 'theme-unlock', 'theme-perm-lock');
                 nfcModalBox.classList.add('theme-wifi');
             }
             if (nfcBatchCount > 0) {
@@ -7150,7 +7157,13 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 updateWriteBatchBadge(dict);
             } else {
                 if (nfcTitle) nfcTitle.textContent = dict.nfcTitleWifiReady || 'Ready to Write Wi-Fi';
-                if (nfcDesc) nfcDesc.textContent = dict.nfcDescWifiReady || 'Hold phone near NFC card to write Wi-Fi credentials.';
+                if (nfcDesc) {
+                    if (pendingWifiSsid && dict.nfcDescWifiReadyWithSsid) {
+                        nfcDesc.textContent = dict.nfcDescWifiReadyWithSsid.replace('{ssid}', pendingWifiSsid);
+                    } else {
+                        nfcDesc.textContent = dict.nfcDescWifiReady || 'Hold phone near NFC card to write Wi-Fi credentials.';
+                    }
+                }
                 setCancelBtnMode(dict.wifiBack || 'Back', true);
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
             }
@@ -7402,6 +7415,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         permLockBatchCount = 0;
         isPermLockStandby = false;
         shouldReturnToPwdModal = false;
+        pendingWifiSsid = '';
+        pendingWifiPassword = '';
+        pendingWifiEncType = 'WPA';
 
         if (window.AndroidNative && window.AndroidNative.cancelNfcWrite) {
             try { window.AndroidNative.cancelNfcWrite(); } catch (e) {}
@@ -7671,6 +7687,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         lastNfcOperation = 'write_wifi';
         window.lastNfcOperation = 'write_wifi';
+        pendingWifiSsid = (ssid || '').trim();
+        pendingWifiPassword = password || '';
+        pendingWifiEncType = encType || 'WPA';
 
         const nfcOverlay = document.getElementById('nfcOverlay');
         const alreadyOpen = Boolean(nfcOverlay && nfcOverlay.classList.contains('active'));
@@ -7735,6 +7754,70 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (window.showToast) {
             window.showToast(dict.toastNfcReadSuccess || 'Link copied from card successfully', 'success');
+        }
+    };
+
+    function parseWifiUriString(raw) {
+        if (!raw) return null;
+        let ssid = '';
+        let password = '';
+        let encType = 'WPA';
+        const content = raw.startsWith('WIFI:') || raw.startsWith('wifi:') ? raw.slice(5) : raw;
+        const parts = content.split(';');
+        for (const part of parts) {
+            const trimmed = part.trim();
+            if (trimmed.startsWith('S:') || trimmed.startsWith('s:')) {
+                ssid = trimmed.slice(2);
+            } else if (trimmed.startsWith('P:') || trimmed.startsWith('p:')) {
+                password = trimmed.slice(2);
+            } else if (trimmed.startsWith('T:') || trimmed.startsWith('t:')) {
+                const t = trimmed.slice(2).toUpperCase();
+                encType = (t === 'WEP') ? 'WEP' : (t === 'NOPASS' || t === 'NONE' || t === 'OPEN') ? 'OPEN' : 'WPA';
+            }
+        }
+        return ssid ? { ssid, password, encType } : null;
+    }
+    window.parseWifiUriString = parseWifiUriString;
+
+    window.onNfcWifiTagRead = function(data) {
+        if (!data) return;
+        let config = data;
+        if (typeof data === 'string') {
+            try {
+                config = JSON.parse(data);
+            } catch (e) {
+                config = parseWifiUriString(data) || { ssid: data, password: '', encType: 'WPA' };
+            }
+        }
+        if (!config || !config.ssid) return;
+
+        const ssid = String(config.ssid || '').trim();
+        const password = String(config.password || '').trim();
+        let encType = String(config.encType || 'WPA').toUpperCase();
+        if (encType !== 'WEP' && encType !== 'OPEN') {
+            encType = password ? 'WPA' : 'OPEN';
+        }
+
+        // 1. Populate Wi-Fi wizard fields and state so going back has all data intact
+        if (window.loadWifiConfigAndPrepareWrite) {
+            window.loadWifiConfigAndPrepareWrite(ssid, password, encType);
+        }
+
+        // 2. Play subtle haptic feedback
+        if (!window.AndroidNative && navigator.vibrate) {
+            try { navigator.vibrate([120, 60, 160]); } catch (e) {}
+        }
+
+        // 3. Immediately arm Wi-Fi write mode (ready for next card)
+        if (window.startNfcWifiWrite) {
+            window.startNfcWifiWrite(ssid, password, encType, null, { skipOpenAnimation: true, resetBatch: true });
+        }
+
+        // 4. Show informative toast
+        const dict = getDict();
+        if (window.showToast) {
+            const tpl = dict.toastNfcWifiReadSuccess || 'Wi-Fi network "{ssid}" read successfully! Ready to write to a new card.';
+            window.showToast(tpl.replace('{ssid}', ssid), 'success');
         }
     };
 
@@ -8827,6 +8910,36 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             if (window.startNfcWifiWrite) {
                 window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
             }
+        };
+
+        window.loadWifiConfigAndPrepareWrite = function(ssid, password, encType) {
+            wifiSavedSsid = (ssid || '').trim();
+            wifiSavedPassword = (password || '').trim();
+            let enc = (encType || 'WPA').toUpperCase();
+            if (enc !== 'WEP' && enc !== 'OPEN') {
+                enc = wifiSavedPassword ? 'WPA' : 'OPEN';
+            }
+            wifiSelectedEnc = enc;
+
+            if (wifiSsidInput) wifiSsidInput.value = wifiSavedSsid;
+            if (wifiPasswordInput) wifiPasswordInput.value = wifiSavedPassword;
+
+            const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+            items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === wifiSelectedEnc));
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            if (wifiSelectedEnc === 'OPEN') {
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncOpen || 'Open Network';
+                if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncOpenSub || 'No password (Public / Guest)';
+            } else if (wifiSelectedEnc === 'WEP') {
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncWep || 'WEP';
+                if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncWepSub || 'Legacy networks';
+            } else {
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncWpa || 'WPA / WPA2 / WPA3 Personal';
+                if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncWpaSub || 'Most common (Home & Office)';
+            }
+
+            wifiCurrentStep = 3;
+            updateWifiWizardUi();
         };
 
         if (btnWifiTag) {

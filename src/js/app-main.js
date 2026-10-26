@@ -614,6 +614,36 @@
             }
         };
 
+        window.loadWifiConfigAndPrepareWrite = function(ssid, password, encType) {
+            wifiSavedSsid = (ssid || '').trim();
+            wifiSavedPassword = (password || '').trim();
+            let enc = (encType || 'WPA').toUpperCase();
+            if (enc !== 'WEP' && enc !== 'OPEN') {
+                enc = wifiSavedPassword ? 'WPA' : 'OPEN';
+            }
+            wifiSelectedEnc = enc;
+
+            if (wifiSsidInput) wifiSsidInput.value = wifiSavedSsid;
+            if (wifiPasswordInput) wifiPasswordInput.value = wifiSavedPassword;
+
+            const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+            items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === wifiSelectedEnc));
+            const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+            if (wifiSelectedEnc === 'OPEN') {
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncOpen || 'Open Network';
+                if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncOpenSub || 'No password (Public / Guest)';
+            } else if (wifiSelectedEnc === 'WEP') {
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncWep || 'WEP';
+                if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncWepSub || 'Legacy networks';
+            } else {
+                if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncWpa || 'WPA / WPA2 / WPA3 Personal';
+                if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncWpaSub || 'Most common (Home & Office)';
+            }
+
+            wifiCurrentStep = 3;
+            updateWifiWizardUi();
+        };
+
         if (btnWifiTag) {
             btnWifiTag.addEventListener('click', () => openWifiModal(btnWifiTag));
         }
