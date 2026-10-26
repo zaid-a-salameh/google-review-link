@@ -2476,7 +2476,7 @@
             box-shadow: 0 10px 30px rgba(245, 158, 11, 0.65), 0 0 25px rgba(245, 158, 11, 0.4);
         }
         .nfc-modal.theme-wifi.success .nfc-icon-circle svg {
-            fill: #0c0a09;
+            fill: #ffffff;
         }
         .nfc-modal.theme-wifi .nfc-counter-badge {
             background: rgba(245, 158, 11, 0.15);
@@ -2791,6 +2791,27 @@
         .nfc-modal.theme-unlock .btn-nfc-cancel:hover,
         .nfc-modal.theme-unlock .btn-nfc-cancel:active {
             border-color: rgba(16, 185, 129, 0.45);
+            color: #ffffff;
+        }
+
+        .nfc-modal.theme-wifi {
+            border-color: rgba(245, 158, 11, 0.45);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.25);
+        }
+        .nfc-modal.theme-wifi .nfc-wave-ring {
+            border-color: rgba(245, 158, 11, 0.55);
+        }
+        .nfc-modal.theme-wifi .nfc-icon-circle {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.65), 0 0 25px rgba(245, 158, 11, 0.4);
+            border-color: transparent;
+        }
+        .nfc-modal.theme-wifi .nfc-icon-circle svg {
+            fill: #ffffff;
+        }
+        .nfc-modal.theme-wifi .btn-nfc-cancel:hover,
+        .nfc-modal.theme-wifi .btn-nfc-cancel:active {
+            border-color: rgba(245, 158, 11, 0.45);
             color: #ffffff;
         }
 
@@ -3800,25 +3821,6 @@
         }
         #nfcWifiView.active {
             overflow: visible;
-        }
-        .nfc-modal.theme-wifi:not(.success):not(.error) {
-            border-color: rgba(245, 158, 11, 0.45);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.22);
-        }
-        .nfc-modal.theme-wifi:not(.success):not(.error) .nfc-wave-ring {
-            border-color: rgba(245, 158, 11, 0.38);
-        }
-        .nfc-modal.theme-wifi:not(.success):not(.error) .nfc-icon-circle {
-            background: rgba(245, 158, 11, 0.15);
-            border-color: rgba(245, 158, 11, 0.45);
-        }
-        .nfc-modal.theme-wifi:not(.success):not(.error) .nfc-icon-circle svg {
-            fill: #fbbf24;
-        }
-        .nfc-modal.theme-wifi:not(.success):not(.error) .btn-nfc-cancel:hover,
-        .nfc-modal.theme-wifi:not(.success):not(.error) .btn-nfc-cancel:active {
-            border-color: rgba(245, 158, 11, 0.55);
-            color: #fbbf24;
         }
         .nfc-modal.theme-wifi input::selection,
         #nfcWifiView input::selection {
