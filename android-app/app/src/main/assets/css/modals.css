@@ -2146,3 +2146,369 @@
             border-color: rgba(255, 255, 255, 0.25);
             background: rgba(255, 255, 255, 0.04);
         }
+
+        /* ========================================================
+           Link Type Segmented Selector (Above NFC Button)
+           ======================================================== */
+        .link-type-selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(139, 92, 246, 0.22);
+            border-radius: 18px;
+            transition: border-color 0.22s ease, background 0.22s ease;
+        }
+        .link-type-selector-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            padding: 0 4px;
+        }
+        .link-type-segmented {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: rgba(14, 12, 18, 0.65);
+            padding: 4px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .btn-link-type {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 40px;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            -webkit-tap-highlight-color: transparent;
+            text-align: center;
+            user-select: none;
+        }
+        .btn-link-type svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            flex-shrink: 0;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-link-type:active {
+            transform: scale(0.96);
+        }
+        .btn-link-type.active[data-type="review"] {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.28) 0%, rgba(139, 92, 246, 0.38) 100%);
+            border-color: rgba(139, 92, 246, 0.6);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        }
+        .btn-link-type.active[data-type="review"] svg {
+            fill: #fbbf24;
+            transform: scale(1.15);
+        }
+        .btn-link-type.active[data-type="location"] {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(56, 189, 248, 0.35) 100%);
+            border-color: rgba(56, 189, 248, 0.6);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+        }
+        .btn-link-type.active[data-type="location"] svg {
+            fill: #38bdf8;
+            transform: scale(1.15);
+        }
+
+        /* Top Bar Help / Guide Button */
+        .btn-help-guide {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(28, 25, 23, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+        .btn-help-guide svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.2s ease;
+        }
+        .btn-help-guide:hover {
+            color: #c4b5fd;
+            border-color: rgba(139, 92, 246, 0.45);
+            background: rgba(139, 92, 246, 0.12);
+            transform: translateY(-1px);
+        }
+        .btn-help-guide:active {
+            transform: scale3d(0.92, 0.92, 1);
+        }
+
+        /* Top Bar Flex Alignment */
+        .top-bar-right {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ========================================================
+           Onboarding / Welcome Feature Tour Modal
+           ======================================================== */
+        .onboarding-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 7, 12, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.24s;
+        }
+        .onboarding-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+            transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+        }
+        .onboarding-modal {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            background: rgba(24, 21, 29, 0.96);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+            border-radius: 28px;
+            padding: 26px 22px 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(124, 58, 237, 0.2);
+            text-align: center;
+            transform: scale(0.94) translateY(12px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+            overflow: hidden;
+        }
+        .onboarding-overlay.active .onboarding-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .btn-onboarding-close {
+            position: absolute;
+            top: 16px;
+            inset-inline-end: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s ease;
+            z-index: 10;
+        }
+        .btn-onboarding-close:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .btn-onboarding-close:active {
+            transform: scale(0.92);
+        }
+        .btn-onboarding-close svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .onboarding-track {
+            position: relative;
+            width: 100%;
+            min-height: 250px;
+        }
+        .onboarding-slide {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: obSlideFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .onboarding-slide.active {
+            display: flex;
+        }
+        @keyframes obSlideFadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .onboarding-icon-wrap {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .onboarding-icon-wrap svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+        }
+        .onboarding-icon-wrap.theme-purple {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.45);
+        }
+        .onboarding-icon-wrap.theme-cyan {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.45);
+        }
+        .onboarding-icon-wrap.theme-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45);
+        }
+        .onboarding-mini-badge {
+            position: absolute;
+            bottom: -4px;
+            inset-inline-end: -4px;
+            width: 22px;
+            height: 22px;
+            background: #1c1917;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .onboarding-step-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .onboarding-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+        .onboarding-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 320px;
+        }
+
+        .onboarding-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+        .ob-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .ob-dot.active {
+            width: 24px;
+            border-radius: 10px;
+            background: var(--primary-gradient);
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.6);
+        }
+
+        .onboarding-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-ob-skip {
+            flex: 1;
+            height: 44px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-btn);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-ob-skip:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .btn-ob-skip:active {
+            transform: scale(0.97);
+        }
+        .btn-ob-next {
+            flex: 2;
+            height: 44px;
+            background: var(--primary-gradient);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+        }
+        .btn-ob-next:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+        }
+        .ob-next-arrow {
+            width: 16px;
+            height: 16px;
+            fill: #ffffff;
+            transition: transform 0.2s ease;
+        }
+        html[lang="ar"] .ob-next-arrow {
+            transform: rotate(180deg);
+        }

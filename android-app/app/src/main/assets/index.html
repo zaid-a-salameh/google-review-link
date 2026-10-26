@@ -4312,6 +4312,372 @@
             background: rgba(255, 255, 255, 0.04);
         }
 
+        /* ========================================================
+           Link Type Segmented Selector (Above NFC Button)
+           ======================================================== */
+        .link-type-selector-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(139, 92, 246, 0.22);
+            border-radius: 18px;
+            transition: border-color 0.22s ease, background 0.22s ease;
+        }
+        .link-type-selector-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            padding: 0 4px;
+        }
+        .link-type-segmented {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: rgba(14, 12, 18, 0.65);
+            padding: 4px;
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .btn-link-type {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            min-height: 40px;
+            padding: 6px 10px;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-sub);
+            font-family: inherit;
+            font-size: 11.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            -webkit-tap-highlight-color: transparent;
+            text-align: center;
+            user-select: none;
+        }
+        .btn-link-type svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+            flex-shrink: 0;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .btn-link-type:active {
+            transform: scale(0.96);
+        }
+        .btn-link-type.active[data-type="review"] {
+            background: linear-gradient(135deg, rgba(124, 58, 237, 0.28) 0%, rgba(139, 92, 246, 0.38) 100%);
+            border-color: rgba(139, 92, 246, 0.6);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+        }
+        .btn-link-type.active[data-type="review"] svg {
+            fill: #fbbf24;
+            transform: scale(1.15);
+        }
+        .btn-link-type.active[data-type="location"] {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(56, 189, 248, 0.35) 100%);
+            border-color: rgba(56, 189, 248, 0.6);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(14, 165, 233, 0.35);
+        }
+        .btn-link-type.active[data-type="location"] svg {
+            fill: #38bdf8;
+            transform: scale(1.15);
+        }
+
+        /* Top Bar Help / Guide Button */
+        .btn-help-guide {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: rgba(28, 25, 23, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+            flex-shrink: 0;
+        }
+        .btn-help-guide svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+            transition: transform 0.2s ease;
+        }
+        .btn-help-guide:hover {
+            color: #c4b5fd;
+            border-color: rgba(139, 92, 246, 0.45);
+            background: rgba(139, 92, 246, 0.12);
+            transform: translateY(-1px);
+        }
+        .btn-help-guide:active {
+            transform: scale3d(0.92, 0.92, 1);
+        }
+
+        /* Top Bar Flex Alignment */
+        .top-bar-right {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ========================================================
+           Onboarding / Welcome Feature Tour Modal
+           ======================================================== */
+        .onboarding-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 7, 12, 0.82);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            pointer-events: none;
+            visibility: hidden;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.24s;
+        }
+        .onboarding-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+            visibility: visible;
+            transition: opacity 0.28s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s;
+        }
+        .onboarding-modal {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            background: rgba(24, 21, 29, 0.96);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+            border-radius: 28px;
+            padding: 26px 22px 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 45px rgba(124, 58, 237, 0.2);
+            text-align: center;
+            transform: scale(0.94) translateY(12px);
+            opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+            overflow: hidden;
+        }
+        .onboarding-overlay.active .onboarding-modal {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+        .btn-onboarding-close {
+            position: absolute;
+            top: 16px;
+            inset-inline-end: 16px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.18s ease;
+            z-index: 10;
+        }
+        .btn-onboarding-close:hover {
+            color: #ffffff;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+        }
+        .btn-onboarding-close:active {
+            transform: scale(0.92);
+        }
+        .btn-onboarding-close svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        .onboarding-track {
+            position: relative;
+            width: 100%;
+            min-height: 250px;
+        }
+        .onboarding-slide {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            animation: obSlideFadeIn 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .onboarding-slide.active {
+            display: flex;
+        }
+        @keyframes obSlideFadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .onboarding-icon-wrap {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+        .onboarding-icon-wrap svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff;
+        }
+        .onboarding-icon-wrap.theme-purple {
+            background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.45);
+        }
+        .onboarding-icon-wrap.theme-cyan {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.45);
+        }
+        .onboarding-icon-wrap.theme-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45);
+        }
+        .onboarding-mini-badge {
+            position: absolute;
+            bottom: -4px;
+            inset-inline-end: -4px;
+            width: 22px;
+            height: 22px;
+            background: #1c1917;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .onboarding-step-tag {
+            font-size: 11px;
+            font-weight: 700;
+            color: #a78bfa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .onboarding-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+        .onboarding-desc {
+            font-size: 13px;
+            color: var(--text-sub);
+            line-height: 1.6;
+            margin-bottom: 16px;
+            max-width: 320px;
+        }
+
+        .onboarding-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+        .ob-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .ob-dot.active {
+            width: 24px;
+            border-radius: 10px;
+            background: var(--primary-gradient);
+            box-shadow: 0 0 10px rgba(124, 58, 237, 0.6);
+        }
+
+        .onboarding-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+        .btn-ob-skip {
+            flex: 1;
+            height: 44px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-btn);
+            color: var(--text-muted);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .btn-ob-skip:hover {
+            color: #ffffff;
+            border-color: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .btn-ob-skip:active {
+            transform: scale(0.97);
+        }
+        .btn-ob-next {
+            flex: 2;
+            height: 44px;
+            background: var(--primary-gradient);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: var(--radius-btn);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+        }
+        .btn-ob-next:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+        }
+        .ob-next-arrow {
+            width: 16px;
+            height: 16px;
+            fill: #ffffff;
+            transition: transform 0.2s ease;
+        }
+        html[lang="ar"] .ob-next-arrow {
+            transform: rotate(180deg);
+        }
+
 /* == toast.css == */
 /* Toast Notification */
         /* Toast Message */
@@ -4437,10 +4803,15 @@ body {
                 <span class="version-dot" id="updateDot"></span>
                 <span id="appVersionText">v1.2.1</span>
             </button>
-            <div class="lang-pill-container">
-                <button type="button" class="lang-btn active" id="btnEn">EN</button>
-                <button type="button" class="lang-btn" id="btnAr">عربي</button>
-                <div class="lang-slider" id="langSlider"></div>
+            <div class="top-bar-right">
+                <button type="button" class="btn-help-guide" id="btnOpenHelpGuide" title="دليل الاستخدام / User Guide" aria-label="Help Guide">
+                    <svg viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg>
+                </button>
+                <div class="lang-pill-container">
+                    <button type="button" class="lang-btn active" id="btnEn">EN</button>
+                    <button type="button" class="lang-btn" id="btnAr">عربي</button>
+                    <div class="lang-slider" id="langSlider"></div>
+                </div>
             </div>
         </div>
         <!-- Header -->
@@ -4569,6 +4940,23 @@ body {
             </div>
 
             <div class="result-link-box" id="resultLinkText"></div>
+
+            <!-- Link Type Segmented Selector (Direct 5-Star Review vs Map Location) -->
+            <div class="link-type-selector-wrapper" id="linkTypeSelectorWrapper" style="display: none;">
+                <div class="link-type-selector-header">
+                    <span id="linkTypeSelectorLabel">نوع الرابط المطلوب برمجته:</span>
+                </div>
+                <div class="link-type-segmented" id="linkTypeSegmented">
+                    <button type="button" class="btn-link-type active" id="btnTypeReview" data-type="review">
+                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                        <span id="btnTypeReviewLabel">تقييم 5 نجوم</span>
+                    </button>
+                    <button type="button" class="btn-link-type" id="btnTypeLocation" data-type="location">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        <span id="btnTypeLocationLabel">الموقع على الخريطة</span>
+                    </button>
+                </div>
+            </div>
 
             <!-- The Action Buttons (Reordered: 1. NFC, 2. Open, 3. Copy, 4. Share, 5. QR) -->
             <div class="actions-stack">
@@ -4934,6 +5322,73 @@ body {
         </div>
     </div>
 
+    <!-- Onboarding / Welcome Guide Overlay -->
+    <div class="onboarding-overlay" id="onboardingOverlay">
+        <div class="onboarding-modal" id="onboardingModalBox">
+            <button type="button" class="btn-onboarding-close" id="onboardingCloseBtn" aria-label="Close" title="إغلاق">
+                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+
+            <!-- Slides Track -->
+            <div class="onboarding-track" id="onboardingTrack">
+                <!-- Slide 1: Direct Link -->
+                <div class="onboarding-slide active" data-slide="1">
+                    <div class="onboarding-icon-wrap theme-purple">
+                        <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                        <div class="onboarding-mini-badge">⭐</div>
+                    </div>
+                    <div class="onboarding-step-tag" id="obStep1Tag">الخطوة 1 من 3 • نظام الروابط</div>
+                    <h3 class="onboarding-title" id="obStep1Title">نظام الروابط والتقييم الذكي</h3>
+                    <p class="onboarding-desc" id="obStep1Desc">
+                        الصق أي رابط من خرائط Google لتحويله فوراً إلى رابط تقييم مباشر 5 نجوم، أو اختر استخدامه كرابط موقع لفتح المكان على الخريطة. يمكنك أيضاً وضع أي رابط خارجي (موقع، منيو، سوشيال ميديا).
+                    </p>
+                </div>
+
+                <!-- Slide 2: Search Business -->
+                <div class="onboarding-slide" data-slide="2">
+                    <div class="onboarding-icon-wrap theme-cyan">
+                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <div class="onboarding-mini-badge">📍</div>
+                    </div>
+                    <div class="onboarding-step-tag" id="obStep2Tag">الخطوة 2 من 3 • البحث السريع</div>
+                    <h3 class="onboarding-title" id="obStep2Title">البحث المباشر عن الأنشطة</h3>
+                    <p class="onboarding-desc" id="obStep2Desc">
+                        لا داعي لفتح تطبيق خرائط Google يدوياً! انتقل لتبويب "بحث عن موقع" واكتب اسم محلك ومدينتك، ثم اختر نشاطك من القائمة ليتم توليد الرابط فوراً بضغطة زر واحدة.
+                    </p>
+                </div>
+
+                <!-- Slide 3: NFC & Wi-Fi -->
+                <div class="onboarding-slide" data-slide="3">
+                    <div class="onboarding-icon-wrap theme-gold">
+                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.15c-.47-.09-.97-.15-1.5-.15-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5c3.03 0 5.5-2.47 5.5-5.5V10h3V6zm-8.5 13c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+                        <div class="onboarding-mini-badge">📶</div>
+                    </div>
+                    <div class="onboarding-step-tag" id="obStep3Tag">الخطوة 3 من 3 • أدوات البطاقات</div>
+                    <h3 class="onboarding-title" id="obStep3Title">كروت NFC والـ Wi-Fi والأمان</h3>
+                    <p class="onboarding-desc" id="obStep3Desc">
+                        اكتب روابطك على بطاقات واستيكرات NFC بملامسة ظهر هاتفك. انسخ واكتب كروت Wi-Fi لضيوفك وزبائنك بكل سهولة، واحمي بطاقاتك بقفل PIN أو قفل عتادي دائم.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Dots Indicator -->
+            <div class="onboarding-dots" id="onboardingDots">
+                <span class="ob-dot active" data-index="1"></span>
+                <span class="ob-dot" data-index="2"></span>
+                <span class="ob-dot" data-index="3"></span>
+            </div>
+
+            <!-- Actions Row -->
+            <div class="onboarding-actions">
+                <button type="button" class="btn-ob-skip" id="btnObSkip">تخطي الشرح</button>
+                <button type="button" class="btn-ob-next" id="btnObNext">
+                    <span id="btnObNextLabel">التالي</span>
+                    <svg class="ob-next-arrow" viewBox="0 0 24 24"><path d="M5 13h11.86l-5.43 5.43 1.42 1.42L21.14 12l-8.29-8.29-1.42 1.42L16.86 11H5v2z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <span class="toast-icon" id="toastIcon"></span>
@@ -5015,7 +5470,27 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 fabGithubLabel: "Project on GitHub",
                 resultLabel: "Direct Link:",
                 resultLabelReview: "Direct Review Link:",
+                resultLabelLocation: "Location on Google Maps:",
                 resultLabelCustom: "Direct Link:",
+                linkTypePrompt: "Link Type to Program:",
+                linkTypeReview: "5-Star Review",
+                linkTypeLocation: "Map Location",
+                toastSwitchedToReview: "Switched to Direct 5-Star Review link",
+                toastSwitchedToLocation: "Switched to Google Maps Location link",
+                btnHelpGuideTitle: "User Guide & Feature Tour",
+                btnGuideLabel: "Guide",
+                obStep1Tag: "Step 1 of 3 • Direct Links",
+                obStep1Title: "Smart Links & 5-Star Reviews",
+                obStep1Desc: "Paste any Google Maps link to instantly convert it into a 5-star review link for customers, or choose to use it as a direct location link. You can also paste any external website or menu.",
+                obStep2Tag: "Step 2 of 3 • Find Business",
+                obStep2Title: "Direct Business Search",
+                obStep2Desc: "No need to open Google Maps manually! Switch to 'Find Business' tab, type your place name & city, and select it from the list to get your link in a single tap.",
+                obStep3Tag: "Step 3 of 3 • Contactless & Security",
+                obStep3Title: "NFC Tags, Wi-Fi & Protection",
+                obStep3Desc: "Program review links onto NFC cards and stickers in seconds. Read, clone, and write Wi-Fi cards for guests, and secure your cards with PIN lock or permanent hardware protection.",
+                obBtnNext: "Next",
+                obBtnStart: "Get Started",
+                obBtnSkip: "Skip Tour",
                 copyBtn: "Copy Link",
                 copySuccess: "Copied!",
                 openBtn: "Open Link",
@@ -5263,7 +5738,27 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 fabGithubLabel: "المشروع على GitHub",
                 resultLabel: "الرابط المباشر:",
                 resultLabelReview: "رابط التقييم المباشر:",
+                resultLabelLocation: "رابط الموقع على الخريطة:",
                 resultLabelCustom: "الرابط المباشر:",
+                linkTypePrompt: "نوع الرابط المطلوب برمجته:",
+                linkTypeReview: "تقييم 5 نجوم",
+                linkTypeLocation: "الموقع على الخريطة",
+                toastSwitchedToReview: "تم التبديل إلى رابط التقييم المباشر (5 نجوم)",
+                toastSwitchedToLocation: "تم التبديل إلى رابط الموقع على الخريطة",
+                btnHelpGuideTitle: "دليل الاستخدام والتعريف بالميزات",
+                btnGuideLabel: "دليل الاستخدام",
+                obStep1Tag: "الخطوة 1 من 3 • نظام الروابط",
+                obStep1Title: "نظام الروابط والتقييم الذكي",
+                obStep1Desc: "الصق أي رابط من خرائط Google لتحويله فوراً إلى رابط تقييم مباشر 5 نجوم، أو اختر استخدامه كرابط موقع لفتح المكان على الخريطة. يمكنك أيضاً وضع أي رابط خارجي (موقع، منيو، سوشيال ميديا).",
+                obStep2Tag: "الخطوة 2 من 3 • البحث السريع",
+                obStep2Title: "البحث المباشر عن الأنشطة",
+                obStep2Desc: "لا داعي لفتح تطبيق خرائط Google يدوياً! انتقل لتبويب \"بحث عن موقع\" واكتب اسم محلك ومدينتك، ثم اختر نشاطك من القائمة ليتم توليد الرابط فوراً بضغطة زر واحدة.",
+                obStep3Tag: "الخطوة 3 من 3 • أدوات البطاقات",
+                obStep3Title: "كروت NFC والـ Wi-Fi والأمان",
+                obStep3Desc: "اكتب روابطك على بطاقات واستيكرات NFC بملامسة ظهر هاتفك. انسخ واكتب كروت Wi-Fi لضيوفك وزبائنك بكل سهولة، واحمي بطاقاتك بقفل PIN أو قفل عتادي دائم.",
+                obBtnNext: "التالي",
+                obBtnStart: "ابدأ استخدام التطبيق",
+                obBtnSkip: "تخطي الشرح",
                 copyBtn: "نسخ الرابط",
                 copySuccess: "تم النسخ!",
                 openBtn: "فتح الرابط",
@@ -5548,8 +6043,38 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         // Results Card
         const resultLinkText = document.getElementById('resultLinkText');
         const currentUrl = (resultLinkText ? resultLinkText.textContent : '').trim();
-        const isReview = /writereview\?placeid=/i.test(currentUrl);
-        setTxt('resultLabelText', isReview ? (dict.resultLabelReview || 'Direct Review Link:') : (dict.resultLabelCustom || 'Direct Link:'));
+        const currentModeObj = (window.AppModes && window.AppModes[window.AppModes.activeMode]) ? window.AppModes[window.AppModes.activeMode] : null;
+        if (currentModeObj && currentModeObj.placeId) {
+            setTxt('resultLabelText', currentModeObj.activeType === 'location' ? (dict.resultLabelLocation || 'Location on Google Maps:') : (dict.resultLabelReview || 'Direct Review Link:'));
+        } else {
+            const isReview = /writereview\?placeid=/i.test(currentUrl);
+            setTxt('resultLabelText', isReview ? (dict.resultLabelReview || 'Direct Review Link:') : (dict.resultLabelCustom || 'Direct Link:'));
+        }
+
+        // Link Type Switcher
+        setTxt('linkTypeSelectorLabel', dict.linkTypePrompt);
+        setTxt('btnTypeReviewLabel', dict.linkTypeReview);
+        setTxt('btnTypeLocationLabel', dict.linkTypeLocation);
+
+        // Help / Tour Guide & Onboarding
+        const btnOpenHelpGuide = document.getElementById('btnOpenHelpGuide');
+        if (btnOpenHelpGuide && dict.btnHelpGuideTitle) {
+            btnOpenHelpGuide.title = dict.btnHelpGuideTitle;
+        }
+        setTxt('btnGuideLabel', dict.btnGuideLabel);
+        setTxt('obStep1Tag', dict.obStep1Tag);
+        setTxt('obStep1Title', dict.obStep1Title);
+        setTxt('obStep1Desc', dict.obStep1Desc);
+        setTxt('obStep2Tag', dict.obStep2Tag);
+        setTxt('obStep2Title', dict.obStep2Title);
+        setTxt('obStep2Desc', dict.obStep2Desc);
+        setTxt('obStep3Tag', dict.obStep3Tag);
+        setTxt('obStep3Title', dict.obStep3Title);
+        setTxt('obStep3Desc', dict.obStep3Desc);
+        setTxt('btnObSkip', dict.obBtnSkip);
+        if (typeof window.updateOnboardingUiStrings === 'function') {
+            window.updateOnboardingUiStrings(dict);
+        }
 
         const copyBtn = document.getElementById('copyBtn');
         if (copyBtn && !copyBtn.classList.contains('copied')) {
@@ -6171,25 +6696,63 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         activeMode: getInitialMode(),
         link: {
             reviewUrl: null,
+            locationUrl: null,
+            placeId: null,
+            activeType: 'review',
             isResultActive: false
         },
         search: {
             reviewUrl: null,
+            locationUrl: null,
+            placeId: null,
+            activeType: 'review',
             isResultActive: false
         },
         getGeneratedReviewUrl: function() {
             const mode = this.activeMode;
-            return this[mode] && this[mode].isResultActive ? this[mode].reviewUrl : null;
+            if (!this[mode] || !this[mode].isResultActive) return null;
+            if (this[mode].placeId && this[mode].activeType === 'location') {
+                return this[mode].locationUrl || this[mode].reviewUrl;
+            }
+            return this[mode].reviewUrl;
         },
-        setModeResult: function(mode, url) {
+        setModeResult: function(mode, url, placeId = null, locationUrl = null) {
             if (!this[mode]) return;
             this[mode].reviewUrl = url;
+            this[mode].locationUrl = locationUrl;
+            this[mode].placeId = placeId;
+            this[mode].activeType = 'review';
             this[mode].isResultActive = !!url;
             this.syncResultCard();
+        },
+        setLinkType: function(type) {
+            const mode = this.activeMode;
+            if (!this[mode] || !this[mode].isResultActive || !this[mode].placeId) return;
+            const newType = (type === 'location') ? 'location' : 'review';
+            if (this[mode].activeType === newType) return;
+            this[mode].activeType = newType;
+            this.syncResultCard();
+
+            if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+                try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+            } else if (navigator.vibrate) {
+                try { navigator.vibrate(22); } catch (e) {}
+            }
+
+            const dict = getDict();
+            if (window.showToast) {
+                const msg = (newType === 'location')
+                    ? (dict.toastSwitchedToLocation || 'Switched to Google Maps Location link')
+                    : (dict.toastSwitchedToReview || 'Switched to Direct 5-Star Review link');
+                window.showToast(msg, 'success');
+            }
         },
         clearModeResult: function(mode) {
             if (!this[mode]) return;
             this[mode].reviewUrl = null;
+            this[mode].locationUrl = null;
+            this[mode].placeId = null;
+            this[mode].activeType = 'review';
             this[mode].isResultActive = false;
             this.syncResultCard();
         },
@@ -6197,18 +6760,44 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             const resultCard = document.getElementById('resultCard');
             const resultLinkText = document.getElementById('resultLinkText');
             const resultLabelText = document.getElementById('resultLabelText');
+            const linkTypeSelectorWrapper = document.getElementById('linkTypeSelectorWrapper');
+            const btnTypeReview = document.getElementById('btnTypeReview');
+            const btnTypeLocation = document.getElementById('btnTypeLocation');
+
             const current = this[this.activeMode];
             if (current && current.isResultActive && current.reviewUrl) {
-                if (resultLinkText) resultLinkText.textContent = current.reviewUrl;
+                const activeUrl = (current.placeId && current.activeType === 'location')
+                    ? (current.locationUrl || current.reviewUrl)
+                    : current.reviewUrl;
+
+                if (resultLinkText) resultLinkText.textContent = activeUrl;
                 if (resultLabelText) {
                     const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
-                    const isReview = /writereview\?placeid=/i.test(current.reviewUrl);
-                    resultLabelText.textContent = isReview 
-                        ? (dict.resultLabelReview || 'Direct Review Link:') 
-                        : (dict.resultLabelCustom || 'Direct Link:');
+                    if (current.placeId) {
+                        resultLabelText.textContent = (current.activeType === 'location')
+                            ? (dict.resultLabelLocation || 'Location on Google Maps:')
+                            : (dict.resultLabelReview || 'Direct Review Link:');
+                    } else {
+                        const isReview = /writereview\?placeid=/i.test(current.reviewUrl);
+                        resultLabelText.textContent = isReview 
+                            ? (dict.resultLabelReview || 'Direct Review Link:') 
+                            : (dict.resultLabelCustom || 'Direct Link:');
+                    }
                 }
+
+                if (linkTypeSelectorWrapper) {
+                    if (current.placeId && current.locationUrl) {
+                        linkTypeSelectorWrapper.style.display = 'flex';
+                        if (btnTypeReview) btnTypeReview.classList.toggle('active', current.activeType === 'review');
+                        if (btnTypeLocation) btnTypeLocation.classList.toggle('active', current.activeType === 'location');
+                    } else {
+                        linkTypeSelectorWrapper.style.display = 'none';
+                    }
+                }
+
                 if (resultCard) resultCard.classList.add('active');
             } else {
+                if (linkTypeSelectorWrapper) linkTypeSelectorWrapper.style.display = 'none';
                 if (resultCard) resultCard.classList.remove('active');
             }
             if (window.syncToolsVisibility) {
@@ -6402,8 +6991,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+        const isMapsUrl = /maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(raw);
+        const locationUrl = isMapsUrl ? raw : `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${placeId}`;
+
         if (window.AppModes) {
-            window.AppModes.setModeResult('link', generatedReviewUrl);
+            window.AppModes.setModeResult('link', generatedReviewUrl, placeId, locationUrl);
         } else {
             if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
             if (resultCard) resultCard.classList.add('active');
@@ -6764,8 +7356,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (placeId) {
             const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+            const locationUrl = `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${encodeURIComponent(placeId)}`;
             if (window.AppModes) {
-                window.AppModes.setModeResult('search', reviewUrl);
+                window.AppModes.setModeResult('search', reviewUrl, placeId, locationUrl);
             } else {
                 if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
                 if (resultLinkText) resultLinkText.textContent = reviewUrl;
@@ -6952,6 +7545,145 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     window.openQrModal = openQrModal;
     window.closeQrModal = closeQrModal;
     window.downloadQrImage = downloadQrImage;
+})();
+
+/* == core/onboarding.js == */
+// ========================================================
+// Onboarding Walkthrough & Feature Tour Engine
+// ========================================================
+(function() {
+    'use strict';
+
+    const STORAGE_KEY = 'review_link_onboarding_v1';
+    let currentSlide = 1;
+    const TOTAL_SLIDES = 3;
+
+    function getDict() {
+        const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
+        return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function updateOnboardingUiStrings(dict) {
+        const d = dict || getDict();
+        const btnObNextLabel = document.getElementById('btnObNextLabel');
+        const btnObSkip = document.getElementById('btnObSkip');
+
+        if (btnObNextLabel) {
+            btnObNextLabel.textContent = (currentSlide === TOTAL_SLIDES)
+                ? (d.obBtnStart || 'Get Started')
+                : (d.obBtnNext || 'Next');
+        }
+        if (btnObSkip) {
+            btnObSkip.textContent = d.obBtnSkip || 'Skip Tour';
+        }
+    }
+
+    function goToSlide(index) {
+        if (index < 1 || index > TOTAL_SLIDES) return;
+        currentSlide = index;
+
+        const slides = document.querySelectorAll('.onboarding-slide');
+        slides.forEach(slide => {
+            const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
+            slide.classList.toggle('active', slideNum === currentSlide);
+        });
+
+        const dots = document.querySelectorAll('.onboarding-dots .ob-dot');
+        dots.forEach(dot => {
+            const dotNum = parseInt(dot.getAttribute('data-index'), 10);
+            dot.classList.toggle('active', dotNum === currentSlide);
+        });
+
+        updateOnboardingUiStrings();
+
+        if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+            try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+        } else if (navigator.vibrate) {
+            try { navigator.vibrate(14); } catch (e) {}
+        }
+    }
+
+    function openOnboarding() {
+        const overlay = document.getElementById('onboardingOverlay');
+        const modal = document.getElementById('onboardingModalBox');
+        if (!overlay || !modal) return;
+
+        goToSlide(1);
+        overlay.classList.add('active');
+        modal.classList.add('active');
+
+        if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+            try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+        }
+    }
+
+    function closeOnboarding(markAsSeen = true) {
+        const overlay = document.getElementById('onboardingOverlay');
+        const modal = document.getElementById('onboardingModalBox');
+        if (!overlay) return;
+
+        overlay.classList.remove('active');
+        if (modal) modal.classList.remove('active');
+
+        if (markAsSeen) {
+            try {
+                localStorage.setItem(STORAGE_KEY, 'true');
+            } catch (e) {}
+        }
+    }
+
+    function nextSlide() {
+        if (currentSlide < TOTAL_SLIDES) {
+            goToSlide(currentSlide + 1);
+        } else {
+            closeOnboarding(true);
+        }
+    }
+
+    function prevSlide() {
+        if (currentSlide > 1) {
+            goToSlide(currentSlide - 1);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const btnObNext = document.getElementById('btnObNext');
+        const btnObSkip = document.getElementById('btnObSkip');
+        const onboardingCloseBtn = document.getElementById('onboardingCloseBtn');
+        const overlay = document.getElementById('onboardingOverlay');
+        const dots = document.querySelectorAll('.onboarding-dots .ob-dot');
+
+        if (btnObNext) btnObNext.addEventListener('click', nextSlide);
+        if (btnObSkip) btnObSkip.addEventListener('click', () => closeOnboarding(true));
+        if (onboardingCloseBtn) onboardingCloseBtn.addEventListener('click', () => closeOnboarding(true));
+
+        if (overlay) {
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) closeOnboarding(true);
+            });
+        }
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const idx = parseInt(dot.getAttribute('data-index'), 10);
+                if (idx) goToSlide(idx);
+            });
+        });
+
+        // First-launch check
+        try {
+            const hasSeen = localStorage.getItem(STORAGE_KEY);
+            if (!hasSeen) {
+                setTimeout(() => {
+                    openOnboarding();
+                }, 400);
+            }
+        } catch (e) {}
+    });
+
+    window.openOnboardingModal = openOnboarding;
+    window.closeOnboardingModal = closeOnboarding;
+    window.updateOnboardingUiStrings = updateOnboardingUiStrings;
 })();
 
 /* == app/nfc.js == */
@@ -8481,8 +9213,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             // 1. If it's already a 5-star Google review link (writereview?placeid=...)
             // Preserve it exactly as-is without re-converting or breaking it
             if (/writereview\?placeid=/i.test(text)) {
+                const pid = window.parsePlaceIdFromText ? window.parsePlaceIdFromText(text) : null;
+                const locUrl = pid ? `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${pid}` : null;
                 if (window.AppModes) {
-                    window.AppModes.setModeResult('link', text);
+                    window.AppModes.setModeResult('link', text, pid, locUrl);
                 } else {
                     const resultLinkText = $('resultLinkText');
                     if (resultLinkText) resultLinkText.textContent = text;
@@ -8507,7 +9241,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
             // 3. Any other direct URL (website, menu, instagram, whatsapp, etc.)
             if (window.AppModes) {
-                window.AppModes.setModeResult('link', text);
+                window.AppModes.setModeResult('link', text, null, null);
             } else {
                 const resultLinkText = $('resultLinkText');
                 if (resultLinkText) resultLinkText.textContent = text;
@@ -9308,8 +10042,41 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
+        // ── Link Type Segmented Selector (Review vs Location) ──
+        const btnTypeReview = $('btnTypeReview');
+        const btnTypeLocation = $('btnTypeLocation');
+        if (btnTypeReview) {
+            btnTypeReview.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('review');
+                }
+            });
+        }
+        if (btnTypeLocation) {
+            btnTypeLocation.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('location');
+                }
+            });
+        }
+
+        // ── User Guide & Feature Tour ──
+        const btnOpenHelpGuide = $('btnOpenHelpGuide');
+        if (btnOpenHelpGuide) {
+            btnOpenHelpGuide.addEventListener('click', () => {
+                if (window.openOnboardingModal) {
+                    window.openOnboardingModal();
+                }
+            });
+        }
+
         // ── Hardware Back Button Coordinator ──
         window.handleAndroidBackPress = function() {
+            const onboardingOverlay = $('onboardingOverlay');
+            if (onboardingOverlay && onboardingOverlay.classList.contains('active')) {
+                if (window.closeOnboardingModal) window.closeOnboardingModal(true);
+                return true;
+            }
             if (updateOverlay && updateOverlay.classList.contains('active')) {
                 if (window.closeUpdateModal) window.closeUpdateModal();
                 return true;

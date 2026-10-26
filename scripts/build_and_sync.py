@@ -30,7 +30,7 @@ for f in apk_css_files:
 
 # 3. Sync modular JS Core and App files for Android APK
 src_js_core = os.path.join(SRC_DIR, "js", "core")
-apk_core_js_files = ["i18n.js", "toast.js", "converter.js", "places.js", "qr.js"]
+apk_core_js_files = ["i18n.js", "toast.js", "converter.js", "places.js", "qr.js", "onboarding.js"]
 for f in apk_core_js_files:
     shutil.copy2(os.path.join(src_js_core, f), os.path.join(assets_js_core, f))
     print(f"  [APK Core JS] {f}")

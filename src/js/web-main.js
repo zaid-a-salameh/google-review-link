@@ -165,6 +165,38 @@
             });
         }
 
+        // ── Link Type Segmented Selector (Review vs Location) ──
+        const btnTypeReview = $('btnTypeReview');
+        const btnTypeLocation = $('btnTypeLocation');
+        if (btnTypeReview) {
+            btnTypeReview.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('review');
+                }
+            });
+        }
+        if (btnTypeLocation) {
+            btnTypeLocation.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('location');
+                }
+            });
+        }
+
+        // ── User Guide & Feature Tour ──
+        const btnOpenHelpGuide = $('btnOpenHelpGuide');
+        const btnNavHelp = $('btnNavHelp');
+        if (btnOpenHelpGuide) {
+            btnOpenHelpGuide.addEventListener('click', () => {
+                if (window.openOnboardingModal) window.openOnboardingModal();
+            });
+        }
+        if (btnNavHelp) {
+            btnNavHelp.addEventListener('click', () => {
+                if (window.openOnboardingModal) window.openOnboardingModal();
+            });
+        }
+
         // ── Search Business Input Events ──
         if (searchClearBtn) {
             searchClearBtn.addEventListener('click', () => {

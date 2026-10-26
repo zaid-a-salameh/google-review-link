@@ -115,8 +115,10 @@
             // 1. If it's already a 5-star Google review link (writereview?placeid=...)
             // Preserve it exactly as-is without re-converting or breaking it
             if (/writereview\?placeid=/i.test(text)) {
+                const pid = window.parsePlaceIdFromText ? window.parsePlaceIdFromText(text) : null;
+                const locUrl = pid ? `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${pid}` : null;
                 if (window.AppModes) {
-                    window.AppModes.setModeResult('link', text);
+                    window.AppModes.setModeResult('link', text, pid, locUrl);
                 } else {
                     const resultLinkText = $('resultLinkText');
                     if (resultLinkText) resultLinkText.textContent = text;
@@ -141,7 +143,7 @@
 
             // 3. Any other direct URL (website, menu, instagram, whatsapp, etc.)
             if (window.AppModes) {
-                window.AppModes.setModeResult('link', text);
+                window.AppModes.setModeResult('link', text, null, null);
             } else {
                 const resultLinkText = $('resultLinkText');
                 if (resultLinkText) resultLinkText.textContent = text;
@@ -942,8 +944,41 @@
             });
         }
 
+        // ── Link Type Segmented Selector (Review vs Location) ──
+        const btnTypeReview = $('btnTypeReview');
+        const btnTypeLocation = $('btnTypeLocation');
+        if (btnTypeReview) {
+            btnTypeReview.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('review');
+                }
+            });
+        }
+        if (btnTypeLocation) {
+            btnTypeLocation.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('location');
+                }
+            });
+        }
+
+        // ── User Guide & Feature Tour ──
+        const btnOpenHelpGuide = $('btnOpenHelpGuide');
+        if (btnOpenHelpGuide) {
+            btnOpenHelpGuide.addEventListener('click', () => {
+                if (window.openOnboardingModal) {
+                    window.openOnboardingModal();
+                }
+            });
+        }
+
         // ── Hardware Back Button Coordinator ──
         window.handleAndroidBackPress = function() {
+            const onboardingOverlay = $('onboardingOverlay');
+            if (onboardingOverlay && onboardingOverlay.classList.contains('active')) {
+                if (window.closeOnboardingModal) window.closeOnboardingModal(true);
+                return true;
+            }
             if (updateOverlay && updateOverlay.classList.contains('active')) {
                 if (window.closeUpdateModal) window.closeUpdateModal();
                 return true;

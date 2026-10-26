@@ -329,8 +329,9 @@
         if (placeId) {
             const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+            const locationUrl = `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${encodeURIComponent(placeId)}`;
             if (window.AppModes) {
-                window.AppModes.setModeResult('search', reviewUrl);
+                window.AppModes.setModeResult('search', reviewUrl, placeId, locationUrl);
             } else {
                 if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
                 if (resultLinkText) resultLinkText.textContent = reviewUrl;

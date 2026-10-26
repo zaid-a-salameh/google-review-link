@@ -18,25 +18,63 @@
         activeMode: getInitialMode(),
         link: {
             reviewUrl: null,
+            locationUrl: null,
+            placeId: null,
+            activeType: 'review',
             isResultActive: false
         },
         search: {
             reviewUrl: null,
+            locationUrl: null,
+            placeId: null,
+            activeType: 'review',
             isResultActive: false
         },
         getGeneratedReviewUrl: function() {
             const mode = this.activeMode;
-            return this[mode] && this[mode].isResultActive ? this[mode].reviewUrl : null;
+            if (!this[mode] || !this[mode].isResultActive) return null;
+            if (this[mode].placeId && this[mode].activeType === 'location') {
+                return this[mode].locationUrl || this[mode].reviewUrl;
+            }
+            return this[mode].reviewUrl;
         },
-        setModeResult: function(mode, url) {
+        setModeResult: function(mode, url, placeId = null, locationUrl = null) {
             if (!this[mode]) return;
             this[mode].reviewUrl = url;
+            this[mode].locationUrl = locationUrl;
+            this[mode].placeId = placeId;
+            this[mode].activeType = 'review';
             this[mode].isResultActive = !!url;
             this.syncResultCard();
+        },
+        setLinkType: function(type) {
+            const mode = this.activeMode;
+            if (!this[mode] || !this[mode].isResultActive || !this[mode].placeId) return;
+            const newType = (type === 'location') ? 'location' : 'review';
+            if (this[mode].activeType === newType) return;
+            this[mode].activeType = newType;
+            this.syncResultCard();
+
+            if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+                try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+            } else if (navigator.vibrate) {
+                try { navigator.vibrate(22); } catch (e) {}
+            }
+
+            const dict = getDict();
+            if (window.showToast) {
+                const msg = (newType === 'location')
+                    ? (dict.toastSwitchedToLocation || 'Switched to Google Maps Location link')
+                    : (dict.toastSwitchedToReview || 'Switched to Direct 5-Star Review link');
+                window.showToast(msg, 'success');
+            }
         },
         clearModeResult: function(mode) {
             if (!this[mode]) return;
             this[mode].reviewUrl = null;
+            this[mode].locationUrl = null;
+            this[mode].placeId = null;
+            this[mode].activeType = 'review';
             this[mode].isResultActive = false;
             this.syncResultCard();
         },
@@ -44,18 +82,44 @@
             const resultCard = document.getElementById('resultCard');
             const resultLinkText = document.getElementById('resultLinkText');
             const resultLabelText = document.getElementById('resultLabelText');
+            const linkTypeSelectorWrapper = document.getElementById('linkTypeSelectorWrapper');
+            const btnTypeReview = document.getElementById('btnTypeReview');
+            const btnTypeLocation = document.getElementById('btnTypeLocation');
+
             const current = this[this.activeMode];
             if (current && current.isResultActive && current.reviewUrl) {
-                if (resultLinkText) resultLinkText.textContent = current.reviewUrl;
+                const activeUrl = (current.placeId && current.activeType === 'location')
+                    ? (current.locationUrl || current.reviewUrl)
+                    : current.reviewUrl;
+
+                if (resultLinkText) resultLinkText.textContent = activeUrl;
                 if (resultLabelText) {
                     const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
-                    const isReview = /writereview\?placeid=/i.test(current.reviewUrl);
-                    resultLabelText.textContent = isReview 
-                        ? (dict.resultLabelReview || 'Direct Review Link:') 
-                        : (dict.resultLabelCustom || 'Direct Link:');
+                    if (current.placeId) {
+                        resultLabelText.textContent = (current.activeType === 'location')
+                            ? (dict.resultLabelLocation || 'Location on Google Maps:')
+                            : (dict.resultLabelReview || 'Direct Review Link:');
+                    } else {
+                        const isReview = /writereview\?placeid=/i.test(current.reviewUrl);
+                        resultLabelText.textContent = isReview 
+                            ? (dict.resultLabelReview || 'Direct Review Link:') 
+                            : (dict.resultLabelCustom || 'Direct Link:');
+                    }
                 }
+
+                if (linkTypeSelectorWrapper) {
+                    if (current.placeId && current.locationUrl) {
+                        linkTypeSelectorWrapper.style.display = 'flex';
+                        if (btnTypeReview) btnTypeReview.classList.toggle('active', current.activeType === 'review');
+                        if (btnTypeLocation) btnTypeLocation.classList.toggle('active', current.activeType === 'location');
+                    } else {
+                        linkTypeSelectorWrapper.style.display = 'none';
+                    }
+                }
+
                 if (resultCard) resultCard.classList.add('active');
             } else {
+                if (linkTypeSelectorWrapper) linkTypeSelectorWrapper.style.display = 'none';
                 if (resultCard) resultCard.classList.remove('active');
             }
             if (window.syncToolsVisibility) {
@@ -249,8 +313,11 @@
 
         const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+        const isMapsUrl = /maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(raw);
+        const locationUrl = isMapsUrl ? raw : `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${placeId}`;
+
         if (window.AppModes) {
-            window.AppModes.setModeResult('link', generatedReviewUrl);
+            window.AppModes.setModeResult('link', generatedReviewUrl, placeId, locationUrl);
         } else {
             if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
             if (resultCard) resultCard.classList.add('active');
