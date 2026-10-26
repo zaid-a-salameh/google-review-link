@@ -32,17 +32,52 @@
         if (index < 1 || index > TOTAL_SLIDES) return;
         currentSlide = index;
 
+        // 1. Update slide active states
         const slides = document.querySelectorAll('.onboarding-slide');
         slides.forEach(slide => {
             const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
             slide.classList.toggle('active', slideNum === currentSlide);
         });
 
-        const dots = document.querySelectorAll('.onboarding-dots .ob-dot');
-        dots.forEach(dot => {
-            const dotNum = parseInt(dot.getAttribute('data-index'), 10);
-            dot.classList.toggle('active', dotNum === currentSlide);
-        });
+        // 2. Update top icon circle theme & visible icon
+        const iconWrap = document.getElementById('obTopIconWrap');
+        if (iconWrap) {
+            iconWrap.classList.remove('theme-purple', 'theme-cyan', 'theme-gold');
+            if (currentSlide === 1) iconWrap.classList.add('theme-purple');
+            else if (currentSlide === 2) iconWrap.classList.add('theme-cyan');
+            else if (currentSlide === 3) iconWrap.classList.add('theme-gold');
+        }
+        const icon1 = document.getElementById('obIcon1');
+        const icon2 = document.getElementById('obIcon2');
+        const icon3 = document.getElementById('obIcon3');
+        if (icon1) icon1.style.display = (currentSlide === 1) ? 'block' : 'none';
+        if (icon2) icon2.style.display = (currentSlide === 2) ? 'block' : 'none';
+        if (icon3) icon3.style.display = (currentSlide === 3) ? 'block' : 'none';
+
+        // 3. Update numbered steps progress indicator (1) —— (2) —— (3) (Wi-Fi modal style)
+        const indicator = document.getElementById('onboardingStepsIndicator');
+        if (indicator) {
+            const stepItems = indicator.querySelectorAll('.onboarding-step-item');
+            const stepLines = indicator.querySelectorAll('.onboarding-step-line');
+            stepItems.forEach((item, idx) => {
+                const stepNum = idx + 1;
+                item.classList.remove('active', 'completed');
+                if (stepNum === currentSlide) {
+                    item.classList.add('active');
+                } else if (stepNum < currentSlide) {
+                    item.classList.add('completed');
+                }
+            });
+            stepLines.forEach((line, idx) => {
+                line.classList.toggle('active', (idx + 1) < currentSlide);
+            });
+        }
+
+        // 4. Update actions layout for final step (hide skip button, expand next button to 100%)
+        const actionsContainer = document.getElementById('onboardingActions');
+        if (actionsContainer) {
+            actionsContainer.classList.toggle('is-last-step', currentSlide === TOTAL_SLIDES);
+        }
 
         updateOnboardingUiStrings();
 
@@ -101,7 +136,7 @@
         const btnObSkip = document.getElementById('btnObSkip');
         const onboardingCloseBtn = document.getElementById('onboardingCloseBtn');
         const overlay = document.getElementById('onboardingOverlay');
-        const dots = document.querySelectorAll('.onboarding-dots .ob-dot');
+        const indicator = document.getElementById('onboardingStepsIndicator');
 
         if (btnObNext) btnObNext.addEventListener('click', nextSlide);
         if (btnObSkip) btnObSkip.addEventListener('click', () => closeOnboarding(true));
@@ -113,12 +148,15 @@
             });
         }
 
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const idx = parseInt(dot.getAttribute('data-index'), 10);
-                if (idx) goToSlide(idx);
+        if (indicator) {
+            const stepItems = indicator.querySelectorAll('.onboarding-step-item');
+            stepItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const stepNum = parseInt(item.getAttribute('data-step'), 10);
+                    if (stepNum) goToSlide(stepNum);
+                });
             });
-        });
+        }
 
         // First-launch check
         try {

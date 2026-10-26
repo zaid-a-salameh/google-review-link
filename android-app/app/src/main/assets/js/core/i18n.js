@@ -75,13 +75,10 @@
                 toastSwitchedToLocation: "Switched to Google Maps Location link",
                 btnHelpGuideTitle: "User Guide & Feature Tour",
                 btnGuideLabel: "Guide",
-                obStep1Tag: "Step 1 of 3 • Direct Links",
                 obStep1Title: "Smart Links & 5-Star Reviews",
                 obStep1Desc: "Paste any Google Maps link to instantly convert it into a 5-star review link for customers, or choose to use it as a direct location link. You can also paste any external website or menu.",
-                obStep2Tag: "Step 2 of 3 • Find Business",
                 obStep2Title: "Direct Business Search",
                 obStep2Desc: "No need to open Google Maps manually! Switch to 'Find Business' tab, type your place name & city, and select it from the list to get your link in a single tap.",
-                obStep3Tag: "Step 3 of 3 • Contactless & Security",
                 obStep3Title: "NFC Tags, Wi-Fi & Protection",
                 obStep3Desc: "Program review links onto NFC cards and stickers in seconds. Read, clone, and write Wi-Fi cards for guests, and secure your cards with PIN lock or permanent hardware protection.",
                 obBtnNext: "Next",
@@ -343,17 +340,14 @@
                 toastSwitchedToLocation: "تم التبديل إلى رابط الموقع على الخريطة",
                 btnHelpGuideTitle: "دليل الاستخدام والتعريف بالميزات",
                 btnGuideLabel: "دليل الاستخدام",
-                obStep1Tag: "الخطوة 1 من 3 • نظام الروابط",
                 obStep1Title: "نظام الروابط والتقييم الذكي",
                 obStep1Desc: "الصق أي رابط من خرائط Google لتحويله فوراً إلى رابط تقييم مباشر 5 نجوم، أو اختر استخدامه كرابط موقع لفتح المكان على الخريطة. يمكنك أيضاً وضع أي رابط خارجي (موقع، منيو، سوشيال ميديا).",
-                obStep2Tag: "الخطوة 2 من 3 • البحث السريع",
                 obStep2Title: "البحث المباشر عن الأنشطة",
                 obStep2Desc: "لا داعي لفتح تطبيق خرائط Google يدوياً! انتقل لتبويب \"بحث عن موقع\" واكتب اسم محلك ومدينتك، ثم اختر نشاطك من القائمة ليتم توليد الرابط فوراً بضغطة زر واحدة.",
-                obStep3Tag: "الخطوة 3 من 3 • أدوات البطاقات",
                 obStep3Title: "كروت NFC والـ Wi-Fi والأمان",
                 obStep3Desc: "اكتب روابطك على بطاقات واستيكرات NFC بملامسة ظهر هاتفك. انسخ واكتب كروت Wi-Fi لضيوفك وزبائنك بكل سهولة، واحمي بطاقاتك بقفل PIN أو قفل عتادي دائم.",
                 obBtnNext: "التالي",
-                obBtnStart: "ابدأ استخدام التطبيق",
+                obBtnStart: "ابدأ الآن",
                 obBtnSkip: "تخطي الشرح",
                 copyBtn: "نسخ الرابط",
                 copySuccess: "تم النسخ!",
@@ -658,13 +652,10 @@
             btnOpenHelpGuide.title = dict.btnHelpGuideTitle;
         }
         setTxt('btnGuideLabel', dict.btnGuideLabel);
-        setTxt('obStep1Tag', dict.obStep1Tag);
         setTxt('obStep1Title', dict.obStep1Title);
         setTxt('obStep1Desc', dict.obStep1Desc);
-        setTxt('obStep2Tag', dict.obStep2Tag);
         setTxt('obStep2Title', dict.obStep2Title);
         setTxt('obStep2Desc', dict.obStep2Desc);
-        setTxt('obStep3Tag', dict.obStep3Tag);
         setTxt('obStep3Title', dict.obStep3Title);
         setTxt('obStep3Desc', dict.obStep3Desc);
         setTxt('btnObSkip', dict.obBtnSkip);

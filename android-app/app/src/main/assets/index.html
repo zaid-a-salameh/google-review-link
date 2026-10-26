@@ -4515,7 +4515,7 @@
         .onboarding-track {
             position: relative;
             width: 100%;
-            min-height: 250px;
+            min-height: 125px;
         }
         .onboarding-slide {
             display: none;
@@ -4533,18 +4533,19 @@
 
         .onboarding-icon-wrap {
             position: relative;
-            width: 64px;
-            height: 64px;
-            border-radius: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 16px;
+            margin: 0 auto 12px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
         .onboarding-icon-wrap svg {
-            width: 32px;
-            height: 32px;
+            width: 30px;
+            height: 30px;
             fill: #ffffff;
         }
         .onboarding-icon-wrap.theme-purple {
@@ -4559,29 +4560,53 @@
             background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
             box-shadow: 0 10px 25px rgba(245, 158, 11, 0.45);
         }
-        .onboarding-mini-badge {
-            position: absolute;
-            bottom: -4px;
-            inset-inline-end: -4px;
-            width: 22px;
-            height: 22px;
-            background: #1c1917;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
+
+        /* Numbered Steps Progress Indicator (Wi-Fi modal style) */
+        .onboarding-steps-indicator {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+        .onboarding-step-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: rgba(41, 37, 36, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            font-size: 10.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.24s ease;
+        }
+        .onboarding-step-item.active {
+            background: var(--primary-gradient);
+            border-color: #a78bfa;
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(139, 92, 246, 0.5);
+            transform: scale(1.08);
+        }
+        .onboarding-step-item.completed {
+            background: rgba(139, 92, 246, 0.25);
+            border-color: rgba(167, 139, 250, 0.55);
+            color: #c4b5fd;
+        }
+        .onboarding-step-line {
+            width: 20px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            transition: background 0.24s ease;
+        }
+        .onboarding-step-line.active {
+            background: rgba(139, 92, 246, 0.75);
         }
 
-        .onboarding-step-tag {
-            font-size: 11px;
-            font-weight: 700;
-            color: #a78bfa;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
         .onboarding-title {
             font-size: 17px;
             font-weight: 800;
@@ -4597,28 +4622,6 @@
             max-width: 320px;
         }
 
-        .onboarding-dots {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            margin-bottom: 18px;
-        }
-        .ob-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.18);
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .ob-dot.active {
-            width: 24px;
-            border-radius: 10px;
-            background: var(--primary-gradient);
-            box-shadow: 0 0 10px rgba(124, 58, 237, 0.6);
-        }
-
         .onboarding-actions {
             display: flex;
             align-items: center;
@@ -4627,7 +4630,8 @@
         }
         .btn-ob-skip {
             flex: 1;
-            height: 44px;
+            min-height: 46px;
+            height: auto;
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--radius-btn);
@@ -4636,6 +4640,11 @@
             font-size: 13px;
             font-weight: 600;
             cursor: pointer;
+            padding: 10px 14px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: all 0.2s ease;
         }
         .btn-ob-skip:hover {
@@ -4648,7 +4657,8 @@
         }
         .btn-ob-next {
             flex: 2;
-            height: 44px;
+            min-height: 46px;
+            height: auto;
             background: var(--primary-gradient);
             border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: var(--radius-btn);
@@ -4661,12 +4671,21 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            padding: 10px 18px;
+            white-space: nowrap;
             box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
             transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
         }
         .btn-ob-next:active {
             transform: scale(0.97);
             box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+        }
+        .onboarding-actions.is-last-step .btn-ob-skip {
+            display: none !important;
+        }
+        .onboarding-actions.is-last-step .btn-ob-next {
+            flex: 1 !important;
+            width: 100% !important;
         }
         .ob-next-arrow {
             width: 16px;
@@ -5329,15 +5348,32 @@ body {
                 <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
             </button>
 
+            <!-- Top Icon Circle (Smooth Morph / Switch) -->
+            <div class="onboarding-icon-wrap theme-purple" id="obTopIconWrap">
+                <svg id="obIcon1" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                <svg id="obIcon2" style="display: none;" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <svg id="obIcon3" style="display: none;" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.15c-.47-.09-.97-.15-1.5-.15-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5c3.03 0 5.5-2.47 5.5-5.5V10h3V6zm-8.5 13c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
+            </div>
+
+            <!-- Wizard Progress Indicator (1) —— (2) —— (3) -->
+            <div class="onboarding-steps-indicator" id="onboardingStepsIndicator">
+                <div class="onboarding-step-item active" data-step="1">
+                    <span class="onboarding-step-lbl">1</span>
+                </div>
+                <div class="onboarding-step-line"></div>
+                <div class="onboarding-step-item" data-step="2">
+                    <span class="onboarding-step-lbl">2</span>
+                </div>
+                <div class="onboarding-step-line"></div>
+                <div class="onboarding-step-item" data-step="3">
+                    <span class="onboarding-step-lbl">3</span>
+                </div>
+            </div>
+
             <!-- Slides Track -->
             <div class="onboarding-track" id="onboardingTrack">
                 <!-- Slide 1: Direct Link -->
                 <div class="onboarding-slide active" data-slide="1">
-                    <div class="onboarding-icon-wrap theme-purple">
-                        <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
-                        <div class="onboarding-mini-badge">⭐</div>
-                    </div>
-                    <div class="onboarding-step-tag" id="obStep1Tag">الخطوة 1 من 3 • نظام الروابط</div>
                     <h3 class="onboarding-title" id="obStep1Title">نظام الروابط والتقييم الذكي</h3>
                     <p class="onboarding-desc" id="obStep1Desc">
                         الصق أي رابط من خرائط Google لتحويله فوراً إلى رابط تقييم مباشر 5 نجوم، أو اختر استخدامه كرابط موقع لفتح المكان على الخريطة. يمكنك أيضاً وضع أي رابط خارجي (موقع، منيو، سوشيال ميديا).
@@ -5346,11 +5382,6 @@ body {
 
                 <!-- Slide 2: Search Business -->
                 <div class="onboarding-slide" data-slide="2">
-                    <div class="onboarding-icon-wrap theme-cyan">
-                        <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                        <div class="onboarding-mini-badge">📍</div>
-                    </div>
-                    <div class="onboarding-step-tag" id="obStep2Tag">الخطوة 2 من 3 • البحث السريع</div>
                     <h3 class="onboarding-title" id="obStep2Title">البحث المباشر عن الأنشطة</h3>
                     <p class="onboarding-desc" id="obStep2Desc">
                         لا داعي لفتح تطبيق خرائط Google يدوياً! انتقل لتبويب "بحث عن موقع" واكتب اسم محلك ومدينتك، ثم اختر نشاطك من القائمة ليتم توليد الرابط فوراً بضغطة زر واحدة.
@@ -5359,11 +5390,6 @@ body {
 
                 <!-- Slide 3: NFC & Wi-Fi -->
                 <div class="onboarding-slide" data-slide="3">
-                    <div class="onboarding-icon-wrap theme-gold">
-                        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 18H4V4h16v16zM18 6h-5c-1.1 0-2 .9-2 2v2.15c-.47-.09-.97-.15-1.5-.15-3.03 0-5.5 2.47-5.5 5.5s2.47 5.5 5.5 5.5c3.03 0 5.5-2.47 5.5-5.5V10h3V6zm-8.5 13c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5z"/></svg>
-                        <div class="onboarding-mini-badge">📶</div>
-                    </div>
-                    <div class="onboarding-step-tag" id="obStep3Tag">الخطوة 3 من 3 • أدوات البطاقات</div>
                     <h3 class="onboarding-title" id="obStep3Title">كروت NFC والـ Wi-Fi والأمان</h3>
                     <p class="onboarding-desc" id="obStep3Desc">
                         اكتب روابطك على بطاقات واستيكرات NFC بملامسة ظهر هاتفك. انسخ واكتب كروت Wi-Fi لضيوفك وزبائنك بكل سهولة، واحمي بطاقاتك بقفل PIN أو قفل عتادي دائم.
@@ -5371,15 +5397,8 @@ body {
                 </div>
             </div>
 
-            <!-- Dots Indicator -->
-            <div class="onboarding-dots" id="onboardingDots">
-                <span class="ob-dot active" data-index="1"></span>
-                <span class="ob-dot" data-index="2"></span>
-                <span class="ob-dot" data-index="3"></span>
-            </div>
-
             <!-- Actions Row -->
-            <div class="onboarding-actions">
+            <div class="onboarding-actions" id="onboardingActions">
                 <button type="button" class="btn-ob-skip" id="btnObSkip">تخطي الشرح</button>
                 <button type="button" class="btn-ob-next" id="btnObNext">
                     <span id="btnObNextLabel">التالي</span>
@@ -5479,13 +5498,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 toastSwitchedToLocation: "Switched to Google Maps Location link",
                 btnHelpGuideTitle: "User Guide & Feature Tour",
                 btnGuideLabel: "Guide",
-                obStep1Tag: "Step 1 of 3 • Direct Links",
                 obStep1Title: "Smart Links & 5-Star Reviews",
                 obStep1Desc: "Paste any Google Maps link to instantly convert it into a 5-star review link for customers, or choose to use it as a direct location link. You can also paste any external website or menu.",
-                obStep2Tag: "Step 2 of 3 • Find Business",
                 obStep2Title: "Direct Business Search",
                 obStep2Desc: "No need to open Google Maps manually! Switch to 'Find Business' tab, type your place name & city, and select it from the list to get your link in a single tap.",
-                obStep3Tag: "Step 3 of 3 • Contactless & Security",
                 obStep3Title: "NFC Tags, Wi-Fi & Protection",
                 obStep3Desc: "Program review links onto NFC cards and stickers in seconds. Read, clone, and write Wi-Fi cards for guests, and secure your cards with PIN lock or permanent hardware protection.",
                 obBtnNext: "Next",
@@ -5747,17 +5763,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 toastSwitchedToLocation: "تم التبديل إلى رابط الموقع على الخريطة",
                 btnHelpGuideTitle: "دليل الاستخدام والتعريف بالميزات",
                 btnGuideLabel: "دليل الاستخدام",
-                obStep1Tag: "الخطوة 1 من 3 • نظام الروابط",
                 obStep1Title: "نظام الروابط والتقييم الذكي",
                 obStep1Desc: "الصق أي رابط من خرائط Google لتحويله فوراً إلى رابط تقييم مباشر 5 نجوم، أو اختر استخدامه كرابط موقع لفتح المكان على الخريطة. يمكنك أيضاً وضع أي رابط خارجي (موقع، منيو، سوشيال ميديا).",
-                obStep2Tag: "الخطوة 2 من 3 • البحث السريع",
                 obStep2Title: "البحث المباشر عن الأنشطة",
                 obStep2Desc: "لا داعي لفتح تطبيق خرائط Google يدوياً! انتقل لتبويب \"بحث عن موقع\" واكتب اسم محلك ومدينتك، ثم اختر نشاطك من القائمة ليتم توليد الرابط فوراً بضغطة زر واحدة.",
-                obStep3Tag: "الخطوة 3 من 3 • أدوات البطاقات",
                 obStep3Title: "كروت NFC والـ Wi-Fi والأمان",
                 obStep3Desc: "اكتب روابطك على بطاقات واستيكرات NFC بملامسة ظهر هاتفك. انسخ واكتب كروت Wi-Fi لضيوفك وزبائنك بكل سهولة، واحمي بطاقاتك بقفل PIN أو قفل عتادي دائم.",
                 obBtnNext: "التالي",
-                obBtnStart: "ابدأ استخدام التطبيق",
+                obBtnStart: "ابدأ الآن",
                 obBtnSkip: "تخطي الشرح",
                 copyBtn: "نسخ الرابط",
                 copySuccess: "تم النسخ!",
@@ -6062,13 +6075,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             btnOpenHelpGuide.title = dict.btnHelpGuideTitle;
         }
         setTxt('btnGuideLabel', dict.btnGuideLabel);
-        setTxt('obStep1Tag', dict.obStep1Tag);
         setTxt('obStep1Title', dict.obStep1Title);
         setTxt('obStep1Desc', dict.obStep1Desc);
-        setTxt('obStep2Tag', dict.obStep2Tag);
         setTxt('obStep2Title', dict.obStep2Title);
         setTxt('obStep2Desc', dict.obStep2Desc);
-        setTxt('obStep3Tag', dict.obStep3Tag);
         setTxt('obStep3Title', dict.obStep3Title);
         setTxt('obStep3Desc', dict.obStep3Desc);
         setTxt('btnObSkip', dict.obBtnSkip);
@@ -6737,14 +6747,6 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
             } else if (navigator.vibrate) {
                 try { navigator.vibrate(22); } catch (e) {}
-            }
-
-            const dict = getDict();
-            if (window.showToast) {
-                const msg = (newType === 'location')
-                    ? (dict.toastSwitchedToLocation || 'Switched to Google Maps Location link')
-                    : (dict.toastSwitchedToReview || 'Switched to Direct 5-Star Review link');
-                window.showToast(msg, 'success');
             }
         },
         clearModeResult: function(mode) {
@@ -7582,17 +7584,52 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (index < 1 || index > TOTAL_SLIDES) return;
         currentSlide = index;
 
+        // 1. Update slide active states
         const slides = document.querySelectorAll('.onboarding-slide');
         slides.forEach(slide => {
             const slideNum = parseInt(slide.getAttribute('data-slide'), 10);
             slide.classList.toggle('active', slideNum === currentSlide);
         });
 
-        const dots = document.querySelectorAll('.onboarding-dots .ob-dot');
-        dots.forEach(dot => {
-            const dotNum = parseInt(dot.getAttribute('data-index'), 10);
-            dot.classList.toggle('active', dotNum === currentSlide);
-        });
+        // 2. Update top icon circle theme & visible icon
+        const iconWrap = document.getElementById('obTopIconWrap');
+        if (iconWrap) {
+            iconWrap.classList.remove('theme-purple', 'theme-cyan', 'theme-gold');
+            if (currentSlide === 1) iconWrap.classList.add('theme-purple');
+            else if (currentSlide === 2) iconWrap.classList.add('theme-cyan');
+            else if (currentSlide === 3) iconWrap.classList.add('theme-gold');
+        }
+        const icon1 = document.getElementById('obIcon1');
+        const icon2 = document.getElementById('obIcon2');
+        const icon3 = document.getElementById('obIcon3');
+        if (icon1) icon1.style.display = (currentSlide === 1) ? 'block' : 'none';
+        if (icon2) icon2.style.display = (currentSlide === 2) ? 'block' : 'none';
+        if (icon3) icon3.style.display = (currentSlide === 3) ? 'block' : 'none';
+
+        // 3. Update numbered steps progress indicator (1) —— (2) —— (3) (Wi-Fi modal style)
+        const indicator = document.getElementById('onboardingStepsIndicator');
+        if (indicator) {
+            const stepItems = indicator.querySelectorAll('.onboarding-step-item');
+            const stepLines = indicator.querySelectorAll('.onboarding-step-line');
+            stepItems.forEach((item, idx) => {
+                const stepNum = idx + 1;
+                item.classList.remove('active', 'completed');
+                if (stepNum === currentSlide) {
+                    item.classList.add('active');
+                } else if (stepNum < currentSlide) {
+                    item.classList.add('completed');
+                }
+            });
+            stepLines.forEach((line, idx) => {
+                line.classList.toggle('active', (idx + 1) < currentSlide);
+            });
+        }
+
+        // 4. Update actions layout for final step (hide skip button, expand next button to 100%)
+        const actionsContainer = document.getElementById('onboardingActions');
+        if (actionsContainer) {
+            actionsContainer.classList.toggle('is-last-step', currentSlide === TOTAL_SLIDES);
+        }
 
         updateOnboardingUiStrings();
 
@@ -7651,7 +7688,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const btnObSkip = document.getElementById('btnObSkip');
         const onboardingCloseBtn = document.getElementById('onboardingCloseBtn');
         const overlay = document.getElementById('onboardingOverlay');
-        const dots = document.querySelectorAll('.onboarding-dots .ob-dot');
+        const indicator = document.getElementById('onboardingStepsIndicator');
 
         if (btnObNext) btnObNext.addEventListener('click', nextSlide);
         if (btnObSkip) btnObSkip.addEventListener('click', () => closeOnboarding(true));
@@ -7663,12 +7700,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
-        dots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const idx = parseInt(dot.getAttribute('data-index'), 10);
-                if (idx) goToSlide(idx);
+        if (indicator) {
+            const stepItems = indicator.querySelectorAll('.onboarding-step-item');
+            stepItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const stepNum = parseInt(item.getAttribute('data-step'), 10);
+                    if (stepNum) goToSlide(stepNum);
+                });
             });
-        });
+        }
 
         // First-launch check
         try {

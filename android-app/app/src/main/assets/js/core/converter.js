@@ -60,14 +60,6 @@
             } else if (navigator.vibrate) {
                 try { navigator.vibrate(22); } catch (e) {}
             }
-
-            const dict = getDict();
-            if (window.showToast) {
-                const msg = (newType === 'location')
-                    ? (dict.toastSwitchedToLocation || 'Switched to Google Maps Location link')
-                    : (dict.toastSwitchedToReview || 'Switched to Direct 5-Star Review link');
-                window.showToast(msg, 'success');
-            }
         },
         clearModeResult: function(mode) {
             if (!this[mode]) return;
