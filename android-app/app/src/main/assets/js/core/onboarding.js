@@ -159,12 +159,10 @@
         const onboardingCloseBtn = document.getElementById('onboardingCloseBtn');
         const overlay = document.getElementById('onboardingOverlay');
         const indicator = document.getElementById('onboardingStepsIndicator');
-        const btnOpenHelpGuide = document.getElementById('btnOpenHelpGuide');
 
         if (btnObNext) btnObNext.addEventListener('click', nextSlide);
         if (btnObSkip) btnObSkip.addEventListener('click', () => closeOnboarding(true));
         if (onboardingCloseBtn) onboardingCloseBtn.addEventListener('click', () => closeOnboarding(true));
-        if (btnOpenHelpGuide) btnOpenHelpGuide.addEventListener('click', openOnboarding);
 
         if (overlay) {
             overlay.addEventListener('click', (e) => {

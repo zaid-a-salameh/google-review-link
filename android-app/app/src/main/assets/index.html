@@ -4437,7 +4437,8 @@
             gap: 8px;
         }
 
-        /* ========================================================
+/* == onboarding.css == */
+/* ========================================================
            Onboarding / Welcome Feature Tour Modal
            ======================================================== */
         .onboarding-overlay {
@@ -4467,7 +4468,16 @@
         }
         .onboarding-overlay.closing {
             opacity: 0;
+            pointer-events: none;
             transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        /* Hard isolation guard: a closed onboarding tour can never intercept input */
+        .onboarding-overlay:not(.active) {
+            pointer-events: none !important;
+            visibility: hidden !important;
+        }
+        .onboarding-overlay:not(.active) * {
+            pointer-events: none !important;
         }
 
         .onboarding-modal {
@@ -4731,8 +4741,11 @@
         }
         .onboarding-slide.active {
             opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+            /* inherit (never force visible/auto): when the overlay is closed
+               its hidden/none state must win, otherwise this slide would sit
+               invisibly on top of the main page and swallow taps. */
+            visibility: inherit;
+            pointer-events: inherit;
             transform: translate3d(0, 0, 0) !important;
             transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1),
                         transform 0.34s cubic-bezier(0.16, 1, 0.3, 1),
@@ -7870,12 +7883,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const onboardingCloseBtn = document.getElementById('onboardingCloseBtn');
         const overlay = document.getElementById('onboardingOverlay');
         const indicator = document.getElementById('onboardingStepsIndicator');
-        const btnOpenHelpGuide = document.getElementById('btnOpenHelpGuide');
 
         if (btnObNext) btnObNext.addEventListener('click', nextSlide);
         if (btnObSkip) btnObSkip.addEventListener('click', () => closeOnboarding(true));
         if (onboardingCloseBtn) onboardingCloseBtn.addEventListener('click', () => closeOnboarding(true));
-        if (btnOpenHelpGuide) btnOpenHelpGuide.addEventListener('click', openOnboarding);
 
         if (overlay) {
             overlay.addEventListener('click', (e) => {

@@ -22,7 +22,7 @@ for d in [assets_css, assets_js_core, assets_js_app]:
 src_css = os.path.join(SRC_DIR, "css")
 apk_css_files = [
     "variables.css", "base.css", "components.css",
-    "search-dropdown.css", "modals.css", "toast.css", "app.css"
+    "search-dropdown.css", "modals.css", "onboarding.css", "toast.css", "app.css"
 ]
 for f in apk_css_files:
     shutil.copy2(os.path.join(src_css, f), os.path.join(assets_css, f))
