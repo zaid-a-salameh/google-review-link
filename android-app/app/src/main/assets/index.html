@@ -6960,6 +6960,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     window.showToast = showToast;
+    window.clearModalTimers = clearModalTimers;
     window.openMorphModal = openMorphModal;
     window.closeMorphModal = closeMorphModal;
     window.transitionModalToModal = transitionModalToModal;
@@ -7743,10 +7744,22 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     }
 
     function buildWifiPayload(ssid, password, encType) {
-        const enc = (encType === 'OPEN') ? 'nopass' : (encType === 'WEP' ? 'WEP' : 'WPA');
-        let payload = 'WIFI:S:' + escapeWifiString(ssid) + ';T:' + enc + ';';
-        if (enc !== 'nopass' && password) {
-            payload += 'P:' + escapeWifiString(password) + ';';
+        const cleanSsid = (ssid || '').trim();
+        const cleanPass = (password || '').trim();
+        const rawEnc = String(encType || '').toUpperCase();
+
+        let enc = 'nopass';
+        if (rawEnc === 'OPEN' || rawEnc === 'NOPASS' || rawEnc === 'NONE' || !cleanPass) {
+            enc = 'nopass';
+        } else if (rawEnc === 'WEP') {
+            enc = 'WEP';
+        } else {
+            enc = 'WPA';
+        }
+
+        let payload = 'WIFI:S:' + escapeWifiString(cleanSsid) + ';T:' + enc + ';';
+        if (enc !== 'nopass' && cleanPass) {
+            payload += 'P:' + escapeWifiString(cleanPass) + ';';
         }
         payload += ';';
         return payload;
@@ -7814,14 +7827,21 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             try { document.activeElement.blur(); } catch (e) {}
         }
         const dict = getDict();
-        if (!ssid || !ssid.trim()) {
+        const cleanSsid = (ssid || '').trim();
+        if (!cleanSsid) {
             if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
             return;
         }
 
+        const cleanPass = (password || '').trim();
+        let normEnc = String(encType || '').toUpperCase();
+        if (!cleanPass) {
+            normEnc = 'OPEN';
+        }
+
         currentQrMode = 'wifi';
-        currentWifiSsid = ssid.trim();
-        currentWifiPayload = buildWifiPayload(currentWifiSsid, password, encType);
+        currentWifiSsid = cleanSsid;
+        currentWifiPayload = buildWifiPayload(cleanSsid, cleanPass, normEnc);
 
         const qrOverlay = document.getElementById('qrOverlay');
         const qrModalBox = document.getElementById('qrModalBox');
@@ -8599,7 +8619,16 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const nfcModalBox = document.getElementById('nfcModalBox');
         if (!nfcOverlay) return;
 
+        if (window.clearModalTimers) {
+            window.clearModalTimers(nfcOverlay, nfcModalBox);
+        }
+
         if (options.skipOpenAnimation || nfcOverlay.classList.contains('active')) {
+            if (nfcModalBox) {
+                nfcModalBox.style.transition = '';
+                nfcModalBox.style.opacity = '1';
+                nfcModalBox.style.transform = 'none';
+            }
             nfcOverlay.classList.add('active');
             return;
         }
@@ -9233,7 +9262,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (nfcWifiCloneQrBtn) {
             nfcWifiCloneQrBtn.addEventListener('click', () => {
                 if (window.openQrModalForWifi) {
-                    window.openQrModalForWifi(pendingWifiSsid, pendingWifiPassword, pendingWifiEncType, nfcWifiCloneQrBtn);
+                    const pass = (pendingWifiPassword || '').trim();
+                    const enc = (!pass) ? 'OPEN' : (pendingWifiEncType || 'WPA');
+                    window.openQrModalForWifi(pendingWifiSsid, (enc === 'OPEN' ? '' : pass), enc, nfcWifiCloneQrBtn);
                 }
             });
         }
@@ -10258,14 +10289,14 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     }
                     wifiSavedPassword = passVal;
 
-                    // If user left password empty and security is currently WPA, auto-switch to OPEN
-                    if (!wifiSavedPassword && wifiSelectedEnc === 'WPA') {
+                    // If user left password empty, auto-switch to OPEN
+                    if (!wifiSavedPassword) {
                         wifiSelectedEnc = 'OPEN';
                         const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
                         items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'OPEN'));
                         if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncOpen || 'Open Network';
                         if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncOpenSub || 'No password (Public / Guest)';
-                    } else if (wifiSavedPassword && wifiSelectedEnc === 'OPEN') {
+                    } else if (wifiSelectedEnc === 'OPEN') {
                         wifiSelectedEnc = 'WPA';
                         const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
                         items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'WPA'));
@@ -10276,20 +10307,26 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     wifiCurrentStep = 3;
                     updateWifiWizardUi();
                 } else if (wifiCurrentStep === 3) {
-                    if (wifiSelectedEnc === 'WPA') {
-                        if (!wifiSavedPassword || wifiSavedPassword.length < 8) {
+                    let pass = (wifiSavedPassword || (wifiPasswordInput ? wifiPasswordInput.value : '')).trim();
+                    let enc = (wifiSelectedEnc || 'WPA').toUpperCase();
+
+                    if (!pass) {
+                        enc = 'OPEN';
+                        wifiSelectedEnc = 'OPEN';
+                        wifiSavedPassword = '';
+                        if (wifiPasswordInput) wifiPasswordInput.value = '';
+                    } else if (enc === 'WPA') {
+                        if (pass.length < 8) {
                             if (window.showToast) window.showToast(dict.toastWifiWpaRequired || dict.toastWifiPassMinLength || 'WPA networks require a password of at least 8 characters', 'warn');
                             wifiCurrentStep = 2;
                             updateWifiWizardUi();
                             if (wifiPasswordInput) wifiPasswordInput.focus();
                             return;
                         }
-                    } else if (wifiSelectedEnc === 'OPEN') {
-                        wifiSavedPassword = '';
                     }
 
                     if (window.startNfcWifiWrite) {
-                        window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+                        window.startNfcWifiWrite(wifiSavedSsid, (enc === 'OPEN' ? '' : pass), enc, btnWifiTag, { skipOpenAnimation: true });
                     }
                 }
             });
@@ -10305,15 +10342,35 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     try { document.activeElement.blur(); } catch (e) {}
                 }
                 const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
-                if (!wifiSavedSsid || !wifiSavedSsid.trim()) {
+                const ssid = (wifiSavedSsid || (wifiSsidInput ? wifiSsidInput.value : '')).trim();
+                if (!ssid) {
                     if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
                     wifiCurrentStep = 1;
                     updateWifiWizardUi();
                     if (wifiSsidInput) wifiSsidInput.focus();
                     return;
                 }
-                if (wifiSelectedEnc === 'WPA') {
-                    if (!wifiSavedPassword || wifiSavedPassword.length < 8) {
+                wifiSavedSsid = ssid;
+
+                let pass = (wifiSavedPassword !== undefined && wifiSavedPassword !== null) ? String(wifiSavedPassword).trim() : '';
+                if (!pass && wifiPasswordInput) {
+                    pass = (wifiPasswordInput.value || '').trim();
+                }
+
+                let enc = (wifiSelectedEnc || '').toUpperCase();
+
+                // If password is empty, network is Open (nopass)
+                if (!pass) {
+                    enc = 'OPEN';
+                    wifiSelectedEnc = 'OPEN';
+                    wifiSavedPassword = '';
+                    if (wifiPasswordInput) wifiPasswordInput.value = '';
+                    const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+                    items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'OPEN'));
+                    if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncOpen || 'Open Network';
+                    if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncOpenSub || 'No password (Public / Guest)';
+                } else if (enc === 'WPA') {
+                    if (pass.length < 8) {
                         if (window.showToast) window.showToast(dict.toastWifiWpaRequired || dict.toastWifiPassMinLength || 'WPA networks require a password of at least 8 characters', 'warn');
                         wifiCurrentStep = 2;
                         updateWifiWizardUi();
@@ -10321,8 +10378,9 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                         return;
                     }
                 }
+
                 if (window.openQrModalForWifi) {
-                    window.openQrModalForWifi(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiQr);
+                    window.openQrModalForWifi(ssid, (enc === 'OPEN' ? '' : pass), enc, btnWifiQr);
                 }
             });
         }
@@ -10341,6 +10399,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             item.addEventListener('click', () => {
                 const enc = item.getAttribute('data-enc');
                 wifiSelectedEnc = enc;
+                if (enc === 'OPEN') {
+                    wifiSavedPassword = '';
+                    if (wifiPasswordInput) wifiPasswordInput.value = '';
+                }
                 wifiDropItems.forEach(it => it.classList.toggle('selected', it === item));
 
                 const mainText = item.querySelector('.wifi-dropdown-main')?.textContent || '';

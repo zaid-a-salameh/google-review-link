@@ -20,10 +20,22 @@
     }
 
     function buildWifiPayload(ssid, password, encType) {
-        const enc = (encType === 'OPEN') ? 'nopass' : (encType === 'WEP' ? 'WEP' : 'WPA');
-        let payload = 'WIFI:S:' + escapeWifiString(ssid) + ';T:' + enc + ';';
-        if (enc !== 'nopass' && password) {
-            payload += 'P:' + escapeWifiString(password) + ';';
+        const cleanSsid = (ssid || '').trim();
+        const cleanPass = (password || '').trim();
+        const rawEnc = String(encType || '').toUpperCase();
+
+        let enc = 'nopass';
+        if (rawEnc === 'OPEN' || rawEnc === 'NOPASS' || rawEnc === 'NONE' || !cleanPass) {
+            enc = 'nopass';
+        } else if (rawEnc === 'WEP') {
+            enc = 'WEP';
+        } else {
+            enc = 'WPA';
+        }
+
+        let payload = 'WIFI:S:' + escapeWifiString(cleanSsid) + ';T:' + enc + ';';
+        if (enc !== 'nopass' && cleanPass) {
+            payload += 'P:' + escapeWifiString(cleanPass) + ';';
         }
         payload += ';';
         return payload;
@@ -91,14 +103,21 @@
             try { document.activeElement.blur(); } catch (e) {}
         }
         const dict = getDict();
-        if (!ssid || !ssid.trim()) {
+        const cleanSsid = (ssid || '').trim();
+        if (!cleanSsid) {
             if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
             return;
         }
 
+        const cleanPass = (password || '').trim();
+        let normEnc = String(encType || '').toUpperCase();
+        if (!cleanPass) {
+            normEnc = 'OPEN';
+        }
+
         currentQrMode = 'wifi';
-        currentWifiSsid = ssid.trim();
-        currentWifiPayload = buildWifiPayload(currentWifiSsid, password, encType);
+        currentWifiSsid = cleanSsid;
+        currentWifiPayload = buildWifiPayload(cleanSsid, cleanPass, normEnc);
 
         const qrOverlay = document.getElementById('qrOverlay');
         const qrModalBox = document.getElementById('qrModalBox');

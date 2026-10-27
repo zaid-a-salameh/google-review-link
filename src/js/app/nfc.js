@@ -459,7 +459,16 @@
         const nfcModalBox = document.getElementById('nfcModalBox');
         if (!nfcOverlay) return;
 
+        if (window.clearModalTimers) {
+            window.clearModalTimers(nfcOverlay, nfcModalBox);
+        }
+
         if (options.skipOpenAnimation || nfcOverlay.classList.contains('active')) {
+            if (nfcModalBox) {
+                nfcModalBox.style.transition = '';
+                nfcModalBox.style.opacity = '1';
+                nfcModalBox.style.transform = 'none';
+            }
             nfcOverlay.classList.add('active');
             return;
         }
@@ -1093,7 +1102,9 @@
         if (nfcWifiCloneQrBtn) {
             nfcWifiCloneQrBtn.addEventListener('click', () => {
                 if (window.openQrModalForWifi) {
-                    window.openQrModalForWifi(pendingWifiSsid, pendingWifiPassword, pendingWifiEncType, nfcWifiCloneQrBtn);
+                    const pass = (pendingWifiPassword || '').trim();
+                    const enc = (!pass) ? 'OPEN' : (pendingWifiEncType || 'WPA');
+                    window.openQrModalForWifi(pendingWifiSsid, (enc === 'OPEN' ? '' : pass), enc, nfcWifiCloneQrBtn);
                 }
             });
         }

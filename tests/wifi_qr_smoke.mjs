@@ -150,6 +150,37 @@ try {
     await ev(`document.getElementById('qrCloseBtn').click()`);
     await sleep(400);
 
+    // 5b. Test Open Wi-Fi Network (no password / empty password)
+    console.log('Testing Open Wi-Fi Network QR button (empty password)...');
+    await ev(`document.getElementById('wifiBackBtnLabel').click()`); // Back to step 2
+    await sleep(300);
+    await ev(`
+        document.getElementById('wifiPasswordInput').value = '';
+        document.getElementById('btnWifiNext').click();
+    `); // Next to step 3 with empty password
+    await sleep(350);
+
+    const openLabel = await ev(`document.getElementById('wifiSelectedLabel').textContent`);
+    console.log('Open Network dropdown label:', openLabel);
+
+    await ev(`document.getElementById('btnWifiQr').click()`);
+    await sleep(400);
+
+    const openQrActive = await ev(`document.getElementById('qrOverlay').classList.contains('active')`);
+    const openIsThemeWifi = await ev(`document.getElementById('qrModalBox').classList.contains('theme-wifi')`);
+    if (!openQrActive || !openIsThemeWifi) throw new Error('Expected QR modal to open for open network with empty password!');
+    console.log('PASS: Open Wi-Fi network opens QR modal with yellow theme!');
+
+    // Close QR modal and cancel wifi wizard
+    await ev(`document.getElementById('qrCloseBtn').click()`);
+    await sleep(400);
+    await ev(`document.getElementById('btnWifiBack').click()`); // from step 3 to step 2
+    await sleep(250);
+    await ev(`document.getElementById('btnWifiBack').click()`); // from step 2 to step 1
+    await sleep(250);
+    await ev(`document.getElementById('btnWifiBack').click()`); // from step 1 close modal
+    await sleep(500);
+
     // 6. Test Clone Mode QR Button
     console.log('Testing Clone Mode Wi-Fi QR button...');
     await ev(`window.onNfcWifiTagRead({ ssid: 'Office_Mesh', password: 'SuperSecretPass', encType: 'WPA' })`);

@@ -684,14 +684,14 @@
                     }
                     wifiSavedPassword = passVal;
 
-                    // If user left password empty and security is currently WPA, auto-switch to OPEN
-                    if (!wifiSavedPassword && wifiSelectedEnc === 'WPA') {
+                    // If user left password empty, auto-switch to OPEN
+                    if (!wifiSavedPassword) {
                         wifiSelectedEnc = 'OPEN';
                         const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
                         items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'OPEN'));
                         if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncOpen || 'Open Network';
                         if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncOpenSub || 'No password (Public / Guest)';
-                    } else if (wifiSavedPassword && wifiSelectedEnc === 'OPEN') {
+                    } else if (wifiSelectedEnc === 'OPEN') {
                         wifiSelectedEnc = 'WPA';
                         const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
                         items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'WPA'));
@@ -702,20 +702,26 @@
                     wifiCurrentStep = 3;
                     updateWifiWizardUi();
                 } else if (wifiCurrentStep === 3) {
-                    if (wifiSelectedEnc === 'WPA') {
-                        if (!wifiSavedPassword || wifiSavedPassword.length < 8) {
+                    let pass = (wifiSavedPassword || (wifiPasswordInput ? wifiPasswordInput.value : '')).trim();
+                    let enc = (wifiSelectedEnc || 'WPA').toUpperCase();
+
+                    if (!pass) {
+                        enc = 'OPEN';
+                        wifiSelectedEnc = 'OPEN';
+                        wifiSavedPassword = '';
+                        if (wifiPasswordInput) wifiPasswordInput.value = '';
+                    } else if (enc === 'WPA') {
+                        if (pass.length < 8) {
                             if (window.showToast) window.showToast(dict.toastWifiWpaRequired || dict.toastWifiPassMinLength || 'WPA networks require a password of at least 8 characters', 'warn');
                             wifiCurrentStep = 2;
                             updateWifiWizardUi();
                             if (wifiPasswordInput) wifiPasswordInput.focus();
                             return;
                         }
-                    } else if (wifiSelectedEnc === 'OPEN') {
-                        wifiSavedPassword = '';
                     }
 
                     if (window.startNfcWifiWrite) {
-                        window.startNfcWifiWrite(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiTag, { skipOpenAnimation: true });
+                        window.startNfcWifiWrite(wifiSavedSsid, (enc === 'OPEN' ? '' : pass), enc, btnWifiTag, { skipOpenAnimation: true });
                     }
                 }
             });
@@ -731,15 +737,35 @@
                     try { document.activeElement.blur(); } catch (e) {}
                 }
                 const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
-                if (!wifiSavedSsid || !wifiSavedSsid.trim()) {
+                const ssid = (wifiSavedSsid || (wifiSsidInput ? wifiSsidInput.value : '')).trim();
+                if (!ssid) {
                     if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
                     wifiCurrentStep = 1;
                     updateWifiWizardUi();
                     if (wifiSsidInput) wifiSsidInput.focus();
                     return;
                 }
-                if (wifiSelectedEnc === 'WPA') {
-                    if (!wifiSavedPassword || wifiSavedPassword.length < 8) {
+                wifiSavedSsid = ssid;
+
+                let pass = (wifiSavedPassword !== undefined && wifiSavedPassword !== null) ? String(wifiSavedPassword).trim() : '';
+                if (!pass && wifiPasswordInput) {
+                    pass = (wifiPasswordInput.value || '').trim();
+                }
+
+                let enc = (wifiSelectedEnc || '').toUpperCase();
+
+                // If password is empty, network is Open (nopass)
+                if (!pass) {
+                    enc = 'OPEN';
+                    wifiSelectedEnc = 'OPEN';
+                    wifiSavedPassword = '';
+                    if (wifiPasswordInput) wifiPasswordInput.value = '';
+                    const items = wifiDropdownMenu ? wifiDropdownMenu.querySelectorAll('.wifi-dropdown-item') : [];
+                    items.forEach(it => it.classList.toggle('selected', it.getAttribute('data-enc') === 'OPEN'));
+                    if (wifiSelectedLabel) wifiSelectedLabel.textContent = dict.wifiEncOpen || 'Open Network';
+                    if (wifiSelectedSub) wifiSelectedSub.textContent = dict.wifiEncOpenSub || 'No password (Public / Guest)';
+                } else if (enc === 'WPA') {
+                    if (pass.length < 8) {
                         if (window.showToast) window.showToast(dict.toastWifiWpaRequired || dict.toastWifiPassMinLength || 'WPA networks require a password of at least 8 characters', 'warn');
                         wifiCurrentStep = 2;
                         updateWifiWizardUi();
@@ -747,8 +773,9 @@
                         return;
                     }
                 }
+
                 if (window.openQrModalForWifi) {
-                    window.openQrModalForWifi(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiQr);
+                    window.openQrModalForWifi(ssid, (enc === 'OPEN' ? '' : pass), enc, btnWifiQr);
                 }
             });
         }
@@ -767,6 +794,10 @@
             item.addEventListener('click', () => {
                 const enc = item.getAttribute('data-enc');
                 wifiSelectedEnc = enc;
+                if (enc === 'OPEN') {
+                    wifiSavedPassword = '';
+                    if (wifiPasswordInput) wifiPasswordInput.value = '';
+                }
                 wifiDropItems.forEach(it => it.classList.toggle('selected', it === item));
 
                 const mainText = item.querySelector('.wifi-dropdown-main')?.textContent || '';

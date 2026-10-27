@@ -343,6 +343,7 @@
     }
 
     window.showToast = showToast;
+    window.clearModalTimers = clearModalTimers;
     window.openMorphModal = openMorphModal;
     window.closeMorphModal = closeMorphModal;
     window.transitionModalToModal = transitionModalToModal;
