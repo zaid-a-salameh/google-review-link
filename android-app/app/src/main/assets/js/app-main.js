@@ -62,6 +62,8 @@
         const btnWifiNext = $('btnWifiNext');
         const wifiNextBtnLabel = $('wifiNextBtnLabel');
         const wifiNextBtnArrow = $('wifiNextBtnArrow');
+        const btnWifiQr = $('btnWifiQr');
+        const wifiQrBtnLabel = $('wifiQrBtnLabel');
         const btnWifiBack = $('btnWifiBack');
         const wifiBackBtnLabel = $('wifiBackBtnLabel');
         const pwdModalOverlay = $('pwdModalOverlay');
@@ -511,18 +513,24 @@
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.pwdCancel || 'Cancel';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+                if (btnWifiQr) btnWifiQr.style.display = 'none';
             } else if (wifiCurrentStep === 2) {
                 newTitle = dict.wifiStep2Title || 'Network Password';
                 newDesc = dict.wifiStep2Desc || 'Enter Wi-Fi password (or leave blank for open network)';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+                if (btnWifiQr) btnWifiQr.style.display = 'none';
             } else if (wifiCurrentStep === 3) {
                 newTitle = dict.wifiStep3Title || 'Security Type';
                 newDesc = dict.wifiStep3Desc || 'Select network encryption standard';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+                if (btnWifiQr) {
+                    btnWifiQr.style.display = 'inline-flex';
+                    if (wifiQrBtnLabel) wifiQrBtnLabel.textContent = dict.wifiQrBtn || 'QR Code';
+                }
             }
 
             if (wifiStepTitle) {
@@ -715,6 +723,34 @@
 
         if (btnWifiBack) {
             btnWifiBack.addEventListener('click', handleWifiWizardBack);
+        }
+
+        if (btnWifiQr) {
+            btnWifiQr.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                if (!wifiSavedSsid || !wifiSavedSsid.trim()) {
+                    if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+                    wifiCurrentStep = 1;
+                    updateWifiWizardUi();
+                    if (wifiSsidInput) wifiSsidInput.focus();
+                    return;
+                }
+                if (wifiSelectedEnc === 'WPA') {
+                    if (!wifiSavedPassword || wifiSavedPassword.length < 8) {
+                        if (window.showToast) window.showToast(dict.toastWifiWpaRequired || dict.toastWifiPassMinLength || 'WPA networks require a password of at least 8 characters', 'warn');
+                        wifiCurrentStep = 2;
+                        updateWifiWizardUi();
+                        if (wifiPasswordInput) wifiPasswordInput.focus();
+                        return;
+                    }
+                }
+                if (window.openQrModalForWifi) {
+                    window.openQrModalForWifi(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiQr);
+                }
+            });
         }
 
         if (wifiSelectTrigger) {

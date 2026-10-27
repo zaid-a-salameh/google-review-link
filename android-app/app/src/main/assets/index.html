@@ -2717,6 +2717,37 @@
             border-color: rgba(255, 255, 255, 0.3) !important;
             transform: translateY(-1px);
         }
+        .btn-nfc-wifi-qr {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1.15;
+            height: 44px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: var(--radius-btn);
+            color: #fbbf24;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+            white-space: nowrap;
+            padding: 0 10px;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .btn-nfc-wifi-qr:active {
+            transform: scale(0.97);
+            background: rgba(245, 158, 11, 0.25);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        .btn-nfc-wifi-qr svg {
+            width: 17px;
+            height: 17px;
+            fill: #fbbf24;
+            flex-shrink: 0;
+        }
         .btn-nfc-cancel {
             flex: 1;
             width: 100%;
@@ -2871,7 +2902,7 @@
             background: rgba(8, 7, 6, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            z-index: 1000;
+            z-index: 1100;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -2903,6 +2934,22 @@
         .qr-overlay.active .qr-modal {
             transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
+        }
+        .qr-modal.theme-wifi {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.25);
+        }
+        .qr-modal.theme-wifi .btn-qr-download {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+            color: #0c0a09;
+            font-weight: 800;
+        }
+        .qr-modal.theme-wifi .btn-qr-download svg {
+            fill: #0c0a09;
+        }
+        .qr-modal.theme-wifi .btn-qr-download:active {
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
         }
         .qr-title {
             font-size: 18px;
@@ -4261,6 +4308,48 @@
             width: 100%;
             margin-top: 4px;
         }
+        .wifi-actions-primary-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .wifi-actions-primary-row .btn-wifi-next {
+            flex: 1.35;
+            min-width: 0;
+        }
+        .btn-wifi-qr {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 46px;
+            flex: 1;
+            min-width: 0;
+            padding: 0 12px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.42);
+            border-radius: var(--radius-btn);
+            color: #fbbf24;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+            white-space: nowrap;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+        .btn-wifi-qr:active {
+            transform: scale(0.97);
+            background: rgba(245, 158, 11, 0.22);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+        }
+        .btn-wifi-qr svg {
+            width: 17px;
+            height: 17px;
+            fill: #fbbf24;
+            flex-shrink: 0;
+        }
         .btn-wifi-next {
             width: 100%;
             height: 46px;
@@ -5246,6 +5335,10 @@ body {
                         <svg viewBox="0 0 24 24" id="nfcNextBtnIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                         <span id="nfcNextBtnLabel">Another Card</span>
                     </button>
+                    <button type="button" class="btn-nfc-wifi-qr" id="nfcWifiCloneQrBtn" style="display: none;">
+                        <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm0 5h3v3h-3v-3zm-5-5h3v3h-3v-3zm2 2h3v3h-3v-3zm-2 3h3v3h-3v-3z"/></svg>
+                        <span id="nfcWifiCloneQrBtnLabel">QR Code</span>
+                    </button>
                     <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">
                         <svg class="nfc-back-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                         <span id="nfcCancelBtnLabel">Cancel</span>
@@ -5440,10 +5533,16 @@ body {
 
                 <!-- Wizard Actions Row -->
                 <div class="wifi-actions">
-                    <button type="button" class="btn-wifi-next" id="btnWifiNext">
-                        <span id="wifiNextBtnLabel">Next</span>
-                        <svg viewBox="0 0 24 24" id="wifiNextBtnArrow" class="wifi-next-arrow"><path d="M5 13h11.83l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.83 11H5v2z"/></svg>
-                    </button>
+                    <div class="wifi-actions-primary-row">
+                        <button type="button" class="btn-wifi-next" id="btnWifiNext">
+                            <span id="wifiNextBtnLabel">Next</span>
+                            <svg viewBox="0 0 24 24" id="wifiNextBtnArrow" class="wifi-next-arrow"><path d="M5 13h11.83l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.83 11H5v2z"/></svg>
+                        </button>
+                        <button type="button" class="btn-wifi-qr" id="btnWifiQr" style="display: none;" title="Show QR Code">
+                            <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm0 5h3v3h-3v-3zm-5-5h3v3h-3v-3zm2 2h3v3h-3v-3zm-2 3h3v3h-3v-3z"/></svg>
+                            <span id="wifiQrBtnLabel">QR Code</span>
+                        </button>
+                    </div>
                     <button type="button" class="btn-wifi-back" id="btnWifiBack">
                         <span id="wifiBackBtnLabel">Cancel</span>
                     </button>
@@ -5711,6 +5810,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 wifiNext: "Next",
                 wifiBack: "Back",
                 wifiWriteTag: "Write to NFC Tag",
+                wifiQrBtn: "QR Code",
+                wifiQrModalTitle: "Wi-Fi QR Code",
+                wifiQrModalDesc: "Scan with any smartphone camera to connect directly",
+                wifiQrDownloaded: "Wi-Fi QR Code downloaded",
                 toastEnterSsid: "Please enter network name (SSID)",
                 toastWifiPassMinLength: "Password must be at least 8 characters",
                 toastWifiWpaRequired: "WPA networks require a password of at least 8 characters",
@@ -5976,6 +6079,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 wifiNext: "التالي",
                 wifiBack: "رجوع",
                 wifiWriteTag: "نسخ على البطاقة",
+                wifiQrBtn: "رمز QR",
+                wifiQrModalTitle: "رمز QR لشبكة الواي فاي",
+                wifiQrModalDesc: "امسح الرمز بكاميرا أي هاتف للاتصال بالشبكة تلقائياً",
+                wifiQrDownloaded: "تم تنزيل رمز QR للواي فاي بنجاح",
                 toastEnterSsid: "يرجى إدخال اسم الشبكة (SSID)",
                 toastWifiPassMinLength: "كلمة المرور يجب ألا تقل عن 8 خانات",
                 toastWifiWpaRequired: "شبكات WPA تتطلب كلمة مرور من 8 خانات على الأقل",
@@ -6323,6 +6430,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         setTxt('qrModalDesc', dict.qrModalDesc);
         setTxt('qrDownloadBtnLabel', dict.qrDownloadBtn);
         setTxt('qrCloseBtn', dict.qrCloseBtn);
+        setTxt('wifiQrBtnLabel', dict.wifiQrBtn || 'QR Code');
+        setTxt('nfcWifiCloneQrBtnLabel', dict.wifiQrBtn || 'QR Code');
 
         // NFC Modal (Native App)
         const nfcOverlayEl = document.getElementById('nfcOverlay');
@@ -7619,10 +7728,28 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     'use strict';
 
     let qrInstance = null;
+    let currentQrMode = 'review';
+    let currentWifiSsid = '';
+    let currentWifiPayload = '';
 
     function getDict() {
         const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
         return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function escapeWifiString(str) {
+        if (!str) return '';
+        return str.replace(/([\\;,:"])/g, '\\$1');
+    }
+
+    function buildWifiPayload(ssid, password, encType) {
+        const enc = (encType === 'OPEN') ? 'nopass' : (encType === 'WEP' ? 'WEP' : 'WPA');
+        let payload = 'WIFI:S:' + escapeWifiString(ssid) + ';T:' + enc + ';';
+        if (enc !== 'nopass' && password) {
+            payload += 'P:' + escapeWifiString(password) + ';';
+        }
+        payload += ';';
+        return payload;
     }
 
     function generateQrCode(url) {
@@ -7641,7 +7768,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         } else {
             const img = document.createElement('img');
             img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=1&data=${encodeURIComponent(url)}`;
-            img.alt = 'Google Review QR Code';
+            img.alt = (currentQrMode === 'wifi') ? 'Wi-Fi QR Code' : 'Google Review QR Code';
             img.width = 200;
             img.height = 200;
             qrCodeContainer.appendChild(img);
@@ -7654,10 +7781,64 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         }
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
+
+        currentQrMode = 'review';
+        currentWifiSsid = '';
+        currentWifiPayload = '';
+
+        const dict = getDict();
         const qrOverlay = document.getElementById('qrOverlay');
         const qrModalBox = document.getElementById('qrModalBox');
+        const qrModalTitle = document.getElementById('qrModalTitle');
+        const qrModalDesc = document.getElementById('qrModalDesc');
+        const qrDownloadBtnLabel = document.getElementById('qrDownloadBtnLabel');
+
+        if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle || 'Google Review QR Code';
+        if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc || 'Scan with any smartphone camera to leave a review directly';
+        if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn || 'Download QR Image';
+
+        if (qrModalBox) qrModalBox.classList.remove('theme-wifi');
+        if (qrOverlay) qrOverlay.classList.remove('theme-wifi');
+
         const validBtn = (triggerBtn && triggerBtn.nodeType === 1) ? triggerBtn : document.getElementById('qrBtn');
         generateQrCode(url);
+        if (window.openMorphModal && qrOverlay && qrModalBox) {
+            window.openMorphModal(qrOverlay, qrModalBox, validBtn);
+        } else if (qrOverlay) {
+            qrOverlay.classList.add('active');
+        }
+    }
+
+    function openQrModalForWifi(ssid, password, encType, triggerBtn) {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
+        const dict = getDict();
+        if (!ssid || !ssid.trim()) {
+            if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+            return;
+        }
+
+        currentQrMode = 'wifi';
+        currentWifiSsid = ssid.trim();
+        currentWifiPayload = buildWifiPayload(currentWifiSsid, password, encType);
+
+        const qrOverlay = document.getElementById('qrOverlay');
+        const qrModalBox = document.getElementById('qrModalBox');
+        const qrModalTitle = document.getElementById('qrModalTitle');
+        const qrModalDesc = document.getElementById('qrModalDesc');
+        const qrDownloadBtnLabel = document.getElementById('qrDownloadBtnLabel');
+
+        if (qrModalTitle) qrModalTitle.textContent = dict.wifiQrModalTitle || 'Wi-Fi QR Code';
+        if (qrModalDesc) qrModalDesc.textContent = dict.wifiQrModalDesc || 'Scan with any smartphone camera to connect directly';
+        if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.wifiQrDownloadBtn || dict.qrDownloadBtn || 'Download QR Image';
+
+        if (qrModalBox) qrModalBox.classList.add('theme-wifi');
+        if (qrOverlay) qrOverlay.classList.add('theme-wifi');
+
+        generateQrCode(currentWifiPayload);
+
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1) ? triggerBtn : null;
         if (window.openMorphModal && qrOverlay && qrModalBox) {
             window.openMorphModal(qrOverlay, qrModalBox, validBtn);
         } else if (qrOverlay) {
@@ -7668,10 +7849,27 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
     function closeQrModal() {
         const qrOverlay = document.getElementById('qrOverlay');
         const qrModalBox = document.getElementById('qrModalBox');
+
+        const cleanup = () => {
+            if (qrModalBox) qrModalBox.classList.remove('theme-wifi');
+            if (qrOverlay) qrOverlay.classList.remove('theme-wifi');
+            currentQrMode = 'review';
+            currentWifiSsid = '';
+            currentWifiPayload = '';
+            const dict = getDict();
+            const qrModalTitle = document.getElementById('qrModalTitle');
+            const qrModalDesc = document.getElementById('qrModalDesc');
+            const qrDownloadBtnLabel = document.getElementById('qrDownloadBtnLabel');
+            if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle || 'Google Review QR Code';
+            if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc || 'Scan with any smartphone camera to leave a review directly';
+            if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn || 'Download QR Image';
+        };
+
         if (window.closeMorphModal && qrOverlay && qrModalBox) {
-            window.closeMorphModal(qrOverlay, qrModalBox);
+            window.closeMorphModal(qrOverlay, qrModalBox, cleanup);
         } else if (qrOverlay) {
             qrOverlay.classList.remove('active');
+            cleanup();
         }
     }
 
@@ -7700,23 +7898,30 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (!dataUrl) return;
 
+        const isWifi = currentQrMode === 'wifi';
+        const filename = isWifi
+            ? `wifi_${(currentWifiSsid || 'network').replace(/[^a-zA-Z0-9_-]/g, '_')}_qr.png`
+            : 'google_review_qr.png';
+        const toastMsg = isWifi ? (dict.wifiQrDownloaded || 'Wi-Fi QR Code downloaded') : (dict.qrDownloaded || 'QR Code downloaded');
+
         if (window.AndroidNative && window.AndroidNative.saveQrImage) {
-            window.AndroidNative.saveQrImage(dataUrl, "google_review_qr.png");
-            if (window.showToast) window.showToast(dict.qrDownloaded || 'QR downloaded', 'success');
+            window.AndroidNative.saveQrImage(dataUrl, filename);
+            if (window.showToast) window.showToast(toastMsg, 'success');
             return;
         }
 
         const link = document.createElement('a');
-        link.download = 'google_review_qr.png';
+        link.download = filename;
         link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        if (window.showToast) window.showToast(dict.qrDownloaded || 'QR downloaded', 'success');
+        if (window.showToast) window.showToast(toastMsg, 'success');
     }
 
     window.generateQrCode = generateQrCode;
     window.openQrModal = openQrModal;
+    window.openQrModalForWifi = openQrModalForWifi;
     window.closeQrModal = closeQrModal;
     window.downloadQrImage = downloadQrImage;
 })();
@@ -7730,6 +7935,7 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
     const STORAGE_KEY = 'review_link_onboarding_v1';
     let currentSlide = 1;
+    let closeTimer = null;
     const TOTAL_SLIDES = 3;
 
     function getDict() {
@@ -7828,6 +8034,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const modal = document.getElementById('onboardingModalBox');
         if (!overlay || !modal) return;
 
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+
         goToSlide(1);
 
         overlay.classList.remove('closing');
@@ -7848,12 +8059,18 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const modal = document.getElementById('onboardingModalBox');
         if (!overlay) return;
 
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+
         overlay.classList.add('closing');
         if (modal) modal.classList.add('closing');
 
-        setTimeout(() => {
+        closeTimer = setTimeout(() => {
             overlay.classList.remove('active', 'closing');
             if (modal) modal.classList.remove('active', 'closing');
+            closeTimer = null;
         }, 240);
 
         if (markAsSeen) {
@@ -8079,6 +8296,10 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         if (nfcModalBox && state !== 'success') {
             nfcModalBox.classList.remove('has-next-btn');
         }
+        const nfcWifiCloneQrBtn = document.getElementById('nfcWifiCloneQrBtn');
+        if (nfcWifiCloneQrBtn) {
+            nfcWifiCloneQrBtn.style.display = 'none';
+        }
 
         syncEmblemInteractivity(state === 'perm_lock_standby');
 
@@ -8187,6 +8408,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 }
                 setCancelBtnMode(dict.wifiBack || 'Back', true);
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+                if (nfcWifiCloneQrBtn && isWifiCloneMode) {
+                    nfcWifiCloneQrBtn.style.display = 'inline-flex';
+                    const nfcWifiCloneQrBtnLabel = document.getElementById('nfcWifiCloneQrBtnLabel');
+                    if (nfcWifiCloneQrBtnLabel) nfcWifiCloneQrBtnLabel.textContent = dict.wifiQrBtn || 'QR Code';
+                }
             }
             setIconIfChanged(nfcSvgIcon, ICON_WIFI);
         } else if (state === 'success') {
@@ -8246,6 +8472,11 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                     if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_WIFI.trim();
                 }
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
+                if (nfcWifiCloneQrBtn) {
+                    nfcWifiCloneQrBtn.style.display = 'inline-flex';
+                    const nfcWifiCloneQrBtnLabel = document.getElementById('nfcWifiCloneQrBtnLabel');
+                    if (nfcWifiCloneQrBtnLabel) nfcWifiCloneQrBtnLabel.textContent = dict.wifiQrBtn || 'QR Code';
+                }
                 updateWriteBatchBadge(dict);
             } else {
                 if (nfcModalBox) nfcModalBox.classList.add('theme-link');
@@ -8451,6 +8682,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             window.closeMorphModal(nfcOverlay, nfcModalBox, () => {
                 const nfcNextBtn = document.getElementById('nfcNextBtn');
                 if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                const nfcWifiCloneQrBtn = document.getElementById('nfcWifiCloneQrBtn');
+                if (nfcWifiCloneQrBtn) nfcWifiCloneQrBtn.style.display = 'none';
                 nfcModalBox.classList.remove(
                     'theme-lock',
                     'theme-unlock',
@@ -8996,6 +9229,15 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
             });
         }
 
+        const nfcWifiCloneQrBtn = document.getElementById('nfcWifiCloneQrBtn');
+        if (nfcWifiCloneQrBtn) {
+            nfcWifiCloneQrBtn.addEventListener('click', () => {
+                if (window.openQrModalForWifi) {
+                    window.openQrModalForWifi(pendingWifiSsid, pendingWifiPassword, pendingWifiEncType, nfcWifiCloneQrBtn);
+                }
+            });
+        }
+
         const nfcWaveContainer = document.getElementById('nfcWaveContainer');
         const nfcStatusIcon = document.getElementById('nfcStatusIcon');
         const rearmTarget = nfcWaveContainer || nfcStatusIcon;
@@ -9394,6 +9636,8 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
         const btnWifiNext = $('btnWifiNext');
         const wifiNextBtnLabel = $('wifiNextBtnLabel');
         const wifiNextBtnArrow = $('wifiNextBtnArrow');
+        const btnWifiQr = $('btnWifiQr');
+        const wifiQrBtnLabel = $('wifiQrBtnLabel');
         const btnWifiBack = $('btnWifiBack');
         const wifiBackBtnLabel = $('wifiBackBtnLabel');
         const pwdModalOverlay = $('pwdModalOverlay');
@@ -9843,18 +10087,24 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.pwdCancel || 'Cancel';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+                if (btnWifiQr) btnWifiQr.style.display = 'none';
             } else if (wifiCurrentStep === 2) {
                 newTitle = dict.wifiStep2Title || 'Network Password';
                 newDesc = dict.wifiStep2Desc || 'Enter Wi-Fi password (or leave blank for open network)';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiNext || 'Next';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'block';
+                if (btnWifiQr) btnWifiQr.style.display = 'none';
             } else if (wifiCurrentStep === 3) {
                 newTitle = dict.wifiStep3Title || 'Security Type';
                 newDesc = dict.wifiStep3Desc || 'Select network encryption standard';
                 if (wifiNextBtnLabel) wifiNextBtnLabel.textContent = dict.wifiWriteTag || 'Write to NFC Tag';
                 if (wifiBackBtnLabel) wifiBackBtnLabel.textContent = dict.wifiBack || 'Back';
                 if (wifiNextBtnArrow) wifiNextBtnArrow.style.display = 'none';
+                if (btnWifiQr) {
+                    btnWifiQr.style.display = 'inline-flex';
+                    if (wifiQrBtnLabel) wifiQrBtnLabel.textContent = dict.wifiQrBtn || 'QR Code';
+                }
             }
 
             if (wifiStepTitle) {
@@ -10047,6 +10297,34 @@ var QRCode;!function(){function a(a){this.mode=c.MODE_8BIT_BYTE,this.data=a,this
 
         if (btnWifiBack) {
             btnWifiBack.addEventListener('click', handleWifiWizardBack);
+        }
+
+        if (btnWifiQr) {
+            btnWifiQr.addEventListener('click', () => {
+                if (document.activeElement && typeof document.activeElement.blur === 'function') {
+                    try { document.activeElement.blur(); } catch (e) {}
+                }
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                if (!wifiSavedSsid || !wifiSavedSsid.trim()) {
+                    if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+                    wifiCurrentStep = 1;
+                    updateWifiWizardUi();
+                    if (wifiSsidInput) wifiSsidInput.focus();
+                    return;
+                }
+                if (wifiSelectedEnc === 'WPA') {
+                    if (!wifiSavedPassword || wifiSavedPassword.length < 8) {
+                        if (window.showToast) window.showToast(dict.toastWifiWpaRequired || dict.toastWifiPassMinLength || 'WPA networks require a password of at least 8 characters', 'warn');
+                        wifiCurrentStep = 2;
+                        updateWifiWizardUi();
+                        if (wifiPasswordInput) wifiPasswordInput.focus();
+                        return;
+                    }
+                }
+                if (window.openQrModalForWifi) {
+                    window.openQrModalForWifi(wifiSavedSsid, wifiSavedPassword, wifiSelectedEnc, btnWifiQr);
+                }
+            });
         }
 
         if (wifiSelectTrigger) {

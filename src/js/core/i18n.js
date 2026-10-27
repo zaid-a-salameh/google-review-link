@@ -116,6 +116,10 @@
                 wifiNext: "Next",
                 wifiBack: "Back",
                 wifiWriteTag: "Write to NFC Tag",
+                wifiQrBtn: "QR Code",
+                wifiQrModalTitle: "Wi-Fi QR Code",
+                wifiQrModalDesc: "Scan with any smartphone camera to connect directly",
+                wifiQrDownloaded: "Wi-Fi QR Code downloaded",
                 toastEnterSsid: "Please enter network name (SSID)",
                 toastWifiPassMinLength: "Password must be at least 8 characters",
                 toastWifiWpaRequired: "WPA networks require a password of at least 8 characters",
@@ -381,6 +385,10 @@
                 wifiNext: "التالي",
                 wifiBack: "رجوع",
                 wifiWriteTag: "نسخ على البطاقة",
+                wifiQrBtn: "رمز QR",
+                wifiQrModalTitle: "رمز QR لشبكة الواي فاي",
+                wifiQrModalDesc: "امسح الرمز بكاميرا أي هاتف للاتصال بالشبكة تلقائياً",
+                wifiQrDownloaded: "تم تنزيل رمز QR للواي فاي بنجاح",
                 toastEnterSsid: "يرجى إدخال اسم الشبكة (SSID)",
                 toastWifiPassMinLength: "كلمة المرور يجب ألا تقل عن 8 خانات",
                 toastWifiWpaRequired: "شبكات WPA تتطلب كلمة مرور من 8 خانات على الأقل",
@@ -728,6 +736,8 @@
         setTxt('qrModalDesc', dict.qrModalDesc);
         setTxt('qrDownloadBtnLabel', dict.qrDownloadBtn);
         setTxt('qrCloseBtn', dict.qrCloseBtn);
+        setTxt('wifiQrBtnLabel', dict.wifiQrBtn || 'QR Code');
+        setTxt('nfcWifiCloneQrBtnLabel', dict.wifiQrBtn || 'QR Code');
 
         // NFC Modal (Native App)
         const nfcOverlayEl = document.getElementById('nfcOverlay');

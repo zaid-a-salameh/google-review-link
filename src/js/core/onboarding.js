@@ -6,6 +6,7 @@
 
     const STORAGE_KEY = 'review_link_onboarding_v1';
     let currentSlide = 1;
+    let closeTimer = null;
     const TOTAL_SLIDES = 3;
 
     function getDict() {
@@ -104,6 +105,11 @@
         const modal = document.getElementById('onboardingModalBox');
         if (!overlay || !modal) return;
 
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+
         goToSlide(1);
 
         overlay.classList.remove('closing');
@@ -124,12 +130,18 @@
         const modal = document.getElementById('onboardingModalBox');
         if (!overlay) return;
 
+        if (closeTimer) {
+            clearTimeout(closeTimer);
+            closeTimer = null;
+        }
+
         overlay.classList.add('closing');
         if (modal) modal.classList.add('closing');
 
-        setTimeout(() => {
+        closeTimer = setTimeout(() => {
             overlay.classList.remove('active', 'closing');
             if (modal) modal.classList.remove('active', 'closing');
+            closeTimer = null;
         }, 240);
 
         if (markAsSeen) {

@@ -5,10 +5,28 @@
     'use strict';
 
     let qrInstance = null;
+    let currentQrMode = 'review';
+    let currentWifiSsid = '';
+    let currentWifiPayload = '';
 
     function getDict() {
         const lang = window.getCurrentLang ? window.getCurrentLang() : 'en';
         return (window.I18N && window.I18N[lang]) ? window.I18N[lang] : {};
+    }
+
+    function escapeWifiString(str) {
+        if (!str) return '';
+        return str.replace(/([\\;,:"])/g, '\\$1');
+    }
+
+    function buildWifiPayload(ssid, password, encType) {
+        const enc = (encType === 'OPEN') ? 'nopass' : (encType === 'WEP' ? 'WEP' : 'WPA');
+        let payload = 'WIFI:S:' + escapeWifiString(ssid) + ';T:' + enc + ';';
+        if (enc !== 'nopass' && password) {
+            payload += 'P:' + escapeWifiString(password) + ';';
+        }
+        payload += ';';
+        return payload;
     }
 
     function generateQrCode(url) {
@@ -27,7 +45,7 @@
         } else {
             const img = document.createElement('img');
             img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=1&data=${encodeURIComponent(url)}`;
-            img.alt = 'Google Review QR Code';
+            img.alt = (currentQrMode === 'wifi') ? 'Wi-Fi QR Code' : 'Google Review QR Code';
             img.width = 200;
             img.height = 200;
             qrCodeContainer.appendChild(img);
@@ -40,10 +58,64 @@
         }
         const url = window.getGeneratedReviewUrl ? window.getGeneratedReviewUrl() : '';
         if (!url) return;
+
+        currentQrMode = 'review';
+        currentWifiSsid = '';
+        currentWifiPayload = '';
+
+        const dict = getDict();
         const qrOverlay = document.getElementById('qrOverlay');
         const qrModalBox = document.getElementById('qrModalBox');
+        const qrModalTitle = document.getElementById('qrModalTitle');
+        const qrModalDesc = document.getElementById('qrModalDesc');
+        const qrDownloadBtnLabel = document.getElementById('qrDownloadBtnLabel');
+
+        if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle || 'Google Review QR Code';
+        if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc || 'Scan with any smartphone camera to leave a review directly';
+        if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn || 'Download QR Image';
+
+        if (qrModalBox) qrModalBox.classList.remove('theme-wifi');
+        if (qrOverlay) qrOverlay.classList.remove('theme-wifi');
+
         const validBtn = (triggerBtn && triggerBtn.nodeType === 1) ? triggerBtn : document.getElementById('qrBtn');
         generateQrCode(url);
+        if (window.openMorphModal && qrOverlay && qrModalBox) {
+            window.openMorphModal(qrOverlay, qrModalBox, validBtn);
+        } else if (qrOverlay) {
+            qrOverlay.classList.add('active');
+        }
+    }
+
+    function openQrModalForWifi(ssid, password, encType, triggerBtn) {
+        if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            try { document.activeElement.blur(); } catch (e) {}
+        }
+        const dict = getDict();
+        if (!ssid || !ssid.trim()) {
+            if (window.showToast) window.showToast(dict.toastEnterSsid || 'Please enter network name (SSID)', 'warn');
+            return;
+        }
+
+        currentQrMode = 'wifi';
+        currentWifiSsid = ssid.trim();
+        currentWifiPayload = buildWifiPayload(currentWifiSsid, password, encType);
+
+        const qrOverlay = document.getElementById('qrOverlay');
+        const qrModalBox = document.getElementById('qrModalBox');
+        const qrModalTitle = document.getElementById('qrModalTitle');
+        const qrModalDesc = document.getElementById('qrModalDesc');
+        const qrDownloadBtnLabel = document.getElementById('qrDownloadBtnLabel');
+
+        if (qrModalTitle) qrModalTitle.textContent = dict.wifiQrModalTitle || 'Wi-Fi QR Code';
+        if (qrModalDesc) qrModalDesc.textContent = dict.wifiQrModalDesc || 'Scan with any smartphone camera to connect directly';
+        if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.wifiQrDownloadBtn || dict.qrDownloadBtn || 'Download QR Image';
+
+        if (qrModalBox) qrModalBox.classList.add('theme-wifi');
+        if (qrOverlay) qrOverlay.classList.add('theme-wifi');
+
+        generateQrCode(currentWifiPayload);
+
+        const validBtn = (triggerBtn && triggerBtn.nodeType === 1) ? triggerBtn : null;
         if (window.openMorphModal && qrOverlay && qrModalBox) {
             window.openMorphModal(qrOverlay, qrModalBox, validBtn);
         } else if (qrOverlay) {
@@ -54,10 +126,27 @@
     function closeQrModal() {
         const qrOverlay = document.getElementById('qrOverlay');
         const qrModalBox = document.getElementById('qrModalBox');
+
+        const cleanup = () => {
+            if (qrModalBox) qrModalBox.classList.remove('theme-wifi');
+            if (qrOverlay) qrOverlay.classList.remove('theme-wifi');
+            currentQrMode = 'review';
+            currentWifiSsid = '';
+            currentWifiPayload = '';
+            const dict = getDict();
+            const qrModalTitle = document.getElementById('qrModalTitle');
+            const qrModalDesc = document.getElementById('qrModalDesc');
+            const qrDownloadBtnLabel = document.getElementById('qrDownloadBtnLabel');
+            if (qrModalTitle) qrModalTitle.textContent = dict.qrModalTitle || 'Google Review QR Code';
+            if (qrModalDesc) qrModalDesc.textContent = dict.qrModalDesc || 'Scan with any smartphone camera to leave a review directly';
+            if (qrDownloadBtnLabel) qrDownloadBtnLabel.textContent = dict.qrDownloadBtn || 'Download QR Image';
+        };
+
         if (window.closeMorphModal && qrOverlay && qrModalBox) {
-            window.closeMorphModal(qrOverlay, qrModalBox);
+            window.closeMorphModal(qrOverlay, qrModalBox, cleanup);
         } else if (qrOverlay) {
             qrOverlay.classList.remove('active');
+            cleanup();
         }
     }
 
@@ -86,23 +175,30 @@
 
         if (!dataUrl) return;
 
+        const isWifi = currentQrMode === 'wifi';
+        const filename = isWifi
+            ? `wifi_${(currentWifiSsid || 'network').replace(/[^a-zA-Z0-9_-]/g, '_')}_qr.png`
+            : 'google_review_qr.png';
+        const toastMsg = isWifi ? (dict.wifiQrDownloaded || 'Wi-Fi QR Code downloaded') : (dict.qrDownloaded || 'QR Code downloaded');
+
         if (window.AndroidNative && window.AndroidNative.saveQrImage) {
-            window.AndroidNative.saveQrImage(dataUrl, "google_review_qr.png");
-            if (window.showToast) window.showToast(dict.qrDownloaded || 'QR downloaded', 'success');
+            window.AndroidNative.saveQrImage(dataUrl, filename);
+            if (window.showToast) window.showToast(toastMsg, 'success');
             return;
         }
 
         const link = document.createElement('a');
-        link.download = 'google_review_qr.png';
+        link.download = filename;
         link.href = dataUrl;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        if (window.showToast) window.showToast(dict.qrDownloaded || 'QR downloaded', 'success');
+        if (window.showToast) window.showToast(toastMsg, 'success');
     }
 
     window.generateQrCode = generateQrCode;
     window.openQrModal = openQrModal;
+    window.openQrModalForWifi = openQrModalForWifi;
     window.closeQrModal = closeQrModal;
     window.downloadQrImage = downloadQrImage;
 })();

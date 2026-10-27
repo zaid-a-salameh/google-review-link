@@ -156,6 +156,10 @@
         if (nfcModalBox && state !== 'success') {
             nfcModalBox.classList.remove('has-next-btn');
         }
+        const nfcWifiCloneQrBtn = document.getElementById('nfcWifiCloneQrBtn');
+        if (nfcWifiCloneQrBtn) {
+            nfcWifiCloneQrBtn.style.display = 'none';
+        }
 
         syncEmblemInteractivity(state === 'perm_lock_standby');
 
@@ -264,6 +268,11 @@
                 }
                 setCancelBtnMode(dict.wifiBack || 'Back', true);
                 if (nfcCounterBadge) nfcCounterBadge.style.display = 'none';
+                if (nfcWifiCloneQrBtn && isWifiCloneMode) {
+                    nfcWifiCloneQrBtn.style.display = 'inline-flex';
+                    const nfcWifiCloneQrBtnLabel = document.getElementById('nfcWifiCloneQrBtnLabel');
+                    if (nfcWifiCloneQrBtnLabel) nfcWifiCloneQrBtnLabel.textContent = dict.wifiQrBtn || 'QR Code';
+                }
             }
             setIconIfChanged(nfcSvgIcon, ICON_WIFI);
         } else if (state === 'success') {
@@ -323,6 +332,11 @@
                     if (nfcNextBtnIcon) nfcNextBtnIcon.innerHTML = ICON_WIFI.trim();
                 }
                 if (nfcModalBox) nfcModalBox.classList.add('has-next-btn');
+                if (nfcWifiCloneQrBtn) {
+                    nfcWifiCloneQrBtn.style.display = 'inline-flex';
+                    const nfcWifiCloneQrBtnLabel = document.getElementById('nfcWifiCloneQrBtnLabel');
+                    if (nfcWifiCloneQrBtnLabel) nfcWifiCloneQrBtnLabel.textContent = dict.wifiQrBtn || 'QR Code';
+                }
                 updateWriteBatchBadge(dict);
             } else {
                 if (nfcModalBox) nfcModalBox.classList.add('theme-link');
@@ -528,6 +542,8 @@
             window.closeMorphModal(nfcOverlay, nfcModalBox, () => {
                 const nfcNextBtn = document.getElementById('nfcNextBtn');
                 if (nfcNextBtn) nfcNextBtn.style.display = 'none';
+                const nfcWifiCloneQrBtn = document.getElementById('nfcWifiCloneQrBtn');
+                if (nfcWifiCloneQrBtn) nfcWifiCloneQrBtn.style.display = 'none';
                 nfcModalBox.classList.remove(
                     'theme-lock',
                     'theme-unlock',
@@ -1069,6 +1085,15 @@
                         nfcResetTimer = null;
                     }
                     startNfcWrite(null, { skipOpenAnimation: true, resetBatch: false });
+                }
+            });
+        }
+
+        const nfcWifiCloneQrBtn = document.getElementById('nfcWifiCloneQrBtn');
+        if (nfcWifiCloneQrBtn) {
+            nfcWifiCloneQrBtn.addEventListener('click', () => {
+                if (window.openQrModalForWifi) {
+                    window.openQrModalForWifi(pendingWifiSsid, pendingWifiPassword, pendingWifiEncType, nfcWifiCloneQrBtn);
                 }
             });
         }

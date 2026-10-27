@@ -552,6 +552,37 @@
             border-color: rgba(255, 255, 255, 0.3) !important;
             transform: translateY(-1px);
         }
+        .btn-nfc-wifi-qr {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex: 1.15;
+            height: 44px;
+            background: rgba(245, 158, 11, 0.14);
+            border: 1px solid rgba(245, 158, 11, 0.45);
+            border-radius: var(--radius-btn);
+            color: #fbbf24;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+            white-space: nowrap;
+            padding: 0 10px;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, background 0.2s ease;
+        }
+        .btn-nfc-wifi-qr:active {
+            transform: scale(0.97);
+            background: rgba(245, 158, 11, 0.25);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+        }
+        .btn-nfc-wifi-qr svg {
+            width: 17px;
+            height: 17px;
+            fill: #fbbf24;
+            flex-shrink: 0;
+        }
         .btn-nfc-cancel {
             flex: 1;
             width: 100%;
@@ -706,7 +737,7 @@
             background: rgba(8, 7, 6, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            z-index: 1000;
+            z-index: 1100;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -738,6 +769,22 @@
         .qr-overlay.active .qr-modal {
             transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
+        }
+        .qr-modal.theme-wifi {
+            border-color: rgba(245, 158, 11, 0.5);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 158, 11, 0.25);
+        }
+        .qr-modal.theme-wifi .btn-qr-download {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+            color: #0c0a09;
+            font-weight: 800;
+        }
+        .qr-modal.theme-wifi .btn-qr-download svg {
+            fill: #0c0a09;
+        }
+        .qr-modal.theme-wifi .btn-qr-download:active {
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
         }
         .qr-title {
             font-size: 18px;
@@ -2095,6 +2142,48 @@
             gap: 8px;
             width: 100%;
             margin-top: 4px;
+        }
+        .wifi-actions-primary-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+        .wifi-actions-primary-row .btn-wifi-next {
+            flex: 1.35;
+            min-width: 0;
+        }
+        .btn-wifi-qr {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            height: 46px;
+            flex: 1;
+            min-width: 0;
+            padding: 0 12px;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.42);
+            border-radius: var(--radius-btn);
+            color: #fbbf24;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.15);
+            white-space: nowrap;
+            transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+        }
+        .btn-wifi-qr:active {
+            transform: scale(0.97);
+            background: rgba(245, 158, 11, 0.22);
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+        }
+        .btn-wifi-qr svg {
+            width: 17px;
+            height: 17px;
+            fill: #fbbf24;
+            flex-shrink: 0;
         }
         .btn-wifi-next {
             width: 100%;

@@ -433,6 +433,10 @@
                         <svg viewBox="0 0 24 24" id="nfcNextBtnIcon"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
                         <span id="nfcNextBtnLabel">Another Card</span>
                     </button>
+                    <button type="button" class="btn-nfc-wifi-qr" id="nfcWifiCloneQrBtn" style="display: none;">
+                        <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm0 5h3v3h-3v-3zm-5-5h3v3h-3v-3zm2 2h3v3h-3v-3zm-2 3h3v3h-3v-3z"/></svg>
+                        <span id="nfcWifiCloneQrBtnLabel">QR Code</span>
+                    </button>
                     <button type="button" class="btn-nfc-cancel" id="nfcCancelBtn">
                         <svg class="nfc-back-icon" viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
                         <span id="nfcCancelBtnLabel">Cancel</span>
@@ -627,10 +631,16 @@
 
                 <!-- Wizard Actions Row -->
                 <div class="wifi-actions">
-                    <button type="button" class="btn-wifi-next" id="btnWifiNext">
-                        <span id="wifiNextBtnLabel">Next</span>
-                        <svg viewBox="0 0 24 24" id="wifiNextBtnArrow" class="wifi-next-arrow"><path d="M5 13h11.83l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.83 11H5v2z"/></svg>
-                    </button>
+                    <div class="wifi-actions-primary-row">
+                        <button type="button" class="btn-wifi-next" id="btnWifiNext">
+                            <span id="wifiNextBtnLabel">Next</span>
+                            <svg viewBox="0 0 24 24" id="wifiNextBtnArrow" class="wifi-next-arrow"><path d="M5 13h11.83l-5.59 5.59L12 20l8-8-8-8-1.41 1.41L16.83 11H5v2z"/></svg>
+                        </button>
+                        <button type="button" class="btn-wifi-qr" id="btnWifiQr" style="display: none;" title="Show QR Code">
+                            <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v3h-3v-3zm0 5h3v3h-3v-3zm-5-5h3v3h-3v-3zm2 2h3v3h-3v-3zm-2 3h3v3h-3v-3z"/></svg>
+                            <span id="wifiQrBtnLabel">QR Code</span>
+                        </button>
+                    </div>
                     <button type="button" class="btn-wifi-back" id="btnWifiBack">
                         <span id="wifiBackBtnLabel">Cancel</span>
                     </button>
