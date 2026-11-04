@@ -4,4 +4,5 @@
 # GitHub Linguist language detection overrides
 qrcode.min.js linguist-vendored=true
 index.html linguist-generated=true
+assets/icons/* linguist-documentation=true
 docs/* linguist-documentation=true

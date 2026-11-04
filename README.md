@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="favicon-192x192.png" alt="Quick NFC Logo" width="96" height="96" style="border-radius: 24px;">
+<img src="assets/icons/favicon-192x192.png" alt="Quick NFC Logo" width="96" height="96" style="border-radius: 24px;">
 
 # Quick NFC
 
