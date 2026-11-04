@@ -26,9 +26,7 @@
         const searchFieldWrapper = $('searchFieldWrapper');
         const placesDropdown = $('placesDropdown');
         const resultCard = $('resultCard');
-        const navBrandBadge = $('navBrandBadge');
-        const appVersionText = $('appVersionText');
-
+        
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
 
@@ -354,7 +352,9 @@
 
 
         const CURRENT_VERSION = 'v2.0.0';
-        const navSupportBtn = navSupportBtn;
+        const navSupportBtn = $('navSupportBtn');
+        const navBrandBadge = $('navBrandBadge');
+        const appVersionText = $('appVersionText');
         if (navSupportBtn) {
             navSupportBtn.addEventListener('click', e => {
                 e.preventDefault();
