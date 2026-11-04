@@ -43,12 +43,20 @@
 
     function renderFallbackQrImage(container, text) {
         container.innerHTML = '';
+        if (currentQrMode === 'wifi' || String(text || '').startsWith('WIFI:')) {
+            const errEl = document.createElement('div');
+            errEl.style.cssText = 'width:200px;height:200px;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font-size:13px;color:#ef4444;';
+            errEl.textContent = 'Local QR generator required for Wi-Fi privacy.';
+            container.appendChild(errEl);
+            return false;
+        }
         const img = document.createElement('img');
         img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&margin=1&data=${encodeURIComponent(text)}`;
-        img.alt = (currentQrMode === 'wifi') ? 'Wi-Fi QR Code' : 'Google Review QR Code';
+        img.alt = 'Google Review QR Code';
         img.width = 200;
         img.height = 200;
         container.appendChild(img);
+        return true;
     }
 
     function generateQrCode(text) {
@@ -88,8 +96,7 @@
         }
 
         try {
-            renderFallbackQrImage(qrCodeContainer, payload);
-            return true;
+            return Boolean(renderFallbackQrImage(qrCodeContainer, payload));
         } catch (err) {
             return false;
         }

@@ -9,8 +9,11 @@ flutter_app/.dart_tool/
 .gradle/
 build/
 
-# Android local configuration
+# Android local configuration & signing keys
 local.properties
+key.properties
+*.jks
+*.keystore
 .idea/
 *.iml
 

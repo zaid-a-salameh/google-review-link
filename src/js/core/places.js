@@ -138,14 +138,19 @@
         return gmpScriptLoadingPromise;
     }
 
+    let latestSearchRequestId = 0;
+
     function hideDropdown() {
+        latestSearchRequestId++;
         const placesDropdown = document.getElementById('placesDropdown');
         const mainInputCard = document.getElementById('mainInputCard');
         const appContainer = document.getElementById('appContainer');
         const modeSearchContent = document.getElementById('modeSearchContent');
         const searchFieldWrapper = document.getElementById('searchFieldWrapper');
         const modeStage = document.getElementById('modeStage');
+        const searchSpinner = document.getElementById('searchSpinner');
 
+        if (searchSpinner) searchSpinner.classList.remove('active');
         if (placesDropdown) {
             placesDropdown.classList.remove('show');
             placesDropdown.innerHTML = '';
@@ -180,9 +185,16 @@
             return;
         }
 
+        const requestId = ++latestSearchRequestId;
+
         if (!gmpPlacesLoaded) {
             const ready = await initGoogleMapsPlaces();
-            if (!ready) return;
+            if (!ready || requestId !== latestSearchRequestId) return;
+        }
+
+        const searchInputEl = document.getElementById('businessSearchInput');
+        if (searchInputEl && searchInputEl.value.trim() !== trimmed) {
+            return;
         }
 
         if (!window.google || !window.google.maps || !window.google.maps.places || !window.google.maps.places.AutocompleteSuggestion) {
@@ -215,12 +227,20 @@
 
             const { suggestions } = await google.maps.places.AutocompleteSuggestion.fetchAutocompleteSuggestions(request);
             autocompleteCache.set(cacheKey, suggestions || []);
+            const latestInputEl = document.getElementById('businessSearchInput');
+            if (requestId !== latestSearchRequestId || (latestInputEl && latestInputEl.value.trim() !== trimmed)) {
+                return;
+            }
             renderSuggestions(suggestions || []);
         } catch (err) {
-            console.warn('Autocomplete fetch error:', err);
-            hideDropdown();
+            if (requestId === latestSearchRequestId) {
+                console.warn('Autocomplete fetch error:', err);
+                hideDropdown();
+            }
         } finally {
-            if (searchSpinner) searchSpinner.classList.remove('active');
+            if (requestId === latestSearchRequestId && searchSpinner) {
+                searchSpinner.classList.remove('active');
+            }
         }
     }
 

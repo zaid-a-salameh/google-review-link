@@ -173,6 +173,7 @@
         // ── Search Business Input Events ──
         if (searchClearBtn) {
             searchClearBtn.addEventListener('click', () => {
+                clearTimeout(autocompleteDebounceTimer);
                 if (businessSearchInput) {
                     businessSearchInput.value = '';
                     searchClearBtn.classList.remove('visible');

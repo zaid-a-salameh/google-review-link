@@ -542,9 +542,11 @@ class MainActivity : FlutterActivity() {
             try {
                 nfca.connect()
                 val cfg = getNtagConfig(tag, nfca)
-                val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
-                if (readResp != null && readResp.size >= 4 && (readResp[3].toInt() and 0xFF) != 0xFF) {
-                    isLocked = true
+                if (cfg != null) {
+                    val readResp = nfca.transceive(byteArrayOf(0x30.toByte(), cfg.auth0Page.toByte()))
+                    if (readResp != null && readResp.size >= 4 && (readResp[3].toInt() and 0xFF) != 0xFF) {
+                        isLocked = true
+                    }
                 }
                 nfca.close()
             } catch (_: Exception) {
@@ -581,7 +583,7 @@ class MainActivity : FlutterActivity() {
                 encVal = 0x0001
             }
             "WEP" -> {
-                authVal = 0x0002
+                authVal = 0x0001
                 encVal = 0x0002
             }
             else -> {
@@ -698,7 +700,8 @@ class MainActivity : FlutterActivity() {
     private fun parseWscPayload(payload: ByteArray): ParsedWifiConfig? {
         var ssid: String? = null
         var password = ""
-        var encType: String? = null
+        var authTypeVal: Int? = null
+        var encrTypeVal: Int? = null
 
         fun parseTlvs(bytes: ByteArray, startOffset: Int, endOffset: Int) {
             var i = startOffset
@@ -714,22 +717,12 @@ class MainActivity : FlutterActivity() {
                     0x1027 -> password = String(bytes, i, len, Charsets.UTF_8)
                     0x1003 -> {
                         if (len >= 2) {
-                            val auth = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
-                            encType = when (auth) {
-                                0x0001 -> "OPEN"
-                                0x0002, 0x0004 -> "WEP"
-                                else -> "WPA"
-                            }
+                            authTypeVal = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
                         }
                     }
                     0x100F -> {
-                        if (len >= 2 && encType == null) {
-                            val enc = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
-                            encType = when (enc) {
-                                0x0001 -> "OPEN"
-                                0x0002 -> "WEP"
-                                else -> "WPA"
-                            }
+                        if (len >= 2) {
+                            encrTypeVal = ((bytes[i].toInt() and 0xFF) shl 8) or (bytes[i + 1].toInt() and 0xFF)
                         }
                     }
                 }
@@ -745,7 +738,13 @@ class MainActivity : FlutterActivity() {
 
         val resolvedSsid = ssid
         if (resolvedSsid.isNullOrEmpty()) return null
-        val finalEnc = encType ?: if (password.isNotEmpty()) "WPA" else "OPEN"
+        val finalEnc = when {
+            encrTypeVal == 0x0002 || authTypeVal == 0x0004 -> "WEP"
+            authTypeVal == 0x0001 && (encrTypeVal == null || encrTypeVal == 0x0001) -> "OPEN"
+            authTypeVal != null || encrTypeVal != null -> "WPA"
+            password.isNotEmpty() -> "WPA"
+            else -> "OPEN"
+        }
         return ParsedWifiConfig(resolvedSsid, password, finalEnc)
     }
 
@@ -1021,25 +1020,44 @@ class MainActivity : FlutterActivity() {
             val nfca = NfcA.get(tag)
             if (nfca != null) {
                 nfca.connect()
-                val clearTlvCmd = byteArrayOf(0xA2.toByte(), 0x04.toByte(), 0x03.toByte(), 0x00.toByte())
-                val resp1 = nfca.transceive(clearTlvCmd)
-                val termTlvCmd = byteArrayOf(0xA2.toByte(), 0x05.toByte(), 0xFE.toByte(), 0x00.toByte())
-                val resp2 = nfca.transceive(termTlvCmd)
-                nfca.close()
-                if (resp1 != null && resp2 != null) {
-                    lastWriteTimestamp = System.currentTimeMillis()
-                    lastWrittenTagId = tagId?.clone()
-                    writtenTagsCount++
-                    triggerSuccessVibration()
-                    pauseNfcSession()
-                    emitEvent(
-                        mapOf(
-                            "event" to "erase_success",
-                            "count" to writtenTagsCount,
-                            "op" to "ERASE"
-                        )
+                val cfg = getNtagConfig(tag, nfca)
+                if (cfg != null) {
+                    val clearTlvCmd = byteArrayOf(
+                        0xA2.toByte(),
+                        0x04.toByte(),
+                        0x03.toByte(),
+                        0x00.toByte(),
+                        0xFE.toByte(),
+                        0x00.toByte()
                     )
-                    return
+                    val resp1 = nfca.transceive(clearTlvCmd)
+                    val clearNextPageCmd = byteArrayOf(
+                        0xA2.toByte(),
+                        0x05.toByte(),
+                        0x00.toByte(),
+                        0x00.toByte(),
+                        0x00.toByte(),
+                        0x00.toByte()
+                    )
+                    val resp2 = nfca.transceive(clearNextPageCmd)
+                    nfca.close()
+                    if (resp1 != null && resp2 != null) {
+                        lastWriteTimestamp = System.currentTimeMillis()
+                        lastWrittenTagId = tagId?.clone()
+                        writtenTagsCount++
+                        triggerSuccessVibration()
+                        pauseNfcSession()
+                        emitEvent(
+                            mapOf(
+                                "event" to "erase_success",
+                                "count" to writtenTagsCount,
+                                "op" to "ERASE"
+                            )
+                        )
+                        return
+                    }
+                } else {
+                    nfca.close()
                 }
             }
 
@@ -1055,19 +1073,7 @@ class MainActivity : FlutterActivity() {
 
     private data class NtagConfig(val auth0Page: Int, val pwdPage: Int, val packPage: Int, val typeName: String)
 
-    private fun getNtagConfig(tag: Tag, nfca: NfcA): NtagConfig {
-        try {
-            val ndef = Ndef.get(tag)
-            if (ndef != null) {
-                val max = ndef.maxSize
-                if (max > 600) return NtagConfig(227, 229, 230, "NTAG216")
-                if (max > 200) return NtagConfig(131, 133, 134, "NTAG215")
-                if (max > 0) return NtagConfig(41, 43, 44, "NTAG213")
-            }
-        } catch (_: Exception) {
-            // fallback
-        }
-
+    private fun getNtagConfig(tag: Tag, nfca: NfcA): NtagConfig? {
         try {
             val verResp = nfca.transceive(byteArrayOf(0x60.toByte()))
             if (verResp != null && verResp.size == 8) {
@@ -1079,10 +1085,28 @@ class MainActivity : FlutterActivity() {
                 }
             }
         } catch (_: Exception) {
+            try {
+                nfca.close()
+                nfca.connect()
+            } catch (_: Exception) {
+            }
+        }
+
+        try {
+            val ndef = Ndef.get(tag)
+            if (ndef != null) {
+                val max = ndef.maxSize
+                when {
+                    max in 800..920 -> return NtagConfig(227, 229, 230, "NTAG216")
+                    max in 450..540 -> return NtagConfig(131, 133, 134, "NTAG215")
+                    max in 120..180 -> return NtagConfig(41, 43, 44, "NTAG213")
+                }
+            }
+        } catch (_: Exception) {
             // fallback
         }
 
-        return NtagConfig(131, 133, 134, "NTAG215")
+        return null
     }
 
     private fun deriveNfcToolsPasswordBytes(pin: String): ByteArray {
@@ -1111,6 +1135,11 @@ class MainActivity : FlutterActivity() {
             nfca.connect()
             nfca.timeout = 3000
             val cfg = getNtagConfig(tag, nfca)
+            if (cfg == null) {
+                nfca.close()
+                notifyNfcError("PWD_UNSUPPORTED")
+                return
+            }
             val pwdBytes = deriveNfcToolsPasswordBytes(pin)
 
             var isAlreadyLocked = false
@@ -1192,6 +1221,11 @@ class MainActivity : FlutterActivity() {
             nfca.connect()
             nfca.timeout = 3000
             val cfg = getNtagConfig(tag, nfca)
+            if (cfg == null) {
+                nfca.close()
+                notifyNfcError("PWD_UNSUPPORTED")
+                return
+            }
 
             var isLocked = false
             try {
