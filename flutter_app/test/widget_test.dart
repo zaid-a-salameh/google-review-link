@@ -617,10 +617,9 @@ void main() {
         findsOneWidget,
       );
 
-      // Tap support button -> triggers info toast
+      // Tap support button -> opens sponsor/support page
       await tester.tap(supportBtn);
       await tester.pump(const Duration(milliseconds: 100));
-      expect(find.text('سيكون خيار الدعم متاحاً قريباً'), findsOneWidget);
 
       // 3. Open Erase NFC Tag modal
       await tester.tap(eraseTile);

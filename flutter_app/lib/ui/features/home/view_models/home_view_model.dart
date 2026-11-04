@@ -517,6 +517,11 @@ class HomeViewModel extends ChangeNotifier {
     await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
+  Future<void> openSupportPage() async {
+    final uri = Uri.parse('https://github.com/sponsors/zaid-a-salameh');
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   String resultHeaderLabel(AppLocalizations l10n) {
     final res = currentResult;
     if (res.placeId != null && res.placeId!.isNotEmpty) {

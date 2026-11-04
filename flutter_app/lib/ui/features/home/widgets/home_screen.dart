@@ -257,10 +257,7 @@ class _HomeScreenState extends State<HomeScreen> with WidgetsBindingObserver {
 
   void _handleSupportTapped(AppLocalizations l10n) {
     _unfocusAll();
-    widget.homeViewModel.showToast(
-      l10n.toastSupportComingSoon,
-      type: ToastType.info,
-    );
+    widget.homeViewModel.openSupportPage();
   }
 
   Future<void> _handleOpenQrModal(AppLocalizations l10n) async {

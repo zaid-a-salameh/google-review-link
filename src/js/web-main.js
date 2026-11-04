@@ -358,7 +358,7 @@
         if (navSupportBtn) {
             navSupportBtn.addEventListener('click', e => {
                 e.preventDefault();
-                // Inactive placeholder for now as requested
+                window.open('https://github.com/sponsors/zaid-a-salameh', '_blank');
             });
         }
         if (navBrandBadge) {
