@@ -592,58 +592,204 @@
         }
 
 
-        /* Language Toggle Pill */
-        .lang-pill-container {
+        /* Language Selector Dropdown (10 Languages) */
+        .lang-selector-dropdown {
             position: relative;
-            display: inline-flex;
-            align-items: center;
-            background: rgba(28, 25, 23, 0.92);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 3px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: inline-block;
             direction: ltr !important;
             unicode-bidi: isolate;
         }
-        .lang-btn {
-            position: relative;
-            z-index: 2;
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            font-family: 'Inter', 'Cairo', sans-serif;
-            font-size: 11px;
+
+        .lang-select-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            height: 32px;
+            padding: 0 12px;
+            border-radius: 50px;
+            background: rgba(28, 25, 23, 0.92);
+            border: 1px solid var(--border);
+            color: #e7e5e4;
+            font-family: inherit;
+            font-size: 12px;
             font-weight: 700;
-            width: 48px;
-            height: 26px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: all 0.22s ease;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .lang-select-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(139, 92, 246, 0.45);
+            color: #ffffff;
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .lang-select-btn:active {
+            transform: scale(0.96);
+        }
+
+        .lang-globe-icon {
+            width: 15px;
+            height: 15px;
+            fill: #a78bfa;
+            flex-shrink: 0;
+            transition: transform 0.25s ease;
+        }
+
+        .lang-select-btn:hover .lang-globe-icon {
+            transform: rotate(25deg);
+        }
+
+        .lang-btn-text {
+            font-weight: 700;
+            letter-spacing: 0.1px;
+            font-size: 11.5px;
+        }
+
+        .lang-chevron {
+            width: 14px;
+            height: 14px;
+            fill: #a8a29e;
+            flex-shrink: 0;
+            transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .lang-selector-dropdown.open .lang-select-btn {
+            border-color: var(--primary);
+            background: rgba(124, 58, 237, 0.2);
+            color: #ffffff;
+            box-shadow: 0 0 16px rgba(124, 58, 237, 0.4);
+        }
+
+        .lang-selector-dropdown.open .lang-chevron {
+            transform: rotate(180deg);
+            fill: #c4b5fd;
+        }
+
+        /* Dropdown Menu */
+        .lang-dropdown-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 175px;
+            max-height: 380px;
+            overflow-y: auto;
+            overscroll-behavior: contain;
+            background: rgba(20, 16, 15, 0.96);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 20px rgba(124, 58, 237, 0.2);
+            z-index: 1000;
+            opacity: 0;
+            transform: translateY(-8px) scale(0.96);
+            pointer-events: none;
+            transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            direction: ltr !important;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139, 92, 246, 0.35) transparent;
+        }
+
+        .lang-dropdown-menu::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lang-dropdown-menu::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.4);
+            border-radius: 4px;
+        }
+
+        .lang-selector-dropdown.open .lang-dropdown-menu {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .lang-dropdown-item {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 50px;
+            justify-content: space-between;
+            width: 100%;
+            padding: 8px 12px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            color: #d6d3d1;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            transition: color 0.22s ease, transform 0.12s ease;
+            transition: all 0.18s ease;
+            text-align: left;
+            direction: ltr !important;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
-        .lang-btn:active {
-            transform: scale(0.92);
-        }
-        .lang-btn.active {
+
+        .lang-dropdown-item:hover {
+            background: rgba(139, 92, 246, 0.15);
             color: #ffffff;
-            font-weight: 800;
+            transform: translateX(2px);
         }
-        .lang-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 48px;
-            height: 26px;
-            background: var(--primary-gradient);
-            border-radius: 50px;
-            box-shadow: 0 2px 10px rgba(124, 58, 237, 0.45);
-            transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1);
-            z-index: 1;
-            pointer-events: none;
+
+        .lang-dropdown-item.active {
+            background: rgba(124, 58, 237, 0.25);
+            color: #c4b5fd;
+            font-weight: 700;
+        }
+
+        .lang-dropdown-item .lang-item-name {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .lang-dropdown-item .lang-item-code {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 5px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #a8a29e;
+        }
+
+        .lang-dropdown-item.active .lang-item-code {
+            background: rgba(124, 58, 237, 0.4);
+            color: #ffffff;
+        }
+
+        .lang-dropdown-item .lang-item-check {
+            width: 14px;
+            height: 14px;
+            fill: #a78bfa;
+            opacity: 0;
+            transition: opacity 0.15s ease;
+        }
+
+        .lang-dropdown-item.active .lang-item-check {
+            opacity: 1;
+        }
+
+        @media (max-width: 480px) {
+            .lang-select-btn {
+                padding: 0 9px;
+                gap: 5px;
+                height: 30px;
+            }
+            .lang-dropdown-menu {
+                min-width: 160px;
+                max-height: 320px;
+            }
         }
 
 
@@ -6612,37 +6758,30 @@ var QRCode;!function(){function a(t){this.mode=c.MODE_8BIT_BYTE,this.data=String
     let langCleanTimer = null;
     let langRafId = null;
 
-    function updateSliderPill(lang) {
-        const isAr = lang === 'ar';
-        const offset = isAr ? '48px' : '0px';
+        const LANG_DISPLAY_NAMES = {
+        en: 'English',
+        ar: 'العربية',
+        de: 'Deutsch',
+        es: 'Español',
+        fr: 'Français',
+        hi: 'हिन्दी',
+        ja: '日本語',
+        pt: 'Português',
+        ru: 'Русский',
+        zh: '简体中文'
+    };
 
-        const btnEn = document.getElementById('btnEn');
-        const btnAr = document.getElementById('btnAr');
-        const langSlider = document.getElementById('langSlider');
-        if (btnEn && btnAr && langSlider) {
-            if (isAr) {
-                btnEn.classList.remove('active');
-                btnAr.classList.add('active');
-            } else {
-                btnAr.classList.remove('active');
-                btnEn.classList.add('active');
-            }
-            langSlider.style.transform = `translateX(${offset})`;
-        }
+    function updateLanguageSelectorUi(lang) {
+        const displayName = LANG_DISPLAY_NAMES[lang] || 'English';
+        const navLabel = document.getElementById('navLangLabel');
+        const topLabel = document.getElementById('topLangLabel');
+        if (navLabel) navLabel.textContent = displayName;
+        if (topLabel) topLabel.textContent = displayName;
 
-        const navBtnEn = document.getElementById('navBtnEn');
-        const navBtnAr = document.getElementById('navBtnAr');
-        const navLangSlider = document.getElementById('navLangSlider');
-        if (navBtnEn && navBtnAr && navLangSlider) {
-            if (isAr) {
-                navBtnEn.classList.remove('active');
-                navBtnAr.classList.add('active');
-            } else {
-                navBtnAr.classList.remove('active');
-                navBtnEn.classList.add('active');
-            }
-            navLangSlider.style.transform = `translateX(${offset})`;
-        }
+        document.querySelectorAll('.lang-dropdown-item').forEach(item => {
+            const itemLang = item.getAttribute('data-lang');
+            item.classList.toggle('active', itemLang === lang);
+        });
     }
 
     function updateDomLanguageStrings(lang, dict) {
@@ -6924,7 +7063,7 @@ var QRCode;!function(){function a(t){this.mode=c.MODE_8BIT_BYTE,this.data=String
         }
 
         // 1. Instant feedback: glide slider pill immediately with spring physics
-        updateSliderPill(lang);
+        updateLanguageSelectorUi(lang);
 
         if (!animate) {
             document.body.classList.remove('is-lang-animating', 'is-lang-switching', 'is-lang-entering');
@@ -6991,7 +7130,8 @@ var QRCode;!function(){function a(t){this.mode=c.MODE_8BIT_BYTE,this.data=String
     window.I18N = I18N;
     window.getCurrentLang = function() { return currentLang; };
     window.setCurrentLang = function(l) { currentLang = l; try { localStorage.setItem('app_lang', l); } catch(e){} };
-    window.updateSliderPill = updateSliderPill;
+    window.updateLanguageSelectorUi = updateLanguageSelectorUi;
+    window.LANG_DISPLAY_NAMES = LANG_DISPLAY_NAMES;
     window.updateDomLanguageStrings = updateDomLanguageStrings;
     window.applyLanguage = applyLanguage;
     window.switchLanguage = switchLanguage;

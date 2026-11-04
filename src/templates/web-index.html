@@ -203,11 +203,65 @@
                     <span id="navApkLabel">Get APK</span>
                 </a>
 
-                <!-- Language Toggle Pill -->
-                <div class="lang-pill-container" id="navLangPill">
-                    <button type="button" class="lang-btn active" id="navBtnEn">EN</button>
-                    <button type="button" class="lang-btn" id="navBtnAr">عربي</button>
-                    <div class="lang-slider" id="navLangSlider"></div>
+                <!-- Language Selector Dropdown -->
+                <div class="lang-selector-dropdown" id="navLangDropdownContainer">
+                    <button type="button" class="lang-select-btn" id="navLangBtn" aria-haspopup="listbox" aria-expanded="false" title="Language / اللغة">
+                        <svg class="lang-globe-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        <span class="lang-btn-text" id="navLangLabel">English</span>
+                        <svg class="lang-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </button>
+                    <div class="lang-dropdown-menu" id="navLangMenu" role="listbox">
+                        <button type="button" class="lang-dropdown-item active" data-lang="en" role="option">
+                            <span class="lang-item-name">English</span>
+                            <span class="lang-item-code">EN</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="ar" role="option">
+                            <span class="lang-item-name">العربية</span>
+                            <span class="lang-item-code">AR</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="de" role="option">
+                            <span class="lang-item-name">Deutsch</span>
+                            <span class="lang-item-code">DE</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="es" role="option">
+                            <span class="lang-item-name">Español</span>
+                            <span class="lang-item-code">ES</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="fr" role="option">
+                            <span class="lang-item-name">Français</span>
+                            <span class="lang-item-code">FR</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="hi" role="option">
+                            <span class="lang-item-name">हिन्दी</span>
+                            <span class="lang-item-code">HI</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="ja" role="option">
+                            <span class="lang-item-name">日本語</span>
+                            <span class="lang-item-code">JA</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="pt" role="option">
+                            <span class="lang-item-name">Português</span>
+                            <span class="lang-item-code">PT</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="ru" role="option">
+                            <span class="lang-item-name">Русский</span>
+                            <span class="lang-item-code">RU</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="zh" role="option">
+                            <span class="lang-item-name">简体中文</span>
+                            <span class="lang-item-code">ZH</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -228,10 +282,64 @@
                     <span class="version-dot" id="updateDot"></span>
                     <span id="appVersionText">v2.0.0</span>
                 </button>
-                <div class="lang-pill-container">
-                    <button type="button" class="lang-btn active" id="btnEn">EN</button>
-                    <button type="button" class="lang-btn" id="btnAr">عربي</button>
-                    <div class="lang-slider" id="langSlider"></div>
+                <div class="lang-selector-dropdown" id="topLangDropdownContainer">
+                    <button type="button" class="lang-select-btn" id="topLangBtn" aria-haspopup="listbox" aria-expanded="false" title="Language / اللغة">
+                        <svg class="lang-globe-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        <span class="lang-btn-text" id="topLangLabel">English</span>
+                        <svg class="lang-chevron" viewBox="0 0 24 24"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>
+                    </button>
+                    <div class="lang-dropdown-menu" id="topLangMenu" role="listbox">
+                        <button type="button" class="lang-dropdown-item active" data-lang="en" role="option">
+                            <span class="lang-item-name">English</span>
+                            <span class="lang-item-code">EN</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="ar" role="option">
+                            <span class="lang-item-name">العربية</span>
+                            <span class="lang-item-code">AR</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="de" role="option">
+                            <span class="lang-item-name">Deutsch</span>
+                            <span class="lang-item-code">DE</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="es" role="option">
+                            <span class="lang-item-name">Español</span>
+                            <span class="lang-item-code">ES</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="fr" role="option">
+                            <span class="lang-item-name">Français</span>
+                            <span class="lang-item-code">FR</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="hi" role="option">
+                            <span class="lang-item-name">हिन्दी</span>
+                            <span class="lang-item-code">HI</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="ja" role="option">
+                            <span class="lang-item-name">日本語</span>
+                            <span class="lang-item-code">JA</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="pt" role="option">
+                            <span class="lang-item-name">Português</span>
+                            <span class="lang-item-code">PT</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="ru" role="option">
+                            <span class="lang-item-name">Русский</span>
+                            <span class="lang-item-code">RU</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                        <button type="button" class="lang-dropdown-item" data-lang="zh" role="option">
+                            <span class="lang-item-name">简体中文</span>
+                            <span class="lang-item-code">ZH</span>
+                            <svg class="lang-item-check" viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>

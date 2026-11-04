@@ -574,37 +574,30 @@
     let langCleanTimer = null;
     let langRafId = null;
 
-    function updateSliderPill(lang) {
-        const isAr = lang === 'ar';
-        const offset = isAr ? '48px' : '0px';
+        const LANG_DISPLAY_NAMES = {
+        en: 'English',
+        ar: 'العربية',
+        de: 'Deutsch',
+        es: 'Español',
+        fr: 'Français',
+        hi: 'हिन्दी',
+        ja: '日本語',
+        pt: 'Português',
+        ru: 'Русский',
+        zh: '简体中文'
+    };
 
-        const btnEn = document.getElementById('btnEn');
-        const btnAr = document.getElementById('btnAr');
-        const langSlider = document.getElementById('langSlider');
-        if (btnEn && btnAr && langSlider) {
-            if (isAr) {
-                btnEn.classList.remove('active');
-                btnAr.classList.add('active');
-            } else {
-                btnAr.classList.remove('active');
-                btnEn.classList.add('active');
-            }
-            langSlider.style.transform = `translateX(${offset})`;
-        }
+    function updateLanguageSelectorUi(lang) {
+        const displayName = LANG_DISPLAY_NAMES[lang] || 'English';
+        const navLabel = document.getElementById('navLangLabel');
+        const topLabel = document.getElementById('topLangLabel');
+        if (navLabel) navLabel.textContent = displayName;
+        if (topLabel) topLabel.textContent = displayName;
 
-        const navBtnEn = document.getElementById('navBtnEn');
-        const navBtnAr = document.getElementById('navBtnAr');
-        const navLangSlider = document.getElementById('navLangSlider');
-        if (navBtnEn && navBtnAr && navLangSlider) {
-            if (isAr) {
-                navBtnEn.classList.remove('active');
-                navBtnAr.classList.add('active');
-            } else {
-                navBtnAr.classList.remove('active');
-                navBtnEn.classList.add('active');
-            }
-            navLangSlider.style.transform = `translateX(${offset})`;
-        }
+        document.querySelectorAll('.lang-dropdown-item').forEach(item => {
+            const itemLang = item.getAttribute('data-lang');
+            item.classList.toggle('active', itemLang === lang);
+        });
     }
 
     function updateDomLanguageStrings(lang, dict) {
@@ -886,7 +879,7 @@
         }
 
         // 1. Instant feedback: glide slider pill immediately with spring physics
-        updateSliderPill(lang);
+        updateLanguageSelectorUi(lang);
 
         if (!animate) {
             document.body.classList.remove('is-lang-animating', 'is-lang-switching', 'is-lang-entering');
@@ -953,7 +946,8 @@
     window.I18N = I18N;
     window.getCurrentLang = function() { return currentLang; };
     window.setCurrentLang = function(l) { currentLang = l; try { localStorage.setItem('app_lang', l); } catch(e){} };
-    window.updateSliderPill = updateSliderPill;
+    window.updateLanguageSelectorUi = updateLanguageSelectorUi;
+    window.LANG_DISPLAY_NAMES = LANG_DISPLAY_NAMES;
     window.updateDomLanguageStrings = updateDomLanguageStrings;
     window.applyLanguage = applyLanguage;
     window.switchLanguage = switchLanguage;
