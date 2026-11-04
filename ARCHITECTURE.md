@@ -1,54 +1,59 @@
-# Architecture and Isolation Rules
+# Quick NFC Architecture
 
-The application is structured into strictly isolated, single-responsibility feature modules across CSS and JavaScript so that changes inside one feature cannot leak into or break another.
+Quick NFC is organized as a clean dual-platform codebase:
+1. **Flutter Mobile Application** (`flutter_app/`) — Full-featured Android application with native NFC hardware interactions, Wi-Fi cloning, PIN encryption, and permanent locks.
+2. **Web Client** (`src/`, `index.html`) — Zero-framework, responsive web landing app deployed to GitHub Pages with instant Google Maps link conversion and high-res QR generation.
 
-## Module Layout
+---
 
-| Concern | CSS Module (`src/css/`) | JS Module (`src/js/`) | Target |
-|---|---|---|---|
-| Design tokens & root animations | `variables.css` | — | Web + APK |
-| Base layout & cards | `base.css`, `components.css` | — | Web + APK |
-| Link-type switcher & top bar | `link-type-switcher.css` | `core/converter.js` | Web + APK |
-| Places autocomplete dropdown | `search-dropdown.css` | `core/places.js` | Web + APK |
-| Bilingual strings & direction | — | `core/i18n.js` | Web + APK |
-| Toast notifications & morph engine | `toast.css` | `core/toast.js` | Web + APK |
-| QR code engine & modal (Review + Wi-Fi) | `qr-modal.css`, `qrcode.min.js` | `core/qr.js` | Web + APK |
-| Onboarding tour | `onboarding.css` | `core/onboarding.js` | Web + APK |
-| NFC shell, sensor & card reader/writer | `nfc-modal.css` | `app/nfc.js` | APK only |
-| Wi-Fi 3-step setup wizard (`#nfcWifiView`) | `wifi-wizard.css` | `app/wifi-wizard.js` | APK only |
-| PIN lock / unlock view (`#nfcPwdView`) | `pin-modal.css` | `app/pin-lock.js` | APK only |
-| Permanent hardware lock (`#nfcPermConfirmView`) | `perm-lock-modal.css` | `app/perm-lock.js` | APK only |
-| Soft keyboard & IME avoidance (`--kb-shift`) | — | `app/keyboard.js` | APK only |
-| Self-updater & release modal (`#updateOverlay`) | `update-modal.css` | `app/updater.js` | APK only |
-| Native Android bridge callbacks | `app.css` | `app/bridge.js` | APK only |
-| Web marketing sections | `marketing.css` | `web/marketing.js` | Web only |
-| Entrypoint orchestrators | — | `app-main.js`, `web-main.js` | APK / Web |
-| HTML templates (only hand-edited HTML) | `src/templates/app-index.html`, `src/templates/web-index.html` | — | Source |
+## Directory Overview
 
-`index.html` (Web) and `android-app/app/src/main/assets/**` (APK) are **generated** by `python scripts/build_and_sync.py`. Never edit generated files directly.
+```
+quick-nfc/
+├── flutter_app/                     # Flutter production Android application
+│   ├── lib/
+│   │   ├── core/                    # Constants, app theme, and navigation
+│   │   ├── data/                    # Services (NFC, QR, Places, GitHub Updater)
+│   │   ├── l10n/                    # 10 native ARB localization files
+│   │   └── ui/                      # MVVM screens, viewmodels, and widgets
+│   ├── android/                     # Android native host config (NFC intent filters)
+│   ├── test/                        # Flutter widget and unit test suites
+│   └── pubspec.yaml                 # Flutter manifest and dependencies
+├── src/                             # Modular Web application source
+│   ├── css/                         # Scoped CSS modules (base, components, dropdowns)
+│   ├── js/                          # Modular JS (core i18n, converter, places, qr)
+│   └── templates/                   # Web HTML template (web-index.html)
+├── docs/                            # Documentation and media
+│   └── screenshots/                 # Application screenshots showcase
+├── scripts/                         # Build and asset synchronization tooling
+│   ├── build_and_sync.py            # Web synchronization pipeline
+│   ├── build_full_i18n.js           # Multi-language dictionary compiler
+│   └── render_assets.py             # Multi-resolution icon & favicon generator
+├── tests/                           # Headless automated web test suites
+│   └── web_lang_smoke.mjs           # Multilingual switching & accessibility E2E test
+├── index.html                       # Production Web entry point (GitHub Pages)
+└── README.md                        # Project documentation and showcase
+```
 
-## Overlay Z-Index Hierarchy
+---
 
-DOM order at the end of `app-index.html` and `handleAndroidBackPress` priority both match this exact stack:
+## Web Architecture & Isolation Rules
 
-1. `#nfcOverlay` (`z-index: 1000`) — NFC sensor, PIN lock, Permanent lock, Wi-Fi wizard
-2. `#updateOverlay` (`z-index: 1050`) — In-app update dialog
-3. `#qrOverlay` (`z-index: 1100`) — Review & Wi-Fi QR modal (stacks cleanly over `#nfcOverlay`)
-4. `#onboardingOverlay` (`z-index: 3000`) — Welcome / user guide tour
-5. `#toast` (`z-index: 99999`) — Non-blocking toast banner
+- **Zero Framework Bloat**: Pure vanilla HTML5, modular CSS3, and ES6+ JavaScript.
+- **Multilingual Localization Engine**: Instant switching across 10 global languages with dynamic RTL/LTR direction switching and automatic UI element updates.
+- **Single Binding Ownership**: Each interactive component has exactly one controller module handling its events.
+- **Build Verification**:
+  ```powershell
+  python scripts/build_and_sync.py
+  node tests/web_lang_smoke.mjs
+  ```
 
-## Isolation Rules
+---
 
-1. **One feature, one CSS file, one JS file.** Every selector in a sub-view stylesheet is scoped to its container (`#nfcWifiView`, `#nfcPwdView`, `#nfcPermConfirmView`, `.qr-overlay`, `.update-overlay`, `.onboarding-overlay`).
-2. **Closed modal layers must be completely inert.** Every overlay enforces `:not(.active), :not(.active) * { pointer-events: none !important; }`. Never set unconditional `visibility: visible` or `pointer-events: auto` on a descendant of an overlay unless gated by `.overlay.active`.
-3. **Single binding ownership.** Each button's event listener is registered in exactly one module (its owning feature controller).
-4. **Explicit cross-module boundaries.** Modules communicate exclusively via narrow `window.*` functions (`openQrModalForWifi`, `openWifiModal`, `showNfcView`, `AppModes`, etc.), never by mutating another module's internal DOM state.
-
-## Build & E2E Verification
+## Flutter Application Verification
 
 ```powershell
-python scripts/build_and_sync.py
-node tests/ui_smoke.mjs             # APK bundle hit-test & modal isolation
-node tests/ui_smoke.mjs index.html  # Web build hit-test & modal isolation
-node tests/wifi_qr_smoke.mjs        # Wi-Fi (Open/WPA, Arabic/ASCII), QR, PIN, PermLock & Back-press E2E
+cd flutter_app
+flutter test
+flutter build apk --release
 ```

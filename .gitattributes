@@ -1,0 +1,7 @@
+# Auto detect text files and perform LF normalization
+* text=auto eol=lf
+
+# GitHub Linguist language detection overrides
+qrcode.min.js linguist-vendored=true
+index.html linguist-generated=true
+docs/* linguist-documentation=true
