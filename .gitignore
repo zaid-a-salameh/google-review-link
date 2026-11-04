@@ -17,5 +17,7 @@ android-app/app/*.iml
 .DS_Store
 Thumbs.db
 
-# Test artifacts
-*-test.apk
+# Android build artifacts
+*.apk
+*.aab
+!QuickNFC.apk

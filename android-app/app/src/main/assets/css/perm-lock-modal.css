@@ -1,0 +1,80 @@
+/* ========================================================
+   Permanent Hardware Lock Confirmation Sub-View (#nfcPermConfirmView)
+   (Native Android App Only — Strictly Scoped)
+   ======================================================== */
+
+#nfcPermConfirmView .perm-lock-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: rgba(245, 39, 125, 0.15);
+    border: 1px solid rgba(245, 39, 125, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#nfcPermConfirmView .perm-lock-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: #F5277D;
+}
+
+#nfcPermConfirmView #permLockTitle {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+#nfcPermConfirmView #permLockDesc {
+    font-size: 12px;
+    color: #fca5a5;
+    line-height: 1.45;
+    margin-bottom: 16px;
+}
+
+#nfcPermConfirmView .perm-lock-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+#nfcPermConfirmView .btn-perm-lock-confirm {
+    flex: 1;
+    height: 42px;
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 4px 14px rgba(245, 39, 125, 0.4);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+}
+
+#nfcPermConfirmView .btn-perm-lock-confirm:active {
+    transform: scale(0.98);
+}
+
+#nfcPermConfirmView .btn-perm-lock-cancel {
+    height: 42px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-sub);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#nfcPermConfirmView .btn-perm-lock-cancel:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}

@@ -156,12 +156,23 @@
             });
         }
 
-        if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
-        if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
-        if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
-        if (qrOverlay) {
-            qrOverlay.addEventListener('click', e => {
-                if (e.target === qrOverlay) window.closeQrModal();
+        if (qrBtn) qrBtn.addEventListener('click', () => window.openQrModal(qrBtn));
+
+        // ── Link Type Segmented Selector (Review vs Location) ──
+        const btnTypeReview = $('btnTypeReview');
+        const btnTypeLocation = $('btnTypeLocation');
+        if (btnTypeReview) {
+            btnTypeReview.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('review');
+                }
+            });
+        }
+        if (btnTypeLocation) {
+            btnTypeLocation.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('location');
+                }
             });
         }
 
@@ -254,7 +265,7 @@
         if (fabGithub) {
             fabGithub.addEventListener('click', e => {
                 e.preventDefault();
-                window.open('https://github.com/zaid-a-salameh/google-review-link', '_blank');
+                window.open('https://github.com/zaid-a-salameh/quick-nfc', '_blank');
             });
         }
 
@@ -268,6 +279,11 @@
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
+            }).catch(() => {});
+        }
         window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
         // ── Scroll-driven Reveal Animation for Explanation Cards ──
         function initScrollReveal() {
@@ -300,12 +316,19 @@
         initScrollReveal();
 
 
-        const CURRENT_VERSION = 'v1.2.1';
+        const CURRENT_VERSION = 'v2.0.0';
+        const navSupportBtn = navSupportBtn;
+        if (navSupportBtn) {
+            navSupportBtn.addEventListener('click', e => {
+                e.preventDefault();
+                // Inactive placeholder for now as requested
+            });
+        }
         if (navBrandBadge) {
             navBrandBadge.textContent = CURRENT_VERSION;
             navBrandBadge.addEventListener('click', e => {
                 e.preventDefault();
-                window.open('https://github.com/zaid-a-salameh/google-review-link/releases/latest', '_blank');
+                window.open('https://github.com/zaid-a-salameh/quick-nfc/releases/latest', '_blank');
             });
         }
         if (appVersionText) {

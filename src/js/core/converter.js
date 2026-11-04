@@ -4,45 +4,204 @@
 (function() {
     'use strict';
 
+    function getInitialMode() {
+        if (typeof document !== 'undefined') {
+            const searchTab = document.getElementById('tabSearchMode');
+            if (searchTab && searchTab.classList.contains('active')) {
+                return 'search';
+            }
+        }
+        return 'link';
+    }
+
     const AppModes = {
-        activeMode: 'search',
+        activeMode: getInitialMode(),
         link: {
             reviewUrl: null,
+            locationUrl: null,
+            placeId: null,
+            activeType: 'review',
             isResultActive: false
         },
         search: {
             reviewUrl: null,
+            locationUrl: null,
+            placeId: null,
+            activeType: 'review',
             isResultActive: false
         },
         getGeneratedReviewUrl: function() {
             const mode = this.activeMode;
-            return this[mode] && this[mode].isResultActive ? this[mode].reviewUrl : null;
+            if (!this[mode] || !this[mode].isResultActive) return null;
+            if (this[mode].placeId && this[mode].activeType === 'location') {
+                return this[mode].locationUrl || this[mode].reviewUrl;
+            }
+            return this[mode].reviewUrl;
         },
-        setModeResult: function(mode, url) {
+        setModeResult: function(mode, url, placeId = null, locationUrl = null) {
             if (!this[mode]) return;
             this[mode].reviewUrl = url;
+            this[mode].locationUrl = locationUrl;
+            this[mode].placeId = placeId;
+            this[mode].activeType = 'review';
             this[mode].isResultActive = !!url;
             this.syncResultCard();
+        },
+        setLinkType: function(type) {
+            const mode = this.activeMode;
+            if (!this[mode] || !this[mode].isResultActive || !this[mode].placeId) return;
+            const newType = (type === 'location') ? 'location' : 'review';
+            if (this[mode].activeType === newType) return;
+            this[mode].activeType = newType;
+            this.syncResultCard({ animateLinkChange: true });
+
+            if (window.AndroidNative && typeof window.AndroidNative.triggerLightHaptic === 'function') {
+                try { window.AndroidNative.triggerLightHaptic(); } catch (e) {}
+            } else if (navigator.vibrate) {
+                try { navigator.vibrate(22); } catch (e) {}
+            }
         },
         clearModeResult: function(mode) {
             if (!this[mode]) return;
             this[mode].reviewUrl = null;
+            this[mode].locationUrl = null;
+            this[mode].placeId = null;
+            this[mode].activeType = 'review';
             this[mode].isResultActive = false;
             this.syncResultCard();
         },
-        syncResultCard: function() {
+        syncResultCard: function(options = {}) {
             const resultCard = document.getElementById('resultCard');
             const resultLinkText = document.getElementById('resultLinkText');
+            const resultLabelText = document.getElementById('resultLabelText');
+            const linkTypeSelectorWrapper = document.getElementById('linkTypeSelectorWrapper');
+            const btnTypeReview = document.getElementById('btnTypeReview');
+            const btnTypeLocation = document.getElementById('btnTypeLocation');
+
             const current = this[this.activeMode];
             if (current && current.isResultActive && current.reviewUrl) {
-                if (resultLinkText) resultLinkText.textContent = current.reviewUrl;
+                const activeUrl = (current.placeId && current.activeType === 'location')
+                    ? (current.locationUrl || current.reviewUrl)
+                    : current.reviewUrl;
+
+                const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                let targetLabel = '';
+                if (current.placeId) {
+                    targetLabel = (current.activeType === 'location')
+                        ? (dict.resultLabelLocation || 'Location on Google Maps:')
+                        : (dict.resultLabelReview || 'Direct Review Link:');
+                } else {
+                    const isReview = /writereview\?placeid=/i.test(current.reviewUrl);
+                    targetLabel = isReview 
+                        ? (dict.resultLabelReview || 'Direct Review Link:') 
+                        : (dict.resultLabelCustom || 'Direct Link:');
+                }
+
+                if (options.animateLinkChange && resultCard && resultCard.classList.contains('active')) {
+                    updateResultLinkWithAnimation(activeUrl, targetLabel);
+                } else {
+                    if (resultLinkText) {
+                        resultLinkText.style.height = 'auto';
+                        resultLinkText.classList.remove('switching');
+                        resultLinkText.textContent = activeUrl;
+                    }
+                    if (resultLabelText) resultLabelText.textContent = targetLabel;
+                }
+
+                if (linkTypeSelectorWrapper) {
+                    if (current.placeId && current.locationUrl) {
+                        linkTypeSelectorWrapper.style.display = 'flex';
+                        if (btnTypeReview) btnTypeReview.classList.toggle('active', current.activeType === 'review');
+                        if (btnTypeLocation) btnTypeLocation.classList.toggle('active', current.activeType === 'location');
+                        requestAnimationFrame(() => {
+                            if (window.updateLinkTypeSlider) window.updateLinkTypeSlider();
+                        });
+                    } else {
+                        linkTypeSelectorWrapper.style.display = 'none';
+                    }
+                }
+
                 if (resultCard) resultCard.classList.add('active');
             } else {
+                if (linkTypeSelectorWrapper) linkTypeSelectorWrapper.style.display = 'none';
                 if (resultCard) resultCard.classList.remove('active');
+            }
+            if (window.syncToolsVisibility) {
+                window.syncToolsVisibility();
             }
         }
     };
     window.AppModes = AppModes;
+
+    function updateLinkTypeSlider() {
+        const slider = document.getElementById('linkTypeSlider');
+        const container = document.getElementById('linkTypeSegmented');
+        const activeTab = container ? container.querySelector('.btn-link-type.active') : null;
+        if (!slider || !activeTab || !container) return;
+
+        slider.style.left = '0px';
+        slider.style.right = 'auto';
+        slider.style.width = `${activeTab.offsetWidth}px`;
+        slider.style.transform = `translate3d(${activeTab.offsetLeft}px, 0, 0)`;
+
+        const isLocation = activeTab.getAttribute('data-type') === 'location';
+        slider.classList.toggle('location-mode', isLocation);
+    }
+    window.updateLinkTypeSlider = updateLinkTypeSlider;
+    window.addEventListener('resize', () => {
+        if (window.updateLinkTypeSlider) window.updateLinkTypeSlider();
+    });
+
+    let linkAnimationTimer = null;
+    function updateResultLinkWithAnimation(newUrl, newLabel) {
+        const resultLinkText = document.getElementById('resultLinkText');
+        const resultLabelText = document.getElementById('resultLabelText');
+        if (!resultLinkText) return;
+
+        const oldUrl = (resultLinkText.textContent || '').trim();
+        if (!oldUrl || oldUrl === newUrl.trim()) {
+            resultLinkText.textContent = newUrl;
+            if (resultLabelText && newLabel) resultLabelText.textContent = newLabel;
+            return;
+        }
+
+        if (linkAnimationTimer) {
+            clearTimeout(linkAnimationTimer);
+            linkAnimationTimer = null;
+        }
+
+        // 1. Lock starting height before swapping content
+        const prevHeight = resultLinkText.offsetHeight;
+        if (prevHeight > 0) {
+            resultLinkText.style.height = `${prevHeight}px`;
+        }
+        resultLinkText.classList.add('switching');
+
+        linkAnimationTimer = setTimeout(() => {
+            // 2. Set new URL and label
+            resultLinkText.textContent = newUrl;
+            if (resultLabelText && newLabel) resultLabelText.textContent = newLabel;
+
+            // 3. Measure natural target height
+            resultLinkText.style.height = 'auto';
+            const targetHeight = resultLinkText.offsetHeight;
+
+            // 4. Force reflow from previous height
+            resultLinkText.style.height = `${prevHeight}px`;
+            void resultLinkText.offsetHeight;
+
+            // 5. Animate to target height
+            resultLinkText.style.height = `${targetHeight}px`;
+            resultLinkText.classList.remove('switching');
+
+            // 6. Release fixed height once transition finishes
+            linkAnimationTimer = setTimeout(() => {
+                if (resultLinkText.style.height === `${targetHeight}px`) {
+                    resultLinkText.style.height = 'auto';
+                }
+            }, 300);
+        }, 70);
+    }
     let generatedReviewUrl = '';
 
     function getDict() {
@@ -226,15 +385,19 @@
             return;
         }
 
+        const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
         generatedReviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+        const isMapsUrl = /maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(raw);
+        const locationUrl = isMapsUrl ? raw : `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${placeId}`;
+
         if (window.AppModes) {
-            window.AppModes.setModeResult('link', generatedReviewUrl);
+            window.AppModes.setModeResult('link', generatedReviewUrl, placeId, locationUrl);
         } else {
             if (resultLinkText) resultLinkText.textContent = generatedReviewUrl;
             if (resultCard) resultCard.classList.add('active');
         }
         
-        if (resultCard && (!window.AppModes || window.AppModes.link.isResultActive)) {
+        if (resultCard && !wasResultActive && (!window.AppModes || window.AppModes.link.isResultActive)) {
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
         if (window.showToast) window.showToast(dict.toastSuccess || 'Link converted successfully', 'success');

@@ -23,24 +23,23 @@ ICON_HTML = """<!DOCTYPE html>
   .icon-box {
     width: 512px;
     height: 512px;
-    background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
     display: flex;
     align-items: center;
     justify-content: center;
   }
   svg {
-    width: 420px;
-    height: 420px;
+    width: 350px;
+    height: 350px;
   }
 </style>
 </head>
 <body>
   <div class="icon-box">
     <svg viewBox="0 0 24 24">
-      <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 2C6.91 2 4 4.91 4 8.5c0 4.89 6.5 12.5 6.5 12.5s6.5-7.61 6.5-12.5C17 4.91 14.09 2 10.5 2zm0 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="#ffffff"/>
-      <path d="M10.5 5.8l.68 1.38 1.53.22-1.11 1.08.26 1.52-1.36-.72-1.36.72.26-1.52-1.11-1.08 1.53-.22z" fill="#ffffff"/>
-      <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-      <path d="M20.2 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+      <path fill="#ffffff" d="M10.8 1.8L3 12.5H8.2L5.8 22.2L14.2 10.5H9.5L11.8 1.8Z"/>
+      <path d="M15.2 6.2C16.8 7.6 17.6 9.4 17.6 11.6C17.6 13.8 16.8 15.6 15.2 17" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none"/>
+      <path d="M18.2 3.2C20.7 5.3 21.8 8.2 21.8 11.6C21.8 15 20.7 17.9 18.2 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none"/>
     </svg>
   </div>
 </body>
@@ -73,7 +72,7 @@ OG_HTML = """<!DOCTYPE html>
     width: 600px;
     height: 600px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(249, 115, 22, 0.4) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
     filter: blur(80px);
   }
   .glow-2 {
@@ -83,7 +82,7 @@ OG_HTML = """<!DOCTYPE html>
     width: 550px;
     height: 550px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(234, 88, 12, 0.3) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(124, 58, 237, 0.3) 0%, transparent 70%);
     filter: blur(80px);
   }
   .card {
@@ -98,7 +97,7 @@ OG_HTML = """<!DOCTYPE html>
     flex-direction: column;
     align-items: center;
     text-align: center;
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(249, 115, 22, 0.15);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), 0 0 60px rgba(139, 92, 246, 0.2);
   }
   .header-row {
     display: flex;
@@ -110,11 +109,11 @@ OG_HTML = """<!DOCTYPE html>
     width: 80px;
     height: 80px;
     border-radius: 24px;
-    background: linear-gradient(135deg, #ea580c 0%, #f97316 50%, #fb923c 100%);
+    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 50%, #a78bfa 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 10px 30px rgba(234, 88, 12, 0.5);
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.5);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
   .icon-mini svg {
@@ -158,9 +157,9 @@ OG_HTML = """<!DOCTYPE html>
     margin-bottom: 30px;
   }
   .badge {
-    background: rgba(249, 115, 22, 0.12);
-    border: 1px solid rgba(249, 115, 22, 0.35);
-    color: #fdba74;
+    background: rgba(139, 92, 246, 0.15);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    color: #c4b5fd;
     font-size: 15px;
     font-weight: 700;
     padding: 8px 18px;
@@ -185,10 +184,9 @@ OG_HTML = """<!DOCTYPE html>
     <div class="header-row">
       <div class="icon-mini">
         <svg viewBox="0 0 24 24">
-          <path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 2C6.91 2 4 4.91 4 8.5c0 4.89 6.5 12.5 6.5 12.5s6.5-7.61 6.5-12.5C17 4.91 14.09 2 10.5 2zm0 10a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7z" fill="#ffffff"/>
-          <path d="M10.5 5.8l.68 1.38 1.53.22-1.11 1.08.26 1.52-1.36-.72-1.36.72.26-1.52-1.11-1.08 1.53-.22z" fill="#ffffff"/>
-          <path d="M17.5 4.5c1.7 1.1 2.8 2.9 2.8 5s-1.1 3.9-2.8 5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
-          <path d="M20.2 2c2.6 1.6 4 4.2 4 7.5s-1.4 5.9-4 7.5" fill="none" stroke="#ffffff" stroke-width="2" stroke-linecap="round"/>
+          <path fill="#ffffff" d="M10.8 1.8L3 12.5H8.2L5.8 22.2L14.2 10.5H9.5L11.8 1.8Z"/>
+          <path d="M15.2 6.2C16.8 7.6 17.6 9.4 17.6 11.6C17.6 13.8 16.8 15.6 15.2 17" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <path d="M18.2 3.2C20.7 5.3 21.8 8.2 21.8 11.6C21.8 15 20.7 17.9 18.2 20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" fill="none"/>
         </svg>
       </div>
       <div class="stars-row">
@@ -200,18 +198,18 @@ OG_HTML = """<!DOCTYPE html>
       </div>
     </div>
 
-    <h1>Review Link Generator</h1>
-    <p class="subtitle">Convert any Google Maps link into an instant 5-star rating window. Generate printable QR codes & write directly to NFC cards.</p>
+    <h1>Quick NFC</h1>
+    <p class="subtitle">Fast & simple NFC tool with instant Google Maps review link conversion. Generate printable QR codes & write directly to NFC cards.</p>
 
     <div class="badges-grid">
       <div class="badge">Instant 5-Star Links</div>
+      <div class="badge">Wi-Fi Card Setup</div>
+      <div class="badge">PIN & Perm Lock</div>
       <div class="badge">NFC Tag Writer</div>
-      <div class="badge">Downloadable QR Codes</div>
-      <div class="badge">Android APK Native</div>
-      <div class="badge">English & Arabic</div>
+      <div class="badge">10 Languages</div>
     </div>
 
-    <div class="footer-url">zaid-a-salameh.github.io/google-review-link</div>
+    <div class="footer-url">zaid-a-salameh.github.io/quick-nfc</div>
   </div>
 </body>
 </html>

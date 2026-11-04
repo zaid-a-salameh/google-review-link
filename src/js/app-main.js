@@ -16,7 +16,6 @@
         const openBtn = $('openBtn');
         const shareBtn = $('shareBtn');
         const qrBtn = $('qrBtn');
-        const nfcBtn = $('nfcBtn');
         const tabLinkMode = $('tabLinkMode');
         const tabSearchMode = $('tabSearchMode');
         const businessSearchInput = $('businessSearchInput');
@@ -24,44 +23,128 @@
         const searchFieldWrapper = $('searchFieldWrapper');
         const placesDropdown = $('placesDropdown');
         const resultCard = $('resultCard');
-        const qrOverlay = $('qrOverlay');
-        const qrCloseBtn = $('qrCloseBtn');
-        const qrDownloadBtn = $('qrDownloadBtn');
-        const nfcCancelBtn = $('nfcCancelBtn');
         const btnEn = $('btnEn');
         const btnAr = $('btnAr');
-        const btnCheckUpdate = $('btnCheckUpdate');
-        const btnUpdateNow = $('btnUpdateNow');
-        const updateCloseBtn = $('updateCloseBtn');
-        const btnUpdateLater = $('btnUpdateLater');
-        const updateOverlay = $('updateOverlay');
+        const cardToolsRow = $('cardToolsRow');
 
         let autocompleteDebounceTimer = null;
         let highlightedSuggestionIndex = -1;
 
-        // ── Mode Switcher ──
+        function syncToolsVisibility() {
+            if (cardToolsRow) {
+                cardToolsRow.style.display = 'grid';
+            }
+        }
+        window.syncToolsVisibility = syncToolsVisibility;
+
+        // Direct URL Handler with Smart Auto-Detect
+        function handleDirectUrlInput(raw) {
+            const text = (raw || '').trim();
+            if (!text) {
+                if (window.AppModes) {
+                    window.AppModes.clearModeResult('link');
+                } else if (resultCard) {
+                    resultCard.classList.remove('active');
+                }
+                syncToolsVisibility();
+                return;
+            }
+
+            const updateResultLabel = url => {
+                const resultLabelText = $('resultLabelText');
+                if (resultLabelText) {
+                    const dict = (window.I18N && window.getCurrentLang) ? window.I18N[window.getCurrentLang()] : {};
+                    const isReview = /writereview\?placeid=/i.test(url);
+                    resultLabelText.textContent = isReview
+                        ? (dict.resultLabelReview || 'Direct Review Link:')
+                        : (dict.resultLabelCustom || 'Direct Link:');
+                }
+            };
+
+            const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
+
+            // 1. Existing 5-star Google review link
+            if (/writereview\?placeid=/i.test(text)) {
+                const pid = window.parsePlaceIdFromText ? window.parsePlaceIdFromText(text) : null;
+                const locUrl = pid ? `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${pid}` : null;
+                if (window.AppModes) {
+                    window.AppModes.setModeResult('link', text, pid, locUrl);
+                } else {
+                    const resultLinkText = $('resultLinkText');
+                    if (resultLinkText) resultLinkText.textContent = text;
+                    if (resultCard) resultCard.classList.add('active');
+                }
+                updateResultLabel(text);
+                syncToolsVisibility();
+                if (resultCard && !wasResultActive) {
+                    resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                return;
+            }
+
+            // 2. Raw Google Maps share link -> convert to review/location link
+            if (/maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(text)) {
+                if (window.handleConvert) {
+                    window.handleConvert();
+                    syncToolsVisibility();
+                    return;
+                }
+            }
+
+            // 3. Any other direct URL (website, menu, social media, etc.)
+            if (window.AppModes) {
+                window.AppModes.setModeResult('link', text, null, null);
+            } else {
+                const resultLinkText = $('resultLinkText');
+                if (resultLinkText) resultLinkText.textContent = text;
+                if (resultCard) resultCard.classList.add('active');
+            }
+            updateResultLabel(text);
+            syncToolsVisibility();
+            if (resultCard && !wasResultActive) {
+                resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+        window.handleDirectUrlInput = handleDirectUrlInput;
+
+        // Mode Switcher
         if (tabLinkMode) tabLinkMode.addEventListener('click', () => window.switchMode('link'));
         if (tabSearchMode) tabSearchMode.addEventListener('click', () => window.switchMode('search'));
 
-        // ── Input & Convert Listeners ──
-        if (convertBtn) convertBtn.addEventListener('click', window.handleConvert);
+        // Input & Convert Listeners
+        if (convertBtn) {
+            convertBtn.addEventListener('click', () => {
+                if (urlInput) handleDirectUrlInput(urlInput.value);
+            });
+        }
         if (urlInput) {
+            let directInputTimer = null;
             urlInput.addEventListener('keydown', e => {
-                if (e.key === 'Enter') window.handleConvert();
+                if (e.key === 'Enter') {
+                    if (directInputTimer) clearTimeout(directInputTimer);
+                    handleDirectUrlInput(urlInput.value);
+                }
             });
             urlInput.addEventListener('input', () => {
                 const val = urlInput.value.trim();
-                if (val.length >= 3 && !/^https?:\/\//i.test(val) && !/maps\.app\.goo\.gl/i.test(val) && !/goo\.gl/i.test(val) && !/placeid/i.test(val) && !/ChIJ/i.test(val)) {
-                    window.switchMode('search');
-                    if (businessSearchInput) {
-                        businessSearchInput.value = val;
-                        businessSearchInput.dispatchEvent(new Event('input'));
-                    }
+                if (directInputTimer) clearTimeout(directInputTimer);
+                if (!val) {
+                    handleDirectUrlInput('');
+                } else if (/maps\.app\.goo\.gl|goo\.gl\/maps|google\.[a-z.]+\/maps/i.test(val)) {
+                    directInputTimer = setTimeout(() => handleDirectUrlInput(val), 350);
+                } else if (/^https?:\/\//i.test(val) || val.includes('.')) {
+                    directInputTimer = setTimeout(() => handleDirectUrlInput(val), 250);
+                }
+            });
+            urlInput.addEventListener('blur', () => {
+                if (directInputTimer) clearTimeout(directInputTimer);
+                if (urlInput.value.trim()) {
+                    handleDirectUrlInput(urlInput.value);
                 }
             });
         }
 
-        // ── Clear / Trash ──
+        // Clear / Trash
         if (clearBtn) {
             clearBtn.addEventListener('click', () => {
                 const dict = window.I18N[window.getCurrentLang()];
@@ -74,11 +157,12 @@
                 } else if (resultCard) {
                     resultCard.classList.remove('active');
                 }
+                syncToolsVisibility();
                 if (window.showToast) window.showToast(dict.toastCleared, 'trash');
             });
         }
 
-        // ── Paste Action (Native Android Clipboard Bridge) ──
+        // Paste Action (Native Android Clipboard Bridge)
         if (pasteBtn) {
             pasteBtn.addEventListener('click', () => {
                 if (window.AndroidNative && window.AndroidNative.pasteFromClipboard) {
@@ -89,9 +173,9 @@
                             window.switchMode('link');
                             if (urlInput) urlInput.value = text.trim();
                             if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastPasted, 'paste');
-                            window.handleConvert();
-                        } else {
-                            if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastEmptyClip, 'warn');
+                            handleDirectUrlInput(text.trim());
+                        } else if (window.showToast) {
+                            window.showToast(window.I18N[window.getCurrentLang()].toastEmptyClip, 'warn');
                         }
                     }).catch(() => {
                         if (window.showToast) window.showToast(window.I18N[window.getCurrentLang()].toastClipDenied, 'paste');
@@ -100,7 +184,7 @@
             });
         }
 
-        // ── Action Buttons (Copy, Open, Share, QR, NFC) ──
+        // Result Card Action Buttons (Copy, Open, Share, QR)
         if (copyBtn) {
             copyBtn.addEventListener('click', () => {
                 const reviewUrl = window.getGeneratedReviewUrl();
@@ -144,47 +228,77 @@
             });
         }
 
-        // ── QR Code Modal Handlers ──
-        if (qrBtn) qrBtn.addEventListener('click', window.openQrModal);
-        if (qrCloseBtn) qrCloseBtn.addEventListener('click', window.closeQrModal);
-        if (qrDownloadBtn) qrDownloadBtn.addEventListener('click', window.downloadQrImage);
-        if (qrOverlay) {
-            qrOverlay.addEventListener('click', e => {
-                if (e.target === qrOverlay) window.closeQrModal();
-            });
+        if (qrBtn) {
+            qrBtn.addEventListener('click', () => window.openQrModal(qrBtn));
         }
 
-        // ── NFC Button & Modal Handlers ──
-        if (nfcBtn) nfcBtn.addEventListener('click', window.startNfcWrite);
-        if (nfcCancelBtn) nfcCancelBtn.addEventListener('click', window.closeNfcModal);
-
-        // ── In-App Update Handlers ──
-        if (btnCheckUpdate) {
-            btnCheckUpdate.addEventListener('click', () => window.checkForAppUpdates(true));
-        }
-        if (btnUpdateNow) {
-            btnUpdateNow.addEventListener('click', () => {
-                const dict = window.I18N[window.getCurrentLang()];
-                const targetUrl = window.latestApkDownloadUrl || 'https://github.com/zaid-a-salameh/google-review-link/releases/latest/download/ReviewLinkGenerator.apk';
-                if (window.AndroidNative && typeof window.AndroidNative.downloadAndInstallApk === 'function') {
-                    window.AndroidNative.downloadAndInstallApk(targetUrl);
-                    if (window.showToast) window.showToast(dict.toastDownloadStarted, 'download');
-                    window.closeUpdateModal();
-                } else {
-                    window.open(targetUrl, '_blank');
-                    window.closeUpdateModal();
+        // Link Type Segmented Selector (Review vs Location)
+        const btnTypeReview = $('btnTypeReview');
+        const btnTypeLocation = $('btnTypeLocation');
+        if (btnTypeReview) {
+            btnTypeReview.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('review');
                 }
             });
         }
-        if (updateCloseBtn) updateCloseBtn.addEventListener('click', window.closeUpdateModal);
-        if (btnUpdateLater) btnUpdateLater.addEventListener('click', window.closeUpdateModal);
-        if (updateOverlay) {
-            updateOverlay.addEventListener('click', e => {
-                if (e.target === updateOverlay) window.closeUpdateModal();
+        if (btnTypeLocation) {
+            btnTypeLocation.addEventListener('click', () => {
+                if (window.AppModes && window.AppModes.setLinkType) {
+                    window.AppModes.setLinkType('location');
+                }
             });
         }
 
-        // ── Search Business Input Events ──
+        // User Guide & Feature Tour
+        const btnOpenHelpGuide = $('btnOpenHelpGuide');
+        if (btnOpenHelpGuide) {
+            btnOpenHelpGuide.addEventListener('click', () => {
+                if (window.openOnboardingModal) {
+                    window.openOnboardingModal();
+                }
+            });
+        }
+
+        // Hardware Back Button Coordinator (Strict Descending Z-Index Order)
+        window.handleAndroidBackPress = function() {
+            // 1. Onboarding Tour (z-index: 3000)
+            const onboardingOverlay = $('onboardingOverlay');
+            if (onboardingOverlay && onboardingOverlay.classList.contains('active')) {
+                if (window.closeOnboardingModal) window.closeOnboardingModal(true);
+                return true;
+            }
+            // 2. QR Code Modal (z-index: 1100 — stacks cleanly above NFC/Wi-Fi modal)
+            const qrOverlay = $('qrOverlay');
+            if (qrOverlay && qrOverlay.classList.contains('active')) {
+                if (window.closeQrModal) window.closeQrModal();
+                return true;
+            }
+            // 3. App Update Modal (z-index: 1050)
+            const updateOverlay = $('updateOverlay');
+            if (updateOverlay && updateOverlay.classList.contains('active')) {
+                if (window.closeUpdateModal) window.closeUpdateModal();
+                return true;
+            }
+            // 4. NFC / PIN / PermLock / Wi-Fi Modal (z-index: 1000)
+            const nfcOverlay = $('nfcOverlay');
+            if (nfcOverlay && nfcOverlay.classList.contains('active')) {
+                if (window.handleNfcCancelOrBack) {
+                    window.handleNfcCancelOrBack();
+                } else if (window.closeNfcModal) {
+                    window.closeNfcModal();
+                }
+                return true;
+            }
+            // 5. Places Search Dropdown (z-index: 60)
+            if (placesDropdown && placesDropdown.classList.contains('show')) {
+                if (window.hidePlacesDropdown) window.hidePlacesDropdown();
+                return true;
+            }
+            return false;
+        };
+
+        // Search Business Input Events
         if (searchClearBtn) {
             searchClearBtn.addEventListener('click', () => {
                 if (businessSearchInput) {
@@ -268,36 +382,34 @@
             });
         }
 
-        // ── Floating GitHub Button ──
+        // Floating GitHub Button
         const fabGithub = $('fabGithub');
         if (fabGithub) {
             fabGithub.addEventListener('click', e => {
                 e.preventDefault();
-                window.open('https://github.com/zaid-a-salameh/google-review-link', '_blank');
+                window.open('https://github.com/zaid-a-salameh/quick-nfc', '_blank');
             });
         }
 
-        // ── Language Toggle Buttons ──
+        // Language Toggle Buttons
         if (btnEn) btnEn.addEventListener('click', () => window.switchLanguage('en'));
         if (btnAr) btnAr.addEventListener('click', () => window.switchLanguage('ar'));
 
-        // ── Native Body Marker ──
+        // Native Body Marker
         document.body.classList.add('is-native-app');
 
-        // ── Initialize Version Text ──
-        if (window.initAppVersionDisplay) window.initAppVersionDisplay();
-
-        // ── Initialize Language & Places ──
+        // Initialize Language & Places
         window.applyLanguage(window.getCurrentLang(), false);
         window.initGoogleMapsPlaces();
+        syncToolsVisibility();
         if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 60);
-        window.addEventListener('resize', () => { if (window.updateModeTabSlider) window.updateModeTabSlider(); });
-
-        // ── Auto Update Check when Idle ──
-        if ('requestIdleCallback' in window) {
-            requestIdleCallback(() => window.checkForAppUpdates(false), { timeout: 4500 });
-        } else {
-            setTimeout(() => window.checkForAppUpdates(false), 4000);
+        if (document.fonts && document.fonts.ready) {
+            document.fonts.ready.then(() => {
+                if (window.updateModeTabSlider) window.updateModeTabSlider();
+            }).catch(() => {});
         }
+        window.addEventListener('resize', () => {
+            if (window.updateModeTabSlider) window.updateModeTabSlider();
+        });
     });
 })();

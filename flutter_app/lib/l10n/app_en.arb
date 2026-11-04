@@ -1,0 +1,314 @@
+{
+  "@@locale": "en",
+  "appTitle": "Quick NFC",
+  "appSubtitle": "Fast & simple NFC tool with instant Google Maps review link conversion",
+  "tabLink": "Direct Link",
+  "tabSearch": "Find Business",
+  "placeholder": "Paste link here...",
+  "trashTitle": "Clear text",
+  "pasteBtn": "Paste",
+  "convertBtn": "Convert Link",
+  "resolvingBtn": "Resolving link...",
+  "searchPlaceholder": "Search place name & city...",
+  "toastEnterQuery": "Please enter a business name first",
+  "fabGithubLabel": "Project on GitHub",
+  "resultLabel": "Direct Link:",
+  "resultLabelReview": "Direct Review Link:",
+  "resultLabelLocation": "Location on Google Maps:",
+  "resultLabelCustom": "Direct Link:",
+  "linkTypePrompt": "Link Type to Program:",
+  "linkTypeReview": "5-Star Review",
+  "linkTypeLocation": "Map Location",
+  "toastSwitchedToReview": "Switched to Direct 5-Star Review link",
+  "toastSwitchedToLocation": "Switched to Google Maps Location link",
+  "btnHelpGuideTitle": "User Guide & Feature Tour",
+  "btnGuideLabel": "Guide",
+  "settingsTitle": "Settings",
+  "settingsGeneralSection": "Preferences",
+  "settingsLanguageLabel": "Display Language",
+  "settingsLanguageSub": "Select your preferred app language",
+  "settingsLangArabic": "العربية (Arabic)",
+  "settingsLangEnglish": "English",
+  "settingsAboutSection": "About",
+  "settingsVersionLabel": "Application Version",
+  "settingsDeveloperLabel": "Developer & Repository",
+  "settingsBackBtn": "Back",
+  "obStep1Title": "Smart Links & 5-Star Reviews",
+  "obStep1Desc": "Paste any Google Maps link to instantly convert it into a 5-star review link or location link.",
+  "obStep2Title": "Direct Business Search",
+  "obStep2Desc": "Type your business name & city in 'Find Business' tab to generate your review link in a single tap.",
+  "obStep3Title": "NFC Tags, Wi-Fi & Protection",
+  "obStep3Desc": "Write links and Wi-Fi to NFC cards easily, and protect them with PIN or permanent lock.",
+  "obBtnNext": "Next",
+  "obBtnStart": "Get Started",
+  "obBtnSkip": "Skip Tour",
+  "copyBtn": "Copy",
+  "copySuccess": "Copied!",
+  "openBtn": "Open",
+  "shareBtn": "Share",
+  "qrBtn": "QR Code",
+  "qrModalTitle": "Review QR Code",
+  "qrModalDesc": "Scan with any phone camera to leave a review directly",
+  "qrDownloadBtn": "Save QR",
+  "qrCloseBtn": "Close",
+  "qrDownloaded": "QR Code downloaded",
+  "lblReadTag": "Read Card",
+  "lblWifiTag": "Wi-Fi Card",
+  "lblPwdLockTag": "PIN Lock / Unlock",
+  "lblEraseTag": "Erase Card",
+  "lblPermLockTag": "Permanent Lock",
+  "wifiModalTitle": "Wi-Fi Card Setup",
+  "wifiStep1Title": "Network Name",
+  "wifiStep1Desc": "Enter Wi-Fi network name (SSID)",
+  "wifiStep2Title": "Network Password",
+  "wifiStep2Desc": "Enter password (or leave blank for open network)",
+  "wifiStep3Title": "Security Type",
+  "wifiStep3Desc": "Select network encryption standard",
+  "wifiSsidPlaceholder": "Network Name (SSID)...",
+  "wifiPasswordPlaceholder": "Enter password...",
+  "wifiEncWpa": "WPA / WPA2 / WPA3",
+  "wifiEncWpaSub": "Standard (Personal)",
+  "wifiEncWep": "WEP",
+  "wifiEncWepSub": "Legacy networks",
+  "wifiEncOpen": "Open Network",
+  "wifiEncOpenSub": "No password required",
+  "wifiNext": "Next",
+  "wifiBack": "Back",
+  "wifiWriteTag": "Write Card",
+  "wifiQrBtn": "QR Code",
+  "wifiQrModalTitle": "Wi-Fi QR Code",
+  "wifiQrModalDesc": "Scan with phone camera to connect directly",
+  "wifiQrDownloaded": "Wi-Fi QR Code downloaded",
+  "toastEnterSsid": "Please enter network name (SSID)",
+  "toastWifiPassMinLength": "Password must be at least 8 characters",
+  "toastWifiWpaRequired": "WPA networks require a password of at least 8 characters",
+  "nfcTitleWifiReady": "Ready to Write Wi-Fi",
+  "nfcTitleWifiClone": "Clone Wi-Fi Card",
+  "nfcTitleWifiCloneSuccess": "Wi-Fi Card Cloned!",
+  "nfcDescWifiReady": "Hold phone near NFC card to write Wi-Fi credentials.",
+  "nfcDescWifiReadyWithSsid": "Hold phone near card to write \"{ssid}\".",
+  "@nfcDescWifiReadyWithSsid": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "nfcDescWifiCloneWithSsid": "Hold another card near phone to copy \"{ssid}\".",
+  "@nfcDescWifiCloneWithSsid": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "nfcTitleWifiSuccess": "Wi-Fi Card Programmed!",
+  "nfcDescWifiSuccess": "Wi-Fi configuration written to card.",
+  "nfcBtnWifiAnother": "Write Another",
+  "nfcBtnWifiCloneAnother": "Clone Another",
+  "toastNfcWifiSuccess": "Wi-Fi card written successfully!",
+  "toastNfcWifiReadSuccess": "Wi-Fi network \"{ssid}\" read successfully! Ready to write to a new card.",
+  "@toastNfcWifiReadSuccess": {
+    "placeholders": {
+      "ssid": {
+        "type": "String"
+      }
+    }
+  },
+  "nfcBtn": "Write NFC Card",
+  "nfcBtnWriteAnother": "Write Another",
+  "nfcTitleReady": "Ready to Write",
+  "nfcDescReady": "Hold phone near NFC card to write the link.",
+  "nfcTitleReadReady": "Ready to Read Card",
+  "nfcDescReadReady": "Hold phone near card to read its link.",
+  "nfcTitlePermLockReady": "Ready to Lock",
+  "nfcDescPermLockReady": "Hold phone near card to apply permanent read-only lock.",
+  "nfcTitlePwdLockReady": "Ready to Lock",
+  "nfcDescPwdLockReady": "Hold phone near card to set PIN...",
+  "nfcTitlePwdUnlockReady": "Ready to Unlock",
+  "nfcDescPwdUnlockReady": "Hold phone near card to unlock...",
+  "pwdModalTitle": "Card Protection",
+  "pwdModalTitleLock": "Lock Card",
+  "pwdModalTitleUnlock": "Unlock Card",
+  "pwdModalDesc": "Set a PIN to protect card",
+  "pwdModalDescLock": "Set a PIN to protect card",
+  "pwdModalDescUnlock": "Enter PIN to unlock card",
+  "pwdHintText": "4 digits recommended",
+  "pwdInfoToast": "4 digits recommended",
+  "pwdPlaceholder": "Enter PIN...",
+  "pwdTabLock": "Lock",
+  "pwdTabUnlock": "Unlock",
+  "pwdSubmitLock": "Lock Card",
+  "pwdSubmitUnlock": "Unlock Card",
+  "pwdCancel": "Cancel",
+  "toastEnterPwd": "Please enter a PIN",
+  "permLockTitle": "Permanent Lock",
+  "permLockDesc": "Warning: Card will permanently become Read-Only. Cannot be edited or erased.",
+  "permLockConfirmBtn": "Lock Permanently",
+  "permLockCancelBtn": "Cancel",
+  "toastNfcReadSuccess": "Link read and loaded successfully",
+  "toastNfcReadEmpty": "No valid URL found on this card",
+  "toastNfcPermLockSuccess": "Card permanently locked to Read-Only",
+  "toastNfcPwdLockSuccess": "Card locked with PIN successfully",
+  "toastNfcPwdUnlockSuccess": "Card unlocked successfully",
+  "toastNfcWrongPwd": "Incorrect PIN or unlocking failed",
+  "toastNfcPwdUnsupported": "PIN protection is not supported on this card",
+  "toastNfcAlreadyUnlocked": "Card is not locked",
+  "toastNfcAlreadyLocked": "Card is already locked with a PIN. Unlock it first to change PIN.",
+  "nfcTitleSuccess": "Write Successful!",
+  "nfcDescSuccess": "Card programmed successfully.",
+  "nfcTitleNext": "Ready to Write",
+  "nfcDescNext": "Hold another card near phone, or tap Done.",
+  "nfcCardsCount": "Cards written: {count}",
+  "@nfcCardsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nfcCancel": "Cancel",
+  "nfcDone": "Done",
+  "nfcOk": "OK",
+  "nfcBtnLockAnother": "Lock Another",
+  "nfcBtnUnlockAnother": "Unlock Another",
+  "nfcTitlePwdLockSuccess": "Card Locked",
+  "nfcDescPwdLockSuccess": "Card is now protected against edits.",
+  "nfcTitlePwdUnlockSuccess": "Card Unlocked",
+  "nfcDescPwdUnlockSuccess": "Card is ready for editing.",
+  "nfcTitleAlreadyUnlocked": "Card Not Locked",
+  "nfcDescAlreadyUnlocked": "This card is already unlocked.",
+  "nfcTitleTagLost": "Connection Lost",
+  "nfcDescTagLost": "Hold phone steady over card center.",
+  "nfcTitleLocked": "Card Is Protected",
+  "nfcTitleReadLocked": "Card is Read-Protected",
+  "nfcDescReadLocked": "Card data is protected against reading.",
+  "nfcTitleWrongPwd": "Incorrect PIN",
+  "nfcTitleAlreadyLocked": "Card Already Locked",
+  "nfcTitleCapacity": "Capacity Exceeded",
+  "nfcTitleEmptyTag": "Empty Card",
+  "nfcTitlePermLockSuccess": "Card Permanently Locked",
+  "nfcDescPermLockSuccess": "Card has been permanently set to Read-Only.",
+  "nfcTitlePermLockStandby": "Card Permanently Locked!",
+  "nfcDescPermLockStandby": "Paused for safety. Tap icon to reactivate.",
+  "nfcPermLockCount": "Locked: {count}",
+  "@nfcPermLockCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nfcEraseCount": "Erased: {count}",
+  "@nfcEraseCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "nfcTitleCannotLock": "Cannot Lock",
+  "nfcDescCannotLock": "Card is already read-only or unsupported.",
+  "nfcBackToPin": "Back",
+  "nfcTitleDisabled": "NFC is Disabled",
+  "nfcTitleNoHardware": "NFC Not Supported",
+  "nfcTitleOpFailed": "Operation Failed",
+  "nfcDescOpFailed": "Operation failed. Keep phone steady and retry.",
+  "nfcTitleError": "Write Failed",
+  "nfcDescLocked": "Card is password-protected or read-only. Unlock it first.",
+  "nfcDescCapacity": "Data exceeds card memory capacity.",
+  "nfcDescUnsupported": "This card type is not supported.",
+  "nfcDescGenericError": "Write failed. Keep phone steady over card.",
+  "nfcRetryBtn": "Try Again",
+  "nfcNoHardware": "NFC is not supported on this device",
+  "nfcDisabled": "Please enable NFC in your phone settings",
+  "nfcLocked": "NFC card is locked or read-only",
+  "nfcCapacity": "NFC card has insufficient memory",
+  "nfcUnsupported": "Unsupported NFC tag type",
+  "nfcWriteFailed": "Error writing to NFC tag. Try again.",
+  "toastPasteFirst": "Please paste a link first",
+  "toastInvalid": "Could not extract Place ID",
+  "toastNoInternet": "No network connection",
+  "toastSuccess": "Link converted successfully",
+  "toastNfcWritten": "Successfully written to NFC card",
+  "toastNfcBatchSuccess": "Successfully programmed {count} NFC card(s)",
+  "@toastNfcBatchSuccess": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "toastCleared": "Text cleared",
+  "toastPasted": "Pasted from clipboard",
+  "toastEmptyClip": "Clipboard is empty",
+  "toastClipDenied": "Press Ctrl+V to paste",
+  "toastCopied": "Review link copied",
+  "toastShareCopied": "Link copied for sharing",
+  "shareTitle": "Google Review",
+  "shareText": "Leave us a review on Google Maps",
+  "toastHourlyLimit": "Hourly search limit reached to protect your quota",
+  "toastSelectSuccess": "Link generated",
+  "updateAvailable": "Update Available",
+  "updateReadyTitle": "New Version Ready",
+  "updateCurrent": "Current",
+  "updateNew": "New",
+  "updateSize": "Size: {size}",
+  "@updateSize": {
+    "placeholders": {
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "updateDate": "Published: {date}",
+  "@updateDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "updateHighlights": "What's New in this Release",
+  "updateInstallBtn": "Install Update",
+  "updateViewGithub": "Release Notes",
+  "updateLater": "Later",
+  "toastCheckingUpdate": "Checking for updates...",
+  "toastUpToDate": "App is up to date ({version})",
+  "@toastUpToDate": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "toastUpdateFound": "New version {version} is available!",
+  "@toastUpdateFound": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "toastUpdateError": "Unable to check for updates right now",
+  "toastDownloadStarted": "Downloading update in background...",
+  "toastQrSaveError": "Failed to save QR image",
+  "eraseModalTitle": "Erase Card",
+  "eraseModalDesc": "All data will be erased and card restored to empty. Locks are unaffected.",
+  "eraseConfirmBtn": "Erase Card",
+  "eraseCancelBtn": "Cancel",
+  "nfcTitleEraseReady": "Ready to Erase",
+  "nfcDescEraseReady": "Hold phone near card to erase data...",
+  "nfcTitleEraseSuccess": "Card Erased!",
+  "nfcDescEraseSuccess": "Card is now empty and ready for use.",
+  "nfcBtnEraseAnother": "Erase Another",
+  "toastNfcEraseSuccess": "Card data erased successfully",
+  "githubProjectBtn": "GitHub",
+  "githubSupportBtn": "Support",
+  "toastSupportComingSoon": "Support option will be available soon",
+  "settingsThemeLabel": "Appearance",
+  "settingsThemeSub": "Choose your preferred app theme",
+  "settingsThemeSystem": "System",
+  "settingsThemeDark": "Dark",
+  "settingsThemeLight": "Light"
+}

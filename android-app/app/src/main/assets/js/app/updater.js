@@ -5,7 +5,7 @@
     'use strict';
 
     const GITHUB_REPO_OWNER = 'zaid-a-salameh';
-    const GITHUB_REPO_NAME = 'google-review-link';
+    const GITHUB_REPO_NAME = 'quick-nfc';
     const GITHUB_LATEST_RELEASE_URL = `https://api.github.com/repos/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest`;
     
     let currentAppVersion = '1.2.1';
@@ -84,7 +84,7 @@
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
 
-        html = html.replace(/^### (.*$)/gim, '<h4 style="margin:8px 0 4px;color:#fdba74;font-size:12px;">$1</h4>');
+        html = html.replace(/^### (.*$)/gim, '<h4 style="margin:8px 0 4px;color:#c4b5fd;font-size:12px;">$1</h4>');
         html = html.replace(/^## (.*$)/gim, '<h3 style="margin:10px 0 6px;color:#fff;font-size:13px;">$1</h3>');
         html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
         html = html.replace(/`(.*?)`/g, '<code style="background:rgba(255,255,255,0.08);padding:1px 4px;border-radius:4px;font-size:11px;">$1</code>');
@@ -151,14 +151,21 @@
         latestApkDownloadUrl = apkAsset ? apkAsset.browser_download_url : `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest/download/ReviewLinkGenerator.apk`;
         window.latestApkDownloadUrl = latestApkDownloadUrl;
 
-        if (updateOverlay) {
+        const updateModalBox = document.getElementById('updateModalBox');
+        const btnCheckUpdate = document.getElementById('btnCheckUpdate');
+        if (window.openMorphModal && updateOverlay && updateModalBox) {
+            window.openMorphModal(updateOverlay, updateModalBox, btnCheckUpdate);
+        } else if (updateOverlay) {
             updateOverlay.classList.add('active');
         }
     }
 
     function closeUpdateModal() {
         const updateOverlay = document.getElementById('updateOverlay');
-        if (updateOverlay) {
+        const updateModalBox = document.getElementById('updateModalBox');
+        if (window.closeMorphModal && updateOverlay && updateModalBox) {
+            window.closeMorphModal(updateOverlay, updateModalBox);
+        } else if (updateOverlay) {
             updateOverlay.classList.remove('active');
         }
     }
@@ -238,6 +245,47 @@
             isCheckingUpdate = false;
         }
     }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initAppVersionDisplay();
+
+        const btnCheckUpdate = document.getElementById('btnCheckUpdate');
+        const btnUpdateNow = document.getElementById('btnUpdateNow');
+        const updateCloseBtn = document.getElementById('updateCloseBtn');
+        const btnUpdateLater = document.getElementById('btnUpdateLater');
+        const updateOverlay = document.getElementById('updateOverlay');
+
+        if (btnCheckUpdate) {
+            btnCheckUpdate.addEventListener('click', () => checkForAppUpdates(true));
+        }
+        if (btnUpdateNow) {
+            btnUpdateNow.addEventListener('click', () => {
+                const dict = getDict();
+                const targetUrl = window.latestApkDownloadUrl || `https://github.com/${GITHUB_REPO_OWNER}/${GITHUB_REPO_NAME}/releases/latest/download/ReviewLinkGenerator.apk`;
+                if (window.AndroidNative && typeof window.AndroidNative.downloadAndInstallApk === 'function') {
+                    window.AndroidNative.downloadAndInstallApk(targetUrl);
+                    if (window.showToast) window.showToast(dict.toastDownloadStarted, 'download');
+                    closeUpdateModal();
+                } else {
+                    window.open(targetUrl, '_blank');
+                    closeUpdateModal();
+                }
+            });
+        }
+        if (updateCloseBtn) updateCloseBtn.addEventListener('click', closeUpdateModal);
+        if (btnUpdateLater) btnUpdateLater.addEventListener('click', closeUpdateModal);
+        if (updateOverlay) {
+            updateOverlay.addEventListener('click', e => {
+                if (e.target === updateOverlay) closeUpdateModal();
+            });
+        }
+
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => checkForAppUpdates(false), { timeout: 4500 });
+        } else {
+            setTimeout(() => checkForAppUpdates(false), 4000);
+        }
+    });
 
     window.checkForAppUpdates = checkForAppUpdates;
     window.openUpdateModal = openUpdateModal;

@@ -7,17 +7,21 @@
             align-items: center;
             height: 52px;
             background: rgba(18, 16, 15, 0.85);
-            border: 2px solid var(--border);
+            border: 1.5px solid var(--border);
             border-radius: var(--radius-input);
             padding: 0 14px;
-            transition: all 0.25s ease;
-            margin-bottom: 14px;
+            transition: border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+            margin-bottom: 0;
+            box-sizing: border-box;
+        }
+        #modeSearchContent .search-field-wrapper {
+            margin-bottom: 0;
         }
         .search-field-wrapper:has(.places-dropdown.show),
         .search-field-wrapper.has-dropdown-open,
         .search-field-wrapper:focus-within {
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.2);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
             background: rgba(18, 16, 15, 0.98);
             z-index: 2002;
         }
@@ -88,7 +92,7 @@
         /* Search Guide Card */
         .search-helper-card {
             background: rgba(41, 37, 36, 0.4);
-            border: 1px dashed rgba(249, 115, 22, 0.35);
+            border: 1px dashed rgba(139, 92, 246, 0.35);
             border-radius: var(--radius-btn);
             padding: 16px;
             display: flex;
@@ -111,8 +115,8 @@
             width: 22px;
             height: 22px;
             border-radius: 50%;
-            background: rgba(249, 115, 22, 0.2);
-            color: #fb923c;
+            background: rgba(139, 92, 246, 0.2);
+            color: #a78bfa;
             font-size: 11px;
             font-weight: 800;
             display: flex;
@@ -170,7 +174,7 @@
             align-items: center;
             justify-content: center;
             gap: 7px;
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
             transition: all 0.2s;
         }
         .btn-autopaste-convert:hover {
@@ -187,7 +191,7 @@
         .search-loading-spinner {
             width: 18px;
             height: 18px;
-            border: 2px solid rgba(249, 115, 22, 0.25);
+            border: 2px solid rgba(139, 92, 246, 0.25);
             border-top-color: var(--primary);
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
@@ -211,18 +215,41 @@
             background: rgba(24, 20, 18, 0.98);
             backdrop-filter: blur(24px) saturate(180%);
             -webkit-backdrop-filter: blur(24px) saturate(180%);
-            border: 1px solid rgba(249, 115, 22, 0.35);
+            border: 1px solid rgba(139, 92, 246, 0.35);
             border-radius: var(--radius-btn);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(249, 115, 22, 0.12);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), 0 0 25px rgba(139, 92, 246, 0.12);
             max-height: 290px;
             overflow-y: auto;
             display: none;
             flex-direction: column;
             overscroll-behavior: contain;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(139, 92, 246, 0.45) rgba(18, 16, 15, 0.7);
+        }
+        .places-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+        .places-dropdown::-webkit-scrollbar-track {
+            background: rgba(18, 16, 15, 0.7);
+            border-radius: 6px;
+            margin: 6px 0;
+        }
+        .places-dropdown::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.45);
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+        .places-dropdown::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.75);
+        }
+        body.is-native-app .places-dropdown {
+            background: #181412;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
         }
         .places-dropdown.show {
             display: flex;
-            animation: dropdownExpandAnim 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: dropdownExpandAnim 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards;
             transform-origin: top center;
         }
         @keyframes dropdownExpandAnim {
@@ -258,16 +285,23 @@
         .place-suggestion-item:last-of-type {
             border-bottom: none;
         }
-        .place-suggestion-item:hover,
         .place-suggestion-item.selected {
-            background: rgba(249, 115, 22, 0.16);
+            background: rgba(139, 92, 246, 0.16);
+        }
+        .place-suggestion-item:active {
+            background: rgba(139, 92, 246, 0.22);
+        }
+        @media (hover: hover) and (pointer: fine) {
+            .place-suggestion-item:hover {
+                background: rgba(139, 92, 246, 0.16);
+            }
         }
         .place-icon {
             width: 30px;
             height: 30px;
             border-radius: 9px;
-            background: rgba(249, 115, 22, 0.14);
-            border: 1px solid rgba(249, 115, 22, 0.25);
+            background: rgba(139, 92, 246, 0.14);
+            border: 1px solid rgba(139, 92, 246, 0.25);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -276,7 +310,7 @@
         .place-icon svg {
             width: 16px;
             height: 16px;
-            fill: #fb923c;
+            fill: #a78bfa;
         }
         .place-text {
             flex: 1;
@@ -360,7 +394,7 @@
         .btn-key-settings {
             background: transparent;
             border: none;
-            color: #fb923c;
+            color: #a78bfa;
             font-family: inherit;
             font-size: 11.5px;
             font-weight: 700;
@@ -373,7 +407,7 @@
             transition: all 0.2s;
         }
         .btn-key-settings:hover {
-            background: rgba(249, 115, 22, 0.15);
+            background: rgba(139, 92, 246, 0.15);
         }
         .btn-key-settings svg {
             width: 14px;
@@ -396,30 +430,36 @@
             opacity: 0;
             pointer-events: none;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.24s;
+        }
+        body.is-native-app .gmp-key-overlay {
+            background: rgba(8, 7, 6, 0.88);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .gmp-key-overlay.active {
             opacity: 1;
             pointer-events: auto;
             visibility: visible;
+            transition: opacity 0.24s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s;
         }
         .gmp-key-modal {
             width: 100%;
             max-width: 440px;
             background: rgba(28, 25, 23, 0.98);
-            border: 1px solid rgba(249, 115, 22, 0.4);
+            border: 1px solid rgba(139, 92, 246, 0.4);
             border-radius: 24px;
             padding: 24px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(234, 88, 12, 0.2);
-            transform: scale(0.9) translateY(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 35px rgba(124, 58, 237, 0.2);
+            transform: translate3d(0, 14px, 0) scale3d(0.95, 0.95, 1);
             opacity: 0;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.25s ease;
+            transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.22s ease;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
         .gmp-key-overlay.active .gmp-key-modal {
-            transform: scale(1) translateY(0);
+            transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             opacity: 1;
         }
         .gmp-key-header {
@@ -435,7 +475,7 @@
         .gmp-key-header-icon {
             width: 22px;
             height: 22px;
-            fill: #fb923c;
+            fill: #a78bfa;
         }
         .gmp-key-title {
             font-size: 17px;
@@ -531,7 +571,7 @@
         }
         .gmp-input-field:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.2);
         }
         .gmp-safety-box {
             background: rgba(16, 185, 129, 0.08);
@@ -587,7 +627,7 @@
             font-size: 13px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.35);
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.35);
             transition: all 0.2s;
         }
         .btn-gmp-key-save:hover {

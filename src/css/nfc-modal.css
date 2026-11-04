@@ -1,0 +1,917 @@
+/* ========================================================
+   NFC Overlay Container & Active Sensor View Stylesheet
+   (Native Android App Only)
+   ======================================================== */
+
+.nfc-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: -260px;
+    background: rgba(8, 7, 6, 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 24px 284px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, var(--kb-shift, 0px), 0);
+    transition: opacity 0.19s cubic-bezier(0.4, 0, 0.2, 1), visibility 0s linear 0.19s, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+body.is-native-app .nfc-overlay {
+    background: rgba(8, 7, 6, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.nfc-overlay.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0s, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Defensive isolation when closed */
+.nfc-overlay:not(.active),
+.nfc-overlay:not(.active) * {
+    pointer-events: none !important;
+}
+
+.nfc-overlay:not(.active):not(.closing):not(.handoff-enter):not(.handoff-exit) {
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Seamless Zero-Gap Modal-to-Modal Handoff States */
+.nfc-overlay.handoff-enter {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.nfc-overlay.handoff-exit {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    pointer-events: none !important;
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.modal-no-inner-transition,
+.modal-no-inner-transition * {
+    transition: none !important;
+}
+
+.nfc-modal {
+    width: 100%;
+    max-width: 340px;
+    min-height: 336px;
+    background: rgba(28, 25, 23, 0.98);
+    border: 1px solid rgba(139, 92, 246, 0.4);
+    border-radius: 28px;
+    padding: 24px 22px 22px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.2);
+    opacity: 0;
+    transform: translate3d(0, 14px, 0) scale3d(0.92, 0.92, 1);
+    transform-origin: center center;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.19s ease, border-color 0.28s ease, box-shadow 0.28s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    contain: layout style;
+    display: grid;
+    grid-template-columns: 100%;
+    align-items: center;
+    position: relative;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.nfc-overlay.active .nfc-modal {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+}
+
+/* Internal sub-views for seamless in-place view morphing without overlay blinking */
+.nfc-view {
+    grid-area: 1 / 1;
+    width: 100%;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, 10px, 0) scale3d(0.96, 0.96, 1);
+    transition: opacity 0.20s cubic-bezier(0.22, 1, 0.36, 1),
+                transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 0s linear 0.24s;
+    will-change: transform, opacity;
+    box-sizing: border-box;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+}
+
+.nfc-view.active {
+    opacity: 1;
+    visibility: inherit;
+    pointer-events: none;
+    transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
+    transition: opacity 0.22s cubic-bezier(0.22, 1, 0.36, 1) 0.02s,
+                transform 0.26s cubic-bezier(0.22, 1, 0.36, 1) 0.02s,
+                visibility 0s linear 0s;
+    z-index: 2;
+}
+
+.nfc-overlay.active .nfc-view.active {
+    pointer-events: auto;
+}
+
+.nfc-view:not(.active),
+.nfc-view:not(.active) * {
+    pointer-events: none !important;
+}
+
+.nfc-view.view-exit {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, -10px, 0) scale3d(0.96, 0.96, 1);
+    transition: opacity 0.17s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.21s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0s linear 0.21s;
+    z-index: 1;
+}
+
+/* Sensor Pulse Emblem */
+.nfc-wave-container {
+    position: relative;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nfc-wave-ring {
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 2px solid rgba(139, 92, 246, 0.5);
+    animation: nfcPulse 1.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
+    transform: translateZ(0);
+    transition: opacity 0.24s ease, border-color 0.24s ease;
+}
+
+.nfc-overlay:not(.active) .nfc-wave-ring {
+    animation-play-state: paused;
+}
+
+.nfc-wave-ring:nth-child(2) {
+    animation-delay: 0.6s;
+}
+
+@keyframes nfcPulse {
+    0% { transform: scale3d(0.72, 0.72, 1); opacity: 0.88; }
+    100% { transform: scale3d(1.58, 1.58, 1); opacity: 0; }
+}
+
+.nfc-icon-circle {
+    position: relative;
+    z-index: 2;
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    border: 2px solid transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(124, 58, 237, 0.5);
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease, opacity 0.25s ease;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.nfc-icon-circle svg {
+    width: 36px;
+    height: 36px;
+    fill: #ffffff;
+    transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), fill 0.24s ease, opacity 0.24s ease;
+}
+
+.nfc-modal.success,
+.nfc-modal.perm-lock-thump {
+    animation: modalHapticThump 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes modalHapticThump {
+    0% { transform: scale3d(1, 1, 1); }
+    30% { transform: scale3d(1.03, 1.03, 1) translate3d(0, -2px, 0); }
+    60% { transform: scale3d(0.99, 0.99, 1) translate3d(0, 1px, 0); }
+    100% { transform: scale3d(1, 1, 1); }
+}
+
+.nfc-modal.success .nfc-wave-ring {
+    opacity: 0;
+    animation-play-state: paused;
+}
+
+.nfc-modal.perm-lock-standby {
+    border-color: rgba(16, 185, 129, 0.4);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 32px rgba(16, 185, 129, 0.16);
+}
+
+.nfc-modal.perm-lock-standby .nfc-wave-container {
+    cursor: pointer;
+}
+
+.nfc-modal.perm-lock-standby .nfc-wave-ring {
+    opacity: 0;
+    animation-play-state: paused;
+}
+
+.nfc-modal.perm-lock-standby .nfc-icon-circle {
+    background: rgba(34, 30, 28, 0.96) !important;
+    border: 2px dashed rgba(168, 162, 158, 0.42);
+    box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.65), 0 4px 14px rgba(0, 0, 0, 0.35) !important;
+    transform: scale3d(0.95, 0.95, 1);
+    cursor: pointer;
+}
+
+.nfc-modal.perm-lock-standby .nfc-icon-circle svg {
+    fill: #a8a29e;
+    opacity: 0.48;
+    transform: scale3d(0.92, 0.92, 1);
+}
+
+.nfc-modal.perm-lock-standby .nfc-wave-container:active .nfc-icon-circle {
+    transform: scale3d(0.88, 0.88, 1);
+    border-color: rgba(245, 39, 125, 0.65);
+}
+
+.nfc-modal.success .nfc-icon-circle {
+    animation: iconCheckPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(1.08);
+}
+
+@keyframes iconCheckPopIn {
+    0% { transform: scale(0.5) rotate(-20deg); opacity: 0; }
+    65% { transform: scale(1.22) rotate(4deg); opacity: 1; }
+    100% { transform: scale(1.08) rotate(0deg); opacity: 1; }
+}
+
+.nfc-modal.success .nfc-icon-circle svg {
+    animation: checkmarkScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes checkmarkScaleIn {
+    0% { transform: scale(0.4); opacity: 0; }
+    70% { transform: scale(1.15); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Per-Theme Success Checkmark & Aura Styling */
+
+/* 1. Review Link Write (Purple Theme) */
+.nfc-modal.theme-link.success,
+.nfc-modal.success:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) {
+    border-color: rgba(124, 58, 237, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(124, 58, 237, 0.25);
+}
+
+.nfc-modal.theme-link.success .nfc-icon-circle,
+.nfc-modal.success:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) .nfc-icon-circle {
+    background: var(--primary-gradient);
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.65), 0 0 25px rgba(124, 58, 237, 0.45);
+}
+
+.nfc-modal.theme-link.success .nfc-icon-circle svg,
+.nfc-modal.success:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) .nfc-icon-circle svg {
+    fill: #ffffff;
+}
+
+.nfc-modal.theme-link .nfc-counter-badge,
+.nfc-modal.success:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) .nfc-counter-badge {
+    background: rgba(124, 58, 237, 0.15);
+    border-color: rgba(124, 58, 237, 0.4);
+    color: #c4b5fd;
+}
+
+.nfc-modal.theme-link .nfc-counter-dot,
+.nfc-modal.success:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) .nfc-counter-dot {
+    background: #a78bfa;
+    box-shadow: 0 0 8px rgba(167, 139, 250, 0.85);
+}
+
+/* 2. Password Lock & Permanent Lock (Pink Theme) */
+.nfc-modal.theme-lock.success {
+    border-color: rgba(245, 39, 125, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 39, 125, 0.25);
+}
+
+.nfc-modal.theme-lock.success .nfc-icon-circle {
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 10px 30px rgba(245, 39, 125, 0.6), 0 0 25px rgba(245, 39, 125, 0.4);
+}
+
+.nfc-modal.theme-lock.success .nfc-icon-circle svg {
+    fill: #ffffff;
+}
+
+.nfc-modal.theme-lock .nfc-counter-badge {
+    background: rgba(245, 39, 125, 0.15);
+    border-color: rgba(245, 39, 125, 0.4);
+    color: #fda4af;
+}
+
+.nfc-modal.theme-lock .nfc-counter-dot {
+    background: #f43f5e;
+    box-shadow: 0 0 8px rgba(244, 63, 94, 0.85);
+}
+
+/* 3. Password Unlock (Emerald Green Theme) */
+.nfc-modal.theme-unlock.success {
+    border-color: rgba(16, 185, 129, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.25);
+}
+
+.nfc-modal.theme-unlock.success .nfc-icon-circle {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6), 0 0 25px rgba(16, 185, 129, 0.35);
+}
+
+.nfc-modal.theme-unlock.success .nfc-icon-circle svg {
+    fill: #ffffff;
+}
+
+.nfc-modal.theme-unlock .nfc-counter-badge {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.35);
+    color: #34d399;
+}
+
+.nfc-modal.theme-unlock .nfc-counter-dot {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+}
+
+/* 4. Wi-Fi Card Write (Amber / Yellow Theme) */
+.nfc-modal.theme-wifi.success {
+    border-color: rgba(245, 158, 11, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.25);
+}
+
+.nfc-modal.theme-wifi.success .nfc-icon-circle {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.65), 0 0 25px rgba(245, 158, 11, 0.4);
+}
+
+.nfc-modal.theme-wifi.success .nfc-icon-circle svg {
+    fill: #ffffff;
+}
+
+.nfc-modal.theme-wifi .nfc-counter-badge {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: rgba(245, 158, 11, 0.4);
+    color: #fbbf24;
+}
+
+.nfc-modal.theme-wifi .nfc-counter-dot {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.85);
+}
+
+/* Error state animation inside NFC modal */
+.nfc-modal.error {
+    animation: modalErrorShake 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+    border-color: rgba(245, 39, 125, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 35px rgba(245, 39, 125, 0.25);
+}
+
+@keyframes modalErrorShake {
+    0%, 100% { transform: scale(1) translateX(0); }
+    20%, 60% { transform: scale(1.02) translateX(-6px); }
+    40%, 80% { transform: scale(0.99) translateX(6px); }
+}
+
+.nfc-modal.error .nfc-wave-ring {
+    opacity: 0;
+    animation-play-state: paused;
+}
+
+.nfc-modal.error .nfc-icon-circle {
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 10px 30px rgba(245, 39, 125, 0.55), 0 0 25px rgba(245, 39, 125, 0.35);
+    animation: iconErrorPopIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: scale(1.08);
+}
+
+@keyframes iconErrorPopIn {
+    0% { transform: scale(0.5) rotate(20deg); opacity: 0; }
+    65% { transform: scale(1.22) rotate(-4deg); opacity: 1; }
+    100% { transform: scale(1.08) rotate(0deg); opacity: 1; }
+}
+
+.nfc-modal.error .nfc-icon-circle svg {
+    animation: checkmarkScaleIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nfc-modal.morph-to-ready .nfc-icon-circle {
+    animation: iconCheckMorphExit 0.35s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes iconCheckMorphExit {
+    0% { transform: scale(1.08); opacity: 1; }
+    50% { transform: scale(0.85); opacity: 0.6; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Smooth Morph Transition from Read to Wi-Fi */
+.nfc-modal.morph-to-wifi {
+    animation: modalHapticThump 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nfc-modal.morph-to-wifi .nfc-icon-circle {
+    animation: iconWifiMorphIn 0.48s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.nfc-modal.morph-to-wifi .nfc-icon-circle svg {
+    animation: iconWifiSvgPop 0.42s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nfc-modal.morph-to-wifi .nfc-title {
+    animation: modalTextMorphIn 0.38s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nfc-modal.morph-to-wifi .nfc-desc {
+    animation: modalTextMorphIn 0.44s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nfc-modal.morph-to-wifi .nfc-wave-ring {
+    animation: modalWaveBurst 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes iconWifiMorphIn {
+    0% { transform: scale(0.65) rotate(-14deg); opacity: 0.3; }
+    60% { transform: scale(1.16) rotate(3deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+@keyframes iconWifiSvgPop {
+    0% { transform: scale(0.35); opacity: 0; }
+    70% { transform: scale(1.18); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes modalTextMorphIn {
+    0% { opacity: 0; transform: translateY(8px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalWaveBurst {
+    0% { transform: scale3d(0.8, 0.8, 1); opacity: 0.9; }
+    100% { transform: scale3d(1.4, 1.4, 1); opacity: 0; }
+}
+
+.nfc-counter-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #34d399;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.nfc-counter-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+
+.nfc-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.nfc-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.5;
+    margin-bottom: 24px;
+}
+
+.nfc-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.btn-nfc-retry {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex: 1;
+    height: 44px;
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: var(--radius-btn);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.4);
+}
+
+.btn-nfc-retry svg {
+    width: 17px;
+    height: 17px;
+    fill: #ffffff;
+}
+
+.btn-nfc-retry:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.55);
+}
+
+.btn-nfc-next {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    flex: 1.35;
+    height: 44px;
+    border: none;
+    border-radius: var(--radius-btn);
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+    padding: 0 10px;
+}
+
+.btn-nfc-next.theme-lock {
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 4px 15px rgba(245, 39, 125, 0.45);
+}
+
+.btn-nfc-next.theme-lock:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(245, 39, 125, 0.6);
+}
+
+.btn-nfc-next.theme-unlock {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.45);
+}
+
+.btn-nfc-next.theme-unlock:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.6);
+}
+
+.btn-nfc-next.theme-wifi {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.45);
+    color: #0c0a09;
+    font-weight: 800;
+}
+
+.btn-nfc-next.theme-wifi:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+}
+
+.btn-nfc-next.theme-wifi svg {
+    fill: #0c0a09;
+}
+
+.btn-nfc-next.theme-link,
+.btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) {
+    background: var(--primary-gradient);
+    box-shadow: 0 4px 15px rgba(124, 58, 237, 0.45);
+    color: #ffffff;
+    font-weight: 800;
+}
+
+.btn-nfc-next.theme-link:hover,
+.btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi):hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.6);
+}
+
+.btn-nfc-next.theme-link svg,
+.btn-nfc-next:not(.theme-lock):not(.theme-unlock):not(.theme-wifi) svg {
+    fill: #ffffff;
+}
+
+.btn-nfc-next:active {
+    transform: scale(0.98);
+}
+
+.btn-nfc-next svg {
+    width: 16px;
+    height: 16px;
+    fill: #ffffff;
+    flex-shrink: 0;
+}
+
+.nfc-modal.has-next-btn.success .btn-nfc-cancel {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.18) !important;
+    color: var(--text-sub) !important;
+    box-shadow: none !important;
+    flex: 0.85;
+}
+
+.nfc-modal.has-next-btn.success .btn-nfc-cancel:hover,
+.nfc-modal.has-next-btn.success .btn-nfc-cancel:active {
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    transform: translateY(-1px);
+}
+
+.btn-nfc-wifi-qr {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    flex: 1.15;
+    height: 44px;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(245, 158, 11, 0.45);
+    border-radius: var(--radius-btn);
+    color: #fbbf24;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(245, 158, 11, 0.2);
+    white-space: nowrap;
+    padding: 0 10px;
+    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.btn-nfc-wifi-qr:active {
+    transform: scale(0.97);
+    background: rgba(245, 158, 11, 0.25);
+    box-shadow: 0 2px 8px rgba(245, 158, 11, 0.25);
+}
+
+.btn-nfc-wifi-qr svg {
+    width: 17px;
+    height: 17px;
+    fill: #fbbf24;
+    flex-shrink: 0;
+}
+
+/* Wi-Fi Write Success Layout: 2 action buttons side-by-side, full-width Done/Cancel button below */
+.nfc-modal.theme-wifi.success.has-next-btn .nfc-actions-row {
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-next {
+    flex: 1 1 calc(50% - 5px);
+    min-width: 0;
+    height: 44px;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 0 8px;
+    gap: 6px;
+}
+
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-next svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-next span,
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-wifi-qr span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-wifi-qr {
+    flex: 1 1 calc(50% - 5px);
+    min-width: 0;
+    height: 44px;
+    font-size: 12.5px;
+    font-weight: 700;
+    padding: 0 8px;
+    gap: 6px;
+}
+
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-cancel {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+    height: 42px;
+    margin-top: 2px;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.16) !important;
+    color: var(--text-sub) !important;
+    box-shadow: none !important;
+}
+
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-cancel:hover,
+.nfc-modal.theme-wifi.success.has-next-btn .btn-nfc-cancel:active {
+    background: rgba(245, 158, 11, 0.12) !important;
+    border-color: rgba(245, 158, 11, 0.45) !important;
+    color: #fbbf24 !important;
+}
+
+.btn-nfc-cancel {
+    flex: 1;
+    width: 100%;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-btn);
+    color: var(--text-sub);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.16s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-nfc-cancel:active {
+    background: rgba(255, 255, 255, 0.16);
+    transform: scale3d(0.97, 0.97, 1);
+}
+
+.nfc-back-icon {
+    display: none;
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.btn-nfc-cancel.is-back-btn {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.26);
+    color: #fafaf9;
+}
+
+.btn-nfc-cancel.is-back-btn .nfc-back-icon {
+    display: block;
+}
+
+[dir="rtl"] .btn-nfc-cancel.is-back-btn .nfc-back-icon,
+html[lang="ar"] .btn-nfc-cancel.is-back-btn .nfc-back-icon {
+    transform: scaleX(-1);
+}
+
+.nfc-modal.perm-lock-standby .btn-nfc-cancel {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #ffffff;
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.35);
+}
+
+.nfc-modal.perm-lock-standby .btn-nfc-cancel:active {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    transform: scale3d(0.97, 0.97, 1);
+}
+
+.nfc-modal.success:not(.has-next-btn) .btn-nfc-cancel {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border-color: rgba(16, 185, 129, 0.5);
+    color: #ffffff;
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.4);
+}
+
+.nfc-modal.theme-lock.success:not(.has-next-btn) .btn-nfc-cancel {
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    border-color: rgba(245, 39, 125, 0.5);
+    color: #ffffff;
+    box-shadow: 0 4px 18px rgba(245, 39, 125, 0.4);
+}
+
+.nfc-modal.theme-wifi.success:not(.has-next-btn) .btn-nfc-cancel {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    border-color: rgba(245, 158, 11, 0.5);
+    color: #0c0a09;
+    box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4);
+}
+
+.nfc-modal.theme-link.success:not(.has-next-btn) .btn-nfc-cancel {
+    background: var(--primary-gradient);
+    border-color: rgba(124, 58, 237, 0.5);
+    color: #ffffff;
+    box-shadow: 0 4px 18px rgba(124, 58, 237, 0.4);
+}
+
+.nfc-modal.success:not(.has-next-btn) .btn-nfc-cancel:hover,
+.nfc-modal.success:not(.has-next-btn) .btn-nfc-cancel:active {
+    filter: brightness(0.92);
+    transform: scale(0.98);
+}
+
+/* Dynamic Waiting Themes for NFC Sensor Modal */
+.nfc-modal.theme-lock {
+    border-color: rgba(245, 39, 125, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 39, 125, 0.25);
+}
+
+.nfc-modal.theme-lock .nfc-wave-ring {
+    border-color: rgba(245, 39, 125, 0.55);
+}
+
+.nfc-modal.theme-lock .nfc-icon-circle {
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 10px 30px rgba(245, 39, 125, 0.55), 0 0 25px rgba(245, 39, 125, 0.35);
+}
+
+.nfc-modal.theme-lock .btn-nfc-cancel:hover,
+.nfc-modal.theme-lock .btn-nfc-cancel:active {
+    border-color: rgba(245, 39, 125, 0.45);
+    color: #ffffff;
+}
+
+.nfc-modal.theme-unlock {
+    border-color: rgba(16, 185, 129, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(16, 185, 129, 0.25);
+}
+
+.nfc-modal.theme-unlock .nfc-wave-ring {
+    border-color: rgba(16, 185, 129, 0.55);
+}
+
+.nfc-modal.theme-unlock .nfc-icon-circle {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.55), 0 0 25px rgba(16, 185, 129, 0.35);
+}
+
+.nfc-modal.theme-unlock .btn-nfc-cancel:hover,
+.nfc-modal.theme-unlock .btn-nfc-cancel:active {
+    border-color: rgba(16, 185, 129, 0.45);
+    color: #ffffff;
+}
+
+.nfc-modal.theme-wifi {
+    border-color: rgba(245, 158, 11, 0.45);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 40px rgba(245, 158, 11, 0.25);
+}
+
+.nfc-modal.theme-wifi .nfc-wave-ring {
+    border-color: rgba(245, 158, 11, 0.55);
+}
+
+.nfc-modal.theme-wifi .nfc-icon-circle {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 0 10px 30px rgba(245, 158, 11, 0.65), 0 0 25px rgba(245, 158, 11, 0.4);
+    border-color: transparent;
+}
+
+.nfc-modal.theme-wifi .nfc-icon-circle svg {
+    fill: #ffffff;
+}
+
+.nfc-modal.theme-wifi .btn-nfc-cancel:hover,
+.nfc-modal.theme-wifi .btn-nfc-cancel:active {
+    border-color: rgba(245, 158, 11, 0.45);
+    color: #ffffff;
+}
+
+.nfc-modal.error .btn-nfc-retry {
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 4px 15px rgba(245, 39, 125, 0.4);
+}
+
+.nfc-modal.error .btn-nfc-retry:hover {
+    box-shadow: 0 6px 20px rgba(245, 39, 125, 0.55);
+}

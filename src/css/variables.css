@@ -4,11 +4,11 @@
             --card: rgba(28, 25, 23, 0.75);
             --card-elevated: rgba(41, 37, 36, 0.85);
             --border: rgba(255, 255, 255, 0.08);
-            --border-glow: rgba(249, 115, 22, 0.45);
+            --border-glow: rgba(139, 92, 246, 0.45);
             
-            --primary: #f97316;
-            --primary-light: #fb923c;
-            --primary-gradient: linear-gradient(135deg, #ea580c, #f97316, #fb923c);
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --primary-gradient: linear-gradient(135deg, #7c3aed, #8b5cf6, #a78bfa);
             --success: #10b981;
             --danger: #ef4444;
             
@@ -29,21 +29,21 @@
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
         }
-        /* Custom Text Selection Highlight: Orange text on crisp white background */
+        /* Custom Text Selection Highlight: Violet text on crisp white background */
         ::selection {
             background-color: #ffffff !important;
-            color: #ea580c !important;
+            color: #7c3aed !important;
             text-shadow: none !important;
         }
         ::-moz-selection {
             background-color: #ffffff !important;
-            color: #ea580c !important;
+            color: #7c3aed !important;
             text-shadow: none !important;
         }
         input::selection,
         textarea::selection {
             background-color: #ffffff !important;
-            color: #ea580c !important;
+            color: #7c3aed !important;
             text-shadow: none !important;
         }
 
@@ -66,9 +66,7 @@
         }
 
         body.is-native-app {
-            padding: 16px;
-            padding-top: max(56px, env(safe-area-inset-top, 56px));
-            padding-bottom: max(28px, env(safe-area-inset-bottom, 28px));
+            padding: 14px 16px 20px;
         }
 
         html[lang="ar"] body,
@@ -77,162 +75,262 @@
         }
 
 
-        /* Ambient Lighting */
+        /* Ambient Lighting (GPU-Friendly Radial Gradients without Expensive Blur Filter) */
         .ambient-glow {
             position: fixed;
-            width: 340px;
-            height: 340px;
+            width: 520px;
+            height: 520px;
             border-radius: 50%;
-            filter: blur(100px);
             pointer-events: none;
             z-index: 0;
-            opacity: 0.35;
-        }
-        .glow-top {
-            background: radial-gradient(circle, rgba(249, 115, 22, 0.5) 0%, transparent 70%);
-            top: -70px;
-            right: -70px;
-        }
-        .glow-bottom {
-            background: radial-gradient(circle, rgba(234, 88, 12, 0.35) 0%, transparent 70%);
-            bottom: -90px;
-            left: -80px;
-        }
-
-
-        /* Seamless Morphing Language Transition */
-        .lang-fade-node {
-            transition: opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-                        transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), 
-                        filter 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-            will-change: opacity, transform, filter;
-            backface-visibility: hidden;
+            opacity: 0.42;
             transform: translateZ(0);
         }
-        body.is-lang-switching .lang-fade-node {
-            opacity: 0;
-            transform: translateY(4px) scale(0.996);
-            filter: blur(2.5px);
-            pointer-events: none;
-            transition: opacity 0.14s cubic-bezier(0.4, 0, 1, 1), 
-                        transform 0.14s cubic-bezier(0.4, 0, 1, 1), 
-                        filter 0.14s cubic-bezier(0.4, 0, 1, 1);
+        .glow-top {
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.28) 0%, rgba(139, 92, 246, 0.09) 38%, rgba(139, 92, 246, 0) 70%);
+            top: -160px;
+            right: -160px;
+        }
+        .glow-bottom {
+            background: radial-gradient(circle, rgba(124, 58, 237, 0.22) 0%, rgba(124, 58, 237, 0.07) 38%, rgba(124, 58, 237, 0) 70%);
+            bottom: -180px;
+            left: -170px;
         }
 
 
         /* ======================================================== */
-        /* Page Opening & Entrance Animations (Smooth Cascade)     */
+        /* Language Text Continuous Vertical Roll Animation         */
+        /* ======================================================== */
+        .lang-slide-text,
+        #appTitle,
+        #appSubtitle,
+        .mode-tab span,
+        .btn-card-tool span,
+        .result-label,
+        .btn-action span,
+        .tool-btn span,
+        .fab-github-label,
+        .qr-title,
+        .qr-desc,
+        .nfc-title,
+        .nfc-desc,
+        #permLockTitle,
+        #permLockDesc,
+        .perm-lock-actions button,
+        .btn-qr-download span,
+        .btn-qr-close,
+        .update-title,
+        .update-desc,
+        .update-actions button,
+        .hero-title,
+        .hero-subtitle,
+        .feature-card h3,
+        .feature-card p,
+        .faq-question span,
+        .faq-answer p {
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), 
+                        opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+            backface-visibility: hidden;
+        }
+
+        body.is-lang-animating .lang-slide-text,
+        body.is-lang-animating #appTitle,
+        body.is-lang-animating #appSubtitle,
+        body.is-lang-animating .mode-tab span,
+        body.is-lang-animating .btn-card-tool span,
+        body.is-lang-animating .result-label,
+        body.is-lang-animating .btn-action span,
+        body.is-lang-animating .tool-btn span,
+        body.is-lang-animating .fab-github-label {
+            will-change: transform, opacity;
+        }
+
+        /* Phase 1 (Exit): Outgoing text slides UP and fades out */
+        body.is-lang-switching .lang-slide-text,
+        body.is-lang-switching #appTitle,
+        body.is-lang-switching #appSubtitle,
+        body.is-lang-switching .mode-tab span,
+        body.is-lang-switching .btn-card-tool span,
+        body.is-lang-switching .result-label,
+        body.is-lang-switching .btn-action span,
+        body.is-lang-switching .tool-btn span,
+        body.is-lang-switching .fab-github-label,
+        body.is-lang-switching .qr-title,
+        body.is-lang-switching .qr-desc,
+        body.is-lang-switching .nfc-title,
+        body.is-lang-switching .nfc-desc,
+        body.is-lang-switching #permLockTitle,
+        body.is-lang-switching #permLockDesc,
+        body.is-lang-switching .perm-lock-actions button,
+        body.is-lang-switching .btn-qr-download span,
+        body.is-lang-switching .btn-qr-close,
+        body.is-lang-switching .update-title,
+        body.is-lang-switching .update-desc,
+        body.is-lang-switching .update-actions button,
+        body.is-lang-switching .hero-title,
+        body.is-lang-switching .hero-subtitle,
+        body.is-lang-switching .feature-card h3,
+        body.is-lang-switching .feature-card p,
+        body.is-lang-switching .faq-question span,
+        body.is-lang-switching .faq-answer p {
+            opacity: 0 !important;
+            transform: translate3d(0, -9px, 0) !important;
+            transition: transform 0.11s cubic-bezier(0.4, 0, 1, 1), 
+                        opacity 0.11s cubic-bezier(0.4, 0, 1, 1) !important;
+        }
+
+        /* Phase 2 (Prepare Incoming): New text positioned BELOW without transition */
+        body.is-lang-entering .lang-slide-text,
+        body.is-lang-entering #appTitle,
+        body.is-lang-entering #appSubtitle,
+        body.is-lang-entering .mode-tab span,
+        body.is-lang-entering .btn-card-tool span,
+        body.is-lang-entering .result-label,
+        body.is-lang-entering .btn-action span,
+        body.is-lang-entering .tool-btn span,
+        body.is-lang-entering .fab-github-label,
+        body.is-lang-entering .qr-title,
+        body.is-lang-entering .qr-desc,
+        body.is-lang-entering .nfc-title,
+        body.is-lang-entering .nfc-desc,
+        body.is-lang-entering #permLockTitle,
+        body.is-lang-entering #permLockDesc,
+        body.is-lang-entering .perm-lock-actions button,
+        body.is-lang-entering .btn-qr-download span,
+        body.is-lang-entering .btn-qr-close,
+        body.is-lang-entering .update-title,
+        body.is-lang-entering .update-desc,
+        body.is-lang-entering .update-actions button,
+        body.is-lang-entering .hero-title,
+        body.is-lang-entering .hero-subtitle,
+        body.is-lang-entering .feature-card h3,
+        body.is-lang-entering .feature-card p,
+        body.is-lang-entering .faq-question span,
+        body.is-lang-entering .faq-answer p {
+            opacity: 0 !important;
+            transform: translate3d(0, 9px, 0) !important;
+            transition: none !important;
+        }
+
+        /* Input Placeholders Transition */
+        input::placeholder {
+            transition: opacity 0.2s ease;
+        }
+        body.is-lang-switching input::placeholder,
+        body.is-lang-entering input::placeholder {
+            opacity: 0 !important;
+            transition: opacity 0.1s ease !important;
+        }
+
+
+        /* ======================================================== */
+        /* Page Opening & Entrance Animations (Smooth GPU Cascade)  */
         /* ======================================================== */
         @keyframes pageGlowBloom {
             0% {
                 opacity: 0;
-                transform: scale(0.65);
+                transform: scale3d(0.85, 0.85, 1);
             }
             100% {
-                opacity: 0.35;
-                transform: scale(1);
+                opacity: 0.42;
+                transform: scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageNavSlideDown {
             0% {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translate3d(0, -14px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         @keyframes pageFadeSlideUp {
             0% {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translate3d(0, 12px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         @keyframes pageIconSpring {
             0% {
                 opacity: 0;
-                transform: scale(0.7) rotate(-8deg);
-            }
-            65% {
-                transform: scale(1.05) rotate(1deg);
+                transform: scale3d(0.84, 0.84, 1);
             }
             100% {
                 opacity: 1;
-                transform: scale(1) rotate(0deg);
+                transform: scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageCardFloat {
             0% {
                 opacity: 0;
-                transform: translateY(32px) scale(0.97);
-                filter: blur(4px);
+                transform: translate3d(0, 16px, 0) scale3d(0.985, 0.985, 1);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0) scale(1);
-                filter: blur(0px);
+                transform: translate3d(0, 0, 0) scale3d(1, 1, 1);
             }
         }
 
         @keyframes pageSectionCascade {
             0% {
                 opacity: 0;
-                transform: translateY(28px);
+                transform: translate3d(0, 18px, 0);
             }
             100% {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translate3d(0, 0, 0);
             }
         }
 
         /* Entrance Assignments with Orchestrated Delays */
         .ambient-glow {
-            animation: pageGlowBloom 1.2s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: pageGlowBloom 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
         .desktop-navbar {
-            animation: pageNavSlideDown 0.65s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+            animation: pageNavSlideDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) backwards;
         }
 
         .top-bar {
-            animation: pageFadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s backwards;
+            animation: pageFadeSlideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) 0.03s backwards;
         }
 
         header {
-            animation: pageFadeSlideUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s backwards;
+            animation: pageFadeSlideUp 0.46s cubic-bezier(0.22, 1, 0.36, 1) 0.06s backwards;
         }
 
         .app-icon {
-            animation: pageIconSpring 0.85s cubic-bezier(0.34, 1.4, 0.64, 1) 0.12s backwards;
+            animation: pageIconSpring 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.08s backwards;
         }
 
-        .glass-card {
-            animation: pageCardFloat 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.18s backwards;
+        .main-input-card {
+            animation: pageCardFloat 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.11s backwards;
         }
 
         #howItWorksSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.32s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.18s backwards;
         }
 
         #featuresSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.42s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.24s backwards;
         }
 
         #faqSection {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.3s backwards;
         }
 
         .app-footer {
-            animation: pageSectionCascade 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.58s backwards;
+            animation: pageSectionCascade 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.36s backwards;
         }
 
         /* Seamless Interruption Handling: When switching languages, cancel entrance keyframes */
@@ -241,6 +339,7 @@
         body.is-lang-switching .top-bar,
         body.is-lang-switching header,
         body.is-lang-switching .app-icon,
+        body.is-lang-switching .main-input-card,
         body.is-lang-switching .glass-card,
         body.is-lang-switching .marketing-section,
         body.is-lang-switching #faqSection,

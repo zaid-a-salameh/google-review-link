@@ -1,0 +1,445 @@
+/* ========================================================
+   PIN Lock & Unlock Sub-View Stylesheet (#nfcPwdView)
+   (Native Android App Only — Strictly Scoped)
+   ======================================================== */
+
+#nfcPwdView .pwd-tabs {
+    position: relative;
+    display: flex;
+    background: rgba(18, 16, 15, 0.95);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 4px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+#nfcPwdView .pwd-tab-slider {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 0;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 4px 14px rgba(245, 39, 125, 0.45);
+    transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                width 0.24s cubic-bezier(0.16, 1, 0.3, 1),
+                background 0.28s ease,
+                box-shadow 0.28s ease;
+    z-index: 1;
+    pointer-events: none;
+    will-change: transform, width;
+    transform: translate3d(0, 0, 0);
+}
+
+#nfcPwdView .pwd-tab-slider.unlock-mode {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+}
+
+#nfcPwdView .pwd-tab {
+    position: relative;
+    z-index: 2;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 7px 12px;
+    border-radius: 50px;
+    background: transparent !important;
+    border: none;
+    color: var(--text-sub);
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+    user-select: none;
+    white-space: nowrap;
+}
+
+#nfcPwdView .pwd-tab:hover {
+    color: #ffffff;
+}
+
+#nfcPwdView .pwd-tab.active {
+    color: #ffffff;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+#nfcPwdView .pwd-icon-circle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 2px auto 10px;
+}
+
+#nfcPwdView .pwd-icon-circle {
+    position: relative;
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(245, 39, 125, 0.45);
+    transition: box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, box-shadow;
+}
+
+#nfcPwdView .pwd-icon-circle.unlock-mode {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 10px 28px rgba(16, 185, 129, 0.55), 0 0 20px rgba(16, 185, 129, 0.3);
+    transform: scale(1.05) translate3d(0, 0, 0);
+}
+
+#nfcPwdView .pwd-svg-icon {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    fill: #ffffff;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+#nfcPwdView .pwd-icon-circle:not(.unlock-mode) .icon-lock {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+#nfcPwdView .pwd-icon-circle:not(.unlock-mode) .icon-unlock {
+    opacity: 0;
+    transform: scale(0.6) rotate(-35deg);
+    pointer-events: none;
+}
+
+#nfcPwdView .pwd-icon-circle.unlock-mode .icon-lock {
+    opacity: 0;
+    transform: scale(0.6) rotate(35deg);
+    pointer-events: none;
+}
+
+#nfcPwdView .pwd-icon-circle.unlock-mode .icon-unlock {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+}
+
+/* Continuous Sliding Title */
+#nfcPwdView .pwd-title-wrapper {
+    position: relative;
+    height: 26px;
+    margin-bottom: 2px;
+    overflow: hidden;
+}
+
+#nfcPwdView .pwd-mode-title {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0;
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.nfc-modal:not(.unlock-mode) #nfcPwdView .mode-lock-title {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.nfc-modal:not(.unlock-mode) #nfcPwdView .mode-unlock-title {
+    opacity: 0;
+    transform: translate3d(0, 14px, 0);
+    pointer-events: none;
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .mode-lock-title {
+    opacity: 0;
+    transform: translate3d(0, -14px, 0);
+    pointer-events: none;
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .mode-unlock-title {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+/* Continuous Sliding Description */
+#nfcPwdView .pwd-desc-wrapper {
+    position: relative;
+    min-height: 34px;
+    margin-bottom: 10px;
+    padding: 0 4px;
+}
+
+#nfcPwdView .pwd-mode-desc {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11.5px;
+    line-height: 1.4;
+    color: var(--text-sub);
+    text-align: center;
+    margin: 0;
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.nfc-modal:not(.unlock-mode) #nfcPwdView .mode-lock-desc {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+.nfc-modal:not(.unlock-mode) #nfcPwdView .mode-unlock-desc {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+    pointer-events: none;
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .mode-lock-desc {
+    opacity: 0;
+    transform: translate3d(0, -10px, 0);
+    pointer-events: none;
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .mode-unlock-desc {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+#nfcPwdView .pwd-input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(18, 16, 15, 0.95);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 4px 12px;
+    margin: 10px 0 8px 0;
+    gap: 10px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+#nfcPwdView .pwd-input-group:focus-within {
+    border-color: #F5277D;
+    box-shadow: 0 0 0 3px rgba(245, 39, 125, 0.25);
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .pwd-input-group:focus-within {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+}
+
+#nfcPwdView .pwd-input-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+#nfcPwdView .pwd-input-icon svg {
+    width: 18px;
+    height: 18px;
+    fill: #F5277D;
+    transition: fill 0.25s ease;
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .pwd-input-icon svg {
+    fill: #10b981;
+}
+
+#nfcPwdView .pwd-text-input {
+    flex: 1;
+    height: 42px;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    min-width: 0;
+    text-align: start;
+}
+
+/* Scoped Selection Highlight strictly inside #nfcPwdView (zero leakage to other views) */
+.nfc-modal.unlock-mode #nfcPwdView .pwd-text-input::selection,
+.nfc-modal.unlock-mode #nfcPwdView ::selection {
+    background-color: #ffffff;
+    color: #10b981;
+    text-shadow: none;
+}
+
+.nfc-modal:not(.unlock-mode) #nfcPwdView .pwd-text-input::selection,
+.nfc-modal:not(.unlock-mode) #nfcPwdView ::selection {
+    background-color: #ffffff;
+    color: #F5277D;
+    text-shadow: none;
+}
+
+#nfcPwdView .pwd-text-input::placeholder {
+    color: #78716c;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+#nfcPwdView .btn-pwd-eye {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-sub);
+    transition: color 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+#nfcPwdView .btn-pwd-eye:hover {
+    color: #ffffff;
+    transform: scale(1.08);
+}
+
+#nfcPwdView .btn-pwd-eye svg {
+    width: 19px;
+    height: 19px;
+    fill: currentColor;
+}
+
+#nfcPwdView .btn-pwd-info {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-sub);
+    transition: color 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+}
+
+#nfcPwdView .btn-pwd-info:hover,
+#nfcPwdView .btn-pwd-info:active {
+    color: #F5277D;
+    transform: scale(1.12);
+}
+
+.nfc-modal.unlock-mode #nfcPwdView .btn-pwd-info:hover,
+.nfc-modal.unlock-mode #nfcPwdView .btn-pwd-info:active {
+    color: #10b981;
+}
+
+#nfcPwdView .btn-pwd-info svg {
+    width: 19px;
+    height: 19px;
+    fill: currentColor;
+}
+
+#nfcPwdView .pwd-hint {
+    display: none;
+}
+
+#nfcPwdView .pwd-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+}
+
+#nfcPwdView .btn-pwd-submit {
+    position: relative;
+    flex: 1;
+    height: 42px;
+    background: linear-gradient(135deg, #F5277D 0%, #D81B60 100%);
+    box-shadow: 0 4px 15px rgba(245, 39, 125, 0.4);
+    border: none;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    overflow: hidden;
+    transition: background 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.15s ease;
+}
+
+#nfcPwdView .btn-pwd-submit.unlock-mode {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.45);
+}
+
+#nfcPwdView .btn-pwd-submit:active {
+    transform: scale(0.98);
+}
+
+#nfcPwdView .pwd-btn-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+    padding: 0 8px;
+    white-space: nowrap;
+}
+
+#nfcPwdView .btn-pwd-submit:not(.unlock-mode) .mode-lock-btn-label {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+#nfcPwdView .btn-pwd-submit:not(.unlock-mode) .mode-unlock-btn-label {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+    pointer-events: none;
+}
+
+#nfcPwdView .btn-pwd-submit.unlock-mode .mode-lock-btn-label {
+    opacity: 0;
+    transform: translate3d(0, -12px, 0);
+    pointer-events: none;
+}
+
+#nfcPwdView .btn-pwd-submit.unlock-mode .mode-unlock-btn-label {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+}
+
+#nfcPwdView .btn-pwd-cancel {
+    height: 42px;
+    padding: 0 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text-sub);
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#nfcPwdView .btn-pwd-cancel:hover {
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.12);
+}

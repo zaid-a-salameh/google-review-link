@@ -7,10 +7,10 @@
     const I18N = {
             en: {
                 apkDownload: "Get Android App",
-                docTitle: "Review Link Generator",
-                metaDesc: "Convert any Google Maps link into an instant 5-star review link. Generate QR codes and write to NFC cards effortlessly.",
-                appTitle: "Review Link Generator",
-                appSubtitle: "Convert Google Maps links to instant review links",
+                docTitle: "Quick NFC",
+                metaDesc: "Fast & simple NFC tool with instant Google Maps review link conversion. Generate QR codes and write to NFC cards effortlessly.",
+                appTitle: "Quick NFC",
+                appSubtitle: "Fast & simple NFC tool with instant Google Maps review link conversion",
                 tabLink: "Direct Link",
                 tabSearch: "Find Business",
                 placeholder: "Paste link here...",
@@ -39,31 +39,63 @@
                 tagFeatures: "Advantages",
                 titleFeatures: "Why Businesses Choose Our Tool",
                 subFeatures: "Designed for speed, customer conversion, and modern contactless technology",
+                navSupport: "Support",
+                tagFeatures: "Features",
+                titleFeatures: "Everything You Need for NFC & Reviews",
+                subFeatures: "Simple, powerful tools for Google 5-star reviews, Wi-Fi NFC cards, and hardware security",
                 feat1Title: "Direct 5-Star Pre-Selection",
-                feat1Desc: "The 5-star rating popup opens directly without searching through Maps.",
-                feat2Title: "Free NFC Tag Writer",
-                feat2Desc: "Program NFC review cards and stands directly from the app for free.",
-                feat3Title: "High-Res Vector QR Codes",
-                feat3Desc: "Get crisp, high-resolution QR codes ready for printing on tables and menus.",
-                feat4Title: "Zero Tracking & 100% Free",
-                feat4Desc: "Free forever, no login required, no ads or redirects, and 100% open-source.",
+                feat1Desc: "Converts any Google Maps business link into a direct link that opens the 5-star rating popup automatically.",
+                feat2Title: "Wi-Fi NFC Cards & Cloning",
+                feat2Desc: "Program contactless Wi-Fi cards for guests and customers, or read and clone existing Wi-Fi cards in seconds.",
+                feat3Title: "Universal NFC Writing",
+                feat3Desc: "Write review URLs, websites, and menu links to standard NTAG213, NTAG215, and NTAG216 tags with one tap.",
+                feat4Title: "PIN Protection & Unlocking",
+                feat4Desc: "Set a 4-digit PIN password to prevent unauthorized overwriting in public spaces, with full unlock support.",
+                feat5Title: "Permanent Hardware Lock",
+                feat5Desc: "Lock tags into irreversible Read-Only hardware mode for tamper-proof public displays and storefronts.",
+                feat6Title: "100% Free & 10 Languages",
+                feat6Desc: "Open-source with no subscriptions, offline privacy, zero API keys required, and available in 10 languages.",
                 tagFaq: "Knowledge Base",
                 titleFaq: "Frequently Asked Questions",
                 subFaq: "Everything you need to know about Google review links, QR codes, and NFC contactless cards",
                 faq1Q: "How do I create a direct 5-star Google review link?",
-                faq1A: "Simply search for your business name using our Find Business tool or copy your Google Maps share link and paste it here. Our system resolves your Google Place ID and crafts a direct URL that immediately opens the 5-star review submission pop-up for your customers.",
-                faq2Q: "How does writing to NFC review cards work?",
-                faq2A: "Download our free Android APK. After generating your review URL, tap 'Write to NFC Tag', then hold your NFC card, coin, or sticker to the back of your phone. The app formats the tag and writes your review link in under a second with zero subscription fees.",
-                faq3Q: "Can I print the generated QR code for my business?",
-                faq3A: "Yes! The generated QR code is high-resolution and downloadable in PNG format. You can print it on table talkers, restaurant menus, cash register counters, business cards, and packaging stickers.",
-                faq4Q: "Is ReviewLinkGenerator free and does it require an API key?",
-                faq4A: "Yes, it is 100% free and open-source. It does not require any Google Cloud API key, credit card, or user registration. All Place ID resolution and link formatting runs directly in your browser or Android device.",
-                footerTagline: "Free open-source 5-star Google review link creator & NFC tool.",
+                faq1A: "Search for your business name using the Find Business tab or paste your Google Maps link. The tool resolves your Place ID and crafts a direct URL that automatically prompts customers for a 5-star review.",
+                faq2Q: "What NFC tags and cards are supported?",
+                faq2A: "Quick NFC supports all standard NTAG chips (NTAG213, NTAG215, NTAG216) as well as compatible NFC stickers, coins, keyfobs, and PVC cards available on the market.",
+                faq3Q: "How does Wi-Fi NFC card setup and cloning work?",
+                faq3A: "Enter your Wi-Fi name and password or hold an existing Wi-Fi NFC card to read it. Touch a writable NFC card to write the configuration so guests can connect instantly without typing passwords.",
+                faq4Q: "Can I protect my cards from unauthorized modification?",
+                faq4A: "Yes, you can set a 4-digit PIN password on supported NTAG chips to protect cards from being overwritten by strangers, or permanently lock them to Read-Only mode for public displays.",
+                faq5Q: "Can I generate and download high-resolution QR codes?",
+                faq5A: "Yes! Click the QR Code button to instantly create a clean, high-resolution PNG image suitable for printing on table tents, counter stickers, packaging, and business cards.",
+                faq6Q: "Is Quick NFC completely free and private?",
+                faq6A: "Yes, it is 100% free and open-source under the MIT license. It requires no user account, no subscription, and no Google Cloud API key, and it works completely offline.",
+                footerTagline: "Fast & simple NFC tool with instant Google Maps review link conversion.",
                 footerApk: "Android APK",
                 footerGithub: "GitHub Repository",
                 footerBackToTop: "↑ Back to Top",
                 footerCopyright: '© 2026 Developed by <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">Zaid Salameh</a>. MIT License.',
-                resultLabel: "Direct Review Link:",
+                fabGithubLabel: "Project on GitHub",
+                resultLabel: "Direct Link:",
+                resultLabelReview: "Direct Review Link:",
+                resultLabelLocation: "Location on Google Maps:",
+                resultLabelCustom: "Direct Link:",
+                linkTypePrompt: "Link Type to Program:",
+                linkTypeReview: "5-Star Review",
+                linkTypeLocation: "Map Location",
+                toastSwitchedToReview: "Switched to Direct 5-Star Review link",
+                toastSwitchedToLocation: "Switched to Google Maps Location link",
+                btnHelpGuideTitle: "User Guide & Feature Tour",
+                btnGuideLabel: "Guide",
+                obStep1Title: "Smart Links & 5-Star Reviews",
+                obStep1Desc: "Paste any Google Maps link to instantly convert it into a 5-star review link for customers, or choose to use it as a direct location link. You can also paste any external website or menu.",
+                obStep2Title: "Direct Business Search",
+                obStep2Desc: "No need to open Google Maps manually! Switch to 'Find Business' tab, type your place name & city, and select it from the list to get your link in a single tap.",
+                obStep3Title: "NFC Tags, Wi-Fi & Protection",
+                obStep3Desc: "Program review links onto NFC cards and stickers in seconds. Read, clone, and write Wi-Fi cards for guests, and secure your cards with PIN lock or permanent hardware protection.",
+                obBtnNext: "Next",
+                obBtnStart: "Get Started",
+                obBtnSkip: "Skip Tour",
                 copyBtn: "Copy Link",
                 copySuccess: "Copied!",
                 openBtn: "Open Link",
@@ -74,9 +106,87 @@
                 qrDownloadBtn: "Download QR Image",
                 qrCloseBtn: "Close",
                 qrDownloaded: "QR Code downloaded",
+                lblReadTag: "Read Card to Copy",
+                lblWifiTag: "Wi-Fi Card",
+                lblPwdLockTag: "PIN Lock / Unlock",
+                lblPermLockTag: "Permanent Lock",
+                wifiModalTitle: "Wi-Fi Card Setup",
+                wifiStep1Title: "Wi-Fi Card Setup",
+                wifiStep1Desc: "Enter the Wi-Fi network name (SSID)",
+                wifiStep2Title: "Network Password",
+                wifiStep2Desc: "Enter Wi-Fi password (or leave blank for open network)",
+                wifiStep3Title: "Security Type",
+                wifiStep3Desc: "Select network encryption standard",
+                wifiSsidPlaceholder: "Network Name (SSID)...",
+                wifiPasswordPlaceholder: "Enter Wi-Fi password...",
+                wifiEncWpa: "WPA / WPA2 / WPA3 Personal",
+                wifiEncWpaSub: "Most common (Home & Office)",
+                wifiEncWep: "WEP",
+                wifiEncWepSub: "Legacy networks",
+                wifiEncOpen: "Open Network",
+                wifiEncOpenSub: "No password (Public / Guest)",
+                wifiNext: "Next",
+                wifiBack: "Back",
+                wifiWriteTag: "Write to NFC Tag",
+                wifiQrBtn: "QR Code",
+                wifiQrModalTitle: "Wi-Fi QR Code",
+                wifiQrModalDesc: "Scan with any smartphone camera to connect directly",
+                wifiQrDownloaded: "Wi-Fi QR Code downloaded",
+                toastEnterSsid: "Please enter network name (SSID)",
+                toastWifiPassMinLength: "Password must be at least 8 characters",
+                toastWifiWpaRequired: "WPA networks require a password of at least 8 characters",
+                nfcTitleWifiReady: "Ready to Write Wi-Fi",
+                nfcTitleWifiClone: "Clone Wi-Fi Card",
+                nfcTitleWifiCloneSuccess: "Wi-Fi Card Cloned Successfully!",
+                nfcDescWifiReady: "Hold phone near NFC card to write Wi-Fi credentials.",
+                nfcDescWifiReadyWithSsid: "Hold phone near NFC card to write Wi-Fi \"{ssid}\", or tap Back to review and edit.",
+                nfcDescWifiCloneWithSsid: "Hold another NFC card near phone to copy \"{ssid}\", or tap Back to review and edit.",
+                nfcTitleWifiSuccess: "Wi-Fi Card Programmed!",
+                nfcDescWifiSuccess: "Wi-Fi configuration successfully written to NFC card.",
+                nfcBtnWifiAnother: "Write Another Card",
+                nfcBtnWifiCloneAnother: "Clone Another Card",
+                toastNfcWifiSuccess: "Wi-Fi card written successfully!",
+                toastNfcWifiReadSuccess: "Wi-Fi network \"{ssid}\" read successfully! Ready to write to a new card.",
                 nfcBtn: "Write to NFC Tag",
+                nfcBtnWriteAnother: "Write Another Card",
                 nfcTitleReady: "Ready to Write",
                 nfcDescReady: "Hold your phone near an NFC card or sticker to write the link.",
+                nfcTitleReadReady: "Ready to Read Card",
+                nfcDescReadReady: "Hold phone near NFC card or sticker to read its link.",
+                nfcTitlePermLockReady: "Ready to Permanently Lock",
+                nfcDescPermLockReady: "Hold phone near NFC card to apply permanent read-only lock.",
+                nfcTitlePwdLockReady: "Ready to Lock",
+                nfcDescPwdLockReady: "Hold phone near card to lock with PIN...",
+                nfcTitlePwdUnlockReady: "Ready to Unlock",
+                nfcDescPwdUnlockReady: "Hold phone near card to remove protection...",
+                pwdModalTitle: "Card Protection",
+                pwdModalTitleLock: "Lock Card",
+                pwdModalTitleUnlock: "Unlock Card",
+                pwdModalDesc: "Set a PIN to protect card from modifications",
+                pwdModalDescLock: "Set a PIN to protect card from modifications",
+                pwdModalDescUnlock: "Enter PIN to remove card protection",
+                pwdHintText: "4 digits recommended for optimal compatibility",
+                pwdInfoToast: "4 digits recommended for optimal compatibility",
+                pwdPlaceholder: "Enter PIN...",
+                pwdTabLock: "Lock Card",
+                pwdTabUnlock: "Unlock Card",
+                pwdSubmitLock: "Lock Card",
+                pwdSubmitUnlock: "Unlock Card",
+                pwdCancel: "Cancel",
+                toastEnterPwd: "Please enter a PIN",
+                permLockTitle: "Permanent Hardware Lock",
+                permLockDesc: "Warning: This permanently locks the NFC card to Read-Only mode. It CANNOT be edited or unlocked ever again.",
+                permLockConfirmBtn: "Confirm Permanent Lock",
+                permLockCancelBtn: "Cancel",
+                toastNfcReadSuccess: "Link read and loaded successfully",
+                toastNfcReadEmpty: "No valid URL found on this card",
+                toastNfcPermLockSuccess: "Card permanently locked to Read-Only",
+                toastNfcPwdLockSuccess: "Card locked with PIN successfully",
+                toastNfcPwdUnlockSuccess: "Card unlocked successfully",
+                toastNfcWrongPwd: "Incorrect PIN or unlocking failed",
+                toastNfcPwdUnsupported: "PIN protection is not supported on this card",
+                toastNfcAlreadyUnlocked: "Card is not locked",
+                toastNfcAlreadyLocked: "Card is already locked with a PIN. Unlock it first to change PIN.",
                 nfcTitleSuccess: "Write Successful!",
                 nfcDescSuccess: "The review link was successfully programmed onto the card.",
                 nfcTitleNext: "Ready to Write",
@@ -84,7 +194,42 @@
                 nfcCardsCount: "Cards written: {count}",
                 nfcCancel: "Cancel",
                 nfcDone: "Done & Close",
+                nfcOk: "OK",
+                nfcBtnLockAnother: "Lock Another Card",
+                nfcBtnUnlockAnother: "Unlock Another Card",
+                nfcTitlePwdLockSuccess: "Card Locked",
+                nfcDescPwdLockSuccess: "Card is now locked against modifications.",
+                nfcTitlePwdUnlockSuccess: "Card Unlocked",
+                nfcDescPwdUnlockSuccess: "Card is now unlocked and ready for editing.",
+                nfcTitleAlreadyUnlocked: "Card Not Locked",
+                nfcDescAlreadyUnlocked: "This card is already unlocked and writable.",
+                nfcTitleTagLost: "Connection Dropped / Weak Signal",
+                nfcDescTagLost: "Communication lost due to phone movement or weak NFC signal. Please hold the phone steadily over the card without moving it.",
+                nfcTitleLocked: "Card Is Protected",
+                nfcTitleReadLocked: "Card is Read-Protected",
+                nfcDescReadLocked: "Cannot read card data because it is password protected against reading.",
+                nfcTitleWrongPwd: "Incorrect PIN",
+                nfcTitleAlreadyLocked: "Card Already Locked",
+                nfcTitleCapacity: "Memory Capacity Exceeded",
+                nfcTitleEmptyTag: "Empty Card",
+                nfcTitlePermLockSuccess: "Card Permanently Locked",
+                nfcDescPermLockSuccess: "Card has been permanently set to Read-Only mode.",
+                nfcTitlePermLockStandby: "Card Permanently Locked!",
+                nfcDescPermLockStandby: "Sensor paused for safety. Tap the icon above to reactivate and lock another card.",
+                nfcPermLockCount: "Locked cards: {count}",
+                nfcTitleCannotLock: "Cannot Permanently Lock",
+                nfcDescCannotLock: "This card is already read-only or does not support permanent hardware locking.",
+                nfcBackToPin: "Back",
+                nfcTitleDisabled: "NFC is Disabled",
+                nfcTitleNoHardware: "NFC Not Supported",
+                nfcTitleOpFailed: "Operation Failed",
+                nfcDescOpFailed: "Operation failed. Hold the phone steadily over the card and try again.",
                 nfcTitleError: "Write Failed",
+                nfcDescLocked: "Operation failed because this card is password-protected or read-only. Please unlock it first.",
+                nfcDescCapacity: "Link size exceeds this card's memory capacity.",
+                nfcDescUnsupported: "This card type is not supported for writing.",
+                nfcDescGenericError: "Write operation failed. Ensure the phone is held steady near the card.",
+                nfcRetryBtn: "Try Again",
                 nfcNoHardware: "NFC is not supported on this device",
                 nfcDisabled: "Please enable NFC in your phone settings",
                 nfcLocked: "NFC card is locked or read-only",
@@ -143,10 +288,10 @@
             },
             ar: {
                 apkDownload: "تحميل تطبيق الأندرويد",
-                docTitle: "محوّل روابط التقييم",
-                metaDesc: "حوّل أي رابط خرائط جوجل إلى رابط تقييم 5 نجوم مباشر مع إنشاء رمز QR والبرمجة على بطاقات NFC.",
-                appTitle: "محوّل روابط التقييم",
-                appSubtitle: "تحويل رابط خرائط جوجل إلى رابط تقييم فوري",
+                docTitle: "Quick NFC",
+                metaDesc: "أداة NFC سريعة مع تحويل فوري لروابط تقييم خرائط Google إلى 5 نجوم وإنشاء كود QR وبرمجة كروت واستيكرات NFC.",
+                appTitle: "Quick NFC",
+                appSubtitle: "أداة NFC سريعة مع تحويل فوري لروابط تقييم خرائط Google",
                 tabLink: "وضع الرابط",
                 tabSearch: "بحث عن مكان",
                 placeholder: "الصق رابط الخريطة هنا...",
@@ -175,31 +320,63 @@
                 tagFeatures: "المميزات",
                 titleFeatures: "لماذا تختار منصتنا لنشاطك التجاري؟",
                 subFeatures: "صُممت خصيصاً لتحقيق أعلى معدل استجابة من العملاء باستخدام أحدث تقنيات اللمس",
-                feat1Title: "فتح نافذة 5 نجوم مباشرة",
-                feat1Desc: "تفتح نافذة الـ 5 نجوم للعميل بضغطة واحدة دون الحاجة للبحث في الخريطة.",
-                feat2Title: "برمجة بطاقات NFC مجاناً",
-                feat2Desc: "برمج بطاقات واستندات NFC لتقييمك مباشرة من التطبيق مجاناً وبلا اشتراكات.",
-                feat3Title: "رموز QR فائقة الدقة",
-                feat3Desc: "احصل على كود QR واضح وعالي الدقة جاهز للطباعة على الطاولات والمطبوعات.",
-                feat4Title: "مجاني 100% وبلا تتبع",
-                feat4Desc: "استخدام فوري بدون حساب، وبلا إعلانات أو روابط وسيطة، ومفتوح المصدر بالكامل.",
+                navSupport: "دعم المشروع",
+                tagFeatures: "المميزات",
+                titleFeatures: "كل ما تحتاجه لبطاقات NFC والتقييمات",
+                subFeatures: "أدوات متكاملة وسهلة لتوليد تقييمات Google بخمس نجوم، برمجة كروت الواي فاي، وحماية البطاقات",
+                feat1Title: "فتح تقييم 5 نجوم تلقائياً",
+                feat1Desc: "تحويل أي رابط لنشاطك التجاري على خرائط Google إلى رابط مباشر يفتح نافذة الـ 5 نجوم للعميل فوراً دون تشتيت.",
+                feat2Title: "إعداد ونسخ كروت الـ Wi-Fi",
+                feat2Desc: "برمجة بطاقات NFC للاتصال السريع بشبكة الواي فاي للزبائن والضيوف بلمسة هاتف، مع ميزة قراءة ونسخ الكروت الجاهزة.",
+                feat3Title: "برمجة شاملة لكروت NFC",
+                feat3Desc: "كتابة روابط التقييم وأي روابط مخصصة على رقائق NTAG213 و NTAG215 و NTAG216 ومختلف أنواع الاستيكرات والبطاقات.",
+                feat4Title: "حماية البطاقات برمز PIN",
+                feat4Desc: "تعيين رمز PIN من 4 أرقام لمنع العبث بالبطاقات في الأماكن العامة، مع إمكانية فك القفل والتعديل في أي وقت.",
+                feat5Title: "قفل عتادي دائم",
+                feat5Desc: "تحويل البطاقة إلى وضع القراءة فقط غير القابل للتراجع، لحماية تامة للبطاقات والاستندات المعروضة للجمهور.",
+                feat6Title: "مجاني ومفتوح بـ 10 لغات",
+                feat6Desc: "تطبيق مجاني ومفتوح المصدر 100%، بدون أي اشتراكات أو إعلانات، يعمل بخصوصية تامة وبدون إنترنت، ويدعم 10 لغات عالمية.",
                 tagFaq: "الأسئلة الشائعة",
                 titleFaq: "الأسئلة الأكثر تكراراً",
                 subFaq: "كل ما تحتاج معرفته حول روابط تقييم خرائط Google ورموز QR وبطاقات NFC",
                 faq1Q: "كيف أنشئ رابط تقييم خرائط Google مباشر 5 نجوم؟",
-                faq1A: "ابحث عن اسم نشاطك التجاري عبر أداة البحث أو الصق رابط مشاركة خرائط Google. سيقوم نظامنا باستخراج معرّف المكان (Place ID) وتوليد رابط مباشر يفتح نافذة كتابة التقييم مع تقييم 5 نجوم تلقائياً لعملائك.",
-                faq2Q: "كيف تتم برمجة بطاقات الـ NFC لتقييمات Google؟",
-                faq2A: "حمّل تطبيقنا المجاني لنظام أندرويد. بعد استخراج رابط التقييم، اضغط 'كتابة على بطاقة NFC'، ثم قرّب بطاقة أو ملصق NFC من ظهر الهاتف ليتم مسح وبرمجة الرابط فوراً في ثانية واحدة دون أي اشتراكات.",
-                faq3Q: "هل يمكنني طباعة رمز QR للتقييم على مطبوعات نشاطي التجاري؟",
-                faq3A: "نعم! رمز QR المُولد عالي الدقة وقابل للتنزيل بصيغة PNG، مما يجعله مثالياً للطباعة على استندات الطاولات، القوائم، كاونتر المحاسبة، كروت العمل والملصقات.",
-                faq4Q: "هل الأداة مجانية وهل تتطلب مفتاح API أو بطاقة بنكية؟",
-                faq4A: "الأداة مجانية ومفتوحة المصدر بالكامل بنسبة 100%. لا تتطلب أي مفتاح Google Cloud API أو بطاقة بنكية أو تسجيل حساب، وتعمل مباشرة عبر المتصفح أو تطبيق الأندرويد.",
-                footerTagline: "أداة مفتوحة المصدر ومجانية لإنشاء روابط تقييم جوجل 5 نجوم وبرمجة بطاقات NFC.",
+                faq1A: "ابحث عن اسم نشاطك في تبويب 'بحث عن مكان' أو الصق رابط خرائط Google. سيقوم التطبيق باستخراج معرّف المكان وتوليد رابط يفتح نافذة الـ 5 نجوم فوراً للعملاء.",
+                faq2Q: "ما هي أنواع كروت واستيكرات NFC المتوافقة؟",
+                faq2A: "يدعم Quick NFC جميع شرائح NTAG القياسية (NTAG213 و NTAG215 و NTAG216)، بالإضافة إلى معظم البطاقات والملصقات والميداليات الذكية المتوفرة في السوق.",
+                faq3Q: "كيف تعمل ميزة برمجة ونسخ كروت الواي فاي؟",
+                faq3A: "أدخل اسم شبكة الواي فاي وكلمة المرور أو قرّب كارت واي فاي حالي لقراءته، ثم قرّب بطاقة NFC فارغة لكتابة الإعدادات ليتصل بها الزوار بلمسة واحدة دون كتابة كلمة السر.",
+                faq4Q: "هل يمكنني حماية البطاقات من إعادة الكتابة أو العبث؟",
+                faq4A: "نعم، يمكنك حماية البطاقة برمز PIN سري من 4 أرقام لمنع أي شخص من تغيير الرابط، أو استخدام القفل العتادي الدائم للبطاقات المعروضة للعامة.",
+                faq5Q: "هل يمكنني تنزيل رمز QR عالي الدقة للطباعة؟",
+                faq5A: "نعم! بنقرة واحدة على زر كود QR يمكنك تنزيل صورة عالية الدقة بصيغة PNG جاهزة للطباعة على طاولات المطاعم، الفواتير، والكروت التعريفية.",
+                faq6Q: "هل أداة وتطبيق Quick NFC مجاني تماماً وبلا إعلانات؟",
+                faq6A: "نعم، الأداة مجانية 100% ومفتوحة المصدر برخصة MIT، ولا تتطلب أي حساب أو مفتاح API، وتعمل بخصوصية تامة دون جمع أي بيانات.",
+                footerTagline: "أداة NFC سريعة ومجانية مع تحويل فوري لروابط تقييم خرائط Google.",
                 footerApk: "تطبيق أندرويد",
                 footerGithub: "مستودع GitHub",
                 footerBackToTop: "↑ العودة للأعلى",
                 footerCopyright: '© 2026 تم التطوير بواسطة <a href="https://github.com/zaid-a-salameh" target="_blank" rel="noopener noreferrer">زيد سلامة</a>. رخصة MIT.',
-                resultLabel: "رابط التقييم المباشر:",
+                fabGithubLabel: "المشروع على GitHub",
+                resultLabel: "الرابط المباشر:",
+                resultLabelReview: "رابط التقييم المباشر:",
+                resultLabelLocation: "رابط الموقع على الخريطة:",
+                resultLabelCustom: "الرابط المباشر:",
+                linkTypePrompt: "نوع الرابط المطلوب برمجته:",
+                linkTypeReview: "تقييم 5 نجوم",
+                linkTypeLocation: "موقع الخريطة",
+                toastSwitchedToReview: "تم التبديل إلى رابط التقييم المباشر (5 نجوم)",
+                toastSwitchedToLocation: "تم التبديل إلى رابط الموقع على الخريطة",
+                btnHelpGuideTitle: "دليل الاستخدام والتعريف بالميزات",
+                btnGuideLabel: "دليل الاستخدام",
+                obStep1Title: "نظام الروابط والتقييم الذكي",
+                obStep1Desc: "الصق أي رابط من خرائط Google لتحويله فوراً إلى رابط تقييم مباشر 5 نجوم، أو اختر استخدامه كرابط موقع لفتح المكان على الخريطة. يمكنك أيضاً وضع أي رابط خارجي (موقع، منيو، سوشيال ميديا).",
+                obStep2Title: "البحث المباشر عن الأنشطة",
+                obStep2Desc: "لا داعي لفتح تطبيق خرائط Google يدوياً! انتقل لتبويب \"بحث عن موقع\" واكتب اسم محلك ومدينتك، ثم اختر نشاطك من القائمة ليتم توليد الرابط فوراً بضغطة زر واحدة.",
+                obStep3Title: "كروت NFC والـ Wi-Fi والأمان",
+                obStep3Desc: "اكتب روابطك على بطاقات واستيكرات NFC بملامسة ظهر هاتفك. انسخ واكتب كروت Wi-Fi لضيوفك وزبائنك بكل سهولة، واحمي بطاقاتك بقفل PIN أو قفل عتادي دائم.",
+                obBtnNext: "التالي",
+                obBtnStart: "ابدأ الآن",
+                obBtnSkip: "تخطي الشرح",
                 copyBtn: "نسخ الرابط",
                 copySuccess: "تم النسخ!",
                 openBtn: "فتح الرابط",
@@ -210,17 +387,130 @@
                 qrDownloadBtn: "تنزيل صورة الـ QR",
                 qrCloseBtn: "إغلاق",
                 qrDownloaded: "تم تنزيل رمز الـ QR بنجاح",
+                lblReadTag: "قراءة كارت للنسخ",
+                lblWifiTag: "كرت Wi-Fi",
+                lblPwdLockTag: "قفل / فك برمز",
+                lblPermLockTag: "إقفال نهائي",
+                wifiModalTitle: "إعداد كرت Wi-Fi",
+                wifiStep1Title: "إعداد كرت Wi-Fi",
+                wifiStep1Desc: "أدخل اسم شبكة الواي فاي (SSID)",
+                wifiStep2Title: "كلمة مرور الشبكة",
+                wifiStep2Desc: "أدخل كلمة سر الواي فاي (أو اتركها فارغة إذا كانت شبكة مفتوحة)",
+                wifiStep3Title: "نوع التشفير",
+                wifiStep3Desc: "اختر معيار حماية وتشفير الشبكة",
+                wifiSsidPlaceholder: "اسم الشبكة (SSID)...",
+                wifiPasswordPlaceholder: "أدخل كلمة سر الواي فاي...",
+                wifiEncWpa: "WPA / WPA2 / WPA3 شخصي",
+                wifiEncWpaSub: "الأكثر شيوعاً (المنزل والمكتب)",
+                wifiEncWep: "WEP",
+                wifiEncWepSub: "شبكات قديمة",
+                wifiEncOpen: "شبكة مفتوحة",
+                wifiEncOpenSub: "بدون كلمة سر (عامة أو ضيوف)",
+                wifiNext: "التالي",
+                wifiBack: "رجوع",
+                wifiWriteTag: "نسخ على البطاقة",
+                wifiQrBtn: "رمز QR",
+                wifiQrModalTitle: "رمز QR لشبكة الواي فاي",
+                wifiQrModalDesc: "امسح الرمز بكاميرا أي هاتف للاتصال بالشبكة تلقائياً",
+                wifiQrDownloaded: "تم تنزيل رمز QR للواي فاي بنجاح",
+                toastEnterSsid: "يرجى إدخال اسم الشبكة (SSID)",
+                toastWifiPassMinLength: "كلمة المرور يجب ألا تقل عن 8 خانات",
+                toastWifiWpaRequired: "شبكات WPA تتطلب كلمة مرور من 8 خانات على الأقل",
+                nfcTitleWifiReady: "جاهز لنسخ كرت Wi-Fi",
+                nfcTitleWifiClone: "نسخ كرت Wi-Fi",
+                nfcTitleWifiCloneSuccess: "تم نسخ كرت Wi-Fi بنجاح!",
+                nfcDescWifiReady: "قرب الهاتف من بطاقة NFC لنسخ بيانات شبكة الواي فاي.",
+                nfcDescWifiReadyWithSsid: "قرّب بطاقة NFC من الهاتف لنسخ شبكة \"{ssid}\"، أو انقر رجوع للتأكد والتعديل.",
+                nfcDescWifiCloneWithSsid: "قرّب بطاقة NFC من الهاتف لنسخ شبكة \"{ssid}\"، أو انقر رجوع للتأكد والتعديل.",
+                nfcTitleWifiSuccess: "تم نسخ كرت Wi-Fi بنجاح!",
+                nfcDescWifiSuccess: "تم حفظ إعدادات الاتصال التلقائي بالشبكة على البطاقة.",
+                nfcBtnWifiAnother: "نسخ كرت آخر",
+                nfcBtnWifiCloneAnother: "نسخ كرت آخر",
+                toastNfcWifiSuccess: "تم نسخ إعدادات الواي فاي على البطاقة بنجاح!",
+                toastNfcWifiReadSuccess: "تمت قراءة شبكة الواي فاي \"{ssid}\" بنجاح! جاهز لنسخها على بطاقة جديدة.",
                 nfcBtn: "كتابة على بطاقة NFC",
+                nfcBtnWriteAnother: "نسخ بطاقة أخرى",
                 nfcTitleReady: "جاهز للكتابة على البطاقة",
                 nfcDescReady: "قرب ظهر هاتفك من بطاقة NFC أو الملصق لكتابة الرابط.",
+                nfcTitleReadReady: "جاهز لقراءة البطاقة",
+                nfcDescReadReady: "قرّب ظهر الهاتف من بطاقة NFC لقراءة الرابط المخزن...",
+                nfcTitlePermLockReady: "جاهز للإقفال النهائي",
+                nfcDescPermLockReady: "قرّب ظهر الهاتف من البطاقة لتطبيق القفل العتادي الدائم...",
+                nfcTitlePwdLockReady: "جاهز للقفل",
+                nfcDescPwdLockReady: "قرّب ظهر الهاتف من البطاقة للقفل...",
+                nfcTitlePwdUnlockReady: "جاهز لفك القفل",
+                nfcDescPwdUnlockReady: "قرّب ظهر الهاتف من البطاقة لفك القفل...",
+                pwdModalTitle: "حماية البطاقة",
+                pwdModalTitleLock: "قفل البطاقة",
+                pwdModalTitleUnlock: "فك قفل البطاقة",
+                pwdModalDesc: "عيّن رمز PIN لحماية البطاقة من التعديل",
+                pwdModalDescLock: "عيّن رمز PIN لحماية البطاقة من التعديل",
+                pwdModalDescUnlock: "أدخل رمز PIN لإلغاء حماية البطاقة",
+                pwdHintText: "يُفضّل 4 خانات للتوافق المثالي",
+                pwdInfoToast: "يُفضّل 4 خانات للتوافق المثالي",
+                pwdPlaceholder: "أدخل رمز PIN...",
+                pwdTabLock: "قفل البطاقة",
+                pwdTabUnlock: "فك القفل",
+                pwdSubmitLock: "قفل البطاقة",
+                pwdSubmitUnlock: "فك قفل البطاقة",
+                pwdCancel: "إلغاء",
+                toastEnterPwd: "يرجى إدخال رمز PIN",
+                permLockTitle: "الإقفال النهائي للبطاقة",
+                permLockDesc: "تحذير: سيتم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم وغير قابل للتراجع. لن يمكن تعديلها أو مسحها أبداً.",
+                permLockConfirmBtn: "تأكيد وقفل البطاقة نهائياً",
+                permLockCancelBtn: "إلغاء",
+                toastNfcReadSuccess: "تمت قراءة الرابط واستيراده بنجاح",
+                toastNfcReadEmpty: "لا يوجد رابط صالح على هذه البطاقة",
+                toastNfcPermLockSuccess: "تم إقفال البطاقة عتادياً نهائياً بنجاح",
+                toastNfcPwdLockSuccess: "تم قفل البطاقة برمز PIN بنجاح",
+                toastNfcPwdUnlockSuccess: "تم فك قفل البطاقة بنجاح",
+                toastNfcWrongPwd: "رمز PIN غير صحيح أو تعذر فك القفل",
+                toastNfcPwdUnsupported: "ميزة القفل برمز غير مدعومة على هذه البطاقة",
+                toastNfcAlreadyUnlocked: "البطاقة غير مقفلة بالفعل",
+                toastNfcAlreadyLocked: "البطاقة مقفلة برمز حماية مسبقاً، يرجى فك قفلها أولاً",
                 nfcTitleSuccess: "تمت الكتابة بنجاح!",
                 nfcDescSuccess: "تمت برمجة بطاقة التقييم بنجاح.",
                 nfcTitleNext: "جاهز للكتابة",
                 nfcDescNext: "قرب بطاقة أخرى لبرمجتها، أو انقر إنهاء.",
                 nfcCardsCount: "البطاقات المكتملة: {count}",
                 nfcCancel: "إلغاء",
-                nfcDone: "إنهاء وإغلاق",
-                nfcTitleError: "فشلت الكتابة",
+                nfcDone: "إنهاء",
+                nfcOk: "موافق",
+                nfcBtnLockAnother: "قفل بطاقة أخرى",
+                nfcBtnUnlockAnother: "فك قفل بطاقة أخرى",
+                nfcTitlePwdLockSuccess: "تم قفل البطاقة",
+                nfcDescPwdLockSuccess: "البطاقة محمية الآن ضد التعديل.",
+                nfcTitlePwdUnlockSuccess: "تم فك القفل",
+                nfcDescPwdUnlockSuccess: "أصبحت البطاقة جاهزة للكتابة والتعديل.",
+                nfcTitleAlreadyUnlocked: "البطاقة غير مقفلة",
+                nfcDescAlreadyUnlocked: "البطاقة مفتوحة بالفعل وقابلة للتعديل مباشرة.",
+                nfcTitleTagLost: "ضعف في إشارة الاتصال",
+                nfcDescTagLost: "انقطع الاتصال بالبطاقة بسبب تحريك الهاتف أو ضعف التماس (NFC). يرجى تثبيت الهاتف جيداً وثباته فوق منتصف البطاقة دون تحريكه حتى تكتمل العملية.",
+                nfcTitleLocked: "البطاقة محمية برمز قفل",
+                nfcTitleReadLocked: "البطاقة محمية من القراءة",
+                nfcDescReadLocked: "تعذرت قراءة البطاقة لأنها محمية برمز قفل يمنع قراءة البيانات.",
+                nfcTitleWrongPwd: "رمز الحماية غير صحيح",
+                nfcTitleAlreadyLocked: "البطاقة مقفلة مسبقاً",
+                nfcTitleCapacity: "سعة الذاكرة غير كافية",
+                nfcTitleEmptyTag: "البطاقة فارغة",
+                nfcTitlePermLockSuccess: "تم الإقفال النهائي بنجاح",
+                nfcDescPermLockSuccess: "تم تحويل البطاقة إلى وضع القراءة فقط بشكل دائم.",
+                nfcTitlePermLockStandby: "تم قفل البطاقة نهائياً!",
+                nfcDescPermLockStandby: "توقفت العملية للأمان. انقر على الشعار أعلاه لإعادة التفعيل وقفل بطاقة أخرى.",
+                nfcPermLockCount: "البطاقات المقفلة: {count}",
+                nfcTitleCannotLock: "تعذر القفل النهائي",
+                nfcDescCannotLock: "هذه البطاقة مقفلة مسبقاً للقراءة فقط أو لا تدعم القفل العتادي الدائم.",
+                nfcBackToPin: "العودة",
+                nfcTitleDisabled: "خاصية NFC متوقفة",
+                nfcTitleNoHardware: "NFC غير مدعوم",
+                nfcTitleOpFailed: "فشلت العملية",
+                nfcDescOpFailed: "تعذرت العملية. يرجى تثبيت الهاتف فوق البطاقة والمحاولة مجدداً.",
+                nfcTitleError: "فشلت عملية الكتابة",
+                nfcDescLocked: "تعذرت العملية لأن هذه البطاقة محمية بكلمة مرور أو للقراءة فقط. يرجى فك قفلها أولاً قبل المتابعة.",
+                nfcDescCapacity: "حجم الرابط أكبر من سعة ذاكرة البطاقة.",
+                nfcDescUnsupported: "نوع هذه البطاقة غير مدعوم للكتابة.",
+                nfcDescGenericError: "تعذرت الكتابة على البطاقة. تأكد من ثبات الهاتف فوق البطاقة.",
+                nfcRetryBtn: "إعادة المحاولة",
                 nfcNoHardware: "جهازك لا يدعم خاصية الـ NFC",
                 nfcDisabled: "يرجى تفعيل الـ NFC من إعدادات الهاتف أولاً",
                 nfcLocked: "البطاقة محمية ضد الكتابة أو للقراءة فقط",
@@ -280,7 +570,9 @@
         };
 
     let currentLang = localStorage.getItem('app_lang') || 'en';
-    let isLangSwitching = false;
+    let langSwitchTimer = null;
+    let langCleanTimer = null;
+    let langRafId = null;
 
     function updateSliderPill(lang) {
         const isAr = lang === 'ar';
@@ -335,9 +627,11 @@
         const metaDesc = document.querySelector('meta[name="description"]');
         if (metaDesc && dict.metaDesc) metaDesc.setAttribute('content', dict.metaDesc);
 
-        // Desktop Navbar
+        // Desktop Navbar & Bottom GitHub Dock
         setTxt('navGithubLabel', dict.navGithub);
+        setTxt('navSupportLabel', dict.navSupport);
         setTxt('navApkLabel', dict.navApk);
+        setTxt('fabGithubLabel', dict.fabGithubLabel);
 
         // Top bar & Header
         setTxt('apkDownloadLabel', dict.apkDownload);
@@ -370,7 +664,40 @@
         }
 
         // Results Card
-        setTxt('resultLabelText', dict.resultLabel);
+        const resultLinkText = document.getElementById('resultLinkText');
+        const currentUrl = (resultLinkText ? resultLinkText.textContent : '').trim();
+        const currentModeObj = (window.AppModes && window.AppModes[window.AppModes.activeMode]) ? window.AppModes[window.AppModes.activeMode] : null;
+        if (currentModeObj && currentModeObj.placeId) {
+            setTxt('resultLabelText', currentModeObj.activeType === 'location' ? (dict.resultLabelLocation || 'Location on Google Maps:') : (dict.resultLabelReview || 'Direct Review Link:'));
+        } else {
+            const isReview = /writereview\?placeid=/i.test(currentUrl);
+            setTxt('resultLabelText', isReview ? (dict.resultLabelReview || 'Direct Review Link:') : (dict.resultLabelCustom || 'Direct Link:'));
+        }
+
+        // Link Type Switcher
+        setTxt('linkTypeSelectorLabel', dict.linkTypePrompt);
+        setTxt('btnTypeReviewLabel', dict.linkTypeReview);
+        setTxt('btnTypeLocationLabel', dict.linkTypeLocation);
+        if (window.updateLinkTypeSlider) {
+            requestAnimationFrame(() => window.updateLinkTypeSlider());
+        }
+
+        // Help / Tour Guide & Onboarding
+        const btnOpenHelpGuide = document.getElementById('btnOpenHelpGuide');
+        if (btnOpenHelpGuide && dict.btnHelpGuideTitle) {
+            btnOpenHelpGuide.title = dict.btnHelpGuideTitle;
+        }
+        setTxt('btnGuideLabel', dict.btnGuideLabel);
+        setTxt('obStep1Title', dict.obStep1Title);
+        setTxt('obStep1Desc', dict.obStep1Desc);
+        setTxt('obStep2Title', dict.obStep2Title);
+        setTxt('obStep2Desc', dict.obStep2Desc);
+        setTxt('obStep3Title', dict.obStep3Title);
+        setTxt('obStep3Desc', dict.obStep3Desc);
+        setTxt('btnObSkip', dict.obBtnSkip);
+        if (typeof window.updateOnboardingUiStrings === 'function') {
+            window.updateOnboardingUiStrings(dict);
+        }
 
         const copyBtn = document.getElementById('copyBtn');
         if (copyBtn && !copyBtn.classList.contains('copied')) {
@@ -381,19 +708,98 @@
         setTxt('qrBtnLabel', dict.qrBtn);
         setTxt('nfcBtnLabel', dict.nfcBtn);
 
+        // NFC Card Tools & Security
+        setTxt('lblReadTag', dict.lblReadTag);
+        setTxt('lblWifiTag', dict.lblWifiTag);
+        setTxt('lblPwdLockTag', dict.lblPwdLockTag);
+        setTxt('lblPermLockTag', dict.lblPermLockTag);
+        setTxt('lblEncWpa', dict.wifiEncWpa);
+        setTxt('lblEncWpaSub', dict.wifiEncWpaSub);
+        setTxt('lblEncWep', dict.wifiEncWep);
+        setTxt('lblEncWepSub', dict.wifiEncWepSub);
+        setTxt('lblEncOpen', dict.wifiEncOpen);
+        setTxt('lblEncOpenSub', dict.wifiEncOpenSub);
+        const wifiSsidInputEl = document.getElementById('wifiSsidInput');
+        if (wifiSsidInputEl && dict.wifiSsidPlaceholder) {
+            wifiSsidInputEl.placeholder = dict.wifiSsidPlaceholder;
+        }
+        const wifiPasswordInputEl = document.getElementById('wifiPasswordInput');
+        if (wifiPasswordInputEl && dict.wifiPasswordPlaceholder) {
+            wifiPasswordInputEl.placeholder = dict.wifiPasswordPlaceholder;
+        }
+        if (typeof window.updateWifiWizardUi === 'function') {
+            window.updateWifiWizardUi();
+        }
+        setTxt('pwdModalTitle', dict.pwdModalTitle);
+        setTxt('pwdModalTitleLock', dict.pwdModalTitleLock || dict.pwdModalTitle || 'Lock Card');
+        setTxt('pwdModalTitleUnlock', dict.pwdModalTitleUnlock || 'Unlock Card');
+        setTxt('pwdModalDesc', dict.pwdModalDesc);
+        setTxt('pwdModalDescLock', dict.pwdModalDescLock || dict.pwdModalDesc);
+        setTxt('pwdModalDescUnlock', dict.pwdModalDescUnlock);
+        setTxt('pwdSubmitLockLabel', dict.pwdSubmitLock || 'Lock Card & Touch Phone');
+        setTxt('pwdSubmitUnlockLabel', dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+        setTxt('pwdHintText', dict.pwdHintText);
+        setTxt('pwdTabLock', dict.pwdTabLock);
+        setTxt('pwdTabUnlock', dict.pwdTabUnlock);
+        setTxt('btnPwdCancel', dict.pwdCancel);
+        const pwdSubmitLockLabelEl = document.getElementById('pwdSubmitLockLabel');
+        const btnPwdSubmitEl = document.getElementById('btnPwdSubmit');
+        if (btnPwdSubmitEl && !pwdSubmitLockLabelEl) {
+            const pwdTabLockEl = document.getElementById('pwdTabLock');
+            const isLockActive = !pwdTabLockEl || pwdTabLockEl.classList.contains('active');
+            btnPwdSubmitEl.textContent = isLockActive ? (dict.pwdSubmitLock || 'Lock Card & Touch Phone') : (dict.pwdSubmitUnlock || 'Unlock & Touch Phone');
+        }
+        const nfcPinInputEl = document.getElementById('nfcPinInput');
+        if (nfcPinInputEl && dict.pwdPlaceholder) {
+            nfcPinInputEl.placeholder = dict.pwdPlaceholder;
+        }
+        setTxt('permLockTitle', dict.permLockTitle);
+        setTxt('permLockDesc', dict.permLockDesc);
+        setTxt('btnPermLockConfirm', dict.permLockConfirmBtn);
+        setTxt('btnPermLockCancel', dict.permLockCancelBtn);
+        setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');
+
         // QR Modal
-        setTxt('qrModalTitle', dict.qrModalTitle);
-        setTxt('qrModalDesc', dict.qrModalDesc);
-        setTxt('qrDownloadBtnLabel', dict.qrDownloadBtn);
-        setTxt('qrCloseBtn', dict.qrCloseBtn);
+        if (typeof window.refreshQrModalStrings === 'function') {
+            window.refreshQrModalStrings(dict);
+        } else {
+            setTxt('qrModalTitle', dict.qrModalTitle);
+            setTxt('qrModalDesc', dict.qrModalDesc);
+            setTxt('qrDownloadBtnLabel', dict.qrDownloadBtn);
+            setTxt('qrCloseBtn', dict.qrCloseBtn);
+        }
+        setTxt('wifiQrBtnLabel', dict.wifiQrBtn || 'QR Code');
+        setTxt('nfcWifiCloneQrBtnLabel', dict.wifiQrBtn || 'QR Code');
 
         // NFC Modal (Native App)
-        setTxt('nfcTitle', dict.nfcTitleReady);
-        setTxt('nfcDesc', dict.nfcDescReady);
-        const nfcCancelBtn = document.getElementById('nfcCancelBtn');
-        if (nfcCancelBtn) {
-            nfcCancelBtn.textContent = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+        const nfcOverlayEl = document.getElementById('nfcOverlay');
+        if (nfcOverlayEl && nfcOverlayEl.classList.contains('active') && typeof window.refreshActiveNfcModalStrings === 'function') {
+            window.refreshActiveNfcModalStrings();
+        } else {
+            setTxt('nfcTitle', dict.nfcTitleReady);
+            setTxt('nfcDesc', dict.nfcDescReady);
+            const cancelText = (window.nfcBatchCount && window.nfcBatchCount > 0) ? dict.nfcDone : dict.nfcCancel;
+            const nfcCancelBtnLabel = document.getElementById('nfcCancelBtnLabel');
+            const nfcCancelBtn = document.getElementById('nfcCancelBtn');
+            if (nfcCancelBtnLabel) {
+                nfcCancelBtnLabel.textContent = cancelText;
+            } else if (nfcCancelBtn) {
+                nfcCancelBtn.textContent = cancelText;
+            }
         }
+        const nfcNextBtnLabel = document.getElementById('nfcNextBtnLabel');
+        if (nfcNextBtnLabel && window.lastNfcOperation) {
+            if (window.lastNfcOperation === 'pwd_lock') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnLockAnother || 'Lock Another Card';
+            } else if (window.lastNfcOperation === 'pwd_unlock') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnUnlockAnother || 'Unlock Another Card';
+            } else if (window.lastNfcOperation === 'write_wifi') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnWifiAnother || 'Write Another Card';
+            } else if (window.lastNfcOperation === 'write') {
+                nfcNextBtnLabel.textContent = dict.nfcBtnWriteAnother || 'Write Another Card';
+            }
+        }
+        setTxt('nfcRetryBtnLabel', dict.nfcRetryBtn || 'Try Again');
 
         // Desktop Marketing (Web)
         setTxt('tagHowItWorks', dict.tagHowItWorks);
@@ -417,6 +823,10 @@
         setTxt('feat3Desc', dict.feat3Desc);
         setTxt('feat4Title', dict.feat4Title);
         setTxt('feat4Desc', dict.feat4Desc);
+        setTxt('feat5Title', dict.feat5Title);
+        setTxt('feat5Desc', dict.feat5Desc);
+        setTxt('feat6Title', dict.feat6Title);
+        setTxt('feat6Desc', dict.feat6Desc);
 
         setTxt('tagFaq', dict.tagFaq);
         setTxt('titleFaq', dict.titleFaq);
@@ -429,6 +839,10 @@
         setTxt('faq3A', dict.faq3A);
         setTxt('faq4Q', dict.faq4Q);
         setTxt('faq4A', dict.faq4A);
+        setTxt('faq5Q', dict.faq5Q);
+        setTxt('faq5A', dict.faq5A);
+        setTxt('faq6Q', dict.faq6Q);
+        setTxt('faq6A', dict.faq6A);
 
         // Footer
         setTxt('footerTagline', dict.footerTagline);
@@ -449,7 +863,7 @@
     }
 
     function applyLanguage(lang, animate = true) {
-        if (animate && (lang === currentLang || isLangSwitching)) return;
+        if (animate && lang === currentLang) return;
 
         currentLang = lang;
         try {
@@ -458,40 +872,66 @@
         const dict = I18N[lang];
         if (!dict) return;
 
+        if (langSwitchTimer) {
+            clearTimeout(langSwitchTimer);
+            langSwitchTimer = null;
+        }
+        if (langCleanTimer) {
+            clearTimeout(langCleanTimer);
+            langCleanTimer = null;
+        }
+        if (langRafId) {
+            cancelAnimationFrame(langRafId);
+            langRafId = null;
+        }
+
         // 1. Instant feedback: glide slider pill immediately with spring physics
         updateSliderPill(lang);
 
         if (!animate) {
+            document.body.classList.remove('is-lang-animating', 'is-lang-switching', 'is-lang-entering');
             try {
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
             } catch (e) {
                 console.error('Error applying language strings:', e);
             }
             return;
         }
 
-        // 2. Coordinated cross-dissolve with layout lock
-        isLangSwitching = true;
-        document.body.classList.add('is-lang-switching');
+        // 2. Coordinated continuous vertical roll (mirrors lock/unlock modal)
+        document.body.classList.remove('is-lang-entering');
+        document.body.classList.add('is-lang-animating', 'is-lang-switching');
 
-        setTimeout(() => {
+        langSwitchTimer = setTimeout(() => {
+            langSwitchTimer = null;
             try {
+                // Phase 2: Instantly set incoming text BELOW (+9px) with opacity 0
+                document.body.classList.remove('is-lang-switching');
+                document.body.classList.add('is-lang-entering');
+
                 updateDomLanguageStrings(lang, dict);
                 if (window.updateModeTabSlider) window.updateModeTabSlider();
-                void document.documentElement.offsetHeight;
+                if (window.updatePwdTabSlider) window.updatePwdTabSlider();
             } catch (e) {
                 console.error('Error during language switch:', e);
-            } finally {
-                requestAnimationFrame(() => {
-                    document.body.classList.remove('is-lang-switching');
-                    if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 50);
-                    setTimeout(() => {
-                        isLangSwitching = false;
-                    }, 240);
-                });
             }
-        }, 140);
+
+            void document.body.offsetWidth;
+
+            // Phase 3: Release to glide smoothly up from below to 0
+            langRafId = requestAnimationFrame(() => {
+                langRafId = null;
+                document.body.classList.remove('is-lang-entering');
+                if (window.updateModeTabSlider) setTimeout(window.updateModeTabSlider, 40);
+                if (window.updatePwdTabSlider) setTimeout(window.updatePwdTabSlider, 40);
+                langCleanTimer = setTimeout(() => {
+                    langCleanTimer = null;
+                    document.body.classList.remove('is-lang-animating');
+                }, 260);
+            });
+        }, 110);
     }
 
     function switchLanguage(lang) {

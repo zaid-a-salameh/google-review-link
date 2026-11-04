@@ -1,82 +1,127 @@
-# Google Maps Review Link Generator & NFC / QR Writer
+<div align="center">
 
-> Convert any Google Maps link into a direct 5-star review URL, generate downloadable high-resolution QR codes, and write directly to physical NFC cards/tags via Android.
+<img src="favicon-192x192.png" alt="Quick NFC Logo" width="96" height="96" style="border-radius: 24px; box-shadow: 0 8px 24px rgba(124, 58, 237, 0.35);">
 
----
+# Quick NFC
 
-## Live Web Application & Downloads
+**Fast & simple NFC tool for instant Google Maps 5-star reviews, Wi-Fi cards, PIN security, and QR codes.**
 
-- **Live Web Application**: [https://zaid-a-salameh.github.io/google-review-link/](https://zaid-a-salameh.github.io/google-review-link/)
-- **Direct Android APK Download**: [Download ReviewLinkGenerator.apk](https://github.com/zaid-a-salameh/google-review-link/raw/main/ReviewLinkGenerator.apk)
+[![Release](https://img.shields.io/badge/release-v2.0.0-7c3aed?style=flat-square)](https://github.com/zaid-a-salameh/quick-nfc/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![Platform: Android & Web](https://img.shields.io/badge/Platform-Android%20%7C%20Web-success?style=flat-square)](https://zaid-a-salameh.github.io/quick-nfc/)
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
+[![Languages: 10](https://img.shields.io/badge/Languages-10%20Supported-purple?style=flat-square)](https://github.com/zaid-a-salameh/quick-nfc)
 
----
+<br/>
 
-## Core Capabilities & Features
+[**🌐 Open Web Application**](https://zaid-a-salameh.github.io/quick-nfc/) • [**📱 Download Android APK**](https://github.com/zaid-a-salameh/quick-nfc/raw/main/QuickNFC.apk) • [**✨ Report an Issue**](https://github.com/zaid-a-salameh/quick-nfc/issues)
 
-- **Direct 5-Star Review Generation**: Extracts Place IDs from full Google Maps URLs, place share links, and `maps.app.goo.gl` shortlinks into direct `search.google.com/local/writereview?placeid=...` review links.
-- **Real-Time Places Search Mode**: Integrated Google Maps Places Autocomplete engine allowing users to discover businesses with live suggestions and instant 5-star review link generation.
-- **Continuous Batch NFC Writing (Android)**: Multi-tag writing engine that programs dozens of NFC cards/stickers (NTAG213/215/216) in a continuous loop with live counter tracking and haptic vibration feedback.
-- **In-App Update Checker & Self-Updating APK**: Built-in update engine that checks GitHub Releases for new versions, shows release highlights, and downloads/installs APK updates directly inside the app.
-- **High-Resolution QR Code Engine**: Generates crisp, downloadable vector-grade QR codes inside an animated modal dialog.
-- **Desktop Showcase & Sticky Navigation**: Tailored desktop experience featuring a glassmorphic top navigation bar, 3-step visual workflow guides, and interactive feature highlights.
-- **Micro-Spring & Entrance Animations**: Hardware-accelerated entrance choreography and physics-based spring toggles for instantaneous feedback with zero layout shifts.
-- **Bilingual English & Arabic Interface**: Full bi-directional support (LTR / RTL) with seamless cross-dissolve transitions between Inter and Cairo typography, plus 100% localized notifications.
-- **Zero API Key Requirement**: Completely free and open-source architecture that requires no mandatory third-party API credentials or billing accounts.
-- **100% Offline-First Architecture**: Android APK bundles all dependencies locally for offline Place ID parsing and QR generation.
+</div>
 
 ---
 
-## Quick Start
+## Overview
+
+**Quick NFC** is an all-in-one, privacy-focused open-source tool designed to effortlessly bridge digital actions with physical contactless cards and smart NFC tags. Whether you want to boost your business feedback with direct 5-star Google review links, share guest Wi-Fi passwords with a single phone touch, or secure your NFC cards against tampering with PIN protection or permanent hardware locks, Quick NFC delivers instantaneous results with zero friction.
+
+Available both as a responsive **Web Application** and as a high-performance **Android App** built with Flutter.
+
+---
+
+## Core Features
+
+- ⭐ **Direct 5-Star Google Review Links**: Converts any Google Maps link, place share URL, or `maps.app.goo.gl` shortlink into an automated 5-star review submission link (`search.google.com/local/writereview?placeid=...`) without requiring customers to manually navigate through Maps.
+- 🔍 **Live Business Search Mode**: Integrated Google Maps Places search engine allowing business owners to find their venue by name and city with live autocomplete suggestions.
+- 📶 **Wi-Fi Card Setup & Cloning**: Create contactless Wi-Fi connection cards supporting WPA, WPA2, WPA3 Personal, and Open networks. Easily read and duplicate existing Wi-Fi cards for restaurants, cafes, and offices.
+- 📱 **Continuous Batch NFC Writing (Android)**: Multi-tag writing engine that programs dozens of NFC cards, stickers, keyfobs, or coins in a continuous loop with live counter tracking and haptic vibration feedback.
+- 🔒 **4-Digit PIN Protection & Unlocking**: Protect NFC cards from unauthorized overwriting in public spaces by setting a 4-digit PIN password, with full reversible unlocking support.
+- 🛡️ **Permanent Hardware Lock**: Apply an irreversible Read-Only hardware lock to standard NTAG chips to ensure tamper-proof deployment in public venues.
+- 🔲 **High-Resolution Vector QR Codes**: Generate and download crisp, print-ready PNG QR codes for tabletop stands, menus, receipts, and storefront stickers.
+- 🌍 **10 Global Languages Supported**: Full native internationalization in English, Arabic, Spanish, French, German, Turkish, Italian, Portuguese, Indonesian, and Russian, with seamless RTL/LTR layout mirroring.
+- 🛡️ **100% Free, Private & Offline-First**: No ads, no paid subscriptions, no user registration, and zero third-party tracking. All link resolution and NFC payload generation run directly on your device.
+
+---
+
+## Supported NFC Hardware
+
+Quick NFC is fully compatible with standard NFC Forum Type 2 tags:
+- **NTAG213** (144 bytes user memory)
+- **NTAG215** (504 bytes user memory)
+- **NTAG216** (888 bytes user memory)
+- Compatible NFC smart business cards, PVC cards, epoxy tags, keyfobs, and stickers.
+
+---
+
+## Getting Started
 
 ### 1. Web Version
-Open the [Live Web Application](https://zaid-a-salameh.github.io/google-review-link/) in any modern desktop or mobile browser.
+Access the live web app in any modern browser without installation:
+👉 **[https://zaid-a-salameh.github.io/quick-nfc/](https://zaid-a-salameh.github.io/quick-nfc/)**
 
-### 2. Android Application (APK)
-Download and install [ReviewLinkGenerator.apk](https://github.com/zaid-a-salameh/google-review-link/raw/main/ReviewLinkGenerator.apk) on any Android device running Android 7.0+ (API level 24+).
+### 2. Android App (APK)
+1. Download the latest official release: **[QuickNFC.apk](https://github.com/zaid-a-salameh/quick-nfc/raw/main/QuickNFC.apk)**.
+2. Enable "Install from unknown sources" on your Android device (Android 7.0+ / API level 24+).
+3. Open and install the APK to access hardware NFC writing, cloning, and security locks.
 
 ---
 
 ## Project Structure
 
-<pre>
-google-review-link/
-├── src/                             # Modular source codebase
-│   ├── css/                         # Scoped stylesheets
-│   │   ├── variables.css            # Design tokens & keyframes
-│   │   ├── base.css                 # Reset, typography & containers
-│   │   ├── components.css           # Inputs, tabs, result card & action buttons
-│   │   ├── search-dropdown.css      # Places Autocomplete & search mode
-│   │   ├── modals.css               # QR, NFC & Update modal dialogs
-│   │   ├── toast.css                # Localized notification toast styles
-│   │   ├── marketing.css            # Desktop navbar, steps, FAQ & footer (Web only)
-│   │   └── app.css                  # Viewport & safe-area styles (Android only)
-│   ├── js/                          # Scoped JavaScript modules
-│   │   ├── core/                    # Shared business logic (i18n, toast, converter, places, qr)
-│   │   ├── app/                     # Android native logic (nfc, updater, bridge)
-│   │   ├── web/                     # Web desktop interactions (marketing)
-│   │   ├── app-main.js              # Native Android entry point
-│   │   └── web-main.js              # Web production entry point
-│   └── templates/                   # Clean HTML templates
-│       ├── web-index.html           # Full Web & marketing template
-│       └── app-index.html           # Lightweight Native APK template
-├── scripts/
-│   └── build_and_sync.py            # Automated build & asset synchronization script
-├── index.html                       # Web entry point (GitHub Pages)
-├── qrcode.min.js                    # Offline client-side QR generation engine
-├── ReviewLinkGenerator.apk          # Compiled standalone Android application
-├── README.md                        # Project documentation
-├── .gitignore                       # Git version control rules
-└── android-app/                     # Native Android Studio project (Kotlin)
-    ├── app/src/main/
-    │   ├── java/.../MainActivity.kt # Native NFC, clipboard, and bridge layer
-    │   └── assets/                  # Synchronized high-performance APK assets
-    │       ├── index.html           # Dedicated native UI (zero marketing DOM)
-    │       ├── css/                 # Scoped APK styles
-    │       └── js/                  # Scoped APK scripts
-    └── build.gradle.kts             # Gradle configuration
-</pre>
+```
+quick-nfc/
+├── flutter_app/                     # Flutter production Android application
+│   ├── lib/
+│   │   ├── core/                    # App constants, themes, and localization
+│   │   ├── data/                    # Models, repositories, and native service bridges
+│   │   │   └── services/            # NFC service, QR service, Places & GitHub updater
+│   │   └── ui/                      # MVVM UI layer (screens, viewmodels, widgets)
+│   ├── android/                     # Android native host configuration (NFC intent filters)
+│   └── pubspec.yaml                 # Flutter dependencies & assets manifest
+├── src/                             # Modular web client codebase
+│   ├── css/                         # Scoped CSS modules (marketing, layout, components)
+│   ├── js/                          # Scoped JavaScript modules (core i18n, converter, places)
+│   └── templates/                   # Source HTML templates
+├── scripts/                         # Build, sync, and asset rendering scripts
+│   ├── build_and_sync.py            # Automated build & asset synchronization pipeline
+│   └── render_assets.py             # Multi-resolution icon & favicon generator
+├── index.html                       # Production Web entry point (GitHub Pages)
+├── QuickNFC.apk                     # Standalone compiled Android application
+└── README.md                        # Project documentation
+```
 
 ---
 
-## License & Author
-Developed by **Zaid Salameh** ([@zaid-a-salameh](https://github.com/zaid-a-salameh)). MIT License.
+## Building from Source
+
+### Prerequisites
+- [Flutter SDK](https://flutter.dev/docs/get-started/install) (version 3.22+ recommended)
+- [Android SDK](https://developer.android.com/studio) (API level 34)
+- Python 3.9+ (for web asset builds)
+
+### 1. Build the Flutter Android App
+```bash
+cd flutter_app
+flutter pub get
+flutter build apk --release
+```
+The compiled APK will be generated at `flutter_app/build/app/outputs/flutter-apk/app-release.apk`.
+
+### 2. Build the Web Application
+```bash
+python scripts/build_and_sync.py
+```
+
+---
+
+## Contributing
+
+Contributions, feature requests, and bug reports are warmly welcome!
+Feel free to open an issue or submit a Pull Request on the [GitHub Repository](https://github.com/zaid-a-salameh/quick-nfc).
+
+---
+
+## License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+Developed with care by **Zaid Salameh** ([@zaid-a-salameh](https://github.com/zaid-a-salameh)).

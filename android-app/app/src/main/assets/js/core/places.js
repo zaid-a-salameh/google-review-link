@@ -144,6 +144,7 @@
         const appContainer = document.getElementById('appContainer');
         const modeSearchContent = document.getElementById('modeSearchContent');
         const searchFieldWrapper = document.getElementById('searchFieldWrapper');
+        const modeStage = document.getElementById('modeStage');
 
         if (placesDropdown) {
             placesDropdown.classList.remove('show');
@@ -153,6 +154,7 @@
         if (appContainer) appContainer.classList.remove('has-dropdown-open');
         if (modeSearchContent) modeSearchContent.classList.remove('has-dropdown-open');
         if (searchFieldWrapper) searchFieldWrapper.classList.remove('has-dropdown-open');
+        if (modeStage) modeStage.classList.remove('has-dropdown-open');
         highlightedSuggestionIndex = -1;
         currentSuggestions = [];
     }
@@ -299,6 +301,8 @@
         if (appContainer) appContainer.classList.add('has-dropdown-open');
         if (modeSearchContent) modeSearchContent.classList.add('has-dropdown-open');
         if (searchFieldWrapper) searchFieldWrapper.classList.add('has-dropdown-open');
+        const modeStage = document.getElementById('modeStage');
+        if (modeStage) modeStage.classList.add('has-dropdown-open');
     }
 
     async function selectSuggestion(suggestion) {
@@ -323,15 +327,17 @@
         resetAutocompleteSessionToken();
 
         if (placeId) {
+            const wasResultActive = Boolean(resultCard && resultCard.classList.contains('active'));
             const reviewUrl = `https://search.google.com/local/writereview?placeid=${encodeURIComponent(placeId)}`;
+            const locationUrl = `https://www.google.com/maps/search/?api=1&query=Google&query_place_id=${encodeURIComponent(placeId)}`;
             if (window.AppModes) {
-                window.AppModes.setModeResult('search', reviewUrl);
+                window.AppModes.setModeResult('search', reviewUrl, placeId, locationUrl);
             } else {
                 if (window.setGeneratedReviewUrl) window.setGeneratedReviewUrl(reviewUrl);
                 if (resultLinkText) resultLinkText.textContent = reviewUrl;
                 if (resultCard) resultCard.classList.add('active');
             }
-            if (resultCard && (!window.AppModes || window.AppModes.search.isResultActive)) {
+            if (resultCard && !wasResultActive && (!window.AppModes || window.AppModes.search.isResultActive)) {
                 resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
             if (window.showToast) window.showToast(dict.toastSelectSuccess || 'Business selected and review link generated', 'success');
@@ -360,7 +366,13 @@
         const businessSearchInput = document.getElementById('businessSearchInput');
         const mainInputCard = document.getElementById('mainInputCard');
 
-        
+        const currentTab = mode === 'link' ? tabLinkMode : tabSearchMode;
+        const currentContent = mode === 'link' ? modeLinkContent : modeSearchContent;
+        const isDomActive = Boolean(currentTab && currentTab.classList.contains('active') &&
+                                    currentContent && currentContent.classList.contains('active'));
+
+        if (window.AppModes && window.AppModes.activeMode === mode && isDomActive) return;
+
         if (window.AppModes) {
             window.AppModes.activeMode = mode;
         }
@@ -385,6 +397,8 @@
 
         if (window.AppModes) {
             window.AppModes.syncResultCard();
+        } else if (window.syncToolsVisibility) {
+            window.syncToolsVisibility();
         }
     }
 
