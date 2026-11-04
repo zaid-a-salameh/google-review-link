@@ -7,6 +7,7 @@
 **Fast & simple contactless tool for instant Google Maps 5-star reviews, Wi-Fi NFC cards, PIN security, and QR codes.**
 
 [![Release](https://img.shields.io/badge/release-v2.0.0-7c3aed?style=flat-square)](https://github.com/zaid-a-salameh/quick-nfc/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/zaid-a-salameh/quick-nfc/total?style=flat-square&color=2ea44f)](https://github.com/zaid-a-salameh/quick-nfc/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-success?style=flat-square)](https://zaid-a-salameh.github.io/quick-nfc/)
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
