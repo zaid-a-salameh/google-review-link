@@ -470,6 +470,33 @@
             box-shadow: 0 2px 10px rgba(124, 58, 237, 0.4);
         }
 
+        /* Web Platform Notice */
+        .web-platform-hint {
+            margin-top: 14px;
+            padding: 10px 14px;
+            background: rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: var(--radius-card);
+            font-size: 13px;
+            line-height: 1.5;
+            color: #d6d3d1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .web-platform-hint a {
+            color: #c4b5fd;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+        .web-platform-hint a:hover {
+            color: #ffffff;
+        }
+        body.is-native-app .web-platform-hint {
+            display: none !important;
+        }
+
         /* Bottom Docked Rectangular GitHub Button (App Exclusive) */
         .bottom-github-dock {
             display: none !important;

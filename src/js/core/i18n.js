@@ -68,6 +68,7 @@
             "faq6Q": "Is Quick NFC completely free and private?",
             "faq6A": "Yes, it is 100% free and open-source under the MIT license. It requires no user account, no subscription, and no Google Cloud API key, and it works completely offline.",
             "footerTagline": "Fast & simple NFC tool with instant Google Maps review link conversion.",
+            "webPlatformNoticeText": "Physical NFC writing & Wi-Fi cards require our free <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">Android App</a>. This web version generates links & printable QR codes.",
             "footerApk": "Android APK",
             "footerGithub": "GitHub Repository",
             "footerBackToTop": "↑ Back to Top",
@@ -346,6 +347,7 @@
             "faq6Q": "هل أداة وتطبيق Quick NFC مجاني تماماً وبلا إعلانات؟",
             "faq6A": "نعم، الأداة مجانية 100% ومفتوحة المصدر برخصة MIT، ولا تتطلب أي حساب أو مفتاح API، وتعمل بخصوصية تامة دون جمع أي بيانات.",
             "footerTagline": "أداة NFC سريعة ومجانية مع تحويل فوري لروابط تقييم خرائط Google.",
+            "webPlatformNoticeText": "كتابة بطاقات NFC وتشفير كروت الواي فاي تتطلب <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">تطبيق الأندرويد</a> المجاني. الموقع مخصص لتوليد الروابط وأكواد QR.",
             "footerApk": "تطبيق أندرويد",
             "footerGithub": "مستودع GitHub",
             "footerBackToTop": "↑ العودة للأعلى",
@@ -624,6 +626,7 @@
             "faq6Q": "Ist Quick NFC völlig kostenlos und privat?",
             "faq6A": "Ja, es ist 100% kostenlos und Open-Source unter der MIT-Lizenz. Es erfordert kein Benutzerkonto und funktioniert komplett offline.",
             "footerTagline": "Schnelles NFC-Tool für direkte Google Maps-Bewertungslinks, WLAN-Karten und NFC-Programmierung.",
+            "webPlatformNoticeText": "Das Schreiben von NFC-Tags und WLAN-Karten erfordert die kostenlose <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">Android-App</a>. Das Web-Tool generiert Bewertungslinks und druckbare QR-Codes.",
             "footerApk": "Android APK",
             "footerGithub": "GitHub Repository",
             "footerBackToTop": "↑ Nach oben",
@@ -932,6 +935,7 @@
             "faq6Q": "¿Quick NFC es totalmente gratuito y privado?",
             "faq6A": "Sí, es 100% gratuito y de código abierto bajo la licencia MIT. No requiere cuenta y funciona sin conexión.",
             "footerTagline": "Herramienta NFC rápida para enlaces directos de reseñas de Google Maps, tarjetas Wi-Fi y programación NFC.",
+            "webPlatformNoticeText": "La escritura de etiquetas NFC y tarjetas Wi-Fi requiere nuestra <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">App de Android</a> gratuita. La web genera enlaces y códigos QR imprimibles.",
             "footerApk": "APK de Android",
             "footerGithub": "Repositorio GitHub",
             "footerBackToTop": "↑ Volver arriba",
@@ -1240,6 +1244,7 @@
             "faq6Q": "Quick NFC est-il gratuit et confidentiel ?",
             "faq6A": "Oui, 100% gratuit et open source sous licence MIT, sans compte requis et fonctionnant hors ligne.",
             "footerTagline": "Outil NFC rapide pour avis Google Maps 5 étoiles directs, cartes Wi-Fi et programmation sans contact.",
+            "webPlatformNoticeText": "L'écriture de tags NFC et cartes Wi-Fi nécessite l'<a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">Application Android</a> gratuite. Cette version web génère les liens et QR codes imprimables.",
             "footerApk": "APK Android",
             "footerGithub": "Dépôt GitHub",
             "footerBackToTop": "↑ Haut de page",
@@ -1548,6 +1553,7 @@
             "faq6Q": "क्या Quick NFC पूरी तरह मुफ़्त और सुरक्षित है?",
             "faq6A": "हाँ, यह एमआईटी लाइसेंस के तहत 100% मुफ़्त और ओपन-सोर्स है और ऑफलाइन काम करता है।",
             "footerTagline": "गूगल मैप्स 5-स्टार समीक्षा लिंक और एनएफसी कार्ड प्रबंधन टूल।",
+            "webPlatformNoticeText": "भौतिक NFC टैग लिखने और वाई-फ़ाई कार्ड के लिए हमारा मुफ़्त <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">Android ऐप</a> आवश्यक है। यह वेब टूल लिंक और प्रिंट करने योग्य QR कोड बनाता है।",
             "footerApk": "एंड्रॉइड APK",
             "footerGithub": "GitHub रिपॉजिटरी",
             "footerBackToTop": "↑ शीर्ष पर जाएं",
@@ -1856,6 +1862,7 @@
             "faq6Q": "Quick NFCは本当に完全無料で利用できますか？",
             "faq6A": "はい、MITライセンスの完全オープンソースです。アカウント登録もAPIキーも不要です。",
             "footerTagline": "Googleマップ星5レビュー直リンク作成、Wi-Fi共有、NFCカード書き込みツール。",
+            "webPlatformNoticeText": "NFCタグの書き込みやWi-Fiカードの作成には無料の<a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">Androidアプリ</a>が必要です。Web版はリンク変換とQRコード生成に対応しています。",
             "footerApk": "Android APK",
             "footerGithub": "GitHub リポジトリ",
             "footerBackToTop": "↑ トップへ戻る",
@@ -2164,6 +2171,7 @@
             "faq6Q": "O Quick NFC é realmente gratuito e privativo?",
             "faq6A": "Sim, 100% gratuito e de código aberto sob licença MIT. Funciona offline sem exigir cadastro.",
             "footerTagline": "Ferramenta NFC rápida para links diretos de avaliação do Google Maps, cartões Wi-Fi e NFC.",
+            "webPlatformNoticeText": "A gravação de tags NFC e cartões Wi-Fi requer o nosso <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">App Android</a> gratuito. Esta versão web gera links e códigos QR para impressão.",
             "footerApk": "APK Android",
             "footerGithub": "Repositório GitHub",
             "footerBackToTop": "↑ Voltar ao topo",
@@ -2472,6 +2480,7 @@
             "faq6Q": "Quick NFC действительно бесплатен и конфиденциален?",
             "faq6A": "Да, 100% бесплатно по лицензии MIT. Приложение не требует регистрации и работает полностью оффлайн.",
             "footerTagline": "Быстрый NFC инструмент для прямых ссылок на отзывы Google Maps и карт Wi-Fi.",
+            "webPlatformNoticeText": "Запись физических NFC-меток и Wi-Fi карт требует нашего бесплатного <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">приложения для Android</a>. Веб-версия генерирует ссылки и QR-коды для печати.",
             "footerApk": "Android APK",
             "footerGithub": "Репозиторий GitHub",
             "footerBackToTop": "↑ Наверх",
@@ -2780,6 +2789,7 @@
             "faq6Q": "Quick NFC 真的完全免费并且安全吗？",
             "faq6A": "是的，基于 MIT 许可 100% 免费开源，无需注册账号，无需 API 密钥，离线也能安心使用。",
             "footerTagline": "极速 Google 地图 5 星评价直达、Wi-Fi 触碰卡片与 NFC 烧录工具。",
+            "webPlatformNoticeText": "实体 NFC 标签写入与 Wi-Fi 卡片配置需使用免费的 <a href=\"https://github.com/zaid-a-salameh/quick-nfc/releases/latest/download/QuickNFC.apk\">Android 应用</a>。网页版用于生成直达链接与可打印二维码。",
             "footerApk": "Android 安装包 (APK)",
             "footerGithub": "GitHub 源码仓库",
             "footerBackToTop": "↑ 返回顶部",
@@ -3297,6 +3307,7 @@
 
         // Footer
         setTxt('footerTagline', dict.footerTagline);
+        setHtml('webPlatformNoticeText', dict.webPlatformNoticeText);
         setTxt('footerApkLink', dict.footerApk);
         setTxt('footerGithubLink', dict.footerGithub);
         setTxt('footerBackToTop', dict.footerBackToTop);
