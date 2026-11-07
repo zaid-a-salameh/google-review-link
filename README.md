@@ -9,13 +9,13 @@
 [![Release](https://img.shields.io/badge/release-v2.0.0-7c3aed?style=flat-square)](https://github.com/zaid-a-salameh/quick-nfc/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/zaid-a-salameh/quick-nfc/total?style=flat-square&color=2ea44f)](https://github.com/zaid-a-salameh/quick-nfc/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-success?style=flat-square)](https://zaid-a-salameh.github.io/quick-nfc/)
+[![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Web-success?style=flat-square)](https://quicknfc.link/)
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?style=flat-square&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Languages](https://img.shields.io/badge/Languages-10%20Supported-purple?style=flat-square)](#-10-languages-supported)
 
 <br/>
 
-[**🌐 Open Web App**](https://zaid-a-salameh.github.io/quick-nfc/) • [**📱 Download APK**](https://github.com/zaid-a-salameh/quick-nfc/releases/latest) • [**✨ Report Issue**](https://github.com/zaid-a-salameh/quick-nfc/issues)
+[**🌐 Open Web App**](https://quicknfc.link/) • [**📱 Download APK**](https://github.com/zaid-a-salameh/quick-nfc/releases/latest) • [**✨ Report Issue**](https://github.com/zaid-a-salameh/quick-nfc/issues)
 
 </div>
 
@@ -105,7 +105,7 @@ Quick NFC provides native localization across 10 languages with automatic RTL (R
 
 ### 2. Web Companion
 Test links and generate printable QR codes directly from any desktop or mobile browser without installation:  
-👉 **[zaid-a-salameh.github.io/quick-nfc](https://zaid-a-salameh.github.io/quick-nfc/)**
+👉 **[quicknfc.link](https://quicknfc.link/)**
 
 ---
 

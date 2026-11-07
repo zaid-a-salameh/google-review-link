@@ -98,8 +98,8 @@ class PlacesAutocompleteService {
               'Content-Type': 'application/json',
               'X-Goog-Api-Key': _mapsApiKey,
               'X-Goog-FieldMask': _fieldMask,
-              'Referer': 'https://zaid-a-salameh.github.io/quick-nfc/',
-              'Origin': 'https://zaid-a-salameh.github.io',
+              'Referer': 'https://quicknfc.link/',
+              'Origin': 'https://quicknfc.link',
             },
             body: jsonEncode(<String, dynamic>{
               'input': trimmed,

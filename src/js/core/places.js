@@ -51,7 +51,7 @@
         if (!window.location) return false;
         const proto = window.location.protocol || '';
         const host = window.location.hostname || '';
-        if (host === 'zaid-a-salameh.github.io' || host === 'localhost' || host === '127.0.0.1') {
+        if (host === 'quicknfc.link' || host === 'www.quicknfc.link' || host === 'zaid-a-salameh.github.io' || host === 'localhost' || host === '127.0.0.1') {
             return true;
         }
         if (proto === 'file:' && decodeURIComponent(window.location.href || '').indexOf('Zaid-PC') !== -1) {

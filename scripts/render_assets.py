@@ -209,7 +209,7 @@ OG_HTML = """<!DOCTYPE html>
       <div class="badge">10 Languages</div>
     </div>
 
-    <div class="footer-url">zaid-a-salameh.github.io/quick-nfc</div>
+    <div class="footer-url">quicknfc.link</div>
   </div>
 </body>
 </html>
